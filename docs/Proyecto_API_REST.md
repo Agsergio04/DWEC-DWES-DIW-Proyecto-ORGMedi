@@ -148,6 +148,3 @@ Este diagrama representa la estructura inicial de entidades y relaciones del pro
 3. Acceder a la API en `http://localhost:8080`.
 4. Consultar los endpoints y probar autenticación JWT.
 
----
-
-Este README cumple con la rúbrica DWES v1.2 y documenta el estado actual del proyecto según los criterios de evaluación.
