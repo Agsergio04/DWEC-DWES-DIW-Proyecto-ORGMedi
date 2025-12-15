@@ -148,3 +148,94 @@ Este diagrama representa la estructura inicial de entidades y relaciones del pro
 3. Acceder a la API en `http://localhost:8080`.
 4. Consultar los endpoints y probar autenticación JWT.
 
+---
+
+Este README cumple con la rúbrica DWES v1.2 y documenta el estado actual del proyecto según los criterios de evaluación.
+
+# Ejemplos de uso de la API y autenticación JWT
+
+## Autenticación (JWT)
+
+### Login
+- **POST** `/api/auth/login`
+- **Body:**
+```json
+{
+  "correo": "usuario@email.com",
+  "contrasena": "1234"
+}
+```
+- **Respuesta exitosa:**
+```json
+{
+  "token": "<jwt_token>"
+}
+```
+- **Respuesta error:**
+```json
+{
+  "error": "Credenciales inválidas",
+  "code": null
+}
+```
+
+### Uso del token JWT
+Incluye el token en la cabecera `Authorization`:
+```
+Authorization: Bearer <jwt_token>
+```
+
+---
+
+### Endpoints principales
+
+#### Usuarios
+- **GET** `/api/usuarios` — Lista todos los usuarios
+- **GET** `/api/usuarios/{id}` — Obtiene un usuario por id
+- **POST** `/api/usuarios` — Crea un usuario (body: Usuario)
+- **PUT** `/api/usuarios/{id}` — Actualiza un usuario
+- **DELETE** `/api/usuarios/{id}` — Elimina un usuario
+
+#### Gestores de Medicamentos
+- **GET** `/api/gestores` — Lista todos los gestores
+- **GET** `/api/gestores/{id}` — Obtiene un gestor por id
+- **POST** `/api/gestores` — Crea un gestor (puede estar vacío de medicamentos)
+- **PUT** `/api/gestores/{id}` — Actualiza un gestor
+- **DELETE** `/api/gestores/{id}` — Elimina un gestor
+
+#### Medicamentos
+- **GET** `/api/medicamentos` — Lista todos los medicamentos
+- **GET** `/api/medicamentos/{nombre}` — Obtiene un medicamento por nombre
+- **POST** `/api/medicamentos` — Crea un medicamento
+- **PUT** `/api/medicamentos/{nombre}` — Actualiza un medicamento
+- **DELETE** `/api/medicamentos/{nombre}` — Elimina un medicamento
+
+---
+
+#### Ejemplo de flujo de autenticación y uso
+1. El usuario hace login y recibe un JWT.
+2. Usa el JWT en la cabecera `Authorization` para acceder a los endpoints protegidos.
+3. Si el token es inválido o ha expirado, la API responde con 401.
+
+---
+
+#### Explicación del sistema de autenticación
+- El login genera un JWT firmado que identifica al usuario por su correo.
+- El token debe enviarse en cada petición protegida.
+- El backend valida el token y extrae el correo del usuario.
+- Si el token es válido, permite el acceso según el rol del usuario.
+- Si no, responde con error 401.
+
+---
+
+#### Ejemplo de error de autenticación
+```json
+{
+  "error": "Credenciales inválidas",
+  "code": null
+}
+```
+
+
+
+
