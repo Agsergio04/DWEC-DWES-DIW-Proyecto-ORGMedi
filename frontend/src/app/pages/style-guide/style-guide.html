@@ -1,0 +1,43 @@
+<section class="sg">
+  <h1>Style Guide — Fase 3: Componentes UI Básicos</h1>
+
+  <section>
+    <h2>Botones</h2>
+    <div class="sg-row">
+      <app-button variant="primary" size="sm">Primary sm</app-button>
+      <app-button variant="primary" size="md">Primary md</app-button>
+      <app-button variant="primary" size="lg">Primary lg</app-button>
+      <app-button variant="secondary" size="md">Secondary</app-button>
+      <app-button variant="ghost" size="md">Ghost</app-button>
+      <app-button variant="danger" size="md">Danger</app-button>
+      <app-button variant="primary" size="md" [disabled]="true">Disabled</app-button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cards</h2>
+    <div class="sg-row">
+      <app-card title="Card básica" description="Descripción de ejemplo"></app-card>
+      <app-card title="Card horizontal" description="Con imagen a la izquierda" image="https://via.placeholder.com/240" [horizontal]="true"></app-card>
+    </div>
+  </section>
+
+  <section>
+    <h2>Formularios</h2>
+    <div class="sg-row">
+      <app-form-textarea label="Mensaje" placeholder="Escribe algo..."></app-form-textarea>
+      <app-form-select label="Selecciona" [options]="[{value:1,label:'Uno'},{value:2,label:'Dos'}]"></app-form-select>
+    </div>
+  </section>
+
+  <section>
+    <h2>Alerts</h2>
+    <div class="sg-row">
+      <app-alert type="success">Operación completada correctamente.</app-alert>
+      <app-alert type="error">Ocurrió un error crítico.</app-alert>
+      <app-alert type="warning">Advertencia: revisa los datos.</app-alert>
+      <app-alert type="info">Información útil para el usuario.</app-alert>
+    </div>
+  </section>
+</section>
+

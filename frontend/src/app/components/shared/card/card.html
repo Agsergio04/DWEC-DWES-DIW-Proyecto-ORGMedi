@@ -1,0 +1,8 @@
+<article [ngClass]="['app-card', variant === 'horizontal' ? 'app-card--horizontal' : 'app-card--basic']">
+  <img *ngIf="image" [src]="image" alt="" class="app-card__image" />
+  <div class="app-card__content">
+    <h3 class="app-card__title" *ngIf="title">{{ title }}</h3>
+    <p class="app-card__desc" *ngIf="description">{{ description }}</p>
+    <ng-content select=".card-actions"></ng-content>
+  </div>
+</article>

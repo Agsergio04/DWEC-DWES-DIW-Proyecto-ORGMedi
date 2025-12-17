@@ -1,0 +1,353 @@
+@use '../../../../styles/00-settings/_variables' as *;
+@use '../../../../styles/01-tools/_mixins' as *;
+
+// ============================================
+// CALENDAR COMPONENT STYLES - HORIZONTAL
+// ============================================
+
+.calendar {
+  width: 100%;
+  padding: $espaciado-24;
+  background: transparent;
+  font-family: $font-primary;
+}
+
+// ============================================
+// HEADER - Fecha actual (derecha)
+// ============================================
+
+.calendar__header {
+  margin-bottom: $espaciado-24;
+  text-align: right;
+}
+
+.calendar__current-date {
+  display: inline-block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-texto_borde_cajas;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+// ============================================
+// WEEK CONTAINER - Contenedor HORIZONTAL principal
+// ============================================
+
+.calendar__week-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $espaciado-8;
+
+  padding: $espaciado-20;
+  background: var(--color-terciario-primary);
+  border: $border-medium solid $color-bordes_marco_botones;
+  border-radius: $radius-lg;
+}
+
+// ============================================
+// NAVIGATION BUTTONS - Botones < y >
+// ============================================
+
+.calendar__nav-btn {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: $color-secundario-primary;
+  color: #fff;
+  border: none;
+  border-radius: $radius-full;
+
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+
+  transition: background-color $transition-normal,
+  transform $transition-rapida,
+  box-shadow $transition-normal;
+
+  &:hover {
+    background: $color-secundario-hover;
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba($color-secundario-primary, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primario-primary);
+    outline-offset: 2px;
+  }
+}
+
+.calendar__nav-btn--prev {
+  order: -1;
+}
+
+.calendar__nav-btn--next {
+  order: 100;
+}
+
+// ============================================
+// WEEK - Contenedor HORIZONTAL de días
+// ============================================
+
+.calendar__week {
+  display: flex;
+  flex-direction: row;  // ← HORIZONTAL (no column)
+  justify-content: center;
+  gap: $espaciado-8;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+// ============================================
+// DAY ITEM - Contenedor de cada día (día + nombre)
+// ============================================
+
+.calendar__day-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $espaciado-4;
+  flex-shrink: 0;
+}
+
+.calendar__day-name {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-texto_borde_cajas;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  min-width: 40px;
+}
+
+// ============================================
+// DAY BUTTON - Números de días
+// ============================================
+
+.calendar__day {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: $color-cuaternario-primary;
+  color: $color-texto_borde_cajas;
+  border: $border-medium solid $color-bordes_marco_botones;
+  border-radius: $radius-full;
+
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+
+  transition: all $transition-normal;
+
+  &:hover:not(:disabled) {
+    background: $color-cuaternario-hover;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba($color-cuaternario-primary, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primario-primary;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+// ============================================
+// DAY STATES - Hoy y seleccionado
+// ============================================
+
+.calendar__day--today {
+  background: var(--color-primario-primary);
+  color: #fff;
+  border-color: var(--color-primario-primary);
+  font-weight: $font-weight-bold;
+  box-shadow: 0 4px 8px rgba($color-primario-primary, 0.3);
+
+  &:hover {
+    background: $color-primario-hover;
+    border-color: $color-primario-hover;
+    box-shadow: 0 6px 16px rgba($color-primario-primary, 0.4);
+  }
+}
+
+.calendar__day--selected {
+  background: $color-secundario-primary;
+  color: #fff;
+  border-color: $color-secundario-primary;
+
+  &:hover {
+    background: $color-secundario-hover;
+    border-color: $color-secundario-hover;
+    box-shadow: 0 6px 16px rgba($color-secundario-primary, 0.4);
+  }
+}
+
+.calendar__day--other-month {
+  opacity: 0.3;
+  cursor: not-allowed;
+
+  &:hover {
+    opacity: 0.3;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+// ============================================
+// RESPONSIVE DESIGN
+// ============================================
+
+@media (max-width: $breakpoint-medio) {
+  .calendar__week-container {
+    padding: $espaciado-16;
+    gap: $espaciado-8;
+    overflow-x: auto;
+  }
+
+  .calendar__week {
+    gap: $espaciado-8;
+  }
+
+  .calendar__nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: $font-size-xl;
+  }
+
+  .calendar__day {
+    width: 40px;
+    height: 40px;
+    font-size: $font-size-sm;
+  }
+
+  .calendar__day-name {
+    font-size: 9px;
+    min-width: 35px;
+  }
+}
+
+@media (max-width: $breakpoint-pequeño) {
+  .calendar {
+    padding: $espaciado-16;
+  }
+
+  .calendar__week-container {
+    padding: $espaciado-12;
+    gap: $espaciado-6;
+    overflow-x: auto;
+  }
+
+  .calendar__week {
+    gap: $espaciado-6;
+  }
+
+  .calendar__nav-btn {
+    width: 36px;
+    height: 36px;
+    font-size: $font-size-lg;
+  }
+
+  .calendar__day {
+    width: 36px;
+    height: 36px;
+    font-size: $font-size-xs;
+  }
+
+  .calendar__day-name {
+    font-size: 8px;
+    min-width: 30px;
+  }
+
+  .calendar__day-item {
+    gap: $espaciado-4;
+  }
+}
+
+// ============================================
+// DARK MODE
+// ============================================
+
+[data-theme="dark"] {
+  .calendar {
+    background: transparent;
+  }
+
+  .calendar__current-date {
+    color: $color-texto_borde_cajas;
+  }
+
+  .calendar__week-container {
+    background: rgba($color-terciario-dark, 0.6);
+    border-color: $color-bordes_marco_botones;
+  }
+
+  .calendar__nav-btn {
+    background: $color-secundario-dark;
+
+    &:hover {
+      background: $color-secundario-dark_hover;
+    }
+  }
+
+  .calendar__day-name {
+    color: $color-texto_borde_cajas;
+  }
+
+  .calendar__day {
+    background: $color-cuaternario-dark;
+    color: $color-texto_borde_cajas;
+    border-color: $color-bordes_marco_botones;
+
+    &:hover:not(:disabled) {
+      background: $color-cuaternario-dark_hover;
+    }
+  }
+
+  .calendar__day--today {
+    background: $color-primario-dark;
+    border-color: $color-primario-dark;
+    box-shadow: 0 4px 8px rgba($color-primario-dark, 0.3);
+
+    &:hover {
+      background: $color-primario-dark_hover;
+      border-color: $color-primario-dark_hover;
+      box-shadow: 0 6px 16px rgba($color-primario-dark, 0.4);
+    }
+  }
+
+  .calendar__day--selected {
+    background: $color-secundario-dark;
+    border-color: $color-secundario-dark;
+
+    &:hover {
+      background: $color-secundario-dark_hover;
+      border-color: $color-secundario-dark_hover;
+      box-shadow: 0 6px 16px rgba($color-secundario-dark, 0.4);
+    }
+  }
+}

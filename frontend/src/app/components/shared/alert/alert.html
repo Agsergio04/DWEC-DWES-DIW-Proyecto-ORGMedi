@@ -1,0 +1,5 @@
+<div *ngIf="isOpen" class="alert" [ngClass]="'alert--' + type">
+  <div class="alert__content"><ng-content></ng-content></div>
+  <button *ngIf="closable" class="alert__close" (click)="close()" aria-label="Cerrar alerta">×</button>
+</div>
+

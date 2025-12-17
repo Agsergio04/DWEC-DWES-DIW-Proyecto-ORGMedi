@@ -1,0 +1,24 @@
+@use '../../../styles/00-settings/variables' as *;
+
+.page-demo {
+  padding: $espaciado-24;
+  font-family: $font-primary;
+}
+
+.peticiones-list {
+  margin-top: $espaciado-16;
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-12;
+}
+
+.peticion-card {
+  padding: $espaciado-12;
+  border-radius: $radius-md;
+  background: $color-cuaternario-primary;
+  border: 1px solid $color-bordes_marco_botones;
+}
+
+.controls { display:flex; gap:$espaciado-12; margin-top:$espaciado-12; }
+
+button { padding: $espaciado-8 $espaciado-12; border-radius:$radius-md; cursor:pointer; }

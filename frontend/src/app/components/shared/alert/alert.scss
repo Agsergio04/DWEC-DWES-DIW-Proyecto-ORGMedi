@@ -1,0 +1,11 @@
+@use '../../../../styles/00-settings/variables' as *;
+
+.alert { padding:$espaciado-12 $espaciado-16; border-radius:$radius-md; position:relative; border: $border-thin solid transparent; display:flex; align-items:center; justify-content:space-between; }
+.alert__content { flex:1; }
+.alert__close { background:transparent; border:none; font-size:1.2rem; cursor:pointer; }
+
+.alert--success { background: $color-afirmacion-primary; color:#063; }
+.alert--error { background: $color-negacion-primary; color:#fff; }
+.alert--warning { background: #ffae42; color:#4a2b00; }
+.alert--info { background: $color-primario-primary; color:#fff; }
+

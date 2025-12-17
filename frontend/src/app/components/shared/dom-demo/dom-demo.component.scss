@@ -1,0 +1,33 @@
+.dom-demo-root {
+  border: 1px dashed #ccc;
+  padding: 1rem;
+  border-radius: 6px;
+  background: #fff7fb;
+}
+
+.demo-contenedor {
+  min-height: 40px;
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+  background: #f6f1f4;
+  color: #3a3a3a;
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.demo-item {
+  margin-top: 0.5rem;
+  padding: 0.4rem;
+  background: #1a73e8;
+  border-radius: 4px;
+}
+
+.nota {
+  font-size: 0.85rem;
+  color: #666;
+}
+

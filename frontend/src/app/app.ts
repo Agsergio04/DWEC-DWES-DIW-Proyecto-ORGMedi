@@ -1,12 +1,22 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
+import { Header } from './components/layout/header/header';
+import { Footer } from './components/layout/footer/footer';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [RouterOutlet, Header, Footer],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
 export class App {
-  protected readonly title = signal('Proyecto');
+  protected readonly title = signal('ORGMedi');
+
+  constructor(private router: Router) {}
+
+  isAuthRoute(): boolean {
+    const url = this.router.url || '';
+    return url.startsWith('/login') || url.startsWith('/register');
+  }
 }

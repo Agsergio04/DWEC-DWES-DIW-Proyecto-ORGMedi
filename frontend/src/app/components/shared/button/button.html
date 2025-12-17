@@ -1,0 +1,13 @@
+<button
+  class="button"
+  [ngClass]="['button--' + variant, 'button--' + size, disabled ? 'button--disabled' : '', fullWidth ? 'button--fullwidth' : '']"
+  [disabled]="disabled"
+  [attr.aria-disabled]="disabled"
+  [attr.role]="'button'"
+  [attr.tabindex]="disabled ? -1 : 0"
+  (click)="onClick($event)"
+  (keydown)="onKeydown($event)"
+  [attr.type]="type"
+>
+  <ng-content></ng-content>
+</button>

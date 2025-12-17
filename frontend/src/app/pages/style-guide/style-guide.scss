@@ -1,0 +1,80 @@
+@use '../../../styles/00-settings/variables' as *;
+
+.sg {
+  padding: $espaciado-32;
+  font-family: $font-primary;
+  color: $color-texto_borde_cajas;
+}
+
+.sg__title {
+  text-align: center;
+  font-family: $font-secondary;
+  margin-bottom: $espaciado-24;
+}
+
+.sg__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $espaciado-32;
+  align-items: start;
+}
+
+.sg__col { background: transparent; }
+
+/* COLORES */
+.sg__colors { display: flex; flex-direction: column; gap: $espaciado-20; }
+.sg__color-group { border-bottom: 1px dashed rgba(0,0,0,0.06); padding-bottom: $espaciado-12; }
+.sg__color-group h3 { margin: $espaciado-8 0; font-size: $font-size-md; }
+.sg__swatches { display: flex; flex-wrap: wrap; gap: $espaciado-12; }
+
+.swatch {
+  min-width: 120px;
+  padding: $espaciado-8 $espaciado-12;
+  border-radius: $radius-md;
+  border: $border-thin solid rgba(0,0,0,0.04);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-sm;
+}
+
+/* Mapear las clases a las variables existentes */
+.swatch--primario-hover { background: $color-primario-hover; color: #111 }
+.swatch--primario-primary { background: $color-primario-primary; color: #fff }
+.swatch--primario-disabled { background: $color-primario-disabled; color: #111 }
+.swatch--primario-dark { background: $color-primario-dark; color: #fff }
+.swatch--primario-off { background: $color-primario-off; color: #fff }
+
+.swatch--secundario-hover { background: $color-secundario-hover; color: #111 }
+.swatch--secundario-primary { background: $color-secundario-primary; color: #fff }
+.swatch--secundario-disabled { background: $color-secundario-disabled; color: #111 }
+.swatch--secundario-dark { background: $color-secundario-dark; color: #fff }
+.swatch--secundario-off { background: $color-secundario-off; color: #fff }
+
+.swatch--terciario-primary { background: var(--color-terciario-primary); color: #111 }
+.swatch--terciario-dark { background: $color-terciario-dark; color: #fff }
+.swatch--cuaternario-primary { background: $color-cuaternario-primary; color: #111 }
+.swatch--cuaternario-dark { background: $color-cuaternario-dark; color: #fff }
+
+.swatch--fondo-claro { background: var(--color-terciario-primary); color: $color-texto_borde_cajas }
+.swatch--fondo-oscuro { background: $color-quintario-dark; color: #fff }
+
+/* Tipografía */
+.sg__typography { display:flex; flex-direction:column; gap:$espaciado-20; }
+.typo-sample { padding: $espaciado-16; border-radius: $radius-md; border: $border-thin solid rgba(0,0,0,0.04); }
+.typo-sample--secondary { font-family: $font-secondary; background: rgba(0,0,0,0.02); }
+.typo-sample--primary { font-family: $font-primary; background: rgba(0,0,0,0.01); }
+.typo-h1 { font-size: $font-size-3xl; margin: $espaciado-8 0; }
+.typo-h2 { font-size: $font-size-2xl; margin: $espaciado-8 0; }
+.typo-p { font-size: $font-size-md; }
+
+/* Spacing tokens */
+.sg__spacings .space-row { display:flex; gap:$espaciado-12; }
+.space-box { padding: $espaciado-12; border-radius:$radius-sm; background: rgba(0,0,0,0.04); border: $border-thin solid rgba(0,0,0,0.03); }
+
+/* Responsive adjustments */
+@media (max-width: #{ $breakpoint-medio }) {
+  .sg__columns { grid-template-columns: 1fr; }
+  .swatch { min-width: 140px; }
+}

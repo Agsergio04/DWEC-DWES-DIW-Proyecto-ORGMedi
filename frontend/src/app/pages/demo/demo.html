@@ -1,0 +1,41 @@
+<div class="page-demo">
+  <h1>Demo - Peticiones (Fase Cliente)</h1>
+
+  <section class="peticiones">
+    <h2>Fase Cliente</h2>
+    <p>Aquí irán las peticiones que pegues; cada petición se mostrará en una tarjeta para pruebas.</p>
+
+    <div class="peticiones-list" id="peticionesList">
+      <!-- Aquí añadiremos las peticiones que proporciones -->
+    </div>
+  </section>
+
+  <section class="acciones">
+    <h3>Acciones rápidas</h3>
+    <p>Botones temporales para añadir/limpiar peticiones de muestra.</p>
+    <div class="controls">
+      <button id="addSample">Añadir petición de ejemplo</button>
+      <button id="clearAll">Limpiar</button>
+    </div>
+  </section>
+</div>
+
+<script>
+  // Pequeño script de ayuda para manipular el DOM localmente en esta página de demo
+  (function(){
+    const list = document.getElementById('peticionesList');
+    const add = document.getElementById('addSample');
+    const clear = document.getElementById('clearAll');
+
+    function createCard(text){
+      const div = document.createElement('div');
+      div.className = 'peticion-card';
+      div.innerText = text;
+      list && list.appendChild(div);
+    }
+
+    add && add.addEventListener('click', ()=> createCard('Petición de ejemplo'));
+    clear && clear.addEventListener('click', ()=> { if(list) list.innerHTML = ''; });
+  })();
+</script>
+

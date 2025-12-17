@@ -1,0 +1,5 @@
+<button class="theme-switcher" (click)="toggle()" [attr.aria-pressed]="current === 'dark'" aria-label="Cambiar tema">
+  <ng-container *ngIf="current !== 'dark'">☀️</ng-container>
+  <ng-container *ngIf="current === 'dark'">🌙</ng-container>
+</button>
+

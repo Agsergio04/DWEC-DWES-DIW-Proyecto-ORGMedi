@@ -1,0 +1,5 @@
+@use '../../../styles/00-settings/variables' as *;
+
+.page--home { padding: $espaciado-32; }
+.page__container { max-width: 960px; margin: 0 auto; }
+

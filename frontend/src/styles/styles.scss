@@ -1,1 +1,15 @@
+/* Variables globales: colores, tipografías, breakpoints, etc. */
+@use '00-settings/variables' as *;
+@use '00-settings/css-variables' as *;
 
+/* Mixins y funciones reutilizables de Sass */
+@use '01-tools/mixins';
+
+ /* Estilos genéricos y resets (normalize, helpers) */
+@use '02-generic/reset';
+
+/* Estilos para elementos HTML puros (body, h1, a, etc.) */
+@use '03-elements/base';
+
+/* Estructuras de layout: grids, contenedores, etc. */
+@use '04-layout/layout';

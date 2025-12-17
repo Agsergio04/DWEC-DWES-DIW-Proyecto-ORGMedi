@@ -1,0 +1,4 @@
+/* Asegurar que el footer no se encoja y esté al final */
+app-footer, .app-footer {
+  flex-shrink: 0;
+}

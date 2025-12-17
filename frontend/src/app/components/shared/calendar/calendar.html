@@ -1,0 +1,55 @@
+
+calendar-horizontal-final.html
+<div class="calendar">
+  <!-- Header con fecha actual (derecha) -->
+  <div class="calendar__header">
+    <span class="calendar__current-date">{{ getCurrentDateFormatted() }}</span>
+  </div>
+
+  <!-- Contenedor HORIZONTAL con botones de navegación -->
+  <div class="calendar__week-container">
+    <!-- Botón navegación anterior (izquierda) -->
+    <button
+      class="calendar__nav-btn calendar__nav-btn--prev"
+      (click)="previousWeek()"
+      aria-label="Semana anterior"
+      type="button"
+    >
+      ‹
+    </button>
+
+    <!-- Contenedor HORIZONTAL de días -->
+    <div class="calendar__week">
+      <div
+        *ngFor="let day of weekDays"
+        class="calendar__day-item"
+      >
+        <!-- Nombre del día -->
+        <div class="calendar__day-name">
+          {{ day.dayName }}
+        </div>
+
+        <!-- Número del día (botón seleccionable) -->
+        <button
+          [ngClass]="getDayClass(day)"
+          (click)="selectDay(day)"
+          type="button"
+          [attr.aria-label]="day.date | date: 'long'"
+          [disabled]="!day.isCurrentMonth"
+        >
+          {{ day.dayNumber }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Botón navegación siguiente (derecha) -->
+    <button
+      class="calendar__nav-btn calendar__nav-btn--next"
+      (click)="nextWeek()"
+      aria-label="Próxima semana"
+      type="button"
+    >
+      ›
+    </button>
+  </div>
+</div>
