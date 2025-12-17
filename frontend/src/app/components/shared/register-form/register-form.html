@@ -1,0 +1,42 @@
+<form class="register-form" (ngSubmit)="onSubmit()" autocomplete="off">
+	<fieldset class="register-form__fieldset">
+		<legend class="register-form__legend">Crear cuenta</legend>
+		<app-form-input
+			label="Nombre de Usuario"
+			name="username"
+			placeholder="Nombre de Usuario"
+			[required]="true"
+			[(value)]="username"
+			[error]="usernameError"
+		></app-form-input>
+		<app-form-input
+			label="Correo electrónico"
+			type="email"
+			name="email"
+			placeholder="Correo electrónico"
+			[required]="true"
+			[(value)]="email"
+			[error]="emailError"
+		></app-form-input>
+		<app-form-input
+			label="Contraseña"
+			type="password"
+			name="password"
+			placeholder="Contraseña"
+			[required]="true"
+			[(value)]="password"
+			[error]="passwordError"
+
+    ></app-form-input>
+		<app-form-input
+			label="Repetir contraseña"
+			type="password"
+			name="repeatPassword"
+			placeholder="Repetir contraseña"
+			[required]="true"
+			[(value)]="repeatPassword"
+			[error]="repeatPasswordError"
+		></app-form-input>
+		<button type="submit" class="register-form__submit">Crear cuenta</button>
+	</fieldset>
+</form>

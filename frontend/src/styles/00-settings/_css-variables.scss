@@ -1,0 +1,148 @@
+@use 'sass:color';
+@use 'variables' as vars;
+
+:root {
+  /* Colores modo claro */
+  --color-primario-hover: #{vars.$color-primario-hover};
+  --color-primario-primary: #{vars.$color-primario-primary};
+  --color-primario-disabled: #{vars.$color-primario-disabled};
+  --color-secundario-hover: #{vars.$color-secundario-hover};
+  --color-secundario-primary: #{vars.$color-secundario-primary};
+  --color-secundario-disabled: #{vars.$color-secundario-disabled};
+  --color-terciario-hover: #{vars.$color-terciario-hover};
+  --color-terciario-primary: #{vars.$color-terciario-primary};
+  --color-terciario-disabled: #{vars.$color-terciario-disabled};
+  --color-cuaternario-hover: #{vars.$color-cuaternario-hover};
+  --color-cuaternario-primary: #{vars.$color-cuaternario-primary};
+  --color-cuaternario-disabled: #{vars.$color-cuaternario-disabled};
+  --color-quintario-hover: #{vars.$color-quintario-hover};
+  --color-quintario-primary: #{vars.$color-quintario-primary};
+  --color-quintario-disabled: #{vars.$color-quintario-disabled};
+  --color-afirmacion-hover: #{vars.$color-afirmacion-hover};
+  --color-afirmacion-primary: #{vars.$color-afirmacion-primary};
+  --color-negacion-hover: #{vars.$color-negacion-hover};
+  --color-negacion-primary: #{vars.$color-negacion-primary};
+
+  /* Bordes y caja (modo claro) */
+  --color-bordes_marco_botones: #{vars.$color-bordes_marco_botones};
+  --color-texto_borde_cajas: #{vars.$color-texto_borde_cajas};
+  /* RGB helpers */
+  --color-bordes_marco_botones-rgb: #{red(vars.$color-bordes_marco_botones)}, #{green(vars.$color-bordes_marco_botones)}, #{blue(vars.$color-bordes_marco_botones)};
+  --color-texto_borde_cajas-rgb: #{red(vars.$color-texto_borde_cajas)}, #{green(vars.$color-texto_borde_cajas)}, #{blue(vars.$color-texto_borde_cajas)};
+
+  /* Variables derivadas/claras para uso en componentes */
+  --color-borde-primario: var(--color-bordes_marco_botones);
+  --color-borde-texto-caja: var(--color-texto_borde_cajas);
+
+  --color-variante-primera: #{vars.$color-variante-primera};
+  --color-variante-segunda: #{vars.$color-variante-segunda};
+  --color-variante-tercera: #{vars.$color-variante-tercera};
+  --color-variante-cuarta: #{vars.$color-variante-cuarta};
+  --color-variante-quinta: #{vars.$color-variante-quinta};
+
+  /* Tipografía */
+  --font-primary: #{vars.$font-primary};
+  --font-secondary: #{vars.$font-secondary};
+  --font-size-xs: #{vars.$font-size-xs};
+  --font-size-sm: #{vars.$font-size-sm};
+  --font-size-md: #{vars.$font-size-md};
+  --font-size-lg: #{vars.$font-size-lg};
+  --font-size-xl: #{vars.$font-size-xl};
+  --font-size-2xl: #{vars.$font-size-2xl};
+  --font-size-3xl: #{vars.$font-size-3xl};
+  --font-size-4xl: #{vars.$font-size-4xl};
+  --font-size-5xl: #{vars.$font-size-5xl};
+
+  /* Espaciado */
+  --espaciado-8: #{vars.$espaciado-8};
+  --espaciado-12: #{vars.$espaciado-12};
+  --espaciado-16: #{vars.$espaciado-16};
+  --espaciado-20: #{vars.$espaciado-20};
+  --espaciado-24: #{vars.$espaciado-24};
+  --espaciado-28: #{vars.$espaciado-28};
+  --espaciado-32: #{vars.$espaciado-32};
+  --espaciado-36: #{vars.$espaciado-36};
+  --espaciado-40: #{vars.$espaciado-40};
+  --espaciado-44: #{vars.$espaciado-44};
+  --espaciado-48: #{vars.$espaciado-48};
+  --espaciado-52: #{vars.$espaciado-52};
+  --espaciado-56: #{vars.$espaciado-56};
+  --espaciado-60: #{vars.$espaciado-60};
+  --espaciado-64: #{vars.$espaciado-64};
+  --espaciado-68: #{vars.$espaciado-68};
+  --espaciado-72: #{vars.$espaciado-72};
+  --espaciado-76: #{vars.$espaciado-76};
+  --espaciado-80: #{vars.$espaciado-80};
+  --espaciado-88: #{vars.$espaciado-88};
+  --espaciado-96: #{vars.$espaciado-96};
+
+  /* Font weight */
+  --font-weight-light: #{vars.$font-weight-light};
+  --font-weight-regular: #{vars.$font-weight-regular};
+  --font-weight-medium: #{vars.$font-weight-medium};
+  --font-weight-semibold: #{vars.$font-weight-semibold};
+  --font-weight-bold: #{vars.$font-weight-bold};
+
+  /* Line height */
+  --line-height-tight: #{vars.$line-height-tight};
+  --line-height-normal: #{vars.$line-height-normal};
+  --line-height-relaxed: #{vars.$line-height-relaxed};
+
+  /* Breakpoints */
+  --breakpoint-pequeno: #{vars.$breakpoint-pequeño};
+  --breakpoint-medio: #{vars.$breakpoint-medio};
+  --breakpoint-grande: #{vars.$breakpoint-grande};
+  --breakpoint-extra-grande: #{vars.$breakpoint-extra_grande};
+
+  /* Bordes y radios */
+  --border-thin: #{vars.$border-thin};
+  --border-medium: #{vars.$border-medium};
+  --border-thick: #{vars.$border-thick};
+  --radius-sm: #{vars.$radius-sm};
+  --radius-md: #{vars.$radius-md};
+  --radius-lg: #{vars.$radius-lg};
+  --radius-xl: #{vars.$radius-xl};
+  --radius-full: #{vars.$radius-full};
+
+  /* Transiciones */
+  --transition-rapida: #{vars.$transition-rapida};
+  --transition-normal: #{vars.$transition-normal};
+  --transition-lenta: #{vars.$transition-lenta};
+}
+
+:root[data-theme='dark'] {
+  /* Colors dark theme */
+  --color-primario-hover: #{vars.$color-primario-dark_hover};
+  --color-primario-primary: #{vars.$color-primario-dark};
+  --color-primario-disabled: #{vars.$color-primario-off};
+  --color-secundario-hover: #{vars.$color-secundario-dark_hover};
+  --color-secundario-primary: #{vars.$color-secundario-dark};
+  --color-secundario-disabled: #{vars.$color-secundario-off};
+  --color-terciario-hover: #{vars.$color-terciario-dark_hover};
+  --color-terciario-primary: #{vars.$color-terciario-dark};
+  --color-terciario-disabled: #{vars.$color-terciario-disabled};
+  --color-cuaternario-hover: #{vars.$color-cuaternario-dark_hover};
+  --color-cuaternario-primary: #{vars.$color-cuaternario-dark};
+  --color-cuaternario-disabled: #{vars.$color-cuaternario-off};
+  --color-quintario-hover: #{vars.$color-quintario-dark_hover};
+  --color-quintario-primary: #{vars.$color-quintario-dark};
+  --color-quintario-disabled: #{vars.$color-quintario-off};
+  --color-afirmacion-hover: #{vars.$color-afirmacion-dark_hover};
+  --color-afirmacion-primary: #{vars.$color-afirmacion-dark};
+  --color-negacion-hover: #{vars.$color-negacion-dark_hover};
+  --color-negacion-primary: #{vars.$color-negacion-dark};
+  --color-bordes_marco_botones: #{vars.$color-bordes_marco_botones_dark};
+  --color-texto_borde_cajas: #{vars.$color-texto_borde_cajas_dark};
+  /* RGB helpers dark */
+  --color-bordes_marco_botones-rgb: #{red(vars.$color-bordes_marco_botones_dark)}, #{green(vars.$color-bordes_marco_botones_dark)}, #{blue(vars.$color-bordes_marco_botones_dark)};
+  --color-texto_borde_cajas-rgb: #{red(vars.$color-texto_borde_cajas_dark)}, #{green(vars.$color-texto_borde_cajas_dark)}, #{blue(vars.$color-texto_borde_cajas_dark)};
+  --color-variante-primera: #{vars.$color-variante-primera};
+  --color-variante-segunda: #{vars.$color-variante-segunda};
+  --color-variante-tercera: #{vars.$color-variante-tercera};
+  --color-variante-cuarta: #{vars.$color-variante-cuarta};
+  --color-variante-quinta: #{vars.$color-variante-quinta};
+
+  /* Tipografía (idéntica al tema claro, pero se mantiene aquí por si necesita sobreescritura) */
+  --font-primary: #{vars.$font-primary};
+  --font-secondary: #{vars.$font-secondary};
+}

@@ -1,0 +1,37 @@
+@use '../../../../styles/00-settings/_variables' as *;
+@use '../../../../styles/01-tools/_mixins' as *;
+
+.register-form {
+	width: 100%;
+	max-width: 480px;
+	margin: 2.5rem auto;
+	background: var(--color-terciario-primary);
+	border: 2px solid $color-cuaternario-dark;
+	border-radius: $radius-lg;
+	box-shadow: 0 4px 24px rgba(31,10,26,0.08);
+	padding: $espaciado-32 $espaciado-24;
+	font-family: $font-primary;
+}
+
+.register-form__fieldset {
+	border: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: $espaciado-20;
+}
+
+.register-form__legend {
+	font-family: $font-secondary;
+	font-size: $font-size-3xl;
+	color: $color-secundario-primary;
+	margin-bottom: $espaciado-20;
+	text-align: center;
+}
+
+.register-form__submit {
+	@include button-form($color-secundario-primary, $color-secundario-hover, #fff);
+	width: 100%;
+	margin-top: $espaciado-16;
+}

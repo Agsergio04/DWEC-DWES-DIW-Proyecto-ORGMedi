@@ -1,0 +1,337 @@
+@use 'sass:color';
+@use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/_mixins' as *;
+
+.app-header {
+  height: 72px;
+  padding: 0 $espaciado-24; // reducir ligeramente para mejor balance
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background-color: var(--color-primario-primary);
+  border-bottom: $border-medium solid var(--color-bordes_marco_botones);
+
+  font-family: $font-primary;
+}
+
+.app-header__brand {
+  display: flex;
+  align-items: center;
+}
+
+.app-header__logo {
+  display: flex;
+  align-items: center;
+  gap: $espaciado-12;
+  text-decoration: none;
+}
+
+.app-header__title {
+  font-family: $font-secondary;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-secundario-primary);
+}
+
+.app-header__nav {
+  display: flex;
+  align-items: center;
+  gap: $espaciado-16; // más separación entre items
+}
+
+/* Pills de navegación */
+.app-header__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: $espaciado-12;
+  padding: $espaciado-12 $espaciado-16;
+  border-radius: $radius-full; /* completamente redondeada */
+  text-decoration: none;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+
+  /* Background: secundario-primary (en dark mapeará a secundario-dark) */
+  background-color: var(--color-secundario-primary);
+  /* Texto e iconos: usar color de bordes (var), mapeado por tema */
+  color: var(--color-bordes_marco_botones);
+  /* Borde: usar variable para permitir override en dark */
+  border: 2px solid var(--color-bordes_marco_botones);
+
+  box-shadow: 0 2px 6px rgba(31, 10, 26, 0.06);
+  transition: background-color $transition-normal, color $transition-normal, transform 0.12s;
+}
+
+.app-header__pill:hover {
+  /* Hover: secundario-hover (en dark mapeará a secundario-dark_hover) */
+  background-color: var(--color-secundario-hover);
+  transform: translateY(-1px);
+  /* mantener texto e iconos usando la variable */
+  color: var(--color-bordes_marco_botones);
+}
+
+/* Estado activo/foco: usar el mismo color que hover y su variante dark */
+.app-header__pill.is-active,
+.app-header__pill.router-link-active,
+.app-header__pill[aria-current="page"],
+.app-header__pill:focus-visible {
+  background-color: var(--color-secundario-hover);
+  color: var(--color-bordes_marco_botones);
+  border-color: var(--color-bordes_marco_botones);
+}
+
+/* Asegurar que la etiqueta interna y el icono hereden el color */
+.app-header__pill .app-header__label,
+.app-header__pill .app-header__icon {
+  color: inherit;
+}
+
+/* Icono circular dentro de la pill */
+.app-header__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 1.05rem;
+}
+
+.app-header__icon-svg { width: 24px; height: 24px; display: block; }
+
+/* Ensure SVGs inherit text color */
+.app-header__icon svg, .app-header__theme-icon-svg { color: inherit; }
+
+/* Asegurar que los SVG dentro de las pills usen el color del borde */
+.app-header__pill .app-header__icon-svg {
+  color: var(--color-bordes_marco_botones);
+  transition: color $transition-normal;
+}
+
+/* En estados hover/activo/focus mantener el color (se puede ajustar si quieres otro comportamiento) */
+.app-header__pill:hover .app-header__icon-svg,
+.app-header__pill.is-active .app-header__icon-svg,
+.app-header__pill.router-link-active .app-header__icon-svg,
+.app-header__pill[aria-current="page"] .app-header__icon-svg,
+.app-header__pill:focus-visible .app-header__icon-svg {
+  color: var(--color-bordes_marco_botones);
+}
+
+/* El toggle del tema también debe usar el color del borde */
+.app-header__theme-icon-svg {
+  color: var(--color-bordes_marco_botones);
+  transition: color $transition-normal, transform 0.18s ease;
+}
+
+/* Dark mode adjustments for header */
+:root[data-theme="dark"] {
+  .app-header {
+    background-color: var(--color-primario-primary);
+    border-bottom-color: var(--color-bordes_marco_botones);
+  }
+  .app-header__title {
+    color: #fff;
+  }
+  /* Pills: usar secundario-dark vía var(--color-secundario-primary); color/border vienen del CSS var mapping */
+  .app-header__pill {
+    background-color: var(--color-secundario-primary);
+    color: var(--color-bordes_marco_botones);
+    border-color: var(--color-bordes_marco_botones);
+  }
+  /* Estado activo/foco en dark: usar la versión _hover mapeada (var(--color-secundario-hover)) */
+  .app-header__pill.is-active,
+  .app-header__pill.router-link-active,
+  .app-header__pill[aria-current="page"],
+  .app-header__pill:focus-visible {
+    background-color: var(--color-secundario-hover);
+    color: var(--color-bordes_marco_botones);
+    border-color: var(--color-bordes_marco_botones);
+  }
+  .app-header__icon {
+    color: inherit; /* iconos dentro de la pill heredan el color (ahora la variable) */
+  }
+  /* specifically set theme icon color to the button border color */
+  .app-header__theme-icon-svg {
+    color: var(--color-bordes_marco_botones);
+  }
+}
+
+/* Ajustes de accesibilidad y tamaño */
+.app-header__label {
+  line-height: 1;
+}
+
+/* Botón toggle de tema — pequeño, con borde y enfoque prominente */
+.app-header__theme-toggle {
+  width: 44px;
+  height: 44px;
+  margin-left: $espaciado-8;
+
+  border-radius: $radius-full;
+  border: 2px solid var(--color-bordes_marco_botones);
+  background-color: var(--color-terciario-primary);
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color $transition-normal, transform 0.12s;
+}
+
+.app-header__theme-toggle:hover {
+  transform: translateY(-1px);
+  background-color: var(--color-terciario-hover);
+}
+
+/* ======= Estilos para hamburguesa y menú responsivo ======= */
+
+/* Botón hamburguesa (oculto en desktop) */
+.app-header__hamburger {
+  display: none;
+  background: transparent;
+  border: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin-left: $espaciado-8;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-header__hamburger-line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 2px;
+  margin: 3px 0;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+/* new: hint dentro del botón hamburguesa (flecha + texto "desliza") */
+.app-header__hamburger-hint {
+  display: none; /* visible solo en móvil */
+  align-items: center;
+  gap: $espaciado-8;
+  margin-left: $espaciado-8;
+  font-size: $font-size-sm;
+  color: var(--color-bordes_marco_botones);
+}
+.app-header__hamburger-icon { font-size: 1.1rem; }
+.app-header__hamburger-text { text-transform: lowercase; }
+
+/* Overlay que cubre la pantalla cuando el menú está abierto */
+.app-header__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+  z-index: 45;
+}
+
+.app-header__overlay.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Estilos móviles: nav colapsado, menú deslizable */
+@media (max-width: #{ $breakpoint-medio }) {
+  .app-header {
+    padding: 0 $espaciado-16;
+    position: relative;
+    z-index: 60;
+  }
+
+  .app-header__title { font-size: $font-size-lg; }
+
+  /* Mostrar hamburguesa */
+  .app-header__hamburger {
+    display: flex;
+  }
+
+  /* Mostrar hint dentro del boton */
+  .app-header__hamburger-hint { display: inline-flex; }
+
+  /* Navegación como panel lateral oculto por defecto */
+  .app-header__nav {
+    position: fixed;
+    /* Mostrar el panel empezando justo debajo del header para que no ocupe toda la pantalla */
+    top: 72px; /* coincide con .app-header height */
+    right: 0;
+    height: auto;
+    max-height: calc(100vh - 88px); /* dejar un pequeño margen debajo (header 72px + 16px espacio) */
+    width: 260px;
+    padding: $espaciado-16;
+    background: var(--color-terciario-primary);
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-12;
+    align-items: flex-start;
+    transform: translateX(100%);
+    transition: transform 0.22s ease;
+    box-shadow: -8px 0 24px rgba(0,0,0,0.12);
+    z-index: 50;
+    overflow-y: auto; /* ajustar al contenido y permitir scroll si es necesario */
+    border-radius: 0 0 8px 8px; /* sutil redondeo inferior */
+  }
+
+  /* Sidebar header (logo + nombre) */
+  .app-header__nav-sidebar-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $espaciado-12;
+    padding: $espaciado-12 0;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  .app-header__logo--sidebar { display:flex; align-items:center; gap: $espaciado-12; text-decoration:none; }
+  .app-header__svg-logo { width:36px; height:36px; }
+  .app-header__title--sidebar { font-size: $font-size-md; font-weight: $font-weight-bold; }
+
+  .app-header__sidebar-control { display:flex; align-items:center; gap: $espaciado-8; color: var(--color-bordes_marco_botones); }
+  .app-header__sidebar-arrow { font-size: 1.05rem; transition: transform 0.2s ease; }
+  .app-header__sidebar-text { font-size: $font-size-sm; text-transform: lowercase; }
+
+  /* Cuando el menú está abierto */
+  .app-header__nav.is-open {
+    transform: translateX(0);
+  }
+
+  /* Ajustes para los elementos dentro del nav en móvil */
+  .app-header__pill {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .app-header__theme-toggle {
+    margin-left: 0;
+  }
+
+  /* Icon sizes for small screens */
+  .app-header__icon-svg { width: 18px; height: 18px; }
+
+  /* Asegurar que el overlay no cubra el header fijo en móvil */
+  .app-header__overlay {
+    top: 72px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* mantener resto de propiedades (background/transition/z-index) heredados */
+  }
+}
+
+/* Responsive: reducir espacios en pantallas pequeñas (antiguo bloque) */
+@media (max-width: #{ $breakpoint-medio }) {
+  .app-header__pill { padding: $espaciado-8 $espaciado-12; }
+}
+
+/* Specific: home icon should follow text color variable (light/dark) */
+.app-header__home .app-header__icon-svg {
+  color: var(--color-texto_borde_cajas);
+}

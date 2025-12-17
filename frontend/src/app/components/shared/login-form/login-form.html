@@ -1,0 +1,46 @@
+<form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+  <fieldset class="login-form__fieldset">
+    <legend class="login-form__legend">Iniciar sesión</legend>
+
+    <!-- Campo Usuario -->
+    <div class="form-group">
+      <label class="form-label" for="username">Introduce el nombre de usuario</label>
+      <input
+        id="username"
+        type="text"
+        class="form-input"
+        placeholder="Nombre de Usuario"
+        [(ngModel)]="username"
+        name="username"
+        required
+      />
+      <span class="form-error" *ngIf="usernameError">{{ usernameError }}</span>
+    </div>
+
+    <!-- Campo Contraseña -->
+    <div class="form-group">
+      <label class="form-label" for="password">Introduce la contraseña</label>
+      <input
+        id="password"
+        type="password"
+        class="form-input"
+        placeholder="Contraseña"
+        [(ngModel)]="password"
+        name="password"
+        required
+      />
+      <span class="form-error" *ngIf="passwordError">{{ passwordError }}</span>
+    </div>
+
+    <!-- Botón Submit -->
+    <button type="submit" class="login-form__submit">
+      Iniciar sesión
+    </button>
+
+    <!-- Link a Registro -->
+    <div class="login-form__register-link">
+      <p>¿No tienes cuenta?</p>
+      <a routerLink="/register" class="link-primary">Crear cuenta</a>
+    </div>
+  </fieldset>
+</form>

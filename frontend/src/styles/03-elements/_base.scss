@@ -1,0 +1,100 @@
+@use '../00-settings/variables' as *;
+
+/* 03-elements/_base.scss - Estilos base para elementos HTML */
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: $font-primary;
+  background: var(--color-terciario-primary);
+  color: $color-texto_borde_cajas;
+  min-height: 100vh;
+  line-height: $line-height-normal;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-secondary;
+  color: $color-secundario-primary;
+  font-weight: $font-weight-bold;
+  margin-bottom: $espaciado-12;
+  line-height: $line-height-tight;
+}
+
+h1 { font-size: $font-size-4xl; }
+h2 { font-size: $font-size-3xl; }
+h3 { font-size: $font-size-2xl; }
+h4 { font-size: $font-size-xl; }
+h5 { font-size: $font-size-lg; }
+h6 { font-size: $font-size-md; }
+
+p {
+  font-size: $font-size-md;
+  margin-bottom: $espaciado-16;
+  color: $color-texto_borde_cajas;
+}
+
+a {
+  color: var(--color-primario-primary);
+  text-decoration: none;
+  transition: color $transition-normal;
+}
+
+a:hover, a:focus {
+  color: var(--color-secundario-primary);
+  text-decoration: underline;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: $radius-md;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: $font-size-md;
+  color: $color-texto_borde_cajas;
+  background: var(--color-secundario-primary);
+  border: $border-thin solid var(--color-bordes_marco_botones);
+  border-radius: $radius-md;
+  outline: none;
+  transition: border-color $transition-rapida, box-shadow $transition-rapida;
+}
+
+button {
+  background: var(--color-primario-primary);
+  color: var(--color-secundario-primary);
+  padding: $espaciado-12 $espaciado-28; // más ancho para mejor clic
+  cursor: pointer;
+  font-weight: $font-weight-semibold;
+  border: $border-thin solid var(--color-bordes_marco_botones);
+  border-radius: $radius-lg;
+  transition: background $transition-normal, color $transition-normal;
+}
+button:hover, button:focus {
+  background: var(--color-primario-hover);
+  color: #fff ; // mantener texto blanco en hover para buena legibilidad
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-primario-primary);
+  box-shadow: 0 0 0 2px var(--color-primario-hover);
+}
+
+ul, ol {
+  margin-bottom: $espaciado-16;
+  padding-left: $espaciado-24;
+}
+
+li {
+  margin-bottom: $espaciado-8;
+}
+
+button {
+  cursor: pointer;
+}

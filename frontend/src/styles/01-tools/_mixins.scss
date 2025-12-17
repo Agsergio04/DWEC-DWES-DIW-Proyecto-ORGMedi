@@ -1,0 +1,101 @@
+@use '../00-settings/variables' as *;
+
+/**
+ * Mixin para botones de formularios (crear/editar medicamento)
+ * ------------------------------------------------------------
+ * Aplica estilos consistentes usando las variables del sistema.
+ * Personaliza fácilmente color, tamaño y radios.
+ *
+ * Parámetros:
+ *  $bg         - Color de fondo (por defecto primario)
+ *  $bg-hover   - Color de fondo al pasar el mouse (por defecto primario-hover)
+ *  $color      - Color del texto (por defecto: $color-texto_borde_cajas)
+ *  $radius     - Radio de borde (por defecto: $radius-md)
+ *  $padding-x  - Padding horizontal (por defecto: $espaciado-24)
+ *  $padding-y  - Padding vertical (por defecto: $espaciado-12)
+ */
+@mixin button-form(
+  $bg: $color-primario-primary,
+  $bg-hover: $color-primario-hover,
+  $color: $color-texto_borde_cajas,
+  $radius: $radius-md,
+  $padding-x: $espaciado-24,
+  $padding-y: $espaciado-12
+) {
+  background-color: $bg;
+  color: $color;
+  border: none;
+  border-radius: $radius;
+  padding: $padding-y $padding-x;
+  font-family: $font-primary;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: background-color $transition-normal;
+
+  &:hover,
+  &:focus {
+    background-color: $bg-hover;
+  }
+}
+
+/**
+ * Mixin flex-layout
+ * --------------------------------------------------------
+ * Permite crear contenedores flexibles de forma rápida y reutilizable.
+ * Facilita la alineación y distribución de elementos hijos usando flexbox.
+ *
+ * Parámetros:
+ *  $direction - Dirección del eje principal (row, column, etc.)
+ *  $justify   - Justificación de los elementos en el eje principal (flex-start, center, space-between, etc.)
+ *  $align     - Alineación de los elementos en el eje secundario (center, flex-start, stretch, etc.)
+ *  $gap       - Espaciado entre los elementos (recomendado usar variables de espaciado del proyecto)
+ *
+ * Ejemplo de uso:
+ *  @include flex-layout(row, center, center, $espaciado-16);
+ */
+@mixin flex-layout(
+  $direction: row,
+  $justify: flex-start,
+  $align: center,
+  $gap: 0
+) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  gap: $gap;
+}
+
+/**
+ * Mixin para cápsula de pastilla
+ * ------------------------------------------------------------
+ * Permite crear el estilo de la cápsula de la pastilla, recibiendo un color
+ * para el fondo (usado en el botón "Editar" o para diferenciar pastillas).
+ *
+ * Parámetros:
+ *  $bg         - Color de fondo de la cápsula (obligatorio)
+ *  $color      - Color del texto (por defecto: $color-texto_borde_cajas)
+ *  $radius     - Radio de borde (por defecto: $radius-md)
+ *  $padding-x  - Padding horizontal (por defecto: $espaciado-16)
+ *  $padding-y  - Padding vertical (por defecto: $espaciado-8)
+ */
+@mixin capsula-pastilla(
+  $bg,
+  $color: $color-texto_borde_cajas,
+  $radius: $radius-md,
+  $padding-x: $espaciado-16,
+  $padding-y: $espaciado-8
+) {
+  background-color: $bg;
+  color: $color;
+  border-radius: $radius;
+  padding: $padding-y $padding-x;
+  font-family: $font-primary;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}

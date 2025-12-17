@@ -1,0 +1,19 @@
+<div class="form-input">
+	<label [attr.for]="inputId" class="form-input__label">
+		{{ label }}
+		<span *ngIf="required" class="form-input__asterisk">*</span>
+	</label>
+	<input
+		[id]="inputId"
+		[type]="type"
+		[name]="name"
+		[placeholder]="placeholder"
+		[required]="required"
+		class="form-input__field"
+		[attr.aria-describedby]="helpText ? inputId + '-help' : null"
+		[ngModel]="value"
+		(ngModelChange)="valueChange.emit($event)"
+	/>
+	<div *ngIf="helpText" [id]="inputId + '-help'" class="form-input__help">{{ helpText }}</div>
+	<div *ngIf="error" class="form-input__error">{{ error }}</div>
+</div>

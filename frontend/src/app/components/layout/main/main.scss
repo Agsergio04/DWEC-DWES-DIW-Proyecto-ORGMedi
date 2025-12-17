@@ -1,0 +1,12 @@
+// Estilos BEM para main
+.app-main {
+  width: 100%;
+  max-width: 900px;
+  margin: 2rem auto 0 auto;
+  padding: var(--spacing-lg) var(--spacing-md);
+  min-height: 60vh;
+  background: var(--bg-primary);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 24px rgba(31,10,26,0.08);
+  font-family: var(--font-main);
+}

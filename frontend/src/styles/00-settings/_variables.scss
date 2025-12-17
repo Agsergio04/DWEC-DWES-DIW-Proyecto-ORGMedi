@@ -1,0 +1,182 @@
+/* Variables SASS (colores, tipografías, espaciados, etc.) */
+
+//Color Primario
+$color-primario-hover: #F08EC7;
+$color-primario-primary: #E177B5;
+$color-primario-disabled: #F6D5E8;
+
+//Color Secundario
+$color-secundario-hover: #CB5FAA;
+$color-secundario-primary: #99397C;
+$color-secundario-disabled: #CCB9C7;
+
+//Color Terciario
+$color-terciario-hover: #DCDFC9;
+$color-terciario-primary: #d3d8b4;
+$color-terciario-disabled: #FCFDF5;
+
+//Color Cuaternario
+$color-cuaternario-hover: #A4D281;
+$color-cuaternario-primary: #B6E98F;
+$color-cuaternario-disabled: #E8F8DC;
+
+//Color Quintario
+$color-quintario-hover: #AEC79B;
+$color-quintario-primary: #A6CC88;
+$color-quintario-disabled: #E3EFDA;
+
+// Color Afirmacion
+$color-afirmacion-hover: #92FF81;
+$color-afirmacion-primary: #22FF00;
+
+// Color Negacion
+$color-negacion-hover: #FF5050;
+$color-negacion-primary: #FF0202;
+
+//Bordes y Marco de los botones
+$color-bordes_marco_botones: #1F0A1A;
+
+//Texto y Borde de las caja
+$color-texto_borde_cajas: #3A4730;
+
+//Variante de color de pastilla 1
+$color-variante-primera: #00FFFB;
+
+//Variante de color de pastilla 2
+$color-variante-segunda: #F2FF00;
+
+//Variante de color de pastilla 3
+$color-variante-tercera: #FF00C3;
+
+//Variante de color de pastilla 4
+$color-variante-cuarta: #FFAA00;
+
+//Variante de color de pastilla 5
+$color-variante-quinta: #C200FD;
+
+/* Colores modo oscuro */
+
+//Color Primario
+$color-primario-dark_hover: #87476D;
+$color-primario-dark: #A95988;
+$color-primario-off: #4F2A3F;
+
+//Color Secundario
+$color-secundario-dark_hover: #20091A;
+$color-secundario-dark: #441638;
+$color-secundario-off: #150511;
+
+//Color Terciario
+$color-terciario-dark_hover: #28381D;
+$color-terciario-dark: #384F28;
+$color-terciario-disabled: #212E18;
+
+//Color Cuaternario
+$color-cuaternario-dark_hover: #35422B;
+$color-cuaternario-dark: #435735;
+$color-cuaternario-off: #2A3820;
+
+//Color Quintario
+$color-quintario-dark_hover: #647A52;
+$color-quintario-dark: #7D9966;
+$color-quintario-off: #3A4730;
+
+// Color Afirmacion
+$color-afirmacion-dark_hover: #169D01;
+$color-afirmacion-dark: #168C04;
+
+// Color Negacion
+$color-negacion-dark_hover: #840000;
+$color-negacion-dark: #9C1010;
+
+//Bordes y Marco de los botones
+$color-bordes_marco_botones-dark: #EBA4CD;
+
+//Texto y Borde de las caja
+$color-texto_borde_cajas-dark: #A4D281;
+
+//Variante de color de pastilla 1
+$color-variante-primera: #008E8B;
+
+//Variante de color de pastilla 2
+$color-variante-segunda: #B4BD00;
+
+//Variante de color de pastilla 3
+$color-variante-tercera: #980075;
+
+//Variante de color de pastilla 4
+$color-variante-cuarta: #A66F00;
+
+//Variante de color de pastilla 5
+$color-variante-quinta: #9100BD;
+
+/* Escala tipográfica */
+$font-primary: 'Poppins', sans-serif;
+$font-secondary: 'Poltawski Nowy', serif;
+
+$font-size-xs: 0.64rem;
+$font-size-sm: 0.8rem;
+$font-size-md: 1rem;
+$font-size-lg: 1.25rem;
+$font-size-xl: 1.56rem;
+$font-size-2xl: 1.95rem;
+$font-size-3xl: 2.44rem;
+$font-size-4xl: 3.05rem;
+$font-size-5xl: 3.81rem;
+
+/* Sistema de espaciado */
+$espaciado-4: 0.25rem;
+$espaciado-6: 0.375rem;
+$espaciado-8: 0.5rem;
+$espaciado-12: 0.75rem;
+$espaciado-16: 1rem;
+$espaciado-20: 1.25rem;
+$espaciado-24: 1.5rem;
+$espaciado-28: 1.75rem;
+$espaciado-32: 2rem;
+$espaciado-36: 2.25rem;
+$espaciado-40: 2.5rem;
+$espaciado-44: 2.75rem;
+$espaciado-48: 3rem;
+$espaciado-52: 3.25rem;
+$espaciado-56: 3.5rem;
+$espaciado-60: 3.75rem;
+$espaciado-64: 4rem;
+$espaciado-68: 4.25rem;
+$espaciado-72: 4.5rem;
+$espaciado-76: 4.75rem;
+$espaciado-80: 5rem;
+$espaciado-88: 5.5rem;
+$espaciado-96: 6rem;
+
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$line-height-tight: 1.1;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+/* Breakpoints Genericos */
+$breakpoint-pequeño: 640px;
+$breakpoint-medio: 768px;
+$breakpoint-grande: 1024px;
+$breakpoint-extra_grande: 1280px;
+
+/* Bordes y radios */
+$border-thin: 1px;
+$border-medium: 2px;
+$border-thick: 4px;
+
+$radius-sm: 2px;
+$radius-md: 6px;
+$radius-lg: 12px;
+$radius-xl: 24px;
+$radius-full: 9999px;
+
+/* Transiciones */
+$transition-rapida: 0.15s ease-in-out;
+$transition-normal: 0.3s ease-in-out;
+$transition-lenta: 0.5s ease-in-out;

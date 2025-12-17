@@ -1,0 +1,35 @@
+@use 'sass:color';
+@use '../../../../styles/00-settings/variables' as *;
+
+// Estilos BEM para footer
+.app-footer {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-primario-primary); // mismo fondo que el header
+  color: #fff;
+  text-align: center;
+  border-top: 3px solid color.adjust($color-primario-primary, $lightness: -12%);
+  border-radius: var(--radius) var(--radius) 0 0;
+  font-family: $font-primary;
+  margin-top: 2rem;
+}
+.app-footer__links a {
+  color: #fff;
+  margin: 0 0.5rem;
+  text-decoration: underline;
+  font-size: 1rem;
+}
+.app-footer__social a {
+  margin: 0 0.5rem;
+  font-size: 1.3rem;
+  color: rgba(255,255,255,0.9);
+  transition: color 0.2s;
+}
+.app-footer__social a:hover {
+  color: color.adjust(#fff, $lightness: -20%);
+}
+.app-footer__copyright {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.85);
+}

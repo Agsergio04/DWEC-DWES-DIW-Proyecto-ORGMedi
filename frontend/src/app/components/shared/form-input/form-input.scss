@@ -1,0 +1,57 @@
+@use '../../../../styles/00-settings/_variables' as *;
+@use '../../../../styles/01-tools/_mixins' as *;
+
+
+.form-input {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 1.5rem;
+
+	label & {
+		// placeholder
+	}
+}
+
+.form-input__label {
+	display: flex;
+	gap: $espaciado-8;
+	font-family: $font-primary;
+	font-size: $font-size-md;
+	color: $color-texto_borde_cajas;
+	margin-bottom: 0.3rem;
+	font-weight: 500;
+}
+
+.form-input__asterisk {
+	color: $color-negacion-primary;
+}
+
+.form-input__field {
+	width: 100%;
+	border: $border-thin solid $color-texto_borde_cajas;
+	padding: $espaciado-12 $espaciado-16;
+	border-radius: $radius-md;
+	font-family: $font-primary;
+	font-size: $font-size-md;
+	background: var(--color-terciario-primary);
+	color: $color-texto_borde_cajas;
+	transition: border-color 0.2s, box-shadow 0.2s;
+	margin-bottom: 0.2rem;
+}
+.form-input__field:focus {
+	border-color: $color-secundario-primary;
+	outline: none;
+	box-shadow: 0 0 0 2px $color-secundario-hover;
+}
+
+.form-input__help {
+	font-size: $font-size-sm;
+	color: $color-texto_borde_cajas;
+	margin-bottom: 0.1rem;
+}
+
+.form-input__error {
+	color: $color-negacion-primary;
+	font-size: $font-size-sm;
+	margin-top: 0.1rem;
+}
