@@ -1,5 +1,5 @@
 @use '../../../../styles/00-settings/variables' as *;
 
 .form-select__label { display:block; margin-bottom:$espaciado-8; font-family:$font-primary; }
-.form-select__field { width:100%; padding:$espaciado-12; border:$border-thin solid $color-bordes_marco_botones; border-radius:$radius-md; background: var(--color-terciario-primary); }
+.form-select__field { width:100%; padding:$espaciado-12; border:$border-thin solid var(--color-bordes_marco_botones); border-radius:$radius-md; background: var(--color-terciario-primary); }
 .form-select__field:focus { outline:none; box-shadow:0 0 0 3px rgba(0,0,0,0.06); }

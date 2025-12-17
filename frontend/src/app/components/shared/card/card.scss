@@ -2,7 +2,7 @@
 
 .app-card {
   background: var(--color-terciario-primary);
-  border: $border-thin solid $color-bordes_marco_botones;
+  border: $border-thin solid var(--color-bordes_marco_botones);
   border-radius: $radius-md;
   overflow: hidden;
   display: flex;

@@ -1276,11 +1276,6 @@ Se favorecen siempre los elementos HTML5 semánticos para mejorar accesibilidad,
 </footer>
 ```
 
-Buenas prácticas breves:
-- Un solo `<main>` por página.
-- `nav` debe usarse para enlaces de navegación; evita usar `nav` para listas no relacionadas.
-- Añadir `aria-*` cuando el elemento semántico no describa suficientemente la función (p. ej. `aria-label` en `nav`).
-
 ---
 
 ### 2.2 Jerarquía de headings
@@ -1320,11 +1315,6 @@ h1: Style Guide
     h3: Cards
 ```
 
-Consejos:
-- Mantener secuencia (h2 → h3 → h4) sin saltos.
-- Headings cortos y descriptivos.
-- En listados de items (cards, posts), elegir nivel apropiado según el contexto del contenedor padre.
-
 ---
 
 ### 2.3 Estructura de formularios
@@ -1353,7 +1343,7 @@ Ejemplo de formulario:
 </form>
 ```
 
-Ejemplo real — marcado del componente `app-form-input` (extraído de `frontend/src/app/components/shared/form-input/form-input.html`):
+Ejemplo:  marcado del componente `app-form-input` (extraído de `frontend/src/app/components/shared/form-input/form-input.html`):
 
 ```html
 <div class="form-input">
@@ -1402,32 +1392,18 @@ A continuación se listan TODOS los componentes creados en `frontend/src/app/com
   - Variantes: `primary`, `secondary`, `ghost`, `danger`.
   - Tamaños: `sm`, `md`, `lg`.
   - Estados: normal, hover, focus, active, disabled, fullWidth.
-  - Ejemplo:
 
-```html
-<app-button variant="primary" size="md" (clicked)="onSave()">Guardar</app-button>
-```
 
 - **app-card**
   - Propósito: tarjeta de contenido con imagen, título, descripción y slot para acciones.
   - Variantes: `basic` (vertical), `horizontal`, `featured`.
   - Tamaños: responsive (no prop explícita de tamaño).
   - Estados: hover (elevación), foco, seleccionado (si aplica).
-  - Ejemplo:
-
-```html
-<app-card title="Pizza" description="Deliciosa" image="https://via.placeholder.com/400" [horizontal]="true"></app-card>
-```
 
 - **app-alert**
   - Propósito: mostrar mensajes de feedback (success / error / warning / info), opcionalmente dismissible.
   - Variantes: `success`, `error`, `warning`, `info`.
   - Estados: abierto/cerrado; emite `(closed)` cuando se cierra.
-  - Ejemplo:
-
-```html
-<app-alert type="success" (closed)="onAlertClosed()">Guardado correctamente</app-alert>
-```
 
 - **app-form-input**
   - Propósito: input con label, ayuda, control de errores y binding (`valueChange`).
@@ -1443,20 +1419,12 @@ A continuación se listan TODOS los componentes creados en `frontend/src/app/com
   - Propósito: select con label y listado de opciones.
   - Variantes: n/a (acepta array de options `{ value, label }`).
   - Estados: normal, error, disabled.
-  - Ejemplo:
 
-```html
-<app-form-select label="Categoría" [options]="[{value:'it',label:'Italiana'},{value:'mx',label:'Mexicana'}]"></app-form-select>
-```
 
 - **app-form-textarea**
   - Propósito: textarea con label, placeholder y contador opcional.
   - Estados: normal, required, disabled.
-  - Ejemplo:
 
-```html
-<app-form-textarea label="Descripción" placeholder="Escribe..." rows="4"></app-form-textarea>
-```
 
 - **app-theme-switcher**
   - Propósito: alternar tema light/dark; emite `(themeChange)`.
@@ -1523,7 +1491,6 @@ A continuación se listan TODOS los componentes creados en `frontend/src/app/com
 <app-main>...</app-main>
 ```
 
-> Nota: si quieres tablas automáticas con Inputs/Outputs extraigo `@Input()` / `@Output()` desde los `.ts` y genero la documentación por componente.
 
 ---
 
@@ -1604,19 +1571,6 @@ Para qué sirve
 - Testing manual/visual: sirve para revisar estados, contrastes y accesibilidad antes de integrar en pantallas reales.
 - Referencia rápida: snippets de uso y rutas a los componentes para copiar/pegar en implementaciones.
 
-Capturas y cómo incluirlas
-
-Incluye capturas en `docs/` para que la documentación sea navegable sin ejecutar la app. Sugerimos estas imágenes:
-
-- `docs/style-guide-1.png` — paleta de colores y tipografía.
-- `docs/style-guide-2.png` — sección de botones (variantes y estados).
-- `docs/style-guide-3.png` — formularios y alerts.
-
-Instrucciones rápidas para generar capturas (opcional automatizar con Puppeteer):
-
-1. Levanta la app: `npm start` o `ng serve`.
-2. Abre `http://localhost:4200/style-guide`.
-3. Haz screenshots (pantalla completa y recortes de secciones) y guarda en `docs/` con los nombres anteriores.
 
 Ejemplo de inclusión en Markdown:
 

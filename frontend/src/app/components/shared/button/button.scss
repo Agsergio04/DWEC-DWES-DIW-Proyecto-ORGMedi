@@ -54,6 +54,16 @@
     background-color: var(--color-secundario-hover) !important;
     color: #fff;
   }
+  /* Cuando el botón está activo (página actual o clase is-active) */
+  .button--primary.is-active,
+  .button--primary.router-link-active {
+    background-color: var(--color-secundario-primary) !important;
+    color: #fff;
+  }
+  .button--primary.is-active:hover,
+  .button--primary.router-link-active:hover {
+    background-color: var(--color-secundario-hover) !important;
+  }
   .button--ghost {
     color: var(--color-secundario-primary);
   }

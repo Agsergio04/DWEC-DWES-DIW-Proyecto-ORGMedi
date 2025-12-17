@@ -43,7 +43,7 @@
 
   padding: $espaciado-20;
   background: var(--color-terciario-primary);
-  border: $border-medium solid $color-bordes_marco_botones;
+  border: $border-medium solid var(--color-bordes_marco_botones);
   border-radius: $radius-lg;
 }
 
@@ -146,8 +146,8 @@
   justify-content: center;
 
   background: $color-cuaternario-primary;
-  color: $color-texto_borde_cajas;
-  border: $border-medium solid $color-bordes_marco_botones;
+  color: var(--color-texto_borde_cajas);
+  border: $border-medium solid var(--color-bordes_marco_botones);
   border-radius: $radius-full;
 
   font-size: $font-size-md;

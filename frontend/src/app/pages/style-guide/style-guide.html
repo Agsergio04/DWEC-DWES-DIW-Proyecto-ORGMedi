@@ -1,43 +1,538 @@
-<section class="sg">
-  <h1>Style Guide — Fase 3: Componentes UI Básicos</h1>
+<div class="style-guide">
+  <div class="container">
+    <!-- Hero -->
+    <header class="style-guide__hero">
+      <h1 class="style-guide__title">Style Guide</h1>
+      <p class="style-guide__subtitle">Sistema de diseño — Componentes reutilizables del proyecto</p>
+    </header>
 
-  <section>
-    <h2>Botones</h2>
-    <div class="sg-row">
-      <app-button variant="primary" size="sm">Primary sm</app-button>
-      <app-button variant="primary" size="md">Primary md</app-button>
-      <app-button variant="primary" size="lg">Primary lg</app-button>
-      <app-button variant="secondary" size="md">Secondary</app-button>
-      <app-button variant="ghost" size="md">Ghost</app-button>
-      <app-button variant="danger" size="md">Danger</app-button>
-      <app-button variant="primary" size="md" [disabled]="true">Disabled</app-button>
-    </div>
-  </section>
+    <!-- COLORES -->
+    <section id="colores" class="style-guide__section">
+      <h2 class="style-guide__section-title">Paleta de colores</h2>
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Light tokens</h3>
+        <div class="color-grid">
+          <!-- Primario -->
+          <div class="color-card">
+            <div class="color-card__swatch swatch--primario-hover"></div>
+            <p class="color-card__name">Primario Hover</p>
+            <code class="color-card__code">$color-primario-hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--primario-primary"></div>
+            <p class="color-card__name">Primario</p>
+            <code class="color-card__code">$color-primario-primary</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--primario-disabled"></div>
+            <p class="color-card__name">Primario Disabled</p>
+            <code class="color-card__code">$color-primario-disabled</code>
+          </div>
 
-  <section>
-    <h2>Cards</h2>
-    <div class="sg-row">
-      <app-card title="Card básica" description="Descripción de ejemplo"></app-card>
-      <app-card title="Card horizontal" description="Con imagen a la izquierda" image="https://via.placeholder.com/240" [horizontal]="true"></app-card>
-    </div>
-  </section>
+          <!-- Secundario -->
+          <div class="color-card">
+            <div class="color-card__swatch swatch--secundario-hover"></div>
+            <p class="color-card__name">Secundario Hover</p>
+            <code class="color-card__code">$color-secundario-hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--secundario-primary"></div>
+            <p class="color-card__name">Secundario</p>
+            <code class="color-card__code">$color-secundario-primary</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--secundario-disabled"></div>
+            <p class="color-card__name">Secundario Disabled</p>
+            <code class="color-card__code">$color-secundario-disabled</code>
+          </div>
 
-  <section>
-    <h2>Formularios</h2>
-    <div class="sg-row">
-      <app-form-textarea label="Mensaje" placeholder="Escribe algo..."></app-form-textarea>
-      <app-form-select label="Selecciona" [options]="[{value:1,label:'Uno'},{value:2,label:'Dos'}]"></app-form-select>
-    </div>
-  </section>
+          <!-- Terciario -->
+          <div class="color-card">
+            <div class="color-card__swatch swatch--terciario-hover"></div>
+            <p class="color-card__name">Terciario Hover</p>
+            <code class="color-card__code">$color-terciario-hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--terciario-primary"></div>
+            <p class="color-card__name">Terciario</p>
+            <code class="color-card__code">$color-terciario-primary</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--terciario-disabled"></div>
+            <p class="color-card__name">Terciario Disabled</p>
+            <code class="color-card__code">$color-terciario-disabled</code>
+          </div>
 
-  <section>
-    <h2>Alerts</h2>
-    <div class="sg-row">
-      <app-alert type="success">Operación completada correctamente.</app-alert>
-      <app-alert type="error">Ocurrió un error crítico.</app-alert>
-      <app-alert type="warning">Advertencia: revisa los datos.</app-alert>
-      <app-alert type="info">Información útil para el usuario.</app-alert>
-    </div>
-  </section>
-</section>
+          <!-- Cuaternario -->
+          <div class="color-card">
+            <div class="color-card__swatch swatch--cuaternario-hover"></div>
+            <p class="color-card__name">Cuaternario Hover</p>
+            <code class="color-card__code">$color-cuaternario-hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--cuaternario-primary"></div>
+            <p class="color-card__name">Cuaternario</p>
+            <code class="color-card__code">$color-cuaternario-primary</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--cuaternario-disabled"></div>
+            <p class="color-card__name">Cuaternario Disabled</p>
+            <code class="color-card__code">$color-cuaternario-disabled</code>
+          </div>
 
+          <!-- Quintario -->
+          <div class="color-card">
+            <div class="color-card__swatch swatch--quintario-hover"></div>
+            <p class="color-card__name">Quintario Hover</p>
+            <code class="color-card__code">$color-quintario-hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--quintario-primary"></div>
+            <p class="color-card__name">Quintario</p>
+            <code class="color-card__code">$color-quintario-primary</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--quintario-disabled"></div>
+            <p class="color-card__name">Quintario Disabled</p>
+            <code class="color-card__code">$color-quintario-disabled</code>
+          </div>
+
+          <!-- Afirmación / Negación / Otros -->
+          <div class="color-card">
+            <div class="color-card__swatch swatch--afirmacion-hover"></div>
+            <p class="color-card__name">Afirmación Hover</p>
+            <code class="color-card__code">$color-afirmacion-hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--afirmacion-primary"></div>
+            <p class="color-card__name">Afirmación</p>
+            <code class="color-card__code">$color-afirmacion-primary</code>
+          </div>
+
+          <div class="color-card">
+            <div class="color-card__swatch swatch--negacion-hover"></div>
+            <p class="color-card__name">Negación Hover</p>
+            <code class="color-card__code">$color-negacion-hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--negacion-primary"></div>
+            <p class="color-card__name">Negación</p>
+            <code class="color-card__code">$color-negacion-primary</code>
+          </div>
+
+          <div class="color-card">
+            <div class="color-card__swatch swatch--bordes-marco-botones"></div>
+            <p class="color-card__name">Bordes / Marco Botones</p>
+            <code class="color-card__code">$color-bordes_marco_botones</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--texto-borde-cajas"></div>
+            <p class="color-card__name">Texto / Borde Cajas</p>
+            <code class="color-card__code">$color-texto_borde_cajas</code>
+          </div>
+
+          <!-- Variantes -->
+          <div class="color-card">
+            <div class="color-card__swatch swatch--variante-primera"></div>
+            <p class="color-card__name">Variante 1</p>
+            <code class="color-card__code">$color-variante-primera</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--variante-segunda"></div>
+            <p class="color-card__name">Variante 2</p>
+            <code class="color-card__code">$color-variante-segunda</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--variante-tercera"></div>
+            <p class="color-card__name">Variante 3</p>
+            <code class="color-card__code">$color-variante-tercera</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--variante-cuarta"></div>
+            <p class="color-card__name">Variante 4</p>
+            <code class="color-card__code">$color-variante-cuarta</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--variante-quinta"></div>
+            <p class="color-card__name">Variante 5</p>
+            <code class="color-card__code">$color-variante-quinta</code>
+          </div>
+        </div>
+
+        <h3 class="style-guide__subsection-title">Dark tokens</h3>
+        <div class="color-grid">
+          <div class="color-card">
+            <div class="color-card__swatch swatch--primario-dark-hover"></div>
+            <p class="color-card__name">Primario Dark Hover</p>
+            <code class="color-card__code">$color-primario-dark_hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--primario-dark"></div>
+            <p class="color-card__name">Primario Dark</p>
+            <code class="color-card__code">$color-primario-dark</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--primario-off"></div>
+            <p class="color-card__name">Primario Off</p>
+            <code class="color-card__code">$color-primario-off</code>
+          </div>
+
+          <div class="color-card">
+            <div class="color-card__swatch swatch--secundario-dark-hover"></div>
+            <p class="color-card__name">Secundario Dark Hover</p>
+            <code class="color-card__code">$color-secundario-dark_hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--secundario-dark"></div>
+            <p class="color-card__name">Secundario Dark</p>
+            <code class="color-card__code">$color-secundario-dark</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--secundario-off"></div>
+            <p class="color-card__name">Secundario Off</p>
+            <code class="color-card__code">$color-secundario-off</code>
+          </div>
+
+          <div class="color-card">
+            <div class="color-card__swatch swatch--terciario-dark-hover"></div>
+            <p class="color-card__name">Terciario Dark Hover</p>
+            <code class="color-card__code">$color-terciario-dark_hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--terciario-dark"></div>
+            <p class="color-card__name">Terciario Dark</p>
+            <code class="color-card__code">$color-terciario-dark</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--terciario-disabled-dark"></div>
+            <p class="color-card__name">Terciario Disabled (dark)</p>
+            <code class="color-card__code">$color-terciario-disabled</code>
+          </div>
+
+          <div class="color-card">
+            <div class="color-card__swatch swatch--cuaternario-dark-hover"></div>
+            <p class="color-card__name">Cuaternario Dark Hover</p>
+            <code class="color-card__code">$color-cuaternario-dark_hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--cuaternario-dark"></div>
+            <p class="color-card__name">Cuaternario Dark</p>
+            <code class="color-card__code">$color-cuaternario-dark</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--cuaternario-off"></div>
+            <p class="color-card__name">Cuaternario Off</p>
+            <code class="color-card__code">$color-cuaternario-off</code>
+          </div>
+
+          <div class="color-card">
+            <div class="color-card__swatch swatch--quintario-dark-hover"></div>
+            <p class="color-card__name">Quintario Dark Hover</p>
+            <code class="color-card__code">$color-quintario-dark_hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--quintario-dark"></div>
+            <p class="color-card__name">Quintario Dark</p>
+            <code class="color-card__code">$color-quintario-dark</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--quintario-off"></div>
+            <p class="color-card__name">Quintario Off</p>
+            <code class="color-card__code">$color-quintario-off</code>
+          </div>
+
+          <div class="color-card">
+            <div class="color-card__swatch swatch--afirmacion-dark-hover"></div>
+            <p class="color-card__name">Afirmación Dark Hover</p>
+            <code class="color-card__code">$color-afirmacion-dark_hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--afirmacion-dark"></div>
+            <p class="color-card__name">Afirmación Dark</p>
+            <code class="color-card__code">$color-afirmacion-dark</code>
+          </div>
+
+          <div class="color-card">
+            <div class="color-card__swatch swatch--negacion-dark-hover"></div>
+            <p class="color-card__name">Negación Dark Hover</p>
+            <code class="color-card__code">$color-negacion-dark_hover</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--negacion-dark"></div>
+            <p class="color-card__name">Negación Dark</p>
+            <code class="color-card__code">$color-negacion-dark</code>
+          </div>
+
+          <div class="color-card">
+            <div class="color-card__swatch swatch--bordes-marco-botones-dark"></div>
+            <p class="color-card__name">Bordes / Marco Botones (dark)</p>
+            <code class="color-card__code">$color-bordes_marco_botones-dark</code>
+          </div>
+          <div class="color-card">
+            <div class="color-card__swatch swatch--texto-borde-cajas-dark"></div>
+            <p class="color-card__name">Texto / Borde Cajas (dark)</p>
+            <code class="color-card__code">$color-texto_borde_cajas-dark</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIPOGRAFÍA -->
+    <section id="tipografia" class="style-guide__section">
+      <h2 class="style-guide__section-title">Tipografía</h2>
+      <div class="style-guide__subsection typography-demo">
+        <h1 class="typo-h1">Heading 1 — Ejemplo</h1>
+        <h2 class="typo-h2">Heading 2 — Ejemplo</h2>
+        <p class="typo-p">Texto de cuerpo — Párrafo de ejemplo para mostrar la escala tipográfica.</p>
+      </div>
+    </section>
+
+    <!-- BOTONES -->
+    <section id="botones" class="style-guide__section">
+      <h2 class="style-guide__section-title">Botones</h2>
+      <div class="style-guide__subsection component-demo">
+        <app-button variant="primary" size="sm" (clicked)="onButtonClick('primary-sm')">Primary sm</app-button>
+        <app-button variant="primary" size="md" (clicked)="onButtonClick('primary-md')">Primary md</app-button>
+        <app-button variant="primary" size="lg" (clicked)="onButtonClick('primary-lg')">Primary lg</app-button>
+        <app-button variant="secondary" size="md" (clicked)="onButtonClick('secondary')">Secondary</app-button>
+        <app-button variant="ghost" size="md" (clicked)="onButtonClick('ghost')">Ghost</app-button>
+        <app-button variant="danger" size="md" (clicked)="onButtonClick('danger')">Danger</app-button>
+        <app-button variant="primary" size="md" [disabled]="true">Disabled</app-button>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section id="cards" class="style-guide__section">
+      <h2 class="style-guide__section-title">Cards</h2>
+      <div class="style-guide__subsection card-grid">
+        <app-card title="Card básica" description="Descripción de ejemplo"></app-card>
+        <app-card title="Card horizontal" description="Con imagen" image="https://via.placeholder.com/300" [horizontal]="true"></app-card>
+      </div>
+    </section>
+
+    <!-- FORMULARIOS -->
+    <section id="formularios" class="style-guide__section">
+      <h2 class="style-guide__section-title">Formularios</h2>
+      <div class="style-guide__subsection form-demo">
+        <app-form-textarea label="Mensaje" placeholder="Escribe algo..."></app-form-textarea>
+        <app-form-select label="Selecciona" [options]="selectOptions"></app-form-select>
+      </div>
+    </section>
+
+    <!-- ALERTS -->
+    <section id="alerts" class="style-guide__section">
+      <h2 class="style-guide__section-title">Alerts</h2>
+      <div class="style-guide__subsection component-demo">
+        <app-alert type="success">Operación completada correctamente.</app-alert>
+        <app-alert type="error">Ocurrió un error crítico.</app-alert>
+        <app-alert type="warning">Advertencia: revisa los datos.</app-alert>
+        <app-alert type="info">Información útil para el usuario.</app-alert>
+      </div>
+    </section>
+
+    <!-- COMPONENTES - Documentación -->
+    <section id="componentes" class="style-guide__section">
+      <h2 class="style-guide__section-title">Componentes</h2>
+
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Cómo usar esta sección</h3>
+        <p>Documentación breve de los componentes reutilizables del proyecto: selector, propósito, propiedades principales, variantes y ejemplos listos para copiar.</p>
+      </div>
+
+      <!-- Button -->
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">app-button</h3>
+        <p><strong>Propósito:</strong> Botón reutilizable con variantes visuales y soporte por teclado.</p>
+        <ul>
+          <li><strong>Selector:</strong> <code>app-button</code></li>
+          <li><strong>Inputs:</strong> <code>variant</code> ('primary'|'secondary'|'ghost'|'danger'), <code>size</code> ('sm'|'md'|'lg'), <code>disabled</code>, <code>type</code>, <code>fullWidth</code></li>
+          <li><strong>Output:</strong> <code>(clicked)</code> — EventEmitter</li>
+          <li><strong>Estados:</strong> normal, deshabilitado</li>
+        </ul>
+        <div class="component-demo">
+          <app-button variant="primary" size="md" (clicked)="onButtonClick('guardar')">Guardar</app-button>
+          <app-button variant="secondary" (clicked)="onButtonClick('cancelar')">Cancelar</app-button>
+        </div>
+        <pre class="typography-demo code-block" ngNonBindable><code>&lt;app-button variant="primary" size="md" (clicked)="onSave()"&gt;Guardar&lt;/app-button&gt;</code></pre>
+      </div>
+
+      <!-- Card -->
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">app-card</h3>
+        <p><strong>Propósito:</strong> Tarjeta de contenido con imagen, título, descripción y slot para acciones.</p>
+        <ul>
+          <li><strong>Selector:</strong> <code>app-card</code></li>
+          <li><strong>Inputs:</strong> <code>title</code>, <code>description</code>, <code>image</code>, <code>variant</code> ('basic'|'horizontal')</li>
+        </ul>
+        <div class="card-grid">
+          <app-card title="Card básica" description="Descripción de ejemplo"></app-card>
+          <app-card title="Card horizontal" description="Con imagen" image="https://via.placeholder.com/300" [horizontal]="true"></app-card>
+        </div>
+        <pre class="typography-demo code-block" ngNonBindable><code>&lt;app-card title="Pizza" description="Deliciosa" image="https://..."&gt;&lt;/app-card&gt;</code></pre>
+      </div>
+
+      <!-- Alert -->
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">app-alert</h3>
+        <p><strong>Propósito:</strong> Mostrar mensajes de feedback (success, error, warning, info).</p>
+        <ul>
+          <li><strong>Selector:</strong> <code>app-alert</code></li>
+          <li><strong>Inputs:</strong> <code>type</code> ('success'|'error'|'warning'|'info'), <code>closable</code></li>
+          <li><strong>Output:</strong> <code>(closed)</code></li>
+        </ul>
+        <div class="component-demo component-demo--vertical">
+          <app-alert type="success" (closed)="onAlertClosed()">Guardado correctamente</app-alert>
+          <app-alert type="error">Error crítico</app-alert>
+        </div>
+        <pre class="typography-demo code-block" ngNonBindable><code>&lt;app-alert type="success" (closed)="onAlertClosed()"&gt;Operación OK&lt;/app-alert&gt;</code></pre>
+      </div>
+
+      <!-- Form Inputs -->
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Inputs de formulario</h3>
+        <p>Incluye <code>app-form-input</code>, <code>app-form-select</code> y <code>app-form-textarea</code>.</p>
+        <ul>
+          <li><strong>app-form-input</strong> — selector <code>app-form-input</code>. Inputs: <code>label,type,name,placeholder,required,helpText,error,value</code>. Emite <code>valueChange</code>.</li>
+          <li><strong>app-form-select</strong> — selector <code>app-form-select</code>. Inputs: <code>label, options</code> (array &#123;value,label&#125;).</li>
+          <li><strong>app-form-textarea</strong> — selector <code>app-form-textarea</code>. Inputs: <code>label, placeholder, required</code>.</li>
+        </ul>
+
+        <div class="form-demo">
+          <app-form-input label="Nombre" name="nombre" placeholder="Ingresa tu nombre"></app-form-input>
+          <app-form-select label="Categoría" [options]="selectOptions"></app-form-select>
+          <app-form-textarea label="Descripción" placeholder="Escribe..."></app-form-textarea>
+        </div>
+
+        <pre class="typography-demo code-block" ngNonBindable><code>&lt;app-form-input label="Email" type="email" name="email" (valueChange)="onEmailChange($event)"&gt;&lt;/app-form-input&gt;</code></pre>
+      </div>
+
+      <!-- Utilities / Otros componentes pequeños -->
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Otros componentes</h3>
+        <p>Componentes auxiliares y de layout: <code>app-theme-switcher</code>, <code>app-calendar</code>, <code>app-dom-demo</code>, <code>app-register-form</code>, <code>app-login-form</code>, <code>app-header</code>, <code>app-footer</code>.</p>
+        <ul>
+          <li><strong>app-theme-switcher</strong> — controla tema; emite <code>themeChange</code>.</li>
+          <li><strong>app-calendar</strong> — calendario semanal con selección de días.</li>
+          <li><strong>app-dom-demo</strong> — demo para manipulación DOM (Renderer2).</li>
+          <li><strong>app-register-form</strong> / <strong>app-login-form</strong> — formularios compuestos listos para usar en páginas de Auth.</li>
+          <li><strong>app-header</strong> / <strong>app-footer</strong> — layout principal (logo, navegación, tema).</li>
+        </ul>
+
+        <pre class="typography-demo code-block" ngNonBindable><code>&lt;app-theme-switcher (themeChange)="onThemeChange($event)"&gt;&lt;/app-theme-switcher&gt;</code></pre>
+      </div>
+
+      <!-- Referencia -->
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Referencia</h3>
+        <p>La sección <strong>Referencia</strong> muestra dónde encontrar la implementación de cada componente, su selector y un snippet de uso rápido. Útil para desarrolladores que necesitan copiar el ejemplo o abrir el fichero fuente.</p>
+
+        <div class="component-demo">
+          <div style="min-width:280px;">
+            <h4>app-button</h4>
+            <p><strong>Para qué sirve:</strong> Botón reutilizable con variantes y tamaños.</p>
+            <p><strong>Ruta:</strong> <code>src/app/components/shared/button/</code></p>
+            <pre class="code-block" ngNonBindable><code>&lt;app-button variant="primary" size="md" (clicked)="onSave()"&gt;Guardar&lt;/app-button&gt;</code></pre>
+          </div>
+
+          <div style="min-width:280px;">
+            <h4>app-card</h4>
+            <p><strong>Para qué sirve:</strong> Tarjeta de contenido con imagen, título y descripción.</p>
+            <p><strong>Ruta:</strong> <code>src/app/components/shared/card/</code></p>
+            <pre class="code-block" ngNonBindable><code>&lt;app-card title="Pizza" description="Rica" image="https://..."&gt;&lt;/app-card&gt;</code></pre>
+          </div>
+
+          <div style="min-width:280px;">
+            <h4>app-form-input</h4>
+            <p><strong>Para qué sirve:</strong> Campo de formulario con label, ayuda y control de errores.</p>
+            <p><strong>Ruta:</strong> <code>src/app/components/shared/form-input/</code></p>
+            <pre class="code-block" ngNonBindable><code>&lt;app-form-input label="Email" type="email" name="email" (valueChange)="onEmailChange($event)"&gt;&lt;/app-form-input&gt;</code></pre>
+          </div>
+        </div>
+
+        <p>Consejo: abre la carpeta indicada para ver el fichero <code>.ts</code> (API) y la plantilla <code>.html</code> (marcado). Si quieres puedo añadir enlaces directos en el repositorio o botones "Abrir archivo" en la guía (requiere integrar rutas con la herramienta del IDE o una convención de URL interna).</p>
+      </div>
+
+    </section>
+
+    <!-- UTILIDADES -->
+    <section id="utilidades" class="style-guide__section">
+      <h2 class="style-guide__section-title">Utilidades</h2>
+      <div class="style-guide__subsection spacing-demo">
+        <div class="spacing-box spacing-box--2">spacing-2</div>
+        <div class="spacing-box spacing-box--4">spacing-4</div>
+        <div class="spacing-box spacing-box--6">spacing-6</div>
+      </div>
+    </section>
+
+    <!-- BEM -->
+    <section id="bem" class="style-guide__section">
+      <h2 class="style-guide__section-title">BEM (Block Element Modifier)</h2>
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">¿Qué es BEM?</h3>
+        <p>BEM es una convención de nomenclatura para clases CSS que facilita la creación de interfaces de usuario escalables y mantenibles.</p>
+      </div>
+
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Principios básicos</h3>
+        <ul>
+          <li><strong>Block:</strong> Representa un componente independiente y reutilizable.</li>
+          <li><strong>Element:</strong> Parte de un bloque con significado propio.</li>
+          <li><strong>Modifier:</strong> Variación de un bloque o elemento que altera su apariencia o comportamiento.</li>
+        </ul>
+      </div>
+
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Ejemplos prácticos</h3>
+        <p>Clases CSS siguiendo la convención BEM:</p>
+        <pre ngNonBindable><code>
+.boton &#123;&#125;</code></pre>
+        <pre ngNonBindable><code>
+.boton--primario &#123;&#125;</code></pre>
+        <pre ngNonBindable><code>
+.boton__texto &#123;&#125;</code></pre>
+        <pre ngNonBindable><code>
+.boton--grande &#123;&#125;</code></pre>
+        <pre ngNonBindable><code>
+.card &#123;&#125;</code></pre>
+        <pre ngNonBindable><code>
+.card__titulo &#123;&#125;</code></pre>
+        <pre ngNonBindable><code>
+.card__descripcion &#123;&#125;</code></pre>
+        <pre ngNonBindable><code>
+.card--destacada &#123;&#125;</code></pre>
+      </div>
+
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Ejemplos en componentes</h3>
+        <p>Clases BEM usadas en nuestros componentes:</p>
+
+        <!-- Visual BEM demo inserted for live examples -->
+        <div class="bem-demo" aria-hidden="false">
+          <div class="bem-block" role="group" aria-label="BEM block básico">
+            <div class="bem-block__header">Block básico</div>
+            <div class="bem-block__elem">Elemento A</div>
+            <div class="bem-block__elem">Elemento B</div>
+          </div>
+
+          <div class="bem-block bem-block--primary" role="group" aria-label="BEM block con modifier --primary">
+            <div class="bem-block__header">Block --primary (modifier)</div>
+            <div class="bem-block__elem">Elemento único</div>
+          </div>
+
+          <div class="bem-block is-active" role="group" aria-label="BEM block con estado is-active">
+            <div class="bem-block__header">Block con estado <code>is-active</code></div>
+            <div class="bem-block__elem">Elemento</div>
+          </div>
+        </div>
+
+        <h5>Botón (interno del componente <code>app-button</code>)</h5>
+        <p>Markup interno que sigue BEM y genera modificadores según la API:</p>
+        <pre ngNonBindable><code>
+&lt;button class="boton boton--primario"&gt;
+  &lt;span class="boton__texto"&gt;Guardar&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+      </div>
+    </section>
+
+  </div>
+</div>

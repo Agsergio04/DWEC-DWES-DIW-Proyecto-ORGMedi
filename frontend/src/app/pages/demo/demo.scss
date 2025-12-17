@@ -16,7 +16,7 @@
   padding: $espaciado-12;
   border-radius: $radius-md;
   background: $color-cuaternario-primary;
-  border: 1px solid $color-bordes_marco_botones;
+  border: 1px solid var(--color-bordes_marco_botones);
 }
 
 .controls { display:flex; gap:$espaciado-12; margin-top:$espaciado-12; }
