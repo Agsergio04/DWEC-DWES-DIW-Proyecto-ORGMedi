@@ -1,285 +1,94 @@
-@use 'sass:color' as color;
-@use '../../../styles/00-settings/variables' as *;
-
-.sg {
-  padding: $espaciado-32;
-  font-family: $font-primary;
-  color: $color-texto_borde_cajas;
+/* Estilos para la página de Style Guide - usando variables del proyecto */
+.style-guide {
+  padding: 28px 0;
+  min-height: 100vh;
 }
 
-/* Nuevo layout: container y hero */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 $espaciado-8;
+.style-guide__header { text-align: center; margin-bottom: 24px; }
+.style-guide__title { font-size: 28px; margin: 0 0 6px; }
+.style-guide__subtitle { margin: 0; color: #666; }
+
+.style-guide__section { padding: 16px; border-radius: 12px; margin-bottom: 18px; }
+.style-guide__section-title { margin: 0 0 8px; font-size: 20px; }
+.style-guide__section-desc { margin: 0 0 12px; color: #444; }
+.style-guide__subsection { padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+
+.style-guide__row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.style-guide__card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.style-guide__form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+
+/* Colores cuaternario/quintario: si el proyecto tiene variables, preferirlas; si no, usar estos por defecto */
+.bg-quaternary { background-color: var(--quaternary-color, #eef6f5); }
+.bg-quinary { background-color: var(--quinary-color, #f7eefc); }
+
+/* Contrastes en las cajas internas para distinguir secciones */
+.style-guide__subsection { background-color: var(--quaternary-color, #eef6f5); }
+
+/* Pequeñas mejoras visuales */
+.app-button { margin: 4px; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .style-guide__row { flex-direction: column; align-items: stretch; }
 }
 
-.style-guide__hero {
-  margin-bottom: $espaciado-20;
-  padding: $espaciado-12 0 $espaciado-8;
-}
-.style-guide__title { font-family: $font-secondary; font-size: $font-size-3xl; margin: 0 0 $espaciado-8; }
-.style-guide__subtitle { margin: 0 0 $espaciado-12; color: rgba(0,0,0,0.6); }
-
-.style-guide__nav {
-  margin-bottom: $espaciado-16;
-  position: sticky;
-  top: $espaciado-6;
-  z-index: 20;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  padding: $espaciado-4 0;
-}
-.style-guide__nav-list { list-style: none; padding: 0; margin: 0; display:flex; gap:$espaciado-8; flex-wrap:wrap; }
-/* Reemplazamos $espaciado-2 por $espaciado-6 y $espaciado-4 por $espaciado-12 para paddings razonables */
-.style-guide__nav-list a {
-  text-decoration:none;
-  padding:$espaciado-6 $espaciado-12;
-  border-radius:$radius-sm;
-  background:transparent;
-  color: $color-texto_borde_cajas;
-  transition: background-color $transition-normal, color $transition-normal;
-}
-.style-guide__nav-list a:hover { background: rgba(0,0,0,0.02); }
-.style-guide__nav-list a.is-active, .style-guide__nav-list a:focus, .style-guide__nav-list a:hover { background: rgba(0,0,0,0.04); }
-
-.style-guide__section { background: transparent; padding: $espaciado-16; border-radius: $radius-md; margin-bottom: $espaciado-16; border: $border-thin dashed rgba(0,0,0,0.03); }
-.style-guide__section-title { font-size: $font-size-xl; margin-bottom: $espaciado-8; }
-.style-guide__subsection-title { font-size: $font-size-lg; font-weight: $font-weight-semibold; margin-bottom: $espaciado-6; color: $color-texto_borde_cajas; }
-
-/* Grillas y cards */
-.color-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap:$espaciado-12; }
-.color-card { text-align:center; }
-.color-card__swatch { height:100px; border-radius:$radius-md; border: $border-thin solid rgba(0,0,0,0.04); margin-bottom:$espaciado-4; }
-.color-card__name { font-weight: $font-weight-semibold; color: $color-texto_borde_cajas; margin-bottom: $espaciado-4; }
-.color-card__code {
-  font-family: monospace;
-  font-size: $font-size-sm;
-  color: rgba(0,0,0,0.5);
-  background: rgba(255,255,255,0.08);
-  display:inline-block;
-  padding: $espaciado-4 $espaciado-12;
-  border-radius: $radius-sm;
-}
-
-/* Demostraciones */
-.typography-demo .typo-h1 { font-size: $font-size-3xl; margin-bottom:$espaciado-6; }
-.typography-demo .typo-h2 { font-size: $font-size-2xl; margin-bottom:$espaciado-4; }
-.typography-demo .typo-p { font-size: $font-size-md; }
-
-.component-demo {
-  display:flex;
-  gap:$espaciado-8;
-  flex-wrap:wrap;
-  align-items:center;
-  padding: $espaciado-6;
-  border-radius: $radius-md;
-  border: $border-thin dashed rgba(0,0,0,0.03);
-  background: transparent;
-}
-.component-demo--vertical { flex-direction: column; align-items: stretch; }
-
-/* Modal content demo */
-.modal-content-demo { padding: $espaciado-6; }
-.modal-content-demo h3 { margin-bottom: $espaciado-4; }
-
-/* Notifications container */
-.notifications-container { position: fixed; top: $espaciado-4; right: $espaciado-4; z-index: 9999; display:flex; flex-direction:column; gap:$espaciado-6; pointer-events:none; }
-.notifications-container > * { pointer-events:auto; }
-
-/* Shadow demo */
-.shadow-demo { display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:$espaciado-6; padding:$espaciado-6; border: $border-thin dashed rgba(0,0,0,0.03); }
-.shadow-box { background: color.mix(#fff, $color-terciario-primary, 10%); border-radius:$radius-md; padding:$espaciado-6; text-align:center; box-shadow: 0 6px 18px rgba(31,10,26,0.06); }
-
-/* Radius demo */
-.radius-demo { display:grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap:$espaciado-6; padding:$espaciado-6; border: $border-thin dashed rgba(0,0,0,0.03); }
-.radius-box { background: $color-terciario-primary; border: 1px solid rgba(0,0,0,0.04); padding:$espaciado-6; text-align:center; }
-
-/* spacing variants using existing tokens */
-.spacing-box--2 { padding: $espaciado-4; }
-.spacing-box--4 { padding: $espaciado-12; }
-.spacing-box--6 { padding: $espaciado-16; }
-
-/* COLORES */
-.sg__colors { display: flex; flex-direction: column; gap: $espaciado-20; }
-.sg__color-group { border-bottom: 1px dashed rgba(0,0,0,0.06); padding-bottom: $espaciado-12; }
-.sg__color-group h3 { margin: $espaciado-8 0; font-size: $font-size-md; }
-.sg__swatches { display: flex; flex-wrap: wrap; gap: $espaciado-12; }
-
-.swatch {
-  min-width: 120px;
-  padding: $espaciado-8 $espaciado-12;
-  border-radius: $radius-md;
-  border: $border-thin solid rgba(0,0,0,0.04);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: $font-size-sm;
-}
-
-/* Mapear todas las variables de color para la página de style-guide */
-.swatch--primario-hover { background: $color-primario-hover; color: #111; }
-.swatch--primario-primary { background: $color-primario-primary; color: #fff; }
-.swatch--primario-disabled { background: $color-primario-disabled; color: #111; }
-
-.swatch--secundario-hover { background: $color-secundario-hover; color: #111; }
-.swatch--secundario-primary { background: $color-secundario-primary; color: #fff; }
-.swatch--secundario-disabled { background: $color-secundario-disabled; color: #111; }
-
-.swatch--terciario-hover { background: $color-terciario-hover; color: #111; }
-.swatch--terciario-primary { background: $color-terciario-primary; color: #111; }
-.swatch--terciario-disabled { background: $color-terciario-disabled; color: #111; }
-
-.swatch--cuaternario-hover { background: $color-cuaternario-hover; color: #111; }
-.swatch--cuaternario-primary { background: $color-cuaternario-primary; color: #111; }
-.swatch--cuaternario-disabled { background: $color-cuaternario-disabled; color: #111; }
-
-.swatch--quintario-hover { background: $color-quintario-hover; color: #111; }
-.swatch--quintario-primary { background: $color-quintario-primary; color: #111; }
-.swatch--quintario-disabled { background: $color-quintario-disabled; color: #111; }
-
-.swatch--afirmacion-hover { background: $color-afirmacion-hover; color: #111; }
-.swatch--afirmacion-primary { background: $color-afirmacion-primary; color: #111; }
-
-.swatch--negacion-hover { background: $color-negacion-hover; color: #111; }
-.swatch--negacion-primary { background: $color-negacion-primary; color: #fff; }
-
-.swatch--bordes-marco-botones { background: $color-bordes_marco_botones; color: #fff; }
-.swatch--texto-borde-cajas { background: $color-texto_borde_cajas; color: #fff; }
-
-/* Variantes */
-.swatch--variante-primera { background: $color-variante-primera; color: #111; }
-.swatch--variante-segunda { background: $color-variante-segunda; color: #111; }
-.swatch--variante-tercera { background: $color-variante-tercera; color: #111; }
-.swatch--variante-cuarta { background: $color-variante-cuarta; color: #111; }
-.swatch--variante-quinta { background: $color-variante-quinta; color: #111; }
-
-/* Dark / modo oscuro */
-.swatch--primario-dark-hover { background: $color-primario-dark_hover; color: #fff; }
-.swatch--primario-dark { background: $color-primario-dark; color: #fff; }
-.swatch--primario-off { background: $color-primario-off; color: #fff; }
-
-.swatch--secundario-dark-hover { background: $color-secundario-dark_hover; color: #fff; }
-.swatch--secundario-dark { background: $color-secundario-dark; color: #fff; }
-.swatch--secundario-off { background: $color-secundario-off; color: #fff; }
-
-.swatch--terciario-dark-hover { background: $color-terciario-dark_hover; color: #fff; }
-.swatch--terciario-dark { background: $color-terciario-dark; color: #fff; }
-.swatch--terciario-disabled-dark { background: $color-terciario-disabled; color: #fff; }
-
-.swatch--cuaternario-dark-hover { background: $color-cuaternario-dark_hover; color: #fff; }
-.swatch--cuaternario-dark { background: $color-cuaternario-dark; color: #fff; }
-.swatch--cuaternario-off { background: $color-cuaternario-off; color: #fff; }
-
-.swatch--quintario-dark-hover { background: $color-quintario-dark_hover; color: #fff; }
-.swatch--quintario-dark { background: $color-quintario-dark; color: #fff; }
-.swatch--quintario-off { background: $color-quintario-off; color: #fff; }
-
-.swatch--afirmacion-dark-hover { background: $color-afirmacion-dark_hover; color: #fff; }
-.swatch--afirmacion-dark { background: $color-afirmacion-dark; color: #fff; }
-
-.swatch--negacion-dark-hover { background: $color-negacion-dark_hover; color: #fff; }
-.swatch--negacion-dark { background: $color-negacion-dark; color: #fff; }
-
-.swatch--bordes-marco-botones-dark { background: $color-bordes_marco_botones-dark; color: #111; }
-.swatch--texto-borde-cajas-dark { background: $color-texto_borde_cajas-dark; color: #111; }
-
-/* Tipografía */
-.sg__typography { display:flex; flex-direction:column; gap:$espaciado-20; }
-.typo-sample { padding: $espaciado-16; border-radius: $radius-md; border: $border-thin solid rgba(0,0,0,0.04); }
-.typo-sample--secondary { font-family: $font-secondary; background: rgba(0,0,0,0.02); }
-.typo-sample--primary { font-family: $font-primary; background: rgba(0,0,0,0.01); }
-.typo-h1 { font-size: $font-size-3xl; margin: $espaciado-8 0; }
-.typo-h2 { font-size: $font-size-2xl; margin: $espaciado-8 0; }
-.typo-p { font-size: $font-size-md; }
-
-/* Spacing tokens */
-.sg__spacings .space-row { display:flex; gap:$espaciado-12; }
-.space-box { padding: $espaciado-12; border-radius:$radius-sm; background: rgba(0,0,0,0.04); border: $border-thin solid rgba(0,0,0,0.03); }
-
-/* Responsive adjustments */
-@media (max-width: #{ $breakpoint-medio }) {
-  .sg__columns { grid-template-columns: 1fr; }
-  .swatch { min-width: 140px; }
-}
-
-/* Small helpers */
-.container { box-sizing: border-box; }
-
-/* Responsive tweaks adicionales */
-@media (max-width: #{ $breakpoint-medio }) {
-  .style-guide__title { font-size: $font-size-2xl; }
-  .style-guide__nav-list { flex-direction: column; gap: $espaciado-4; }
-  .color-grid { grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); }
-  .card-grid { grid-template-columns: 1fr; }
-  .component-demo { flex-direction: column; align-items: stretch; }
-}
-
-/* Decoración de fondo (sutil) */
-.style-guide::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, rgba(255,255,255,0.06), rgba(0,0,0,0.02));
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.9;
-}
-
-/* Elevar contenido por encima del fondo decorativo */
-.container, .style-guide__section, .style-guide__hero { position: relative; z-index: 1; }
-
-/* Transiciones y accesibilidad */
-.color-card, .color-card__swatch, .component-demo, .card-grid > * { transition: transform $transition-normal, box-shadow $transition-normal; }
-
-.color-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(31,10,26,0.08); }
-.color-card:focus-within { outline: 2px solid rgba(0,0,0,0.06); }
-
-.color-card__swatch { display:flex; align-items:center; justify-content:center; font-weight: $font-weight-semibold; }
-
-/* Enlaces de navegación: estado activo y focus-visible */
-.style-guide__nav-list a:focus-visible { outline: 3px solid rgba(0,0,0,0.08); outline-offset: 2px; }
-
-/* Mejor contraste de códigos */
-.color-card__code { background: rgba(255,255,255,0.06); color: rgba(0,0,0,0.6); }
-
-/* Ajustes para componentes embebidos */
-.app-card, app-card { width: 100%; }
-
-/* Utilities */
-.kv { display:flex; gap:$espaciado-4; align-items:center; }
-.kv .key { font-family: monospace; font-size:$font-size-sm; color: rgba(0,0,0,0.5); }
-.kv .value { font-weight: $font-weight-semibold; }
-
-/* Print-friendly */
-@media print {
-  .style-guide__nav, .component-demo { display: none !important; }
-  .style-guide__section { border: none; }
-}
-
-/* BEM demonstration helpers - visual examples for the style guide */
-.bem-demo {
+/* Estilos para la sección Colores */
+.colors-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: $espaciado-12;
-  margin-top: $espaciado-12;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
 }
-.bem-block {
-  padding: $espaciado-8;
-  border: $border-thin solid rgba(0,0,0,0.06);
-  border-radius: $radius-md;
-  background: color.mix(#fff, $color-terciario-primary, 6%);
+
+.color-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.7);
 }
-.bem-block__header { font-weight: $font-weight-semibold; margin-bottom: $espaciado-4; }
-.bem-block__elem { padding: $espaciado-4; background: rgba(0,0,0,0.02); border-radius: $radius-sm; }
 
-/* Modifier example */
-.bem-block--primary { background: $color-primario-primary; color: #fff; }
-.bem-block--primary .bem-block__elem { background: rgba(255,255,255,0.06); }
+.color-swatch {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
 
-/* State classes */
-.is-active { box-shadow: 0 10px 30px rgba(0,0,0,0.12); transform: translateY(-4px); }
-.is-hidden { display: none !important; }
+.color-meta { display: flex; flex-direction: column; }
+.color-name { font-weight: 600; font-size: 14px; }
+.color-scope { font-size: 12px; color: #666; }
 
-.code-block { background: transparent; padding: $espaciado-6; border-radius: $radius-sm; border: $border-thin solid rgba(0,0,0,0.03); overflow: auto; }
+/* Estilos para formulario dentro de la card de medicación */
+.med-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.med-form app-form-input,
+.med-form app-form-select,
+.med-form app-form-textarea {
+  width: 100%;
+}
+
+/* Cuando el campo debe ocupar toda la fila */
+.med-form .full-width {
+  grid-column: 1 / -1;
+}
+
+.card-actions { grid-column: 1 / -1; justify-self: end; }
+
+@media (max-width: 720px) {
+  .med-form { grid-template-columns: 1fr; }
+  .card-actions { justify-self: stretch; display:flex; justify-content:space-between; }
+}
+
+/* Forzar que la card ocupe toda la fila dentro del grid */
+.card-full { grid-column: 1 / -1; }
+
+/* Ajustes visuales para el cuerpo proyectado de la card */
+.app-card__body { margin-top: 12px; display: block; }
+.app-card__body > * { margin-bottom: 8px; }

@@ -36,5 +36,10 @@
 		<button type="submit" class="register-form__submit" [disabled]="registerForm.invalid || registerForm.pending">
 		  {{ registerForm.pending ? 'Validando...' : 'Crear cuenta' }}
 		</button>
-	</fieldset>
-</form>
+
+		<div class="register-form__login-link">
+		  <p>¿Ya tienes cuenta?</p>
+		  <a routerLink="/login" class="link-primary">Iniciar sesión</a>
+		</div>
+ 	</fieldset>
+ </form>

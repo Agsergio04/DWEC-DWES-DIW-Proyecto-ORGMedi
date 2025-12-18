@@ -3,6 +3,10 @@
   <div class="app-card__content">
     <h3 class="app-card__title" *ngIf="title">{{ title }}</h3>
     <p class="app-card__desc" *ngIf="description">{{ description }}</p>
+    <!-- Slot genérico para el cuerpo de la card (ej. formularios, contenido personalizado) -->
+    <div class="app-card__body">
+      <ng-content></ng-content>
+    </div>
     <ng-content select=".card-actions"></ng-content>
   </div>
 </article>

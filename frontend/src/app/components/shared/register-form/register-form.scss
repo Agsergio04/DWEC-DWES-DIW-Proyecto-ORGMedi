@@ -1,37 +1,182 @@
+@use 'sass:color';
 @use '../../../../styles/00-settings/_variables' as *;
 @use '../../../../styles/01-tools/_mixins' as *;
 
+/* Copiado y adaptado de login-form.scss para que register use los mismos colores */
 .register-form {
-	width: 100%;
-	max-width: 480px;
-	margin: 2.5rem auto;
-	background: var(--color-terciario-primary);
-	border: 2px solid $color-cuaternario-dark;
-	border-radius: $radius-lg;
-	box-shadow: 0 4px 24px rgba(31,10,26,0.08);
-	padding: $espaciado-32 $espaciado-24;
-	font-family: $font-primary;
+  width: 100%;
+  max-width: 420px;
+  margin: $espaciado-48 auto;
+  padding: $espaciado-32;
+
+  background: var(--color-terciario-primary);
+  border: $border-medium solid var(--color-bordes_marco_botones);
+  border-radius: $radius-lg;
+  box-shadow: 0 4px 24px rgba(31, 10, 26, 0.08);
+
+  font-family: $font-primary;
 }
 
 .register-form__fieldset {
-	border: none;
-	padding: 0;
-	margin: 0;
-	display: flex;
-	flex-direction: column;
-	gap: $espaciado-20;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-20;
 }
 
 .register-form__legend {
-	font-family: $font-secondary;
-	font-size: $font-size-3xl;
-	color: $color-secundario-primary;
-	margin-bottom: $espaciado-20;
-	text-align: center;
+  font-family: $font-secondary;
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: $color-secundario-primary;
+  text-align: center;
+  margin: 0 0 $espaciado-20 0;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-12;
+}
+
+.form-label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--color-texto_borde_cajas);
+  font-family: $font-primary;
+}
+
+.form-input {
+  width: 100%;
+  padding: $espaciado-12 $espaciado-16;
+
+  font-family: $font-primary;
+  font-size: $font-size-md;
+  color: var(--color-texto_borde_cajas);
+
+  background: $color-cuaternario-primary;
+  border: $border-medium solid var(--color-bordes_marco_botones);
+  border-radius: $radius-md;
+
+  transition: border-color $transition-normal,
+  background-color $transition-normal,
+  box-shadow $transition-normal;
+
+  &::placeholder {
+    color: rgba(var(--color-texto_borde_cajas-rgb), 0.6);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primario-primary);
+    background: color.adjust($color-cuaternario-primary, $lightness: 5%);
+    box-shadow: 0 0 0 3px rgba(var(--color-bordes_marco_botones-rgb), 0.08);
+  }
+
+  &:disabled {
+    background: $color-primario-disabled;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.form-error {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-negacion-primary;
+  margin-top: -$espaciado-8;
 }
 
 .register-form__submit {
-	@include button-form($color-secundario-primary, $color-secundario-hover, #fff);
-	width: 100%;
-	margin-top: $espaciado-16;
+  width: 100%;
+  padding: $espaciado-12 $espaciado-20;
+  margin-top: $espaciado-16;
+
+  font-family: $font-primary;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+
+  background: $color-secundario-primary;
+  color: #fff;
+  border: none;
+  border-radius: $radius-md;
+
+  cursor: pointer;
+  transition: background-color $transition-normal,
+  transform $transition-rapida,
+  box-shadow $transition-normal;
+
+  &:hover {
+    background: $color-secundario-hover;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba($color-secundario-primary, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba($color-secundario-primary, 0.2);
+  }
+
+  &:disabled {
+    background: $color-primario-disabled;
+    color: $color-texto_borde_cajas;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.register-form__register-link {
+  text-align: center;
+  margin-top: $espaciado-20;
+  padding-top: $espaciado-20;
+  border-top: $border-thin solid rgba(var(--color-bordes_marco_botones), 0.12);
+
+  p {
+    margin: 0 0 $espaciado-8 0;
+    font-size: $font-size-sm;
+    color: var(--color-texto_borde_cajas);
+  }
+}
+
+.link-primary {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-primario-primary;
+  text-decoration: none;
+
+  transition: color $transition-normal;
+
+  &:hover {
+    color: $color-primario-hover;
+    text-decoration: underline;
+  }
+}
+
+[data-theme="dark"] {
+  .register-form {
+    background: $color-terciario-dark;
+    border-color: $color-bordes_marco_botones;
+  }
+
+  .register-form__legend {
+    color: $color-primario-dark;
+  }
+
+  .form-label {
+    color: $color-texto_borde_cajas;
+  }
+
+  .form-input {
+    background: $color-cuaternario-dark;
+    color: $color-texto_borde_cajas;
+    border-color: $color-bordes_marco_botones;
+
+    &:focus {
+      border-color: $color-primario-dark;
+      background: color.adjust($color-cuaternario-dark, $lightness: 10%);
+      box-shadow: 0 0 0 3px rgba($color-primario-dark, 0.15);
+    }
+  }
 }

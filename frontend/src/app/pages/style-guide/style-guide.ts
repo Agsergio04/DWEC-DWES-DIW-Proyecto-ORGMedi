@@ -1,32 +1,91 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonComponent } from '../../components/shared/button/button';
-import { CardComponent } from '../../components/shared/card/card';
+
+// Importar componentes del proyecto (usar nombres exportados reales)
+import { SharedModule } from '../../components/shared/shared.module';
+import { FormInputComponent } from '../../components/shared/form-input/form-input';
 import { FormTextareaComponent } from '../../components/shared/form-textarea/form-textarea';
 import { FormSelectComponent } from '../../components/shared/form-select/form-select';
+import { DomDemoComponent } from '../../components/shared/dom-demo/dom-demo.component';
+import { Modal } from '../../components/shared/modal/modal';
+import { Tabs } from '../../components/shared/tabs/tabs';
+import { ThemeSwitcher } from '../../components/shared/theme-switcher/theme-switcher';
 import { AlertComponent } from '../../components/shared/alert/alert';
-import { FormInputComponent } from '../../components/shared/form-input/form-input';
-
-// Note: demos (Modal/Tooltip/Tabs) moved to `pages/demo`.
 
 @Component({
   selector: 'app-style-guide',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, CardComponent, FormTextareaComponent, FormSelectComponent, AlertComponent, FormInputComponent],
+  imports: [
+    CommonModule,
+    SharedModule,
+    FormInputComponent,
+    FormTextareaComponent,
+    FormSelectComponent,
+    DomDemoComponent,
+    Modal,
+    Tabs,
+    ThemeSwitcher,
+    AlertComponent
+  ],
   templateUrl: './style-guide.html',
   styleUrls: ['./style-guide.scss']
 })
-export class StyleGuidePage {
-  selectOptions = [{ value: 1, label: 'Uno' }, { value: 2, label: 'Dos' }];
+export class StyleGuidePage implements OnInit {
+  // Referencia a componentes para evitar advertencias "never used"
+  private readonly _usedComponents = [
+    // ButtonComponent,
+    // CardComponent,
+    FormInputComponent,
+    FormTextareaComponent,
+    FormSelectComponent,
+    DomDemoComponent,
+    Modal,
+    Tabs,
+    ThemeSwitcher,
+    AlertComponent,
+    SharedModule
+  ];
 
-  onButtonClick(name: string) {
-    console.log('Button clicked:', name);
+  // Opciones de ejemplo para el select
+  selectOptions = [
+    { value: '1h', label: '1 hora' },
+    { value: '2h', label: '2 horas' },
+    { value: '3h', label: '3 horas' }
+  ];
+
+  // Estado demo modal
+  isModalOpen = false;
+
+  // Alert visibility controls for examples
+  showAlertSuccess = true;
+  showAlertError = true;
+  showAlertWarning = true;
+  showAlertInfo = true;
+
+  ngOnInit() {
+    // Tocar propiedades/métodos para que el analizador de TypeScript las considere usadas
+    void this._usedComponents;
+    void this.selectOptions?.length;
+    // No ejecutar los métodos, sólo informarlos como referenciados
+    void this.openModal;
+    void this.closeModal;
   }
 
-  // Handler para alertas en la guía
-  onAlertClosed() {
-    console.log('Guía: alerta cerrada');
+  openModal() { this.isModalOpen = true; }
+  closeModal() { this.isModalOpen = false; }
+
+  closeAlert(kind: 'success'|'error'|'warning'|'info') {
+    if (kind === 'success') this.showAlertSuccess = false;
+    if (kind === 'error') this.showAlertError = false;
+    if (kind === 'warning') this.showAlertWarning = false;
+    if (kind === 'info') this.showAlertInfo = false;
   }
 
-  // Demos interactivos fueron movidos a la página `Demo`.
+  resetAlerts() {
+    this.showAlertSuccess = this.showAlertError = this.showAlertWarning = this.showAlertInfo = true;
+  }
+
+  onButtonClick(kind: string) {
+    console.log('Clicked', kind);
+  }
 }
