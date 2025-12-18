@@ -7,13 +7,45 @@
 1. [Características Principales](#características-principales)
 2. [Stack Tecnológico](#stack-tecnológico)
 3. [Guía de Inicio](#guia-de-inicio)
-4. [Documentación](#documentacion)
-5. [Despliegue](#despliegue)
+4. [Estructura del Proyecto](#estructura-del-proyecto)
+5. [Documentación](#documentacion)
+6. [Despliegue](#despliegue)
 
 ##  Características Principales  
 
-La aplicación ofrece una gestión integral de usuarios, permitiendo administrar distintas cuentas según las necesidades de cada persona. Además, dispone de un sistema de gestión de medicamentos que posibilita el registro, la modificación y el seguimiento detallado de los medicamentos de cada usuario, facilitando así una organización eficaz y personalizada del tratamiento farmacológico.
+La aplicación ofrece una gestión integral de usuarios, permitiendo administrar distintas cuentas según las necesidades de cada persona. Además, dispone de un sistema de gestión de medicamentos que posibilita el registro, la modificación y el seguimiento detallado de los medicamentos de cada usuario, facilitando así una organización eficaz y personalizada del tratamiento farmacológico.  
 
+### Estructura del Proyecto
+
+La estructura principal del proyecto está dividida en frontend y backend, así como documentación y archivos de configuración:
+
+```
+DWEC-DWES-DIW-Proyecto-ORGMedi/
+│
+├── .idea/                   # Configuración del entorno de desarrollo (JetBrains)
+│
+├── backend/                 # Backend (Spring Boot, Java)
+│   ├── pom.xml              # Dependencias y configuración Maven
+│   ├── mvnw / mvnw.cmd      # Maven Wrapper
+│   ├── .gitattributes       # Reglas para manejo de fin de línea en Git
+│   └── ...                  # Otros archivos/carpetas backend
+│
+├── frontend/                # Frontend (Angular)
+│   ├── README.md
+│   └── src/
+│       ├── app/             # Componentes principales Angular
+│       ├── styles/          # Estilos y variables SCSS
+│       └── index.html       # Entry point de la SPA
+│
+├── docs/                    # Documentación técnica y de usuario
+│
+└── README.md                # Esta documentación principal
+```
+
+- **frontend**: Implementa la SPA en Angular, organiza los componentes, estilos, assets y vistas principales bajo `/src/app/` y `/src/styles/`.
+- **backend**: Contiene el servicio Spring Boot, controladores, modelos, repositorios, y herramientas de seguridad/autenticación, con Maven para gestión de dependencias.
+- **docs**: Recoge la documentación del diseño, cliente y servidor.
+- **.idea**: Referente a la configuración del proyecto para JetBrains/IntelliJ.
 
 ##  Stack Tecnológico
 
