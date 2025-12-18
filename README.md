@@ -42,11 +42,6 @@ DWEC-DWES-DIW-Proyecto-ORGMedi/
 └── README.md                # Esta documentación principal
 ```
 
-- **frontend**: Implementa la SPA en Angular, organiza los componentes, estilos, assets y vistas principales bajo `/src/app/` y `/src/styles/`.
-- **backend**: Contiene el servicio Spring Boot, controladores, modelos, repositorios, y herramientas de seguridad/autenticación, con Maven para gestión de dependencias.
-- **docs**: Recoge la documentación del diseño, cliente y servidor.
-- **.idea**: Referente a la configuración del proyecto para JetBrains/IntelliJ.
-
 ##  Stack Tecnológico
 
 ### Frontend
