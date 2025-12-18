@@ -1,6 +1,6 @@
 # ORGMedi
 
-**ORGMedi** es una plataforma web pensada para la gestión sanitaria y organizacional de pacientes y profesionales médicos. Esta aplicación facilita la administración de citas, historiales médicos y la comunicación eficiente entre usuarios y personal sanitario. Incluye un frontend moderno en Angular y una arquitectura preparada para despliegue escalable.
+**ORGMedi** es una plataforma web pensada para la gestión  y organizacional de medicamentos. Esta aplicación facilita la administración del consumo de pastillas de las personas. 
 
 ## Índice
 
