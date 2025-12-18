@@ -7,6 +7,8 @@ import { FormSelectComponent } from '../../components/shared/form-select/form-se
 import { AlertComponent } from '../../components/shared/alert/alert';
 import { FormInputComponent } from '../../components/shared/form-input/form-input';
 
+// Note: demos (Modal/Tooltip/Tabs) moved to `pages/demo`.
+
 @Component({
   selector: 'app-style-guide',
   standalone: true,
@@ -25,4 +27,6 @@ export class StyleGuidePage {
   onAlertClosed() {
     console.log('Guía: alerta cerrada');
   }
+
+  // Demos interactivos fueron movidos a la página `Demo`.
 }

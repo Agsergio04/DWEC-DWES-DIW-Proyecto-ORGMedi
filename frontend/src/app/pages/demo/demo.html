@@ -1,10 +1,13 @@
 <div class="page-demo">
   <h1>Demo - Peticiones (Fase Cliente)</h1>
 
+  <!-- Theme toggle -->
+  <div class="theme-toggle" style="margin-bottom: 1rem;">
+    <button (click)="toggleTheme()">Cambiar tema (actual: {{ currentTheme }})</button>
+  </div>
+
   <section class="peticiones">
     <h2>Fase Cliente</h2>
-    <p>Aquí irán las peticiones que pegues; cada petición se mostrará en una tarjeta para pruebas.</p>
-
     <div class="peticiones-list" id="peticionesList">
       <!-- Aquí añadiremos las peticiones que proporciones -->
     </div>
@@ -14,28 +17,75 @@
     <h3>Acciones rápidas</h3>
     <p>Botones temporales para añadir/limpiar peticiones de muestra.</p>
     <div class="controls">
-      <button id="addSample">Añadir petición de ejemplo</button>
-      <button id="clearAll">Limpiar</button>
+      <button (click)="sendSampleNotification()">Añadir petición de ejemplo</button>
+      <button (click)="clearNotification()">Limpiar</button>
+    </div>
+
+    <div class="last-notification" style="margin-top:1rem">
+      <strong>Última notificación:</strong>
+      <ng-container *ngIf="(comm.notifications$ | async) as notif">
+        <app-alert *ngIf="notif" [type]="'info'" [closable]="true" (closed)="onAlertClosed()">{{ notif }}</app-alert>
+        <em *ngIf="!notif">(vacía)</em>
+      </ng-container>
+    </div>
+  </section>
+
+  <section class="users-demo" style="margin-top:1.5rem">
+    <h3>Lista de usuarios (SRP demo)</h3>
+    <p>Los datos y la lógica se obtienen desde <code>UserService</code>.</p>
+    <ul>
+      <li *ngFor="let user of users$ | async">
+        {{ user.name }} <button (click)="onSelectUser(user)">Seleccionar</button>
+      </li>
+    </ul>
+    <div *ngIf="selectedUser() as s">
+      <strong>Usuario seleccionado:</strong> {{ s.name }} (id: {{ s.id }})
+
+      <div style="margin-top:.5rem">
+        <small>SelectedUserId (desde UserService): <span *ngIf="(selectedUserId$ | async) as id; else none">{{ id }}</span><ng-template #none><em>(n/a)</em></ng-template></small>
+      </div>
+    </div>
+  </section>
+
+  <section class="dom-examples">
+    <h2>Ejemplos de manipulación del DOM</h2>
+    <app-dom-direct></app-dom-direct>
+    <app-dom-renderer></app-dom-renderer>
+    <app-dom-viewchild></app-dom-viewchild>
+    <app-dom-observers></app-dom-observers>
+    <app-dom-events></app-dom-events>
+  </section>
+
+  <!-- NUEVOS DEMOS: Tooltip, Modal y Tabs -->
+  <section class="interactive-demos">
+    <h2>Demos interactivos</h2>
+
+    <div class="demo-block">
+      <h3>Tooltip</h3>
+      <button appTooltip="Tooltip de ejemplo" class="btn">Hover / focus aquí</button>
+    </div>
+
+    <div class="demo-block">
+      <h3>Modal</h3>
+      <app-button variant="primary" (clicked)="openModal()">Abrir modal</app-button>
+      <app-modal [isOpen]="modalOpen" title="Modal de prueba" (close)="closeModal()">
+        <p>Contenido del modal. Pulsa fuera o Esc para cerrar.</p>
+        <app-button variant="secondary" (clicked)="closeModal()">Cerrar</app-button>
+      </app-modal>
+    </div>
+
+    <div class="demo-block">
+      <h3>Tabs</h3>
+      <app-tabs>
+        <app-tab title="Detalles">
+          <p>Contenido de la pestaña Detalles.</p>
+        </app-tab>
+        <app-tab title="Historial">
+          <p>Contenido de la pestaña Historial.</p>
+        </app-tab>
+      </app-tabs>
     </div>
   </section>
 </div>
 
-<script>
-  // Pequeño script de ayuda para manipular el DOM localmente en esta página de demo
-  (function(){
-    const list = document.getElementById('peticionesList');
-    const add = document.getElementById('addSample');
-    const clear = document.getElementById('clearAll');
-
-    function createCard(text){
-      const div = document.createElement('div');
-      div.className = 'peticion-card';
-      div.innerText = text;
-      list && list.appendChild(div);
-    }
-
-    add && add.addEventListener('click', ()=> createCard('Petición de ejemplo'));
-    clear && clear.addEventListener('click', ()=> { if(list) list.innerHTML = ''; });
-  })();
-</script>
-
+<!-- Se ha eliminado el script inline y se integran componentes Angular para los ejemplos -->

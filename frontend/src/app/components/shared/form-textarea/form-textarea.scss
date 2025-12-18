@@ -1,5 +1,17 @@
 @use '../../../../styles/00-settings/variables' as *;
 
-.form-textarea__label { display:block; font-family:$font-primary; margin-bottom:$espaciado-8; color:var(--color-texto_borde_cajas); }
-.form-textarea__field { width:100%; min-height:120px; padding:$espaciado-12; border:$border-thin solid var(--color-bordes_marco_botones); border-radius:$radius-md; font-family:$font-primary; }
-.form-textarea__field:focus { outline:none; box-shadow:0 0 0 3px rgba(0,0,0,0.06); }
+.form-textarea__label {
+  display:block; font-family:$font-primary; margin-bottom:$espaciado-8;
+  color:var(--color-texto_borde_cajas);
+}
+.form-textarea__field {
+  width:100%; min-height:120px;
+  padding:$espaciado-12;
+  border:$border-thin solid var(--color-bordes_marco_botones);
+  border-radius:$radius-md;
+  font-family:$font-primary;
+}
+.form-textarea__field:focus {
+  outline:none;
+  box-shadow:0 0 0 3px rgba(0,0,0,0.06);
+}

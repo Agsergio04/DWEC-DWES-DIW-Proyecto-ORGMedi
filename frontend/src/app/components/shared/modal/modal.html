@@ -1,0 +1,13 @@
+<div class="app-modal" *ngIf="isOpen" role="dialog" aria-modal="true" [attr.aria-label]="title || 'Modal'">
+  <div class="app-modal__overlay" (click)="onOverlayClick($event)"></div>
+  <div class="app-modal__content" role="document">
+    <header class="app-modal__header">
+      <h2 class="app-modal__title">{{ title }}</h2>
+      <button class="app-modal__close" aria-label="Cerrar" (click)="close.emit()">×</button>
+    </header>
+    <section class="app-modal__body">
+      <ng-content></ng-content>
+    </section>
+  </div>
+</div>
+

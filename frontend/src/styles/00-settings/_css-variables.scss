@@ -27,8 +27,8 @@
   --color-bordes_marco_botones: #{vars.$color-bordes_marco_botones};
   --color-texto_borde_cajas: #{vars.$color-texto_borde_cajas};
   /* RGB helpers */
-  --color-bordes_marco_botones-rgb: #{red(vars.$color-bordes_marco_botones)}, #{green(vars.$color-bordes_marco_botones)}, #{blue(vars.$color-bordes_marco_botones)};
-  --color-texto_borde_cajas-rgb: #{red(vars.$color-texto_borde_cajas)}, #{green(vars.$color-texto_borde_cajas)}, #{blue(vars.$color-texto_borde_cajas)};
+  --color-bordes_marco_botones-rgb: #{color.red(vars.$color-bordes_marco_botones)}, #{color.green(vars.$color-bordes_marco_botones)}, #{color.blue(vars.$color-bordes_marco_botones)};
+  --color-texto_borde_cajas-rgb: #{color.red(vars.$color-texto_borde_cajas)}, #{color.green(vars.$color-texto_borde_cajas)}, #{color.blue(vars.$color-texto_borde_cajas)};
 
   /* Variables derivadas/claras para uso en componentes */
   --color-borde-primario: var(--color-bordes_marco_botones);
@@ -134,8 +134,8 @@
   --color-bordes_marco_botones: #{vars.$color-bordes_marco_botones_dark};
   --color-texto_borde_cajas: #{vars.$color-texto_borde_cajas_dark};
   /* RGB helpers dark */
-  --color-bordes_marco_botones-rgb: #{red(vars.$color-bordes_marco_botones_dark)}, #{green(vars.$color-bordes_marco_botones_dark)}, #{blue(vars.$color-bordes_marco_botones_dark)};
-  --color-texto_borde_cajas-rgb: #{red(vars.$color-texto_borde_cajas_dark)}, #{green(vars.$color-texto_borde_cajas_dark)}, #{blue(vars.$color-texto_borde_cajas_dark)};
+  --color-bordes_marco_botones-rgb: #{color.red(vars.$color-bordes_marco_botones_dark)}, #{color.green(vars.$color-bordes_marco_botones_dark)}, #{color.blue(vars.$color-bordes_marco_botones_dark)};
+  --color-texto_borde_cajas-rgb: #{color.red(vars.$color-texto_borde_cajas_dark)}, #{color.green(vars.$color-texto_borde_cajas_dark)}, #{color.blue(vars.$color-texto_borde_cajas_dark)};
   --color-variante-primera: #{vars.$color-variante-primera};
   --color-variante-segunda: #{vars.$color-variante-segunda};
   --color-variante-tercera: #{vars.$color-variante-tercera};

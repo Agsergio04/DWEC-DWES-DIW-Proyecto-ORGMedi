@@ -1,3 +1,4 @@
+@use 'sass:color' as color;
 @use '../../../styles/00-settings/variables' as *;
 
 .sg {
@@ -88,7 +89,7 @@
 
 /* Shadow demo */
 .shadow-demo { display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:$espaciado-6; padding:$espaciado-6; border: $border-thin dashed rgba(0,0,0,0.03); }
-.shadow-box { background: mix(#fff, $color-terciario-primary, 10%); border-radius:$radius-md; padding:$espaciado-6; text-align:center; box-shadow: 0 6px 18px rgba(31,10,26,0.06); }
+.shadow-box { background: color.mix(#fff, $color-terciario-primary, 10%); border-radius:$radius-md; padding:$espaciado-6; text-align:center; box-shadow: 0 6px 18px rgba(31,10,26,0.06); }
 
 /* Radius demo */
 .radius-demo { display:grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap:$espaciado-6; padding:$espaciado-6; border: $border-thin dashed rgba(0,0,0,0.03); }
@@ -268,7 +269,7 @@
   padding: $espaciado-8;
   border: $border-thin solid rgba(0,0,0,0.06);
   border-radius: $radius-md;
-  background: mix(#fff, $color-terciario-primary, 6%);
+  background: color.mix(#fff, $color-terciario-primary, 6%);
 }
 .bem-block__header { font-weight: $font-weight-semibold; margin-bottom: $espaciado-4; }
 .bem-block__elem { padding: $espaciado-4; background: rgba(0,0,0,0.02); border-radius: $radius-sm; }

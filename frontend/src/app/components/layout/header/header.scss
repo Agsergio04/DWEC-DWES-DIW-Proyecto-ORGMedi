@@ -6,8 +6,8 @@
   height: 72px;
   padding: 0 $espaciado-24; // reducir ligeramente para mejor balance
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: center; // CORREGIDO: antes 'rig'
+  justify-content: space-between; // Cambiado: separar brand a la izquierda y nav a la derecha
 
   background-color: var(--color-primario-primary);
   border-bottom: $border-medium solid var(--color-bordes_marco_botones);
@@ -18,6 +18,7 @@
 .app-header__brand {
   display: flex;
   align-items: center;
+  flex: 0 0 auto; // evitar que el brand crezca y empuje el nav
 }
 
 .app-header__logo {
@@ -38,6 +39,9 @@
   display: flex;
   align-items: center;
   gap: $espaciado-16; // más separación entre items
+  justify-content: flex-end; // alinear los items del nav a la derecha
+  margin-left: auto; // empujar el nav al borde derecho del header
+  flex: 0 0 auto; // evitar que el nav ocupe todo el espacio disponible
 }
 
 /* Pills de navegación */
@@ -90,7 +94,7 @@
 .app-header__icon {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; // CORREGIDO: centrar el icono dentro de su caja
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -121,46 +125,7 @@
 
 /* El toggle del tema también debe usar el color del borde */
 .app-header__theme-icon-svg {
-  color: var(--color-bordes_marco_botones);
   transition: color $transition-normal, transform 0.18s ease;
-}
-
-/* Dark mode adjustments for header */
-:root[data-theme="dark"] {
-  .app-header {
-    background-color: var(--color-primario-primary);
-    border-bottom-color: var(--color-bordes_marco_botones);
-  }
-  .app-header__title {
-    color: #fff;
-  }
-  /* Pills: usar secundario-dark vía var(--color-secundario-primary); color/border vienen del CSS var mapping */
-  .app-header__pill {
-    background-color: var(--color-secundario-primary);
-    color: var(--color-bordes_marco_botones);
-    border-color: var(--color-bordes_marco_botones);
-  }
-  /* Estado activo/foco en dark: usar la versión _hover mapeada (var(--color-secundario-hover)) */
-  .app-header__pill.is-active,
-  .app-header__pill.router-link-active,
-  .app-header__pill[aria-current="page"],
-  .app-header__pill:focus-visible {
-    background-color: var(--color-secundario-hover);
-    color: var(--color-bordes_marco_botones);
-    border-color: var(--color-bordes_marco_botones);
-  }
-  .app-header__icon {
-    color: inherit; /* iconos dentro de la pill heredan el color (ahora la variable) */
-  }
-  /* specifically set theme icon color to the button border color */
-  .app-header__theme-icon-svg {
-    color: var(--color-bordes_marco_botones);
-  }
-}
-
-/* Ajustes de accesibilidad y tamaño */
-.app-header__label {
-  line-height: 1;
 }
 
 /* Botón toggle de tema — pequeño, con borde y enfoque prominente */
@@ -178,11 +143,24 @@
   align-items: center;
   justify-content: center;
   transition: background-color $transition-normal, transform 0.12s;
+
+  /* El icono interno heredará este color (currentColor en el SVG) */
+  color: var(--color-bordes_marco_botones);
 }
 
-.app-header__theme-toggle:hover {
-  transform: translateY(-1px);
-  background-color: var(--color-terciario-hover);
+/* Asegurar que los SVG internos hereden el color y no estén ocultos */
+.app-header__theme-toggle .app-header__icon-svg,
+.app-header__theme-toggle .app-header__theme-icon-svg {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  color: inherit; /* importante para heredarlo del botón */
+}
+
+/* Los paths deben usar stroke=currentColor en el markup; aquí sólo seguridad si hace falta */
+.app-header__theme-toggle .app-header__icon-svg path {
+  stroke: currentColor;
 }
 
 /* ======= Estilos para hamburguesa y menú responsivo ======= */
@@ -199,6 +177,7 @@
   cursor: pointer;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
 }
 
 .app-header__hamburger-line {
@@ -252,10 +231,11 @@
   /* Mostrar hamburguesa */
   .app-header__hamburger {
     display: flex;
+    margin-left: auto; /* mover el botón hamburguesa a la derecha en móvil */
   }
 
   /* Mostrar hint dentro del boton */
-  .app-header__hamburger-hint { display: inline-flex; }
+  .app-header__hamburger-hint { display: inline-flex; margin-left: 0; margin-right: $espaciado-8; }
 
   /* Navegación como panel lateral oculto por defecto */
   .app-header__nav {
@@ -334,4 +314,52 @@
 /* Specific: home icon should follow text color variable (light/dark) */
 .app-header__home .app-header__icon-svg {
   color: var(--color-texto_borde_cajas);
+}
+
+/* Asegurar que el SVG dentro del toggle use el color del borde incluso si hay overrides */
+.app-header__theme-toggle .app-header__theme-icon-svg {
+  display: inline-block; /* asegurar comportamiento de caja */
+  width: 18px;
+  height: 18px;
+  color: var(--color-bordes_marco_botones, #111) ; /* fallback si la variable no está definida */
+  opacity: 1 ;
+}
+
+/* Forzar visibilidad y tamaño del SVG dentro del toggle (fallbacks explícitos) */
+.app-header__theme-toggle svg {
+  display: block ;
+  width: 18px ;
+  height: 18px ;
+  visibility: visible ;
+  opacity: 1 ;
+}
+
+.app-header__controls {
+  display: flex;
+  align-items: center;
+  gap: $espaciado-8;
+  margin-left: auto; /* empuja el control (hamburguesa + hint) al borde derecho */
+  flex: 0 0 auto;
+}
+
+/* Por defecto ocultar el hint en escritorio (ya era hidden), aseguramos estilo */
+.app-header__hamburger-hint { display: none; }
+
+@media (max-width: #{ $breakpoint-medio }) {
+  /* En móvil, el wrapper debe ocupar el espacio de controls al final */
+  .app-header__controls {
+    margin-left: auto;
+    margin-right: 0;
+    display: flex;
+    align-items: center;
+    gap: $espaciado-8;
+  }
+
+  /* Mostrar hint al lado derecho del botón (ya empujado por margin-left:auto en el wrapper) */
+  .app-header__hamburger-hint {
+    display: inline-flex;
+    margin-left: $espaciado-8;
+    margin-right: 0;
+    align-items: center;
+  }
 }

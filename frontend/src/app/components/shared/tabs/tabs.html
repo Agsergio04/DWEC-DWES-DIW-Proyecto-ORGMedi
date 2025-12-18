@@ -1,0 +1,11 @@
+<div class="app-tabs">
+  <div class="app-tabs__nav" role="tablist">
+    <button *ngFor="let t of tabs.toArray(); let i = index" role="tab" [attr.aria-selected]="t.active" [class.tab--active]="t.active" (click)="selectTab(i)">
+      {{ t.title }}
+    </button>
+  </div>
+  <div class="app-tabs__panels">
+    <ng-content></ng-content>
+  </div>
+</div>
+

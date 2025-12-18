@@ -1,59 +1,46 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login-form.html',
   styleUrls: ['./login-form.scss'],
 })
 export class LoginFormComponent {
-  username: string = '';
-  password: string = '';
-  usernameError?: string;
-  passwordError?: string;
+  loginForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.loginForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(2)]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
+    });
+  }
 
   /**
-   * Valida y envía el formulario de login
+   * Envía el formulario si es válido
    */
   onSubmit() {
-    // Validar campos vacíos
-    this.usernameError = this.username.trim()
-      ? undefined
-      : 'El usuario es obligatorio';
-
-    this.passwordError = this.password.trim()
-      ? undefined
-      : 'La contraseña es obligatoria';
-
-    // Si no hay errores, proceder
-    if (!this.usernameError && !this.passwordError) {
-      console.log('Login válido:', {
-        username: this.username,
-        password: this.password,
-      });
-
-      // Aquí iría la lógica de login
-      // this.authService.login(this.username, this.password).subscribe(...)
-      alert(`Login enviado para: ${this.username}`);
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
     }
+
+    const { username, password } = this.loginForm.value;
+    console.log('Login válido:', { username, password });
+    // TODO: llamar a authService.login(username, password)
+    alert(`Login enviado para: ${username}`);
   }
 
-  /**
-   * Limpia los errores al escribir
-   */
-  onUsernameChange() {
-    if (this.usernameError) {
-      this.usernameError = undefined;
-    }
-  }
-
-  onPasswordChange() {
-    if (this.passwordError) {
-      this.passwordError = undefined;
-    }
+  /** Helpers para mostrar mensajes de error */
+  getErrorMessage(controlName: string): string {
+    const control = this.loginForm.get(controlName);
+    if (!control || !control.errors) return '';
+    if (control.errors['required']) return `${controlName} es requerido`;
+    if (control.errors['minlength']) return `Mínimo ${control.errors['minlength'].requiredLength} caracteres`;
+    return '';
   }
 }

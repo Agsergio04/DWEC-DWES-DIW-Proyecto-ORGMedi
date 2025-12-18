@@ -19,6 +19,6 @@
   border: 1px solid var(--color-bordes_marco_botones);
 }
 
-.controls { display:flex; gap:$espaciado-12; margin-top:$espaciado-12; }
+.controls { display:flex; gap:$espaciado-12; margin-top:$espaciado-12; justify-content: flex-start; align-items: center; }
 
 button { padding: $espaciado-8 $espaciado-12; border-radius:$radius-md; cursor:pointer; }

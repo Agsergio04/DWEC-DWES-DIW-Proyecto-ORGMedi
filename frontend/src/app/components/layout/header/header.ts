@@ -2,11 +2,13 @@ import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild } fro
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ThemeService } from '../../../core/services/theme.service';
+import { ToastComponent } from '../../..//shared/toast.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, ToastComponent],
   templateUrl: './header.html',
   styleUrls: ['./header.scss']
 })
@@ -18,19 +20,16 @@ export class Header implements OnInit, OnDestroy {
   @ViewChild('menuButton') menuButton?: ElementRef<HTMLButtonElement>;
   @ViewChild('navMenu') navMenu?: ElementRef<HTMLElement>;
   private routerSub?: Subscription;
+  private themeSub?: Subscription;
 
-  constructor(public router: Router, private elementRef: ElementRef) {}
+  constructor(public router: Router, private elementRef: ElementRef, private themeService: ThemeService) {}
 
   ngOnInit() {
-    const stored = localStorage.getItem('orgmedi-theme');
-    if (stored === 'dark') {
-      this.setDark(true);
-    } else if (stored === 'light') {
-      this.setDark(false);
-    } else {
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.setDark(prefersDark);
-    }
+    // Delegar lógica de tema al ThemeService
+    // Suscribirse al observable para reflejar el estado actual
+    this.themeSub = this.themeService.theme$.subscribe(theme => {
+      this.isDarkMode = theme === 'dark';
+    });
 
     this.checkAuthRoute(this.router.url);
     this.routerSub = this.router.events.subscribe(event => {
@@ -43,10 +42,11 @@ export class Header implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.routerSub?.unsubscribe();
+    this.themeSub?.unsubscribe();
   }
 
   toggleTheme() {
-    this.setDark(!this.isDarkMode);
+    this.themeService.toggleTheme();
   }
 
   toggleMenu() {
@@ -81,18 +81,6 @@ export class Header implements OnInit, OnDestroy {
     if (this.isOpen) {
       ke.preventDefault();
       this.closeMenu();
-    }
-  }
-
-  private setDark(dark: boolean) {
-    this.isDarkMode = dark;
-    const root = document.documentElement;
-    if (dark) {
-      root.setAttribute('data-theme', 'dark');
-      localStorage.setItem('orgmedi-theme', 'dark');
-    } else {
-      root.removeAttribute('data-theme');
-      localStorage.setItem('orgmedi-theme', 'light');
     }
   }
 

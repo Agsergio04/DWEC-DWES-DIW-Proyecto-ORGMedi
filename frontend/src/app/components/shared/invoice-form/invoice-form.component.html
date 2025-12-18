@@ -1,0 +1,57 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <!-- Datos cliente -->
+  <h3>Cliente</h3>
+  <input formControlName="customer" placeholder="Nombre cliente">
+  <div *ngIf="form.get('customer')?.invalid && form.get('customer')?.touched" class="error">
+    Cliente requerido
+  </div>
+
+  <!-- Teléfonos -->
+  <h3>Teléfonos</h3>
+  <div formArrayName="phones">
+    <div *ngFor="let phoneGroup of phones.controls; let i = index" [formGroupName]="i">
+      <input formControlName="phone" placeholder="Teléfono (6xxxxxxxx)">
+      <button type="button" (click)="removePhone(i)" *ngIf="phones.length > 1">Eliminar</button>
+      <div *ngIf="isPhoneInvalid(i)" class="error">
+        Teléfono inválido
+      </div>
+    </div>
+    <button type="button" (click)="addPhone()">Añadir teléfono</button>
+  </div>
+
+  <!-- Direcciones -->
+  <h3>Direcciones</h3>
+  <div formArrayName="addresses">
+    <div *ngFor="let addressGroup of addresses.controls; let i = index" [formGroupName]="i" class="address">
+      <input formControlName="street" placeholder="Calle">
+      <input formControlName="city" placeholder="Ciudad">
+      <input formControlName="zip" placeholder="CP">
+      <button type="button" (click)="removeAddress(i)" *ngIf="addresses.length > 1">Eliminar</button>
+
+      <div *ngIf="isAddressInvalid(i)" class="error">
+        Todos los campos de la dirección son obligatorios y el CP debe tener 5 dígitos.
+      </div>
+    </div>
+    <button type="button" (click)="addAddress()">Añadir dirección</button>
+  </div>
+
+  <!-- Items de factura -->
+  <h3>Items de factura</h3>
+  <div formArrayName="items">
+    <div *ngFor="let itemGroup of items.controls; let i = index" [formGroupName]="i" class="item-row">
+      <input formControlName="description" placeholder="Descripción">
+      <input formControlName="quantity" type="number" min="1">
+      <input formControlName="price" type="number" min="0" step="0.01">
+      <button type="button" (click)="removeItem(i)" *ngIf="items.length > 1">Eliminar</button>
+
+      <div *ngIf="isItemInvalid(i)" class="error">
+        Cantidad mínima 1 y precio ≥ 0.
+      </div>
+    </div>
+    <button type="button" (click)="addItem()">Añadir item</button>
+  </div>
+
+  <h4>Total: {{ getTotal() | currency:'EUR':'symbol' }}</h4>
+
+  <button type="submit" [disabled]="form.invalid || form.pending">{{ form.pending ? 'Validando...' : 'Guardar factura' }}</button>
+</form>

@@ -1,1 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Validation feedback */
+input.ng-touched.ng-invalid, textarea.ng-touched.ng-invalid, select.ng-touched.ng-invalid {
+  border: 2px solid #f44336; /* rojo */
+}
+
+input.ng-touched.ng-valid, textarea.ng-touched.ng-valid, select.ng-touched.ng-valid {
+  border: 2px solid #4caf50; /* verde */
+}
+
+input.ng-pending, textarea.ng-pending, select.ng-pending {
+  border-style: dashed;
+  border-color: #2196f3; /* azul */
+}
+
+/* Loading and error helpers */
+.loading { color: #2196f3; font-style: italic; font-size: 0.9rem; margin-top: 4px; }
+.error { color: #f44336; font-size: 0.9rem; margin-top: 4px; }
+
+/* Small responsive tweaks for form inputs */
+.form-input, input[formControlName], input[formControl], textarea { padding: 8px 10px; border-radius: 4px; border: 1px solid #ccc; }

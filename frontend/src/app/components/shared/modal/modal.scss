@@ -1,0 +1,57 @@
+:root {
+  --modal-z: 1000;
+}
+
+.app-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--modal-z);
+}
+
+.app-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+}
+
+.app-modal__content {
+  position: relative;
+  background: var(--surface, #fff);
+  color: var(--on-surface, #111);
+  border-radius: 8px;
+  max-width: 720px;
+  width: calc(100% - 48px);
+  max-height: calc(100% - 96px);
+  overflow: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  z-index: calc(var(--modal-z) + 1);
+}
+
+.app-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.app-modal__title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.app-modal__close {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.app-modal__body {
+  padding: 16px;
+}
+
