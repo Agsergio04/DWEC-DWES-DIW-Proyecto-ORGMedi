@@ -1,0 +1,28 @@
+<nav class="breadcrumb-nav" aria-label="navegación de migas de pan" *ngIf="breadcrumbs.length > 1">
+  <ol class="breadcrumb-list">
+    <li
+      *ngFor="let crumb of breadcrumbs; let last = last"
+      class="breadcrumb-item"
+      [class.breadcrumb-item--active]="last"
+    >
+      <ng-container *ngIf="!last">
+        <a 
+          [routerLink]="crumb.url"
+          class="breadcrumb-link"
+          [attr.aria-current]="null"
+        >
+          {{ crumb.label }}
+        </a>
+        <span class="breadcrumb-separator" aria-hidden="true">›</span>
+      </ng-container>
+      <ng-container *ngIf="last">
+        <span 
+          class="breadcrumb-current"
+          [attr.aria-current]="'page'"
+        >
+          {{ crumb.label }}
+        </span>
+      </ng-container>
+    </li>
+  </ol>
+</nav>

@@ -3,7 +3,7 @@
 
 1. [Fase 1 — Arquitectura de eventos](#fase-1--arquitectura-de-eventos)
     - [Flujo de eventos (diagrama textual)](#flujo-de-eventos-diagrama-textual)
-    - [Patrones y buenas prácticas observadas](#patrones-y-buenas-prácticas-observadas)
+    - [Patrones y buenas prácticas observadas](#patrones-y-buenas-prácticas-observados)
     - [Diagrama de flujo de eventos principales (texto expandido)](#diagrama-de-flujo-de-eventos-principales-texto-expandido)
     - [Tabla de compatibilidad: eventos usados](#tabla-de-compatibilidad-eventos-usados)
     - [Ejemplos prácticos (breve)](#ejemplos-prácticos-breve)
@@ -25,6 +25,14 @@
     - [Catálogo de validadores implementados](#catálogo-de-validadores-implementados)
     - [Guía de uso de FormArray (listas dinámicas)](#guía-de-uso-de-formarray-listas-dinámicas)
     - [Ejemplos de validación asíncrona (flujo completo)](#ejemplos-de-validación-asíncrona-flujo-completo)
+4. [Fase 4 — Rutas, navegación y carga de datos](#fase-4--rutas-navegación-y-carga-de-datos)
+    - [Mapa Completo de Rutas](#mapa-completo-de-rutas)
+    - [Lazy Loading — Estrategia de Carga Dinámica](#lazy-loading--estrategia-de-carga-dinámica)
+    - [Route Guards — Protección de Rutas](#route-guards--protección-de-rutas)
+    - [Resolvers — Precarga de Datos](#resolvers--precarga-de-datos)
+    - [Breadcrumbs — Navegación Dinámica](#breadcrumbs--navegación-dinámica)
+    - [Flujos de Navegación Principales](#flujos-de-navegación-principales)
+    - [Resumen de Implementación](#resumen-de-implementación)
 
 ---
 ## Fase 1 — Arquitectura de eventos
@@ -442,3 +450,469 @@ this.form = this.fb.group({
 **Notas**
 - `pending` indica que la validación asíncrona está en curso; es útil para feedback visual y para deshabilitar envíos hasta que la validación termine.
 - `timer` + `switchMap` implementan un debounce simple; para producción usar una estrategia en el servicio que reutilice `debounceTime` o `distinctUntilChanged` cuando sea necesario.
+
+---
+
+## Fase 4 — Rutas, navegación y carga de datos
+
+### Mapa Completo de Rutas
+
+| Ruta | Descripción | Lazy | Guards | Resolver |
+|------|-------------|------|--------|----------|
+| `/` | Página de inicio | ❌ | - | - |
+| `/iniciar-sesion` | Autenticación del usuario | ✅ | - | - |
+| `/registrarse` | Registro de nuevo usuario | ✅ | - | - |
+| `/medicamentos` | Listado de medicamentos | ✅ | `authGuard` | `medicinesResolver` |
+| `/medicamentos/crear` | Crear nuevo medicamento | ✅ | `authGuard`, `pendingChangesGuard` | - |
+| `/medicamentos/crear-foto` | Crear medicamento desde foto | ✅ | `authGuard`, `pendingChangesGuard` | - |
+| `/medicamentos/:id/editar` | Editar medicamento específico | ✅ | `authGuard`, `pendingChangesGuard` | `medicineDetailResolver` |
+| `/calendario` | Vista de calendario | ✅ | - | - |
+| `/guia-estilos` | Guía de estilos y componentes | ✅ | - | - |
+| `/demostracion` | Página de demostración | ✅ | - | - |
+| `/perfil` | Perfil del usuario | ✅ | `authGuard`, `pendingChangesGuard` | `profileResolver` |
+| `**` | Página 404 (wildcard) | - | - | - |
+
+---
+
+### Lazy Loading — Estrategia de Carga Dinámica
+
+#### Objetivo
+Reducir el tamaño del bundle inicial dividiendo la aplicación en chunks independientes que se cargan bajo demanda.
+
+#### Implementación
+
+Todas las rutas exceptuando `/` utilizan lazy loading con `loadComponent()`:
+
+```typescript
+// app.routes.ts (ejemplo)
+const MEDICINES_ROUTES: Routes = [
+  {
+    path: 'medicamentos',
+    loadComponent: () =>
+      import('./pages/medicines/medicines').then(m => m.MedicinesPage),
+    data: { 
+      chunkName: 'medicamentos',
+      breadcrumb: 'Medicamentos'
+    },
+    canActivate: [authGuard],
+    resolve: {
+      medicines: medicinesResolver
+    }
+  },
+  // ... más rutas
+];
+```
+
+#### Precargar Módulos
+
+```typescript
+// app.config.ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(APP_ROUTES, 
+      withPreloadingStrategy(PreloadAllModules)
+    )
+  ]
+};
+```
+
+#### Beneficios
+- ✅ Bundle inicial: 306.83 kB → 83.27 kB (gzipped)
+- ✅ 14 chunks lazy generados
+- ✅ PreloadAllModules precarga chunks visibles
+- ✅ Navegación más rápida después del primer load
+
+#### Métricas de Bundle
+
+```
+Initial chunks:
+- main-OZCLOPL3.js: 32.18 kB (core app)
+- chunk-7ZT573BA.js: 154.92 kB (Angular framework)
+- chunk-C7BQFHC4.js: 92.54 kB (app logic)
+- chunk-KRM2EZBP.js: 17.96 kB (utilities)
+- styles-R2WCJJQN.css: 6.36 kB
+
+Total: 306.83 kB (83.27 kB comprimido)
+14 lazy chunks generados
+```
+
+---
+
+### Route Guards — Protección de Rutas
+
+#### authGuard - Protección de autenticación
+
+```typescript
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  
+  if (authService.isAuthenticated()) {
+    return true;
+  }
+  
+  router.navigate(['/iniciar-sesion'], {
+    queryParams: { returnUrl: state.url }
+  });
+  return false;
+};
+```
+
+**Casos de uso**:
+- Protege `/medicamentos`, `/medicamentos/crear`, `/medicamentos/:id/editar`, `/perfil`
+- Redirige a `/iniciar-sesion` si no autenticado
+- Preserva `returnUrl` para redirigir después del login
+
+#### pendingChangesGuard - Prevención de pérdida de datos
+
+```typescript
+export const pendingChangesGuard: CanDeactivateFn<FormComponent> = 
+  (component, currentRoute, currentState, nextState) => {
+    
+    if (component.isDirty && component.isDirty()) {
+      return confirm('¿Abandonar sin guardar cambios?');
+    }
+    return true;
+  };
+
+interface FormComponent {
+  isDirty(): boolean;
+}
+```
+
+**Casos de uso**:
+- Se aplica en `/medicamentos/crear`, `/medicamentos/:id/editar`, `/perfil`
+- Advierte al usuario si hay cambios sin guardar
+- Solo protege cuando el formulario está dirty
+
+---
+
+### Resolvers — Precarga de Datos
+
+Los **resolvers** precarga datos antes de activar la ruta, mejorando UX.
+
+#### Pattern ResolveFn
+
+```typescript
+export const miResolver: ResolveFn<MiDatos[]> = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+): Promise<MiDatos[]> | Observable<MiDatos[]> => {
+  return inject(MiServicio).cargarDatos();
+};
+```
+
+#### 1. medicinesResolver - Lista de Medicamentos
+
+```typescript
+export const medicinesResolver: ResolveFn<Medicine[]> = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+): Promise<Medicine[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        { id: 1, name: 'Paracetamol', dosage: '500mg' },
+        { id: 2, name: 'Ibuprofen', dosage: '400mg' }
+      ]);
+    }, 300);
+  });
+};
+```
+
+**Ubicación**: `core/services/medicines.resolver.ts`
+**Usado en**: Ruta `/medicamentos`
+**En producción**: `return inject(MedicineService).getMedicines();`
+
+#### 2. medicineDetailResolver - Medicamento por ID
+
+```typescript
+export const medicineDetailResolver: ResolveFn<Medicine | null> = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+): Promise<Medicine | null> => {
+  const router = inject(Router);
+  const id = route.paramMap.get('id');
+  
+  if (!id) {
+    router.navigate(['/medicamentos']);
+    return Promise.resolve(null);
+  }
+  
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const medicine = medicines.find(m => m.id === parseInt(id));
+      if (!medicine) {
+        router.navigate(['/medicamentos']);
+        resolve(null);
+      } else {
+        resolve(medicine);
+      }
+    }, 300);
+  });
+};
+```
+
+**Ubicación**: `core/services/medicines.resolver.ts`
+**Usado en**: Ruta `/medicamentos/:id/editar`
+**Validaciones**: ID presente, medicamento existe
+
+#### 3. profileResolver - Perfil del Usuario
+
+```typescript
+export const profileResolver: ResolveFn<UserProfile> = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+): Promise<UserProfile> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        id: 1,
+        name: 'Juan Pérez García',
+        email: 'juan@example.com',
+        birthDate: '1990-05-15',
+        medicalConditions: ['Diabetes', 'Hipertensión'],
+        allergies: ['Penicilina']
+      });
+    }, 300);
+  });
+};
+```
+
+**Ubicación**: `core/services/profile.resolver.ts`
+**Usado en**: Ruta `/perfil`
+
+#### Consumir Resolver en Componente
+
+```typescript
+export class EditMedicinePage implements OnInit {
+  medicine: Medicine | null = null;
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    this.route.data.subscribe((data: any) => {
+      this.medicine = data['medicine'] || null;
+    });
+  }
+}
+```
+
+---
+
+### Breadcrumbs — Navegación Dinámica
+
+Los **breadcrumbs** (migas de pan) muestran la ruta actual y permiten navegación hacia atrás.
+
+#### Ejemplo Visual
+
+```
+Inicio › Medicamentos › Editar Medicamento
+```
+
+#### BreadcrumbService - Lógica de Generación
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class BreadcrumbService {
+  private readonly _breadcrumbs$ = new BehaviorSubject<Breadcrumb[]>([]);
+  readonly breadcrumbs$ = this._breadcrumbs$.asObservable();
+
+  constructor(private router: Router, private route: ActivatedRoute) {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        const breadcrumbs: Breadcrumb[] = [];
+        breadcrumbs.push({ label: 'Inicio', url: '/' });
+        this.buildCrumbs(this.route.root, '', breadcrumbs);
+        this._breadcrumbs$.next(breadcrumbs);
+      });
+  }
+
+  private buildCrumbs(
+    route: ActivatedRoute,
+    url: string,
+    breadcrumbs: Breadcrumb[]
+  ): void {
+    const children: ActivatedRoute[] = route.children;
+
+    for (const child of children) {
+      const routeURL = child.snapshot.url
+        .map(segment => segment.path)
+        .join('/');
+
+      if (routeURL !== '') {
+        url += `/${routeURL}`;
+      }
+
+      const label = child.snapshot.data['breadcrumb'];
+      if (label && breadcrumbs[breadcrumbs.length - 1].label !== label) {
+        breadcrumbs.push({ label, url });
+      }
+
+      this.buildCrumbs(child, url, breadcrumbs);
+    }
+  }
+}
+```
+
+#### BreadcrumbComponent - Presentación
+
+```typescript
+@Component({
+  selector: 'app-breadcrumb',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './breadcrumb.component.html',
+  styleUrls: ['./breadcrumb.component.scss']
+})
+export class BreadcrumbComponent implements OnInit {
+  breadcrumbs: Breadcrumb[] = [];
+
+  constructor(private breadcrumbService: BreadcrumbService) {}
+
+  ngOnInit() {
+    this.breadcrumbService.breadcrumbs$.subscribe((crumbs: Breadcrumb[]) => {
+      this.breadcrumbs = crumbs;
+    });
+  }
+}
+```
+
+#### Template del Breadcrumb
+
+```html
+<nav *ngIf="breadcrumbs.length > 0" 
+     aria-label="Navegación de migas de pan"
+     class="breadcrumb-nav">
+  <ol class="breadcrumb-list">
+    <li *ngFor="let crumb of breadcrumbs; let last = last" 
+        class="breadcrumb-item">
+      <a *ngIf="!last" 
+         [routerLink]="crumb.url" 
+         class="breadcrumb-link">
+        {{ crumb.label }}
+      </a>
+      <span *ngIf="last" 
+            class="breadcrumb-text active" 
+            aria-current="page">
+        {{ crumb.label }}
+      </span>
+      <span *ngIf="!last" 
+            class="breadcrumb-separator" 
+            aria-hidden="true">›</span>
+    </li>
+  </ol>
+</nav>
+```
+
+#### Configuración en Rutas
+
+```typescript
+export const APP_ROUTES: Routes = [
+  {
+    path: '',
+    loadComponent: () => import('./pages/home/home').then(m => m.HomePage),
+    data: { breadcrumb: 'Inicio' }
+  },
+  {
+    path: 'medicamentos',
+    loadComponent: () => import('./pages/medicines/medicines').then(m => m.MedicinesPage),
+    canActivate: [authGuard],
+    resolve: { medicines: medicinesResolver },
+    data: { breadcrumb: 'Medicamentos' }
+  },
+  {
+    path: 'medicamentos/:id/editar',
+    loadComponent: () => import('./pages/edit-medicine/edit-medicine').then(m => m.EditMedicinePage),
+    canActivate: [authGuard],
+    canDeactivate: [pendingChangesGuard],
+    resolve: { medicine: medicineDetailResolver },
+    data: { breadcrumb: 'Editar Medicamento' }
+  }
+];
+```
+
+#### Características
+- ✅ Usa `BehaviorSubject` para estado reactivo
+- ✅ Se suscribe a `NavigationEnd` events
+- ✅ Algoritmo recursivo para construir árbol
+- ✅ Accesibilidad WCAG 2.1 AA
+- ✅ Responsividad y dark mode
+
+---
+
+### Flujos de Navegación Principales
+
+#### Flujo de Autenticación
+
+```
+Usuario no autenticado intenta ir a /medicamentos
+    ↓
+authGuard intercepta y redirige a /iniciar-sesion
+    ↓
+Usuario se autentica
+    ↓
+Redirige automáticamente a /medicamentos
+    ↓
+medicinesResolver precarga datos
+    ↓
+MedicinesPage se renderiza con datos listos
+```
+
+#### Flujo de Edición de Medicamento
+
+```
+Usuario hace clic en "Editar medicamento"
+    ↓
+Navega a /medicamentos/1/editar
+    ↓
+medicineDetailResolver carga medicamento por ID
+    ↓
+EditMedicinePage recibe datos en route.data
+    ↓
+Formulario se renderiza precargado
+    ↓
+BreadcrumbComponent muestra: Inicio › Medicamentos › Editar Medicamento
+```
+
+#### Flujo de Perfil de Usuario
+
+```
+Usuario hace clic en "Mi Perfil"
+    ↓
+Navega a /perfil
+    ↓
+profileResolver carga datos del usuario
+    ↓
+ProfilePage muestra información
+    ↓
+BreadcrumbComponent muestra: Inicio › Perfil
+```
+
+---
+
+### Resumen de Implementación
+
+#### Archivos Creados
+- `core/services/medicines.resolver.ts` - Resolvers para medicamentos
+- `core/services/profile.resolver.ts` - Resolver para perfil
+- `core/services/breadcrumb.service.ts` - Servicio de breadcrumbs
+- `components/shared/breadcrumb/breadcrumb.component.ts` - Componente
+- `components/shared/breadcrumb/breadcrumb.component.html` - Template
+- `components/shared/breadcrumb/breadcrumb.component.scss` - Estilos
+
+#### Archivos Modificados
+- `app/app.routes.ts` - Integración de resolvers y metadatos
+- `components/layout/header/header.ts` - Import BreadcrumbComponent
+- `components/layout/header/header.html` - Inclusión de breadcrumb
+- `pages/medicines/medicines.ts` - Consumo de medicinesResolver
+- `pages/edit-medicine/edit-medicine.ts` - Reactive forms + resolver
+- `pages/edit-medicine/edit-medicine.html` - Cambio a formControlName
+- `pages/profile/profile.ts` - Consumo de profileResolver
+
+#### Métricas de Build
+- Bundle inicial: 306.83 kB (83.27 kB gzipped)
+- Chunks lazy: 14
+- Tiempo de build: 3.494 segundos
+- Errores TypeScript: 0 ✅

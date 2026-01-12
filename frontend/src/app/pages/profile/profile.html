@@ -7,7 +7,7 @@
       </button>
     </div>
 
-    <div class="profile__card">
+    <div class="profile__card" [formGroup]="form">
       <div class="profile__avatar">
         <svg width="80" height="80" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="18" cy="18" r="18" fill="url(#gradient)"/>
@@ -24,43 +24,43 @@
       <div class="profile__info">
         <div class="profile__info-item">
           <label class="profile__label">Nombre</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.name }}</p>
-          <input *ngIf="isEditing" type="text" class="profile__input" [(ngModel)]="userProfile.name" />
+          <p class="profile__value" *ngIf="!isEditing">{{ form.get('name')?.value }}</p>
+          <input *ngIf="isEditing" type="text" class="profile__input" formControlName="name" />
         </div>
 
         <div class="profile__info-item">
           <label class="profile__label">Email</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.email }}</p>
-          <input *ngIf="isEditing" type="email" class="profile__input" [(ngModel)]="userProfile.email" />
+          <p class="profile__value" *ngIf="!isEditing">{{ form.get('email')?.value }}</p>
+          <input *ngIf="isEditing" type="email" class="profile__input" formControlName="email" />
         </div>
 
         <div class="profile__info-item">
           <label class="profile__label">Teléfono</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.phone }}</p>
-          <input *ngIf="isEditing" type="tel" class="profile__input" [(ngModel)]="userProfile.phone" />
+          <p class="profile__value" *ngIf="!isEditing">{{ form.get('phone')?.value }}</p>
+          <input *ngIf="isEditing" type="tel" class="profile__input" formControlName="phone" />
         </div>
 
         <div class="profile__info-item">
           <label class="profile__label">Fecha de Nacimiento</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.birthDate }}</p>
-          <input *ngIf="isEditing" type="date" class="profile__input" [(ngModel)]="userProfile.birthDate" />
+          <p class="profile__value" *ngIf="!isEditing">{{ form.get('birthDate')?.value }}</p>
+          <input *ngIf="isEditing" type="date" class="profile__input" formControlName="birthDate" />
         </div>
 
         <div class="profile__info-item">
           <label class="profile__label">Tipo de Sangre</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.bloodType }}</p>
-          <input *ngIf="isEditing" type="text" class="profile__input" [(ngModel)]="userProfile.bloodType" />
+          <p class="profile__value" *ngIf="!isEditing">{{ form.get('bloodType')?.value }}</p>
+          <input *ngIf="isEditing" type="text" class="profile__input" formControlName="bloodType" />
         </div>
 
         <div class="profile__info-item">
           <label class="profile__label">Dirección</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.address }}</p>
-          <textarea *ngIf="isEditing" class="profile__textarea" [(ngModel)]="userProfile.address"></textarea>
+          <p class="profile__value" *ngIf="!isEditing">{{ form.get('address')?.value }}</p>
+          <textarea *ngIf="isEditing" class="profile__textarea" formControlName="address"></textarea>
         </div>
       </div>
 
       <div class="profile__actions" *ngIf="isEditing">
-        <button class="profile__save-button" (click)="saveProfile()">Guardar Cambios</button>
+        <button class="profile__save-button" (click)="saveProfile()" [disabled]="form.invalid">Guardar Cambios</button>
         <button class="profile__cancel-button" (click)="cancelEdit()">Cancelar</button>
       </div>
     </div>

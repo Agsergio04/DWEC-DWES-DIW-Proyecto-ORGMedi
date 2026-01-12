@@ -33,6 +33,34 @@
   align-items: flex-start;
 }
 
+.app-footer__brand-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  gap: $espaciado-16;
+  align-items: flex-start;
+  transition: opacity $transition-normal;
+  border-radius: 8px;
+  padding: $espaciado-8;
+  margin: -$espaciado-8;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-texto_borde_cajas);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
 .app-footer__logo {
   width: 48px;
   height: 48px;
@@ -47,7 +75,7 @@
 
 .app-footer__title {
   font-family: $font-secondary;
-  font-size: $font-size-lg;
+  font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
   color: var(--color-texto_borde_cajas);
   margin: 0;

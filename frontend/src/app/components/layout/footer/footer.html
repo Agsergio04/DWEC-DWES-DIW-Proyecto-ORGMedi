@@ -2,37 +2,43 @@
 	<div class="app-footer__content">
 		<!-- Columna Izquierda: Marca -->
 		<div class="app-footer__column app-footer__brand">
-			<svg
-				width="48"
-				height="48"
-				viewBox="0 0 48 48"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg"
-				aria-hidden="true"
-				focusable="false"
-				class="app-footer__logo"
+			<button 
+				class="app-footer__brand-button"
+				(click)="goHome()"
+				aria-label="Ir al inicio - ORGMedi"
+				type="button"
 			>
-				<defs>
-					<radialGradient id="eclipse-footer" cx="30%" cy="30%" r="80%">
-						<stop offset="0%" stop-color="#FFD6EC" />
-						<stop offset="100%" stop-color="#E177B5" />
-					</radialGradient>
-				</defs>
-				<rect width="48" height="48" rx="12" fill="url(#eclipse-footer)" />
-				<circle cx="24" cy="24" r="8" fill="white" opacity="0.9" />
-			</svg>
-			<div class="app-footer__brand-text">
-				<h2 class="app-footer__title">ORGMedi</h2>
-				<p class="app-footer__subtitle">Gestión de medicamentos</p>
-			</div>
+				<svg
+					width="48"
+					height="48"
+					viewBox="0 0 48 48"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+					aria-hidden="true"
+					focusable="false"
+					class="app-footer__logo"
+				>
+					<defs>
+						<radialGradient id="eclipse-footer" cx="30%" cy="30%" r="80%">
+							<stop offset="0%" stop-color="#FFD6EC" />
+							<stop offset="100%" stop-color="#E177B5" />
+						</radialGradient>
+					</defs>
+					<rect width="48" height="48" rx="12" fill="url(#eclipse-footer)" />
+					<circle cx="24" cy="24" r="8" fill="white" opacity="0.9" />
+				</svg>
+				<div class="app-footer__brand-text">
+					<h2 class="app-footer__title">ORGMedi</h2>
+				</div>
+			</button>
 		</div>
 
 		<!-- Columna Central: Enlaces referentes -->
 		<div class="app-footer__column">
 			<h3 class="app-footer__column-title">Enlaces referentes</h3>
 			<nav class="app-footer__links">
-				<a href="/style-guide" class="app-footer__link">Guía de Estilos</a>
-				<a href="/demo" class="app-footer__link">Demo</a>
+				<a routerLink="/guia-estilos" class="app-footer__link">Guía de Estilos</a>
+				<a routerLink="/demostracion" class="app-footer__link">Demostración</a>
 			</nav>
 		</div>
 

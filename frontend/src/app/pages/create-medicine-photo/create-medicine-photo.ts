@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 interface MedicineFromPhoto {
   name: string;
@@ -35,6 +36,8 @@ export class CreateMedicinePhotoPage {
   photoFile: File | null = null;
   photoPreview: string | null = null;
   isProcessing = false;
+
+  constructor(private router: Router) {}
 
   frequencies = [
     'Una vez al día',
@@ -98,11 +101,13 @@ export class CreateMedicinePhotoPage {
       // Aquí iría la lógica para guardar el medicamento
       console.log('Medicamento guardado desde foto:', this.form);
       // Navegar a la página de medicamentos
+      this.router.navigate(['/medicamentos']);
     }
   }
 
   cancelCreate(): void {
-    // Aquí iría la navegación hacia atrás
+    // Navegar a la página de medicamentos
+    this.router.navigate(['/medicamentos']);
   }
 
   isFormValid(): boolean {

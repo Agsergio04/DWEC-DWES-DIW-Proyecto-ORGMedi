@@ -4,11 +4,12 @@ import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/ro
 import { Subscription } from 'rxjs';
 import { ThemeService } from '../../../core/services/theme.service';
 import { ToastComponent } from '../../../shared/toast.component';
+import { BreadcrumbComponent } from '../../shared/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, ToastComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, ToastComponent, BreadcrumbComponent],
   templateUrl: './header.html',
   styleUrls: ['./header.scss']
 })
@@ -89,10 +90,10 @@ export class Header implements OnInit, OnDestroy {
       const tree = this.router.parseUrl(url || '');
       const primary = tree.root.children['primary'];
       const first = primary?.segments.length ? primary.segments[0].path : '';
-      this.isAuthRoute = first === 'login' || first === 'register';
+      this.isAuthRoute = first === 'iniciar-sesion' || first === 'registrarse';
     } catch (e) {
       const path = (url || '').split('?')[0].split('#')[0].split('/')[1] || '';
-      this.isAuthRoute = path.startsWith('login') || path.startsWith('register');
+      this.isAuthRoute = path.startsWith('iniciar-sesion') || path.startsWith('registrarse');
     }
   }
 }

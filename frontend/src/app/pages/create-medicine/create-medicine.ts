@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 interface MedicineForm {
   name: string;
@@ -30,6 +31,8 @@ export class CreateMedicinePage {
     quantity: 0
   };
 
+  constructor(private router: Router) {}
+
   frequencies = [
     'Una vez al día',
     '2 veces al día',
@@ -46,11 +49,13 @@ export class CreateMedicinePage {
       // Aquí iría la lógica para guardar el medicamento
       console.log('Medicamento guardado:', this.form);
       // Navegar a la página de medicamentos
+      this.router.navigate(['/medicamentos']);
     }
   }
 
   cancelCreate(): void {
-    // Aquí iría la navegación hacia atrás
+    // Navegar a la página de medicamentos
+    this.router.navigate(['/medicamentos']);
   }
 
   isFormValid(): boolean {

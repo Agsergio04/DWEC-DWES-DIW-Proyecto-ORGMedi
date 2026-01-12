@@ -7,7 +7,7 @@ import { ToastComponent } from './shared/toast.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Header, Footer, ToastComponent],
+  imports: [RouterOutlet, Header, Footer],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
@@ -18,6 +18,6 @@ export class App {
 
   isAuthRoute(): boolean {
     const url = this.router.url || '';
-    return url.startsWith('/login') || url.startsWith('/register');
+    return url.startsWith('/iniciar-sesion') || url.startsWith('/registrarse');
   }
 }

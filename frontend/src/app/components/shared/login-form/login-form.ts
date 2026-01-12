@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login-form',
@@ -12,8 +13,15 @@ import { RouterLink } from '@angular/router';
 })
 export class LoginFormComponent {
   loginForm: FormGroup;
+  isLoading = false;
+  errorMessage = '';
 
-  constructor(private fb: FormBuilder) {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private fb = inject(FormBuilder);
+
+  constructor() {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(2)]],
       password: ['', [Validators.required, Validators.minLength(8)]]
@@ -29,10 +37,26 @@ export class LoginFormComponent {
       return;
     }
 
+    this.isLoading = true;
+    this.errorMessage = '';
+
     const { username, password } = this.loginForm.value;
-    console.log('Login válido:', { username, password });
-    // TODO: llamar a authService.login(username, password)
-    alert(`Login enviado para: ${username}`);
+
+    // Llamar a authService.login() 
+    this.authService.login(username, password).subscribe({
+      next: (success) => {
+        if (success) {
+          // Obtener la URL de retorno del queryParam, o usar /home por defecto
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+          this.router.navigateByUrl(returnUrl);
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = 'Error al iniciar sesión. Intenta de nuevo.';
+        this.isLoading = false;
+      }
+    });
   }
 
   /** Helpers para mostrar mensajes de error */

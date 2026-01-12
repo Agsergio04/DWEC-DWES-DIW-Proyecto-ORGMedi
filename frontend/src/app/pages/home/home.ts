@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MedicineCardComponent } from '../../components/shared/medicine-card/medicine-card';
 import { Medicine } from '../../components/shared/medicine-card/medicine-card';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, MedicineCardComponent],
+  imports: [CommonModule],
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })

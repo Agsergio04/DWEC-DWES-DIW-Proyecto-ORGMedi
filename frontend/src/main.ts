@@ -24,14 +24,17 @@ const __THEME_STORAGE_KEY = 'orgmedi-theme';
 })();
 
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { App } from './app/app';
 import { routes } from './app/app.routes';
 
 bootstrapApplication(App, {
   providers: [
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withPreloading(PreloadAllModules) // Precarga todos los componentes lazy en segundo plano
+    ),
     provideHttpClient(),
   ],
 }).catch((err) => console.error(err));

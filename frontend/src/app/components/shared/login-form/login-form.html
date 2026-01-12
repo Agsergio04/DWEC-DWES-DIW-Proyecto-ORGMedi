@@ -2,6 +2,11 @@
   <fieldset class="login-form__fieldset">
     <legend class="login-form__legend">Iniciar sesión</legend>
 
+    <!-- Mensaje de error -->
+    <div class="form-error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
     <!-- Campo Usuario -->
     <div class="form-group">
       <label class="form-label" for="username">Introduce el nombre de usuario</label>
@@ -11,6 +16,7 @@
         class="form-input"
         placeholder="Nombre de Usuario"
         formControlName="username"
+        [disabled]="isLoading"
       />
       <span class="form-error" *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">
         {{ getErrorMessage('username') }}
@@ -26,6 +32,7 @@
         class="form-input"
         placeholder="Contraseña"
         formControlName="password"
+        [disabled]="isLoading"
       />
       <span class="form-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
         {{ getErrorMessage('password') }}
@@ -33,14 +40,14 @@
     </div>
 
     <!-- Botón Submit -->
-    <button type="submit" class="login-form__submit" [disabled]="loginForm.invalid || loginForm.pending">
-      {{ loginForm.pending ? 'Validando...' : 'Iniciar sesión' }}
+    <button type="submit" class="login-form__submit" [disabled]="loginForm.invalid || isLoading">
+      {{ isLoading ? 'Iniciando sesión...' : 'Iniciar sesión' }}
     </button>
 
     <!-- Link a Registro -->
     <div class="login-form__register-link">
       <p>¿No tienes cuenta?</p>
-      <a routerLink="/register" class="link-primary">Crear cuenta</a>
+      <a routerLink="/registrarse" class="link-primary">Crear cuenta</a>
     </div>
   </fieldset>
 </form>

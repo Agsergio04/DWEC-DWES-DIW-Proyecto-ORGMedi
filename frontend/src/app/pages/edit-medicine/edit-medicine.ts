@@ -1,34 +1,65 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
-interface MedicineForm {
-  name: string;
-  dosage: string;
-  frequency: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  quantity: number;
-}
+import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Medicine } from '../../core/services/medicines.resolver';
 
 @Component({
   selector: 'app-edit-medicine-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './edit-medicine.html',
   styleUrls: ['./edit-medicine.scss']
 })
-export class EditMedicinePage {
-  form: MedicineForm = {
-    name: 'Amoxicilina',
-    dosage: '500mg',
-    frequency: '3 veces al día',
-    description: 'Tomar con agua',
-    startDate: '2026-01-01',
-    endDate: '2026-02-01',
-    quantity: 21
-  };
+export class EditMedicinePage implements OnInit {
+  medicineId: string | null = null;
+  form: FormGroup;
+  isDirty = false;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      dosage: ['', Validators.required],
+      frequency: ['', Validators.required],
+      description: [''],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      quantity: [0, [Validators.required, Validators.min(0)]]
+    });
+  }
+
+  ngOnInit(): void {
+    // Obtener el medicamento del resolver
+    this.route.data.subscribe((data) => {
+      if (data && data['medicine']) {
+        const medicine: Medicine = data['medicine'];
+        this.medicineId = medicine.id;
+        
+        // Llenar el formulario con los datos del medicamento resuelto
+        this.form.patchValue({
+          name: medicine.name,
+          dosage: medicine.dosage,
+          frequency: medicine.frequency,
+          description: medicine.description || '',
+          startDate: medicine.startDate,
+          endDate: medicine.endDate,
+          quantity: medicine.quantity
+        });
+
+        // Marcar como no modificado después de cargar los datos
+        this.form.markAsPristine();
+      }
+    });
+
+    // Escuchar cambios en el formulario
+    this.form.valueChanges.subscribe(() => {
+      this.isDirty = this.form.dirty;
+    });
+  }
 
   frequencies = [
     'Una vez al día',
@@ -42,15 +73,18 @@ export class EditMedicinePage {
   ];
 
   saveMedicine(): void {
-    if (this.isFormValid()) {
+    if (this.form.valid) {
       // Aquí iría la lógica para actualizar el medicamento
-      console.log('Medicamento actualizado:', this.form);
+      console.log('Medicamento actualizado:', this.form.value);
+      this.form.markAsPristine();
       // Navegar a la página de medicamentos
+      this.router.navigate(['/medicamentos']);
     }
   }
 
   cancelEdit(): void {
-    // Aquí iría la navegación hacia atrás
+    // Navegar hacia atrás a la página de medicamentos
+    this.router.navigate(['/medicamentos']);
   }
 
   deleteMedicine(): void {
@@ -58,11 +92,8 @@ export class EditMedicinePage {
       // Aquí iría la lógica para eliminar el medicamento
       console.log('Medicamento eliminado');
       // Navegar a la página de medicamentos
+      this.router.navigate(['/medicamentos']);
     }
-  }
-
-  isFormValid(): boolean {
-    return !!(this.form.name && this.form.dosage && this.form.frequency && this.form.startDate);
   }
 }
 
