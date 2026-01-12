@@ -1,5 +1,32 @@
 # Documentación Cliente
+## Índice
 
+1. [Fase 1 — Arquitectura de eventos](#fase-1--arquitectura-de-eventos)
+    - [Flujo de eventos (diagrama textual)](#flujo-de-eventos-diagrama-textual)
+    - [Patrones y buenas prácticas observadas](#patrones-y-buenas-prácticas-observadas)
+    - [Diagrama de flujo de eventos principales (texto expandido)](#diagrama-de-flujo-de-eventos-principales-texto-expandido)
+    - [Tabla de compatibilidad: eventos usados](#tabla-de-compatibilidad-eventos-usados)
+    - [Ejemplos prácticos (breve)](#ejemplos-prácticos-breve)
+    - [Verificación y pruebas manuales recomendadas](#verificación-y-pruebas-manuales-recomendadas)
+2. [Fase 2 — Componentes interactivos y comunicación](#fase-2--componentes-interactivos-y-comunicación)
+    - [Principios clave](#principios-clave)
+    - [Componentes interactivos](#componentes-interactivos)
+    - [Comunicación entre componentes](#comunicación-entre-componentes)
+    - [Tarea 5: Documentación (Arquitectura de servicios y patrones de comunicación)](#tarea-5-documentación-arquitectura-de-servicios-y-patrones-de-comunicación)
+    - [Arquitectura de servicios y patrones de comunicación](#arquitectura-de-servicios-y-patrones-de-comunicación)
+        - [Diagrama de arquitectura de servicios (resumen)](#diagrama-de-arquitectura-de-servicios-resumen)
+        - [Patrones de comunicación implementados](#patrones-de-comunicación-implementados)
+        - [Separación de responsabilidades (SRP)](#separación-de-responsabilidades-srp)
+        - [Sistema de notificaciones y toasts](#sistema-de-notificaciones-y-toasts)
+        - [Recomendaciones de estructura de carpetas (por feature)](#recomendaciones-de-estructura-de-carpetas-por-feature)
+        - [Buenas prácticas y tips de escalabilidad](#buenas-prácticas-y-tips-de-escalabilidad)
+        - [Mapping de requisitos (coverage)](#mapping-de-requisitos-coverage)
+3. [Fase 3 : Documentación / Catálogo de validadores y FormArray](#fase-3--documentación--catálogo-de-validadores-y-formarray)
+    - [Catálogo de validadores implementados](#catálogo-de-validadores-implementados)
+    - [Guía de uso de FormArray (listas dinámicas)](#guía-de-uso-de-formarray-listas-dinámicas)
+    - [Ejemplos de validación asíncrona (flujo completo)](#ejemplos-de-validación-asíncrona-flujo-completo)
+
+---
 ## Fase 1 — Arquitectura de eventos
 
 La arquitectura de eventos en esta aplicación Angular sigue un patrón unidireccional de datos, apoyándose en los bindings nativos del DOM en las plantillas de componentes standalone. Se usan bindings como `(click)`, `(keydown)` o `(pointerdown)` directamente en las plantillas. Los eventos se manejan con la sintaxis `(eventName)="handler($event)"`, donde `$event` expone el objeto nativo (por ejemplo `KeyboardEvent`, `PointerEvent`), permitiendo acceder a campos como `event.key` o a métodos como `event.preventDefault()`.
@@ -270,7 +297,7 @@ src/app/
 
 ---
 
-## Tarea 6 : Documentación — Catálogo de validadores y FormArray
+## Fase 3 : Documentación / Catálogo de validadores y FormArray
 
 ### Catálogo de validadores implementados
 

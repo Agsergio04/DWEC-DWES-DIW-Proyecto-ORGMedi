@@ -1,6 +1,6 @@
 # ORGMedi
 
-**ORGMedi** es una plataforma web pensada para la gestión  y organizacional de medicamentos. Esta aplicación facilita la administración del consumo de pastillas de las personas.
+**ORGMedi** es una plataforma web pensada para la gestión  y organizacional de medicamentos. Esta aplicación facilita la administración del consumo de pastillas de las personas. 
 
 ## Índice
 
@@ -11,9 +11,9 @@
 5. [Documentación](#documentacion)
 6. [Despliegue](#despliegue)
 
-##  Características Principales
+##  Características Principales  
 
-La aplicación ofrece una gestión integral de usuarios, permitiendo administrar distintas cuentas según las necesidades de cada persona. Además, dispone de un sistema de gestión de medicamentos que posibilita el registro, la modificación y el seguimiento detallado de los medicamentos de cada usuario, facilitando así una organización eficaz y personalizada del tratamiento farmacológico.
+La aplicación ofrece una gestión integral de usuarios, permitiendo administrar distintas cuentas según las necesidades de cada persona. Además, dispone de un sistema de gestión de medicamentos que posibilita el registro, la modificación y el seguimiento detallado de los medicamentos de cada usuario, facilitando así una organización eficaz y personalizada del tratamiento farmacológico.  
 
 ### Estructura del Proyecto
 
@@ -62,7 +62,7 @@ DWEC-DWES-DIW-Proyecto-ORGMedi/
 
 
 ### DevOps
-- **Todavia en desarrollo**
+ - **Todavia en desarrollo**
 
 ---
 
@@ -81,16 +81,7 @@ npm install
 npm start
 ```
 
-## Documentacion
+## Documentacion 
 - [Documentacion del backend](https://github.com/Agsergio04/DWEC-DWES-DIW-Proyecto-ORGMedi/blob/master/docs/servidor/Proyecto_API_REST.md)
 - [Documentacion del Diseño](https://github.com/Agsergio04/DWEC-DWES-DIW-Proyecto-ORGMedi/blob/master/docs/design/DOCUMENTACION_DISE%C3%91O.md)
 - [Documentacion del Cliente](https://github.com/Agsergio04/DWEC-DWES-DIW-Proyecto-ORGMedi/blob/master/docs/cliente/Documentacion_cliente.md)
-
-## Despliegue
-El despliegue se ha utilizado render y se pueded acceder por medio de este enlace : https://dwec-dwes-diw-proyecto-orgmedi.onrender.com
-
-Por otro lado para el previsualizado del login y del registro es mediante estos enlaces,aunque puedes ponerlos tu mismo :
-- [Enlace para el login](https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/login) : https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/login
-- [Enlace para el registro](https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/register) : https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/register
-
-Todavian siguen en desarrollo por motivos de reestructuracion del diseño web pero aqui una prueba explicita de que existen   
