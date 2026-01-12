@@ -1,0 +1,69 @@
+<section class="page page--profile">
+  <div class="page__container">
+    <div class="profile__header">
+      <h1>Mi Perfil</h1>
+      <button class="profile__edit-button" (click)="toggleEdit()">
+        {{ isEditing ? 'Cancelar' : 'Editar' }}
+      </button>
+    </div>
+
+    <div class="profile__card">
+      <div class="profile__avatar">
+        <svg width="80" height="80" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="18" fill="url(#gradient)"/>
+          <path d="M22.5714 13.5556C22.5714 14.4985 22.0898 15.4029 21.2325 16.0697C20.3752 16.7365 19.2124 17.1111 18 17.1111C16.7876 17.1111 15.6248 16.7365 14.7675 16.0697C13.9102 15.4029 13.4286 14.4985 13.4286 13.5556C13.4286 12.6126 13.9102 11.7082 14.7675 11.0414C15.6248 10.3746 16.7876 10 18 10C19.2124 10 20.3752 10.3746 21.2325 11.0414C22.0898 11.7082 22.5714 12.6126 22.5714 13.5556ZM18 19.7778C15.8783 19.7778 13.8434 20.4333 12.3431 21.6002C10.8429 22.7671 10 24.3498 10 26H26C26 24.3498 25.1571 22.7671 23.6569 21.6002C22.1566 20.4333 20.1217 19.7778 18 19.7778Z" fill="white" />
+          <defs>
+            <linearGradient id="gradient" x1="0" y1="0" x2="36" y2="36">
+              <stop offset="0%" stop-color="#E177B5" />
+              <stop offset="100%" stop-color="#D3B5C6" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="profile__info">
+        <div class="profile__info-item">
+          <label class="profile__label">Nombre</label>
+          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.name }}</p>
+          <input *ngIf="isEditing" type="text" class="profile__input" [(ngModel)]="userProfile.name" />
+        </div>
+
+        <div class="profile__info-item">
+          <label class="profile__label">Email</label>
+          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.email }}</p>
+          <input *ngIf="isEditing" type="email" class="profile__input" [(ngModel)]="userProfile.email" />
+        </div>
+
+        <div class="profile__info-item">
+          <label class="profile__label">Teléfono</label>
+          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.phone }}</p>
+          <input *ngIf="isEditing" type="tel" class="profile__input" [(ngModel)]="userProfile.phone" />
+        </div>
+
+        <div class="profile__info-item">
+          <label class="profile__label">Fecha de Nacimiento</label>
+          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.birthDate }}</p>
+          <input *ngIf="isEditing" type="date" class="profile__input" [(ngModel)]="userProfile.birthDate" />
+        </div>
+
+        <div class="profile__info-item">
+          <label class="profile__label">Tipo de Sangre</label>
+          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.bloodType }}</p>
+          <input *ngIf="isEditing" type="text" class="profile__input" [(ngModel)]="userProfile.bloodType" />
+        </div>
+
+        <div class="profile__info-item">
+          <label class="profile__label">Dirección</label>
+          <p class="profile__value" *ngIf="!isEditing">{{ userProfile.address }}</p>
+          <textarea *ngIf="isEditing" class="profile__textarea" [(ngModel)]="userProfile.address"></textarea>
+        </div>
+      </div>
+
+      <div class="profile__actions" *ngIf="isEditing">
+        <button class="profile__save-button" (click)="saveProfile()">Guardar Cambios</button>
+        <button class="profile__cancel-button" (click)="cancelEdit()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</section>
+

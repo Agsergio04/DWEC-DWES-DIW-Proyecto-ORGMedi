@@ -12,7 +12,7 @@
   margin: $espaciado-48 auto;
   padding: $espaciado-32;
 
-  background: var(--color-terciario-primary);
+  background: var(--color-primario-primary);
   border: $border-medium solid var(--color-bordes_marco_botones);
   border-radius: $radius-lg;
   box-shadow: 0 4px 24px rgba(31, 10, 26, 0.08);
@@ -63,7 +63,7 @@
   font-size: $font-size-md;
   color: var(--color-texto_borde_cajas);
 
-  background: $color-cuaternario-primary;
+  background: var(--color-secundario-primary);
   border: $border-medium solid var(--color-bordes_marco_botones);
   border-radius: $radius-md;
 
@@ -78,7 +78,7 @@
   &:focus {
     outline: none;
     border-color: var(--color-primario-primary);
-    background: color.adjust($color-cuaternario-primary, $lightness: 5%);
+    background: var(--color-secundario-hover);
     box-shadow: 0 0 0 3px rgba(var(--color-bordes_marco_botones-rgb), 0.08);
   }
 
@@ -175,7 +175,7 @@
 
 [data-theme="dark"] {
   .login-form {
-    background: $color-terciario-dark;
+    background: $color-primario-dark;
     border-color: $color-bordes_marco_botones;
   }
 
@@ -188,13 +188,13 @@
   }
 
   .form-input {
-    background: $color-cuaternario-dark;
+    background: $color-secundario-dark;
     color: $color-texto_borde_cajas;
     border-color: $color-bordes_marco_botones;
 
     &:focus {
       border-color: $color-primario-dark;
-      background: color.adjust($color-cuaternario-dark, $lightness: 10%);
+      background: $color-secundario-dark_hover;
       box-shadow: 0 0 0 3px rgba($color-primario-dark, 0.15);
     }
   }

@@ -7,10 +7,11 @@ import { FormInputComponent } from '../../components/shared/form-input/form-inpu
 import { FormTextareaComponent } from '../../components/shared/form-textarea/form-textarea';
 import { FormSelectComponent } from '../../components/shared/form-select/form-select';
 import { DomDemoComponent } from '../../components/shared/dom-demo/dom-demo.component';
-import { Modal } from '../../components/shared/modal/modal';
-import { Tabs } from '../../components/shared/tabs/tabs';
-import { ThemeSwitcher } from '../../components/shared/theme-switcher/theme-switcher';
+import { ModalComponent } from '../../components/shared/modal/modal';
+import { TabsComponent } from '../../components/shared/tabs/tabs';
 import { AlertComponent } from '../../components/shared/alert/alert';
+import { MedicineCardComponent } from '../../components/shared/medicine-card/medicine-card';
+import { ThemeSwitcher } from '../../components/shared/theme-switcher/theme-switcher';
 
 @Component({
   selector: 'app-style-guide',
@@ -22,10 +23,11 @@ import { AlertComponent } from '../../components/shared/alert/alert';
     FormTextareaComponent,
     FormSelectComponent,
     DomDemoComponent,
-    Modal,
-    Tabs,
-    ThemeSwitcher,
-    AlertComponent
+    ModalComponent,
+    TabsComponent,
+    AlertComponent,
+    MedicineCardComponent,
+    ThemeSwitcher
   ],
   templateUrl: './style-guide.html',
   styleUrls: ['./style-guide.scss']
@@ -39,10 +41,10 @@ export class StyleGuidePage implements OnInit {
     FormTextareaComponent,
     FormSelectComponent,
     DomDemoComponent,
-    Modal,
-    Tabs,
-    ThemeSwitcher,
+    ModalComponent,
+    TabsComponent,
     AlertComponent,
+    MedicineCardComponent,
     SharedModule
   ];
 
@@ -52,6 +54,18 @@ export class StyleGuidePage implements OnInit {
     { value: '2h', label: '2 horas' },
     { value: '3h', label: '3 horas' }
   ];
+
+  // Medicamento de ejemplo para la card
+  exampleMedicine = {
+    id: '1',
+    name: 'Amoxicilina',
+    dosage: '500mg',
+    frequency: 'Cada 8 horas',
+    description: 'Tomar con agua',
+    startDate: '2026-01-11',
+    endDate: '2026-02-11',
+    quantity: 21
+  };
 
   // Estado demo modal
   isModalOpen = false;
@@ -87,5 +101,13 @@ export class StyleGuidePage implements OnInit {
 
   onButtonClick(kind: string) {
     console.log('Clicked', kind);
+  }
+
+  onEditMedicine(medicine: any): void {
+    console.log('Editar medicamento:', medicine);
+  }
+
+  onDeleteMedicine(medicineId: string): void {
+    console.log('Eliminar medicamento:', medicineId);
   }
 }

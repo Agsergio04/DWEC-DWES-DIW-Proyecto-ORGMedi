@@ -1,0 +1,38 @@
+<section class="page page--calendar">
+  <div class="page__container">
+    <h1>Calendario</h1>
+
+    <div class="calendar">
+      <div class="calendar__header">
+        <button class="calendar__nav-button" (click)="previousMonth()">‹</button>
+        <h2 class="calendar__month">{{ currentMonth }}</h2>
+        <button class="calendar__nav-button" (click)="nextMonth()">›</button>
+      </div>
+
+      <div class="calendar__weekdays">
+        <div class="calendar__weekday">Lun</div>
+        <div class="calendar__weekday">Mar</div>
+        <div class="calendar__weekday">Mié</div>
+        <div class="calendar__weekday">Jue</div>
+        <div class="calendar__weekday">Vie</div>
+        <div class="calendar__weekday">Sáb</div>
+        <div class="calendar__weekday">Dom</div>
+      </div>
+
+      <div class="calendar__days">
+        <div *ngFor="let i of [].constructor(firstDayOfWeek)" class="calendar__empty-day"></div>
+        <div
+          *ngFor="let day of daysInMonth"
+          [ngClass]="['calendar__day', isToday(day) ? 'calendar__day--today' : '']"
+        >
+          {{ day }}
+        </div>
+      </div>
+    </div>
+
+    <div class="calendar__info">
+      <p>Selecciona un día para ver los medicamentos programados.</p>
+    </div>
+  </div>
+</section>
+

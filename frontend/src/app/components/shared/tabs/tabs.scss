@@ -1,4 +1,86 @@
-.app-tabs__nav{display:flex;gap:8px;padding:8px}
-.tab--active{font-weight:600;border-bottom:2px solid currentColor}
-.app-tabs__panels{padding:8px}
+@use '../../../../styles/00-settings/variables' as *;
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs__header {
+  display: flex;
+  border-bottom: $border-medium solid var(--color-bordes_marco_botones);
+  gap: $espaciado-8;
+}
+
+.tabs__tab {
+  padding: $espaciado-12 $espaciado-20;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: rgba(var(--color-texto_borde_cajas-rgb), 0.7);
+  border-bottom: $border-medium solid transparent;
+  margin-bottom: -#{$border-medium};
+  transition: color $transition-normal, border-color $transition-normal;
+  position: relative;
+
+  &:hover:not(:disabled) {
+    color: var(--color-texto_borde_cajas);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--active {
+    color: var(--color-primario-primary);
+    border-bottom-color: var(--color-primario-primary);
+    font-weight: $font-weight-bold;
+  }
+
+  &:focus {
+    outline: 2px solid var(--color-primario-primary);
+    outline-offset: -2px;
+  }
+}
+
+.tabs__content {
+  padding: $espaciado-24 0;
+}
+
+// Modo oscuro
+[data-theme="dark"] {
+  .tabs__header {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .tabs__tab {
+    color: rgba(255, 255, 255, 0.7);
+
+    &:hover:not(:disabled) {
+      color: white;
+    }
+
+    &--active {
+      color: var(--color-primario-primary);
+      border-bottom-color: var(--color-primario-primary);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .tabs__header {
+    gap: $espaciado-4;
+  }
+
+  .tabs__tab {
+    padding: $espaciado-10 $espaciado-16;
+    font-size: $font-size-sm;
+  }
+
+  .tabs__content {
+    padding: $espaciado-16 0;
+  }
+}
 

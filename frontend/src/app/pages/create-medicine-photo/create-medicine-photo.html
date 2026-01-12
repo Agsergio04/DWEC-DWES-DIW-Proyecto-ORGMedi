@@ -1,0 +1,142 @@
+<section class="page page--create-medicine-photo">
+  <div class="page__container">
+    <h1>Agregar Medicamento por Foto</h1>
+
+    <div class="photo-section">
+      <!-- Carga de foto -->
+      <div class="photo-upload" [class.photo-upload--has-image]="photoPreview">
+        <div class="photo-upload__input-wrapper" *ngIf="!photoPreview">
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            (change)="onPhotoSelected($event)"
+            style="display: none"
+          />
+          <div class="photo-upload__placeholder" (click)="fileInput.click()">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M21 15l-5-5L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h3>Toma una foto de tu medicamento</h3>
+            <p>Haz clic para seleccionar una imagen o arrastra aquí</p>
+            <p class="photo-upload__hint">Se extraerán automáticamente los datos del envase</p>
+          </div>
+        </div>
+
+        <div class="photo-upload__preview" *ngIf="photoPreview && !isProcessing">
+          <img [src]="photoPreview" [alt]="form.name || 'Foto de medicamento'" />
+          <button class="photo-upload__clear" (click)="clearPhoto()">✕</button>
+        </div>
+
+        <div class="photo-upload__processing" *ngIf="isProcessing">
+          <div class="spinner"></div>
+          <p>Analizando imagen...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario de detalles -->
+    <form class="medicine-form" *ngIf="photoPreview && !isProcessing" (ngSubmit)="saveMedicine()">
+      <h2 class="form-section-title">Revisa y completa los datos</h2>
+
+      <div class="form-group">
+        <label for="name" class="form-label">Nombre del Medicamento *</label>
+        <input
+          id="name"
+          type="text"
+          class="form-input"
+          [(ngModel)]="form.name"
+          name="name"
+          required
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="dosage" class="form-label">Dosis *</label>
+          <input
+            id="dosage"
+            type="text"
+            class="form-input"
+            [(ngModel)]="form.dosage"
+            name="dosage"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="quantity" class="form-label">Cantidad</label>
+          <input
+            id="quantity"
+            type="number"
+            class="form-input"
+            [(ngModel)]="form.quantity"
+            name="quantity"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="frequency" class="form-label">Frecuencia *</label>
+        <select
+          id="frequency"
+          class="form-select"
+          [(ngModel)]="form.frequency"
+          name="frequency"
+          required
+        >
+          <option value="">Selecciona una frecuencia</option>
+          <option *ngFor="let freq of frequencies" [value]="freq">{{ freq }}</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="startDate" class="form-label">Fecha de Inicio *</label>
+          <input
+            id="startDate"
+            type="date"
+            class="form-input"
+            [(ngModel)]="form.startDate"
+            name="startDate"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="endDate" class="form-label">Fecha de Fin</label>
+          <input
+            id="endDate"
+            type="date"
+            class="form-input"
+            [(ngModel)]="form.endDate"
+            name="endDate"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="form-label">Notas / Instrucciones</label>
+        <textarea
+          id="description"
+          class="form-textarea"
+          [(ngModel)]="form.description"
+          name="description"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary" [disabled]="!isFormValid()">
+          Guardar Medicamento
+        </button>
+        <button type="button" class="btn btn--secondary" (click)="cancelCreate()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+

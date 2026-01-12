@@ -1,0 +1,124 @@
+@use '../../../../styles/00-settings/variables' as *;
+
+.accordion {
+  border: $border-thin solid var(--color-bordes_marco_botones);
+  border-radius: $radius-lg;
+  overflow: hidden;
+}
+
+.accordion__item {
+  border-bottom: $border-thin solid var(--color-bordes_marco_botones);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.accordion__header {
+  width: 100%;
+  padding: $espaciado-16 $espaciado-20;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $espaciado-12;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: var(--color-texto_borde_cajas);
+  transition: background $transition-normal;
+
+  &:hover:not(:disabled) {
+    background: rgba(var(--color-primario-primary), 0.05);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    outline: 2px solid var(--color-primario-primary);
+    outline-offset: -2px;
+  }
+}
+
+.accordion__title {
+  text-align: left;
+  flex: 1;
+}
+
+.accordion__icon {
+  display: flex;
+  align-items: center;
+  transition: transform $transition-normal;
+  color: var(--color-primario-primary);
+
+  .accordion__item--expanded & {
+    transform: rotate(180deg);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.accordion__content {
+  padding: $espaciado-16 $espaciado-20;
+  background: rgba(var(--color-primario-primary), 0.02);
+  color: var(--color-texto_borde_cajas);
+  font-size: $font-size-sm;
+  line-height: $line-height-relaxed;
+  animation: slideDown $transition-normal;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+    overflow: visible;
+  }
+}
+
+// Modo oscuro
+[data-theme="dark"] {
+  .accordion {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .accordion__item {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .accordion__header {
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: rgba(var(--color-primario-primary), 0.1);
+    }
+  }
+
+  .accordion__content {
+    background: rgba(var(--color-primario-primary), 0.1);
+    color: white;
+  }
+}
+
+@media (max-width: 768px) {
+  .accordion__header {
+    padding: $espaciado-12 $espaciado-16;
+    font-size: $font-size-sm;
+  }
+
+  .accordion__content {
+    padding: $espaciado-12 $espaciado-16;
+  }
+}
+

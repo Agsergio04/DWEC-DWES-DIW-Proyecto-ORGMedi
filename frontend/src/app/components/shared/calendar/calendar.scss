@@ -42,7 +42,7 @@
   gap: $espaciado-8;
 
   padding: $espaciado-20;
-  background: var(--color-terciario-primary);
+  background: var(--color-primario-primary);
   border: $border-medium solid var(--color-bordes_marco_botones);
   border-radius: $radius-lg;
 }
@@ -145,7 +145,7 @@
   align-items: center;
   justify-content: center;
 
-  background: $color-cuaternario-primary;
+  background: var(--color-secundario-primary);
   color: var(--color-texto_borde_cajas);
   border: $border-medium solid var(--color-bordes_marco_botones);
   border-radius: $radius-full;
@@ -157,9 +157,9 @@
   transition: all $transition-normal;
 
   &:hover:not(:disabled) {
-    background: $color-cuaternario-hover;
+    background: var(--color-secundario-hover);
     transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba($color-cuaternario-primary, 0.3);
+    box-shadow: 0 4px 12px rgba(var(--color-secundario-primary), 0.3);
   }
 
   &:active:not(:disabled) {
@@ -302,7 +302,7 @@
   }
 
   .calendar__week-container {
-    background: rgba($color-terciario-dark, 0.6);
+    background: rgba($color-primario-dark, 0.6);
     border-color: $color-bordes_marco_botones;
   }
 
@@ -319,12 +319,12 @@
   }
 
   .calendar__day {
-    background: $color-cuaternario-dark;
+    background: $color-secundario-dark;
     color: $color-texto_borde_cajas;
     border-color: $color-bordes_marco_botones;
 
     &:hover:not(:disabled) {
-      background: $color-cuaternario-dark_hover;
+      background: $color-secundario-dark_hover;
     }
   }
 

@@ -1,200 +1,236 @@
 <main class="style-guide">
   <div class="l-container">
+    <!-- HEADER MEJORADO -->
     <header class="style-guide__header">
-      <h1 class="style-guide__title">Style Guide del Proyecto</h1>
-      <p class="style-guide__subtitle">Catálogo visual y funcional de componentes</p>
+      <div class="style-guide__header-content">
+        <h1 class="style-guide__title">Style Guide</h1>
+        <p class="style-guide__subtitle">Sistema de diseño y componentes ORGMedi</p>
+        <div class="style-guide__intro">
+          <p>Guía completa de colores, componentes, formularios y patrones de interacción</p>
+        </div>
+      </div>
     </header>
 
-    <!-- Colores -->
-    <section class="style-guide__section bg-quinary">
-      <h2 class="style-guide__section-title">Colores</h2>
-      <p class="style-guide__section-desc">Listado de variables de color del proyecto, presentadas por separado para modo claro y modo oscuro.</p>
+    <!-- ÍNDICE RÁPIDO -->
+    <nav class="style-guide__nav">
+      <a href="#colors" class="style-guide__nav-link">Colores</a>
+      <a href="#typography" class="style-guide__nav-link">Tipografía</a>
+      <a href="#buttons" class="style-guide__nav-link">Botones</a>
+      <a href="#forms" class="style-guide__nav-link">Formularios</a>
+      <a href="#cards" class="style-guide__nav-link">Cards</a>
+      <a href="#interactive" class="style-guide__nav-link">Componentes</a>
+      <a href="#alerts" class="style-guide__nav-link">Notificaciones</a>
+    </nav>
+
+    <!-- COLORES -->
+    <section class="style-guide__section" id="colors">
+      <div class="style-guide__section-header">
+        <h2 class="style-guide__section-title">🎨 Colores</h2>
+        <p class="style-guide__section-desc">Paleta de colores del sistema con soporte para modo claro y oscuro</p>
+      </div>
 
       <div class="style-guide__subsection">
         <h3 class="style-guide__subsection-title">Modo Claro</h3>
         <div class="colors-grid">
           <div class="color-item">
             <div class="color-swatch" style="background:#E177B5"></div>
-            <div class="color-meta"><div class="color-name">--color-primario-primary</div></div>
+            <div class="color-meta">
+              <div class="color-name">Primario</div>
+              <div class="color-code">#E177B5</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#F08EC7"></div>
-            <div class="color-meta"><div class="color-name">--color-primario-hover</div></div>
+            <div class="color-meta">
+              <div class="color-name">Primario Hover</div>
+              <div class="color-code">#F08EC7</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#F6D5E8"></div>
-            <div class="color-meta"><div class="color-name">--color-primario-disabled</div></div>
+            <div class="color-meta">
+              <div class="color-name">Primario Disabled</div>
+              <div class="color-code">#F6D5E8</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#99397C"></div>
-            <div class="color-meta"><div class="color-name">--color-secundario-primary</div></div>
-          </div>
-
-          <div class="color-item">
-            <div class="color-swatch" style="background:#d3d8b4"></div>
-            <div class="color-meta"><div class="color-name">--color-terciario-primary</div></div>
-          </div>
-
-          <div class="color-item">
-            <div class="color-swatch" style="background:#B6E98F"></div>
-            <div class="color-meta"><div class="color-name">--color-cuaternario-primary</div></div>
-          </div>
-
-          <div class="color-item">
-            <div class="color-swatch" style="background:#A6CC88"></div>
-            <div class="color-meta"><div class="color-name">--color-quintario-primary</div></div>
+            <div class="color-meta">
+              <div class="color-name">Secundario</div>
+              <div class="color-code">#99397C</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#22FF00"></div>
-            <div class="color-meta"><div class="color-name">--color-afirmacion-primary</div></div>
+            <div class="color-meta">
+              <div class="color-name">Afirmación</div>
+              <div class="color-code">#22FF00</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#FF0202"></div>
-            <div class="color-meta"><div class="color-name">--color-negacion-primary</div></div>
+            <div class="color-meta">
+              <div class="color-name">Negación</div>
+              <div class="color-code">#FF0202</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#1F0A1A"></div>
-            <div class="color-meta"><div class="color-name">--color-bordes_marco_botones</div></div>
+            <div class="color-meta">
+              <div class="color-name">Bordes</div>
+              <div class="color-code">#1F0A1A</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#3A4730"></div>
-            <div class="color-meta"><div class="color-name">--color-texto_borde_cajas</div></div>
+            <div class="color-meta">
+              <div class="color-name">Texto Cajas</div>
+              <div class="color-code">#3A4730</div>
+            </div>
           </div>
 
-          <!-- variantes modo claro -->
+          <!-- Variantes -->
           <div class="color-item">
             <div class="color-swatch" style="background:#00FFFB"></div>
-            <div class="color-meta"><div class="color-name">--color-variante-primera (claro)</div></div>
+            <div class="color-meta">
+              <div class="color-name">Variante 1</div>
+              <div class="color-code">#00FFFB</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#F2FF00"></div>
-            <div class="color-meta"><div class="color-name">--color-variante-segunda (claro)</div></div>
+            <div class="color-meta">
+              <div class="color-name">Variante 2</div>
+              <div class="color-code">#F2FF00</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#FF00C3"></div>
-            <div class="color-meta"><div class="color-name">--color-variante-tercera (claro)</div></div>
+            <div class="color-meta">
+              <div class="color-name">Variante 3</div>
+              <div class="color-code">#FF00C3</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#FFAA00"></div>
-            <div class="color-meta"><div class="color-name">--color-variante-cuarta (claro)</div></div>
+            <div class="color-meta">
+              <div class="color-name">Variante 4</div>
+              <div class="color-code">#FFAA00</div>
+            </div>
           </div>
-
-          <div class="color-item">
-            <div class="color-swatch" style="background:#C200FD"></div>
-            <div class="color-meta"><div class="color-name">--color-variante-quinta (claro)</div></div>
-          </div>
-
         </div>
+      </div>
 
-        <h3 class="style-guide__subsection-title" style="margin-top:18px;">Modo Oscuro</h3>
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Modo Oscuro</h3>
         <div class="colors-grid">
           <div class="color-item">
             <div class="color-swatch" style="background:#A95988"></div>
-            <div class="color-meta"><div class="color-name">--color-primario-dark</div></div>
+            <div class="color-meta">
+              <div class="color-name">Primario Dark</div>
+              <div class="color-code">#A95988</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#87476D"></div>
-            <div class="color-meta"><div class="color-name">--color-primario-dark_hover</div></div>
+            <div class="color-meta">
+              <div class="color-name">Primario Dark Hover</div>
+              <div class="color-code">#87476D</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#4F2A3F"></div>
-            <div class="color-meta"><div class="color-name">--color-primario-off</div></div>
+            <div class="color-meta">
+              <div class="color-name">Primario Off</div>
+              <div class="color-code">#4F2A3F</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#441638"></div>
-            <div class="color-meta"><div class="color-name">--color-secundario-dark</div></div>
-          </div>
-
-          <div class="color-item">
-            <div class="color-swatch" style="background:#384F28"></div>
-            <div class="color-meta"><div class="color-name">--color-terciario-dark</div></div>
-          </div>
-
-          <div class="color-item">
-            <div class="color-swatch" style="background:#435735"></div>
-            <div class="color-meta"><div class="color-name">--color-cuaternario-dark</div></div>
-          </div>
-
-          <div class="color-item">
-            <div class="color-swatch" style="background:#7D9966"></div>
-            <div class="color-meta"><div class="color-name">--color-quintario-dark</div></div>
+            <div class="color-meta">
+              <div class="color-name">Secundario Dark</div>
+              <div class="color-code">#441638</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#168C04"></div>
-            <div class="color-meta"><div class="color-name">--color-afirmacion-dark</div></div>
+            <div class="color-meta">
+              <div class="color-name">Afirmación Dark</div>
+              <div class="color-code">#168C04</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#9C1010"></div>
-            <div class="color-meta"><div class="color-name">--color-negacion-dark</div></div>
+            <div class="color-meta">
+              <div class="color-name">Negación Dark</div>
+              <div class="color-code">#9C1010</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#EBA4CD"></div>
-            <div class="color-meta"><div class="color-name">--color-bordes_marco_botones-dark</div></div>
+            <div class="color-meta">
+              <div class="color-name">Bordes Dark</div>
+              <div class="color-code">#EBA4CD</div>
+            </div>
           </div>
 
           <div class="color-item">
             <div class="color-swatch" style="background:#A4D281"></div>
-            <div class="color-meta"><div class="color-name">--color-texto_borde_cajas-dark</div></div>
+            <div class="color-meta">
+              <div class="color-name">Texto Dark</div>
+              <div class="color-code">#A4D281</div>
+            </div>
           </div>
-
-          <!-- variantes modo oscuro -->
-          <div class="color-item">
-            <div class="color-swatch" style="background:#008E8B"></div>
-            <div class="color-meta"><div class="color-name">--color-variante-primera (oscuro)</div></div>
-          </div>
-
-          <div class="color-item">
-            <div class="color-swatch" style="background:#B4BD00"></div>
-            <div class="color-meta"><div class="color-name">--color-variante-segunda (oscuro)</div></div>
-          </div>
-
-          <div class="color-item">
-            <div class="color-swatch" style="background:#980075"></div>
-            <div class="color-meta"><div class="color-name">--color-variante-tercera (oscuro)</div></div>
-          </div>
-
-          <div class="color-item">
-            <div class="color-swatch" style="background:#A66F00"></div>
-            <div class="color-meta"><div class="color-name">--color-variante-cuarta (oscuro)</div></div>
-          </div>
-
-          <div class="color-item">
-            <div class="color-swatch" style="background:#9100BD"></div>
-            <div class="color-meta"><div class="color-name">--color-variante-quinta (oscuro)</div></div>
-          </div>
-
         </div>
       </div>
     </section>
 
-    <!-- Botones -->
-    <section class="style-guide__section bg-quaternary">
-      <h2 class="style-guide__section-title">Botones</h2>
-      <p class="style-guide__section-desc">Todas las variantes, tamaños y estados del componente <code>&lt;app-button&gt;</code>.</p>
+    <!-- TIPOGRAFÍA -->
+    <section class="style-guide__section" id="typography">
+      <div class="style-guide__section-header">
+        <h2 class="style-guide__section-title">📝 Tipografía</h2>
+        <p class="style-guide__section-desc">Escala tipográfica y estilos de texto</p>
+      </div>
+
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__typography-sample" style="font-size: 48px; font-weight: 700;">Heading 1 - 48px Bold</h3>
+        <h2 class="style-guide__typography-sample" style="font-size: 36px; font-weight: 700;">Heading 2 - 36px Bold</h2>
+        <h3 class="style-guide__typography-sample" style="font-size: 28px; font-weight: 600;">Heading 3 - 28px Semibold</h3>
+        <p class="style-guide__typography-sample" style="font-size: 16px; font-weight: 400; line-height: 1.6;">Body Text - 16px Regular - Este es el tamaño de fuente principal para párrafos y contenido general</p>
+        <small class="style-guide__typography-sample" style="font-size: 12px; font-weight: 400; color: #666;">Small Text - 12px Regular</small>
+      </div>
+    </section>
+
+    <!-- BOTONES -->
+    <section class="style-guide__section" id="buttons">
+      <div class="style-guide__section-header">
+        <h2 class="style-guide__section-title">🔘 Botones</h2>
+        <p class="style-guide__section-desc">Variantes, tamaños y estados del componente botón</p>
+      </div>
 
       <div class="style-guide__subsection">
         <h3 class="style-guide__subsection-title">Variantes</h3>
         <div class="style-guide__row">
-          <app-button (clicked)="onButtonClick('primary')">Primary</app-button>
-          <app-button variant="secondary" (clicked)="onButtonClick('secondary')">Secondary</app-button>
-          <app-button variant="danger" (clicked)="onButtonClick('danger')">Danger</app-button>
-          <app-button variant="ghost" (clicked)="onButtonClick('ghost')">Ghost</app-button>
+          <app-button>Primary</app-button>
+          <app-button variant="secondary">Secondary</app-button>
+          <app-button variant="danger">Danger</app-button>
+          <app-button variant="ghost">Ghost</app-button>
         </div>
       </div>
 
@@ -212,82 +248,226 @@
         <div class="style-guide__row">
           <app-button>Normal</app-button>
           <app-button [disabled]="true">Disabled</app-button>
-          <app-button ariaLabel="icon" icon="star"></app-button>
+          <app-button ariaLabel="icon" icon="star">Con Icon</app-button>
         </div>
       </div>
     </section>
 
-    <!-- Cards -->
-    <section class="style-guide__section bg-quinary">
-      <h2 class="style-guide__section-title">Card - Formulario de Medicación</h2>
-      <p class="style-guide__section-desc">Ejemplo de card que contiene campos para planificar una medicación.</p>
+    <!-- FORMULARIOS -->
+    <section class="style-guide__section" id="forms">
+      <div class="style-guide__section-header">
+        <h2 class="style-guide__section-title">📋 Formularios</h2>
+        <p class="style-guide__section-desc">Componentes de entrada: inputs, textarea, selects y validadores</p>
+      </div>
 
       <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Campos de Texto</h3>
+        <div class="style-guide__form-grid">
+          <app-form-input label="Nombre completo" placeholder="Ej: Juan García"></app-form-input>
+          <app-form-input label="Email" type="email" placeholder="ejemplo@dominio.com"></app-form-input>
+          <app-form-input label="Teléfono" type="tel" placeholder="6XXXXXXXX"></app-form-input>
+          <app-form-input label="Fecha" type="date"></app-form-input>
+        </div>
+      </div>
+
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Componentes Complejos</h3>
+        <div class="style-guide__form-grid">
+          <app-form-textarea label="Descripción" placeholder="Escribe aquí..."></app-form-textarea>
+          <app-form-select label="Categoría" [options]="selectOptions"></app-form-select>
+        </div>
+      </div>
+
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Estados de Validación</h3>
+        <div class="style-guide__validation-demo">
+          <div class="validation-item valid">
+            <span class="validation-icon">✓</span>
+            <div>
+              <p class="validation-label">Campo Válido</p>
+              <p class="validation-text">El campo cumple con todos los validadores</p>
+            </div>
+          </div>
+          <div class="validation-item error">
+            <span class="validation-icon">✕</span>
+            <div>
+              <p class="validation-label">Campo Inválido</p>
+              <p class="validation-text">El campo contiene un error que debe corregirse</p>
+            </div>
+          </div>
+          <div class="validation-item pending">
+            <span class="validation-icon">⟳</span>
+            <div>
+              <p class="validation-label">Validando</p>
+              <p class="validation-text">Se está validando el campo con validadores asíncronos</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section class="style-guide__section" id="cards">
+      <div class="style-guide__section-header">
+        <h2 class="style-guide__section-title">🎴 Cards y Contenedores</h2>
+        <p class="style-guide__section-desc">Componentes contenedores para agrupar contenido</p>
+      </div>
+
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Tarjeta de Medicamento</h3>
+        <div class="medicine-card-showcase">
+          <div class="medicine-card-container">
+            <app-medicine-card [medicine]="exampleMedicine">
+              <div class="medicine-card-actions">
+                <button class="btn btn-edit">✏️ Editar</button>
+                <button class="btn btn-delete">🗑️ Eliminar</button>
+              </div>
+            </app-medicine-card>
+          </div>
+        </div>
+
+        <div class="style-guide__subsection">
+          <h4 class="style-guide__subsection-title">Características</h4>
+          <ul class="style-guide__feature-list">
+            <li><strong>Header con gradiente:</strong> Colores primarios del sistema</li>
+            <li><strong>Icono de píldora:</strong> Variante primera con rotación</li>
+            <li><strong>Grid responsive:</strong> 2 columnas en desktop, 1 en móvil</li>
+            <li><strong>Dark mode:</strong> Soportado completamente</li>
+            <li><strong>Accesibilidad:</strong> Labels semánticos y ARIA labels</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Formulario en Card</h3>
         <div class="style-guide__card-grid">
           <div class="card-full">
-            <app-card title="Paracetamor">
-             <div class="med-form">
-               <app-form-input label="Nombre del Medicamento" placeholder="Escribe el nombre del medicamento" name="med-name"></app-form-input>
-               <app-form-input label="Cantidad (mg)" placeholder="Cantidad en (mg)" name="med-amount"></app-form-input>
-               <app-form-input label="Fecha inicio" type="date" name="start-date"></app-form-input>
-               <app-form-input label="Fecha fin" type="date" name="end-date"></app-form-input>
-               <app-form-select label="Frecuencia (horas)" [options]="selectOptions" class="full-width"></app-form-select>
-
-               <div class="card-actions" style="margin-top:12px; display:flex; gap:8px;">
-                 <app-button variant="primary">Guardar</app-button>
-                 <app-button variant="ghost">Cancelar</app-button>
-               </div>
-             </div>
+            <app-card title="Crear Medicamento">
+              <div class="med-form">
+                <app-form-input label="Nombre" placeholder="Paracetamol"></app-form-input>
+                <app-form-input label="Dosis (mg)" placeholder="500"></app-form-input>
+                <app-form-input label="Inicio" type="date"></app-form-input>
+                <app-form-input label="Fin" type="date"></app-form-input>
+                <app-form-select label="Frecuencia" [options]="selectOptions" class="full-width"></app-form-select>
+                <div class="card-actions">
+                  <app-button variant="primary">Guardar</app-button>
+                  <app-button variant="ghost">Cancelar</app-button>
+                </div>
+              </div>
             </app-card>
           </div>
-         </div>
+        </div>
       </div>
     </section>
 
-    <!-- Formularios -->
-    <section class="style-guide__section bg-quaternary">
-      <h2 class="style-guide__section-title">Formularios</h2>
-      <p class="style-guide__section-desc">Inputs, textarea y select que usa la app.</p>
-
-      <div class="style-guide__form-grid">
-        <app-form-input label="Nombre" placeholder="Tu nombre"></app-form-input>
-        <app-form-input label="Email" type="email" placeholder="ejemplo@dominio.com"></app-form-input>
-        <app-form-textarea label="Mensaje" placeholder="Escribe..."></app-form-textarea>
-        <app-form-select label="Selecciona" [options]="selectOptions"></app-form-select>
+    <!-- COMPONENTES INTERACTIVOS -->
+    <section class="style-guide__section" id="interactive">
+      <div class="style-guide__section-header">
+        <h2 class="style-guide__section-title">⚡ Componentes Interactivos</h2>
+        <p class="style-guide__section-desc">Componentes con interacción y navegación</p>
       </div>
-    </section>
-
-    <!-- Navegación / Tabs -->
-    <section class="style-guide__section bg-quinary">
-      <h2 class="style-guide__section-title">Navegación</h2>
-      <p class="style-guide__section-desc">Componentes de navegación: tabs, theme switcher.</p>
 
       <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Navegación por Tabs</h3>
         <app-tabs></app-tabs>
-        <div style="margin-top: 12px;"><app-theme-switcher></app-theme-switcher></div>
+      </div>
+
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Cambio de Tema</h3>
+        <div class="style-guide__theme-demo">
+          <p>Usa el selector para cambiar entre modo claro y oscuro:</p>
+          <app-theme-switcher></app-theme-switcher>
+        </div>
+      </div>
+
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Demo de DOM</h3>
+        <app-dom-demo></app-dom-demo>
       </div>
     </section>
 
-    <!-- Alertas: ejemplos -->
-    <section class="style-guide__section bg-quaternary">
-      <h2 class="style-guide__section-title">Alertas </h2>
-      <p class="style-guide__section-desc">Ejemplos de alertas que ofrece el proyecto. Cierra cada una con la X o usa "Reiniciar alertas" para mostrarlas de nuevo.</p>
+    <!-- NOTIFICACIONES -->
+    <section class="style-guide__section" id="alerts">
+      <div class="style-guide__section-header">
+        <h2 class="style-guide__section-title">🔔 Notificaciones y Alertas</h2>
+        <p class="style-guide__section-desc">Componentes para mostrar mensajes al usuario</p>
+      </div>
 
-      <div class="style-guide__subsection alerts-examples">
-        <div class="alerts-row">
-          <app-alert *ngIf="showAlertSuccess" type="success" (closed)="closeAlert('success')">Operación completada correctamente.</app-alert>
-          <app-alert *ngIf="showAlertError" type="error" (closed)="closeAlert('error')">Ha ocurrido un error al guardar los datos.</app-alert>
+      <div class="style-guide__subsection">
+        <h3 class="style-guide__subsection-title">Alertas</h3>
+        <div class="alerts-examples">
+          <div class="alerts-row">
+            <app-alert *ngIf="showAlertSuccess" type="success" (closed)="closeAlert('success')">
+              ✓ Operación completada correctamente
+            </app-alert>
+            <app-alert *ngIf="showAlertError" type="error" (closed)="closeAlert('error')">
+              ✕ Ha ocurrido un error al guardar los datos
+            </app-alert>
+          </div>
+          <div class="alerts-row">
+            <app-alert *ngIf="showAlertWarning" type="warning" (closed)="closeAlert('warning')">
+              ⚠ Atención: revisa los campos obligatorios
+            </app-alert>
+            <app-alert *ngIf="showAlertInfo" type="info" (closed)="closeAlert('info')">
+              ⓘ Información: la sesión expirará en 10 minutos
+            </app-alert>
+          </div>
         </div>
-        <div class="alerts-row">
-          <app-alert *ngIf="showAlertWarning" type="warning" (closed)="closeAlert('warning')">Atención: revisa los campos obligatorios.</app-alert>
-          <app-alert *ngIf="showAlertInfo" type="info" (closed)="closeAlert('info')">Información: la sesión expirará en 10 minutos.</app-alert>
-        </div>
-
-        <div style="margin-top:12px;">
-          <app-button (clicked)="resetAlerts()">Volver a ver las alertas</app-button>
+        <div style="margin-top:16px;">
+          <app-button (clicked)="resetAlerts()">Mostrar alertas nuevamente</app-button>
         </div>
       </div>
     </section>
+
+    <!-- ESPACIADO -->
+    <section class="style-guide__section" id="spacing">
+      <div class="style-guide__section-header">
+        <h2 class="style-guide__section-title">📏 Espaciado</h2>
+        <p class="style-guide__section-desc">Escala de espaciado utilizada en el proyecto</p>
+      </div>
+
+      <div class="style-guide__subsection">
+        <div class="spacing-grid">
+          <div class="spacing-item">
+            <div class="spacing-box" style="width: 8px;"></div>
+            <p>8px</p>
+          </div>
+          <div class="spacing-item">
+            <div class="spacing-box" style="width: 12px;"></div>
+            <p>12px</p>
+          </div>
+          <div class="spacing-item">
+            <div class="spacing-box" style="width: 16px;"></div>
+            <p>16px</p>
+          </div>
+          <div class="spacing-item">
+            <div class="spacing-box" style="width: 20px;"></div>
+            <p>20px</p>
+          </div>
+          <div class="spacing-item">
+            <div class="spacing-box" style="width: 24px;"></div>
+            <p>24px</p>
+          </div>
+          <div class="spacing-item">
+            <div class="spacing-box" style="width: 32px;"></div>
+            <p>32px</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REFERENCIA OCULTA DE COMPONENTES -->
+    <div style="display:none;" aria-hidden="true">
+      <app-button></app-button>
+      <app-card></app-card>
+      <app-form-input></app-form-input>
+      <app-form-textarea></app-form-textarea>
+      <app-form-select></app-form-select>
+      <app-tabs></app-tabs>
+      <app-theme-switcher></app-theme-switcher>
+      <app-dom-demo></app-dom-demo>
+      <app-modal></app-modal>
+    </div>
 
     <!-- Contenedor oculto que referencia todos los componentes para que el compilador los detecte -->
     <div style="display:none;" aria-hidden="true">

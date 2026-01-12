@@ -1,35 +1,94 @@
-@use 'sass:color';
 @use '../../../../styles/00-settings/variables' as *;
 
 // Estilos BEM para footer
 .app-footer {
   width: 100%;
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: var(--color-primario-primary); // mismo fondo que el header
-  color: #fff;
-  text-align: center;
-  border-top: 3px solid color.adjust($color-primario-primary, $lightness: -12%);
-  border-radius: var(--radius) var(--radius) 0 0;
+  padding: $espaciado-48 $espaciado-24;
+  background: var(--color-primario-primary);
+  color: var(--color-texto_borde_cajas);
   font-family: $font-primary;
-  margin-top: 2rem;
+  margin-top: auto;
 }
-.app-footer__links a {
-  color: #fff;
-  margin: 0 0.5rem;
+
+.app-footer__content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: $espaciado-48;
+  row-gap: $espaciado-24;
+  align-items: start;
+}
+
+// Todas las columnas son flex column por defecto
+.app-footer__column {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-16;
+}
+
+// La marca es especial - horizontal
+.app-footer__brand {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.app-footer__logo {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.app-footer__brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-4;
+}
+
+.app-footer__title {
+  font-family: $font-secondary;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: var(--color-texto_borde_cajas);
+  margin: 0;
+}
+
+.app-footer__subtitle {
+  font-size: $font-size-sm;
+  color: var(--color-texto_borde_cajas);
+  margin: 0;
+  opacity: 0.8;
+}
+
+.app-footer__column-title {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: var(--color-texto_borde_cajas);
+  margin: 0;
+}
+
+.app-footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-12;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.app-footer__link {
+  color: var(--color-texto_borde_cajas);
+  text-decoration: none;
+  font-size: $font-size-sm;
+  opacity: 0.9;
+  transition: opacity $transition-normal;
+}
+
+.app-footer__link:hover {
+  opacity: 1;
   text-decoration: underline;
-  font-size: 1rem;
 }
-.app-footer__social a {
-  margin: 0 0.5rem;
-  font-size: 1.3rem;
-  color: rgba(255,255,255,0.9);
-  transition: color 0.2s;
-}
-.app-footer__social a:hover {
-  color: color.adjust(#fff, $lightness: -20%);
-}
-.app-footer__copyright {
-  margin-top: 0.5rem;
-  font-size: 0.95rem;
-  color: rgba(255,255,255,0.85);
-}
+
+
+// ...existing code...
+

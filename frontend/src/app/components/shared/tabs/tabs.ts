@@ -1,6 +1,11 @@
-import { Component, ContentChildren, QueryList, AfterContentInit, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Tab } from './tab';
+
+export interface Tab {
+  id: string;
+  label: string;
+  disabled?: boolean;
+}
 
 @Component({
   selector: 'app-tabs',
@@ -9,22 +14,21 @@ import { Tab } from './tab';
   templateUrl: './tabs.html',
   styleUrls: ['./tabs.scss']
 })
-export class Tabs implements AfterContentInit {
-  @ContentChildren(Tab) tabs!: QueryList<Tab>;
-  @Input() activeIndex = 0;
+export class TabsComponent {
+  @Input() tabs: Tab[] = [];
+  @Input() activeTabId: string = '';
+  @Output() tabChange = new EventEmitter<string>();
 
-  ngAfterContentInit() {
-    this.updateActiveTabs();
+  selectTab(tabId: string) {
+    const tab = this.tabs.find(t => t.id === tabId);
+    if (tab && !tab.disabled) {
+      this.activeTabId = tabId;
+      this.tabChange.emit(tabId);
+    }
   }
 
-  selectTab(index: number) {
-    this.activeIndex = index;
-    this.updateActiveTabs();
-  }
-
-  private updateActiveTabs() {
-    const arr = this.tabs.toArray();
-    arr.forEach((t, i) => t.active = i === this.activeIndex);
+  isActive(tabId: string): boolean {
+    return this.activeTabId === tabId;
   }
 }
 

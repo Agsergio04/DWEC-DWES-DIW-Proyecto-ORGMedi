@@ -1,40 +1,37 @@
 /* Variables SASS (colores, tipografías, espaciados, etc.) */
 
 //Color Primario
-$color-primario-hover: #F08EC7;
+$color-primario-hover: #D380B1;
 $color-primario-primary: #E177B5;
 $color-primario-disabled: #F6D5E8;
 
+//Rosa muy claro para fondos (medicina card)
+$color-rosa-claro: #FDF2F7;
+
 //Color Secundario
-$color-secundario-hover: #CB5FAA;
-$color-secundario-primary: #99397C;
-$color-secundario-disabled: #CCB9C7;
+$color-secundario-hover: #A3CB6B;
+$color-secundario-primary: #B5E177;
+$color-secundario-disabled: #E8F6D5;
 
-//Color Terciario
-$color-terciario-hover: #DCDFC9;
-$color-terciario-primary: #d3d8b4;
-$color-terciario-disabled: #FCFDF5;
+//Color Footer Claro
+$color-footer-light: #D3B5C6;
 
-//Color Cuaternario
-$color-cuaternario-hover: #A4D281;
-$color-cuaternario-primary: #B6E98F;
-$color-cuaternario-disabled: #E8F8DC;
+//Color Footer Oscuro
+$color-footer-dark: #6F4A5D;
 
-//Color Quintario
-$color-quintario-hover: #AEC79B;
-$color-quintario-primary: #A6CC88;
-$color-quintario-disabled: #E3EFDA;
 
 // Color Afirmacion
 $color-afirmacion-hover: #92FF81;
 $color-afirmacion-primary: #22FF00;
+$color-afirmacion-disabled: #22FF00;
 
 // Color Negacion
 $color-negacion-hover: #FF5050;
 $color-negacion-primary: #FF0202;
+$color-negacion-disabled: #FF0202;
 
 //Bordes y Marco de los botones
-$color-bordes_marco_botones: #1F0A1A;
+$color-bordes_marco_botones: #311927;
 
 //Texto y Borde de las caja
 $color-texto_borde_cajas: #3A4730;
@@ -61,25 +58,14 @@ $color-primario-dark_hover: #87476D;
 $color-primario-dark: #A95988;
 $color-primario-off: #4F2A3F;
 
+//Rosa muy claro para fondos (modo oscuro)
+$color-rosa-claro-dark: #2D1B2B;
+
 //Color Secundario
-$color-secundario-dark_hover: #20091A;
-$color-secundario-dark: #441638;
-$color-secundario-off: #150511;
+$color-secundario-dark_hover: #516536;
+$color-secundario-dark: #88A959;
+$color-secundario-off: #3F4F2A;
 
-//Color Terciario
-$color-terciario-dark_hover: #28381D;
-$color-terciario-dark: #384F28;
-$color-terciario-disabled: #212E18;
-
-//Color Cuaternario
-$color-cuaternario-dark_hover: #35422B;
-$color-cuaternario-dark: #435735;
-$color-cuaternario-off: #2A3820;
-
-//Color Quintario
-$color-quintario-dark_hover: #647A52;
-$color-quintario-dark: #7D9966;
-$color-quintario-off: #3A4730;
 
 // Color Afirmacion
 $color-afirmacion-dark_hover: #169D01;
@@ -90,10 +76,10 @@ $color-negacion-dark_hover: #840000;
 $color-negacion-dark: #9C1010;
 
 //Bordes y Marco de los botones
-$color-bordes_marco_botones-dark: #EBA4CD;
+$color-bordes_marco_botones-dark: #F6D5E8;
 
 //Texto y Borde de las caja
-$color-texto_borde_cajas-dark: #A4D281;
+$color-texto_borde_cajas-dark: #E8F6D5;
 
 //Variante de color de pastilla 1
 $color-variante-primera: #008E8B;
@@ -180,3 +166,10 @@ $radius-full: 9999px;
 $transition-rapida: 0.15s ease-in-out;
 $transition-normal: 0.3s ease-in-out;
 $transition-lenta: 0.5s ease-in-out;
+
+/* Elevaciones (Sombras) */
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+

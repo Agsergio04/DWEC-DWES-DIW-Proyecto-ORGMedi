@@ -1,5 +1,59 @@
 @use '../../../styles/00-settings/variables' as *;
 
-.page--home { padding: $espaciado-32; }
-.page__container { max-width: 960px; margin: 0 auto; }
+.page--home {
+  padding: $espaciado-48 $espaciado-32;
+  min-height: calc(100vh - 72px - 200px);
+  display: flex;
+  align-items: center;
+}
+
+.page__container {
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.page--home h1 {
+  font-family: $font-secondary;
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-primario-primary);
+  margin-bottom: $espaciado-16;
+}
+
+.page--home p {
+  font-size: $font-size-lg;
+  color: var(--color-texto_borde_cajas);
+  line-height: $line-height-relaxed;
+}
+
+// Sección de medicamentos
+.medicines-section {
+  margin-top: $espaciado-48;
+}
+
+.medicines-section h2 {
+  font-family: $font-secondary;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-primario-primary);
+  margin-bottom: $espaciado-24;
+}
+
+.medicines-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: $espaciado-24;
+}
+
+@media (max-width: 768px) {
+  .medicines-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: $espaciado-16;
+  }
+
+  .page--home {
+    padding: $espaciado-32 $espaciado-16;
+  }
+}
 

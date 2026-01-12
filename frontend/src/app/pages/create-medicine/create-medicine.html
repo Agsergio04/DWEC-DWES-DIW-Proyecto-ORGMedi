@@ -1,0 +1,108 @@
+<section class="page page--create-medicine">
+  <div class="page__container">
+    <h1>Nuevo Medicamento</h1>
+
+    <form class="medicine-form" (ngSubmit)="saveMedicine()">
+      <div class="form-group">
+        <label for="name" class="form-label">Nombre del Medicamento *</label>
+        <input
+          id="name"
+          type="text"
+          class="form-input"
+          [(ngModel)]="form.name"
+          name="name"
+          placeholder="Ej: Amoxicilina"
+          required
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="dosage" class="form-label">Dosis *</label>
+          <input
+            id="dosage"
+            type="text"
+            class="form-input"
+            [(ngModel)]="form.dosage"
+            name="dosage"
+            placeholder="Ej: 500mg"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="quantity" class="form-label">Cantidad</label>
+          <input
+            id="quantity"
+            type="number"
+            class="form-input"
+            [(ngModel)]="form.quantity"
+            name="quantity"
+            placeholder="Ej: 30"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="frequency" class="form-label">Frecuencia *</label>
+        <select
+          id="frequency"
+          class="form-select"
+          [(ngModel)]="form.frequency"
+          name="frequency"
+          required
+        >
+          <option value="">Selecciona una frecuencia</option>
+          <option *ngFor="let freq of frequencies" [value]="freq">{{ freq }}</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="startDate" class="form-label">Fecha de Inicio *</label>
+          <input
+            id="startDate"
+            type="date"
+            class="form-input"
+            [(ngModel)]="form.startDate"
+            name="startDate"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="endDate" class="form-label">Fecha de Fin</label>
+          <input
+            id="endDate"
+            type="date"
+            class="form-input"
+            [(ngModel)]="form.endDate"
+            name="endDate"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="form-label">Notas / Instrucciones</label>
+        <textarea
+          id="description"
+          class="form-textarea"
+          [(ngModel)]="form.description"
+          name="description"
+          placeholder="Ej: Tomar con alimentos, evitar alcohol..."
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary" [disabled]="!isFormValid()">
+          Guardar Medicamento
+        </button>
+        <button type="button" class="btn btn--secondary" (click)="cancelCreate()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+

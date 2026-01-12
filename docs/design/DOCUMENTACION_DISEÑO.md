@@ -471,66 +471,129 @@ Los Design Tokens en ORGMedi son variables SCSS predefinidas que centralizan tod
 
 #### 1.4.1 Tokens de Color
 
-**Modo Claro (Light Mode):**
+**Paleta simplificada - 6 Colores Principales con Estados:**
 
-Los colores se organizan en categorías de uso:
+La paleta de ORGMedi utiliza **6 colores principales** con **múltiples estados** (hover, primary, disabled) para crear una interfaz coherente y accesible. Esta estructura simplificada asegura coherencia visual y fácil mantenimiento.
 
-**Primarios (Rosa - Acciones principales y énfasis):**
-- `$color-primario-primary: #E177B5` - Color principal en botones, enlaces
-- `$color-primario-hover: #F08EC7` - Estado hover, más claro
-- `$color-primario-disabled: #F6D5E8` - Estado deshabilitado, muy claro
+**1. Color Primario (Rosa) - Identidad de Marca:**
 
-**Decisión de diseño:** Se eligió el rosa porque es un color que genera confianza y es accesible (contrasta bien con fondo claro). La escala de variaciones permite estados visuales claros.
+```scss
+// Modo claro
+$color-primario-hover: #D380B1      // Hover state
+$color-primario-primary: #E177B5    // Estado principal
+$color-primario-disabled: #F6D5E8   // Estado deshabilitado (más claro)
 
-**Secundarios (Morado - Títulos y énfasis secundario):**
-- `$color-secundario-primary: #99397C` - Color para títulos h1-h6
-- `$color-secundario-hover: #CB5FAA` - Hover más claro
-- `$color-secundario-disabled: #CCB9C7` - Deshabilitado
+// Modo oscuro
+$color-primario-dark_hover: #87476D    // Hover oscuro
+$color-primario-dark: #A95988          // Principal oscuro
+$color-primario-off: #4F2A3F           // Deshabilitado oscuro
+```
 
-**Decisión de diseño:** Complementa el rosa, creando jerarquía visual. Utilizado en headers para crear distinción clara.
+**Uso:** Botones primarios, encabezados, elementos de marca. 
+**Decisión de diseño:** El rosa comunica "salud" y "cuidado", perfecto para una app de medicamentos.
 
-**Terciarios (Verde claro - Fondos principales):**
-- `$color-terciario-primary: #F4F8DF` - Color de fondo principal de la aplicación
-- `$color-terciario-hover: #DCDFC9` - Hover para componentes sobre este fondo
-- `$color-terciario-disabled: #FCFDF5` - Estado deshabilitado
+**2. Color Secundario (Verde) - Apoyo Visual:**
 
-**Decisión de diseño:** Verde muy claro, casi blanco, que no fatiga la vista. Proporciona contraste suficiente para texto oscuro pero mantiene legibilidad.
+```scss
+// Modo claro
+$color-secundario-hover: #A3CB6B      // Hover
+$color-secundario-primary: #B5E177    // Principal
+$color-secundario-disabled: #E8F6D5   // Deshabilitado
 
-**Cuaternarios y Quintarios (Verdes - Énfasis y contexto):**
-- `$color-cuaternario-primary: #B6E98F` - Verde manzana para énfasis
-- `$color-quintario-primary: #A6CC88` - Verde más oscuro para variación
+// Modo oscuro
+$color-secundario-dark_hover: #516536
+$color-secundario-dark: #88A959
+$color-secundario-off: #3F4F2A
+```
 
-**Decisión de diseño:** Comunica "seguridad" y "naturaleza", apropiado para una app de medicamentos/salud.
+**Uso:** Botones secundarios, elementos de apoyo.
+**Decisión de diseño:** El verde refuerza el aspecto de "salud" y "bienestar".
 
-**Estados semánticos:**
-- `$color-afirmacion-primary: #22FF00` - Verde brillante para confirmaciones (✓)
-- `$color-negacion-primary: #FF0202` - Rojo para negaciones/errores (✗)
+**3. Color de Afirmación (Verde Brillante) - Confirmación:**
 
-**Decisión de diseño:** Colores de alto contraste que comunican intención inmediatamente (semáforo emocional).
+```scss
+// Modo claro
+$color-afirmacion-hover: #92FF81      // Hover (más oscuro)
+$color-afirmacion-primary: #22FF00    // Principal
+$color-afirmacion-disabled: #22FF00   // Deshabilitado (mismo valor)
 
-**Variantes de pastilla (5 colores diferenciadores):**
-- `$color-variante-primera: #00FFFB` - Cian (Ozempic)
-- `$color-variante-segunda: #F2FF00` - Amarillo (Omeprazol)
-- `$color-variante-tercera: #FF00C3` - Magenta (Amoxicilina)
-- `$color-variante-cuarta: #FFAA00` - Naranja (Ibuprofeno)
-- `$color-variante-quinta: #C200FD` - Púrpura (Paracetamol)
+// Modo oscuro
+$color-afirmacion-dark_hover: #169D01
+$color-afirmacion-dark: #168C04
+```
 
-**Decisión de diseño:** Cada medicamento puede tener un color único, facilitando identificación rápida. Los colores son saturados y diferenciados entre sí.
+**Uso:** Mensajes de éxito, checkmarks, validaciones positivas.
+**Decisión de diseño:** Alto contraste para máxima legibilidad en confirmaciones.
 
-**Modo Oscuro (Dark Mode):**
+**4. Color de Negación (Rojo) - Error/Cancelación:**
 
-Los colores se invierten manteniendo la lógica de designación:
+```scss
+// Modo claro
+$color-negacion-hover: #FF5050        // Hover (más oscuro)
+$color-negacion-primary: #FF0202      // Principal
+$color-negacion-disabled: #FF0202     // Deshabilitado (mismo valor)
 
-- Primarios dark: `$color-primario-dark: #A95988` (rosa desaturado para no cansar)
-- Secundarios dark: `$color-secundario-dark: #441638` (morado muy oscuro)
-- Terciarios dark: `$color-terciario-dark: #384F28` (verde oscuro como fondo)
-- Variantes dark más saturadas para legibilidad
+// Modo oscuro
+$color-negacion-dark_hover: #840000
+$color-negacion-dark: #9C1010
+```
 
-**Decisión de diseño:** El tema oscuro sigue la misma estructura lógica pero con valores invertidos, permitiendo que la lógica de uso sea idéntica.
+**Uso:** Mensajes de error, botones de eliminar, cancelación.
+**Decisión de diseño:** Semáforo visual claro que comunica estado negativo inmediatamente.
 
-**Colores estructurales:**
-- `$color-bordes_marco_botones: #1F0A1A` (light) / `#EBA4CD` (dark) - Borde de elementos interactivos
-- `$color-texto_borde_cajas: #3A4730` (light) / `#A4D281` (dark) - Texto en cajas y bordes
+**5. Bordes y Marcos de Elementos Interactivos:**
+
+```scss
+// Modo claro
+$color-bordes_marco_botones: #311927
+
+// Modo oscuro
+$color-bordes_marco_botones-dark: #F6D5E8
+```
+
+**Uso:** Bordes de formularios, marcos de botones, delimitación de componentes interactivos.
+
+**6. Texto y Bordes de Cajas:**
+
+```scss
+// Modo claro
+$color-texto_borde_cajas: #3A4730
+
+// Modo oscuro
+$color-texto_borde_cajas-dark: #E8F6D5
+```
+
+**Uso:** Texto dentro de cajas, bordes de información, etiquetas.
+
+**Variantes de Pastilla (5 Colores Diferenciadores):**
+
+Estos colores se usan para diferenciar visualmente medicamentos en el sistema:
+
+```scss
+// Modo claro
+$color-variante-primera: #00FFFB    // Cian - Ozempic
+$color-variante-segunda: #F2FF00    // Amarillo - Omeprazol
+$color-variante-tercera: #FF00C3    // Magenta - Amoxicilina
+$color-variante-cuarta: #FFAA00     // Naranja - Ibuprofeno
+$color-variante-quinta: #C200FD     // Púrpura - Paracetamol
+
+// Modo oscuro
+$color-variante-primera: #008E8B
+$color-variante-segunda: #B4BD00
+$color-variante-tercera: #980075
+$color-variante-cuarta: #A66F00
+$color-variante-quinta: #9100BD
+```
+
+**Decisión de diseño para la paleta simplificada:**
+
+Después de revisar el uso en componentes, se eliminaron los colores **Terciario, Cuaternario y Quintario** porque:
+- ✓ No se utilizaban en el código actual
+- ✓ La paleta con 6 colores es más legible y coherente
+- ✓ Reduce complejidad sin perder funcionalidad
+- ✓ Las variantes de pastilla proporcionan suficiente diversidad visual
+
+La estructura **hover → primary → disabled** permite mostrar claramente el estado interactivo de cualquier elemento en modo claro y oscuro.
 
 #### 1.4.2 Tokens Tipográficos
 
@@ -659,7 +722,32 @@ $radius-full:    9999px   // Circular
 - 12px para botones da apariencia más amigable
 - Escala permite flexibilidad sin exceso
 
-#### 1.4.6 Tokens de Transiciones
+#### 1.4.6 Tokens de Elevaciones (Sombras)
+
+Las sombras (box-shadow) crean profundidad y jerarquía visual. En ORGMedi usamos sombras sutiles con transparencia RGBA para que funcionen en cualquier fondo.
+
+**Escala de sombras:**
+
+```scss
+$shadow-sm:  0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+```
+
+**Usos recomendados:**
+
+- `$shadow-sm`: Elementos sutiles, tooltips, elevación mínima
+- `$shadow-md`: Tarjetas, formularios, componentes normales
+- `$shadow-lg`: Modales, dropdowns, elementos prominentes
+- `$shadow-xl`: Elementos flotantes críticos, notificaciones urgentes
+
+**Decisión de diseño:**
+- Sombras basadas en RGBA proporcionan apariencia natural en cualquier fondo
+- La escala permite crear jerarquía sin abrumar
+- Sombras sutiles mantienen el diseño limpio y moderno
+
+#### 1.4.7 Tokens de Transiciones
 
 **Velocidades de animación:**
 
@@ -673,6 +761,35 @@ $transition-lenta:   0.5s ease-in-out    // Animaciones enfatizadas
 - 150ms-300ms es el rango donde el usuario percibe feedback como "instantáneo"
 - 500ms para animaciones que se deben notarse sin ser molestas
 - `ease-in-out` proporciona naturalidad vs lineal
+
+#### 1.4.8 Tabla Resumen de Design Tokens
+
+| Categoría | Token | Valor | Uso |
+|-----------|-------|-------|-----|
+| **Primario (Rosa)** | `$color-primario-primary` | #E177B5 | Botones principales |
+| | `$color-primario-hover` | #D380B1 | Hover |
+| | `$color-primario-disabled` | #F6D5E8 | Deshabilitado |
+| **Secundario (Verde)** | `$color-secundario-primary` | #B5E177 | Botones secundarios |
+| | `$color-secundario-hover` | #A3CB6B | Hover |
+| | `$color-secundario-disabled` | #E8F6D5 | Deshabilitado |
+| **Afirmación** | `$color-afirmacion-primary` | #22FF00 | Éxito/Confirmación |
+| | `$color-afirmacion-hover` | #92FF81 | Hover |
+| **Negación** | `$color-negacion-primary` | #FF0202 | Error/Eliminación |
+| | `$color-negacion-hover` | #FF5050 | Hover |
+| **Tipografía Base** | `$font-primary` | Poppins | Body text |
+| | `$font-size-md` | 1rem (16px) | Base |
+| | `$font-weight-bold` | 700 | Títulos |
+| | `$line-height-normal` | 1.5 | Body |
+| **Espaciado** | `$espaciado-8` | 0.5rem | Mínimo |
+| | `$espaciado-16` | 1rem | Estándar |
+| | `$espaciado-24` | 1.5rem | Componentes |
+| **Breakpoints** | `$breakpoint-pequeño` | 640px | Móvil grande |
+| | `$breakpoint-medio` | 768px | Tablet |
+| | `$breakpoint-grande` | 1024px | Desktop |
+| **Bordes/Radios** | `$border-thin` | 1px | Sutil |
+| | `$radius-md` | 6px | Estándar |
+| **Sombras** | `$shadow-md` | 0 4px 6px | Normal |
+| **Transiciones** | `$transition-normal` | 300ms | Estándar |
 
 ---
 

@@ -1,10 +1,19 @@
-<div class="app-tabs">
-  <div class="app-tabs__nav" role="tablist">
-    <button *ngFor="let t of tabs.toArray(); let i = index" role="tab" [attr.aria-selected]="t.active" [class.tab--active]="t.active" (click)="selectTab(i)">
-      {{ t.title }}
+<div class="tabs">
+  <div class="tabs__header" role="tablist">
+    <button
+      *ngFor="let tab of tabs"
+      class="tabs__tab"
+      [class.tabs__tab--active]="isActive(tab.id)"
+      [disabled]="tab.disabled"
+      [attr.aria-selected]="isActive(tab.id)"
+      role="tab"
+      (click)="selectTab(tab.id)"
+    >
+      {{ tab.label }}
     </button>
   </div>
-  <div class="app-tabs__panels">
+
+  <div class="tabs__content">
     <ng-content></ng-content>
   </div>
 </div>

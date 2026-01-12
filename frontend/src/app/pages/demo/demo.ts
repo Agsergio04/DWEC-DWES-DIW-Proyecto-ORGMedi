@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { DomDirectComponent } from '../../components/dom-examples/dom-direct.component';
 import { DomRendererComponent } from '../../components/dom-examples/dom-renderer.component';
 import { DomViewchildComponent } from '../../components/dom-examples/dom-viewchild.component';
 import { DomObserversComponent } from '../../components/dom-examples/dom-observers.component';
 import { DomEventsComponent } from '../../components/dom-examples/dom-events.component';
-import { Modal } from '../../components/shared/modal/modal';
+import { ModalComponent } from '../../components/shared/modal/modal';
 import { TooltipDirective } from '../../directives/tooltip.directive';
-import { Tabs } from '../../components/shared/tabs/tabs';
+import { TabsComponent } from '../../components/shared/tabs/tabs';
 import { Tab } from '../../components/shared/tabs/tab';
 import { ButtonComponent } from '../../components/shared/button/button';
 import { ThemeService } from '../../core/services/theme.service';
@@ -19,7 +20,7 @@ import { signal } from '@angular/core';
 @Component({
   selector: 'app-demo',
   standalone: true,
-  imports: [CommonModule, DomDirectComponent, DomRendererComponent, DomViewchildComponent, DomObserversComponent, DomEventsComponent, Modal, TooltipDirective, Tabs, Tab, ButtonComponent, AlertComponent],
+  imports: [CommonModule, FormsModule, DomDirectComponent, DomRendererComponent, DomViewchildComponent, DomObserversComponent, DomEventsComponent, ModalComponent, TooltipDirective, TabsComponent, Tab, ButtonComponent, AlertComponent],
   templateUrl: './demo.html',
   styleUrls: ['./demo.scss']
 })

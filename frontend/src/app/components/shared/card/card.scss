@@ -1,7 +1,7 @@
 @use '../../../../styles/00-settings/variables' as *;
 
 .app-card {
-  background: var(--color-terciario-primary);
+  background: var(--color-primario-primary);
   border: $border-thin solid var(--color-bordes_marco_botones);
   border-radius: $radius-md;
   overflow: hidden;

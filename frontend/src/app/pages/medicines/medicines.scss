@@ -1,0 +1,198 @@
+@use '../../../styles/00-settings/variables' as *;
+
+.page--medicines {
+  padding: $espaciado-48 $espaciado-32;
+  min-height: calc(100vh - 72px - 200px);
+}
+
+.page__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.medicines__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $espaciado-48;
+  flex-wrap: wrap;
+  gap: $espaciado-20;
+}
+
+.page--medicines h1 {
+  font-family: $font-secondary;
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-primario-primary);
+  margin: 0;
+}
+
+.medicines__actions {
+  display: flex;
+  gap: $espaciado-12;
+  flex-wrap: wrap;
+}
+
+.medicines__btn {
+  padding: $espaciado-8 $espaciado-16;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-sm;
+  transition: background $transition-normal;
+
+  &--primary {
+    background: var(--color-primario-primary);
+    color: white;
+
+    &:hover {
+      background: var(--color-primario-hover);
+    }
+  }
+
+  &--secondary {
+    background: var(--color-secundario-primary);
+    color: var(--color-texto_borde_cajas);
+    border: $border-thin solid var(--color-bordes_marco_botones);
+
+    &:hover {
+      background: var(--color-secundario-hover);
+    }
+  }
+}
+
+.medicines__section {
+  margin-bottom: $espaciado-48;
+}
+
+.medicines__section-title {
+  font-family: $font-secondary;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-primario-primary);
+  margin-bottom: $espaciado-24;
+  margin-top: 0;
+
+  &--expired {
+    color: var(--color-negacion-primary);
+  }
+}
+
+.medicines__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: $espaciado-24;
+}
+
+.medicine__action-btn {
+  flex: 1;
+  padding: $espaciado-8 $espaciado-12;
+  border: $border-thin solid var(--color-bordes_marco_botones);
+  background: white;
+  border-radius: $radius-md;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  transition: background $transition-normal, border-color $transition-normal;
+  color: var(--color-texto_borde_cajas);
+
+  &:hover {
+    background: rgba(var(--color-primario-primary), 0.05);
+    border-color: var(--color-primario-primary);
+  }
+
+  &--edit {
+    &:hover {
+      background: rgba(var(--color-primario-primary), 0.05);
+      border-color: var(--color-primario-primary);
+      color: var(--color-primario-primary);
+    }
+  }
+
+  &--delete {
+    &:hover {
+      background: rgba(var(--color-negacion-primary), 0.05);
+      border-color: var(--color-negacion-primary);
+      color: var(--color-negacion-primary);
+    }
+  }
+}
+
+.medicines__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $espaciado-64 $espaciado-32;
+  text-align: center;
+  background: rgba(var(--color-primario-primary), 0.05);
+  border: $border-thin dashed var(--color-bordes_marco_botones);
+  border-radius: $radius-lg;
+  color: var(--color-texto_borde_cajas);
+
+  svg {
+    opacity: 0.5;
+    margin-bottom: $espaciado-20;
+  }
+
+  h3 {
+    font-family: $font-secondary;
+    font-size: $font-size-xl;
+    margin-bottom: $espaciado-8;
+    margin-top: 0;
+  }
+
+  p {
+    margin-bottom: $espaciado-24;
+    opacity: 0.8;
+  }
+}
+
+// Modo oscuro
+[data-theme="dark"] {
+  .medicines__empty {
+    background: rgba(var(--color-primario-primary), 0.1);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .medicine__action-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: white;
+
+    &:hover {
+      background: rgba(var(--color-primario-primary), 0.15);
+      border-color: var(--color-primario-primary);
+    }
+
+    &--delete:hover {
+      background: rgba(var(--color-negacion-primary), 0.15);
+      border-color: var(--color-negacion-primary);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .page--medicines {
+    padding: $espaciado-32 $espaciado-16;
+  }
+
+  .medicines__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .medicines__actions {
+    width: 100%;
+
+    .medicines__btn {
+      flex: 1;
+    }
+  }
+
+  .medicines__grid {
+    grid-template-columns: 1fr;
+  }
+}
+

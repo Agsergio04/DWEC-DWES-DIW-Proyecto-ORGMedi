@@ -1,0 +1,5 @@
+<div class="tooltip" [attr.data-position]="position">
+  <ng-content></ng-content>
+  <div class="tooltip__content" *ngIf="showTooltip">{{ text }}</div>
+</div>
+

@@ -4,21 +4,22 @@
 
 .app-header {
   height: 72px;
-  padding: 0 $espaciado-24; // reducir ligeramente para mejor balance
+  padding: 0 $espaciado-24;
   display: flex;
-  align-items: center; // CORREGIDO: antes 'rig'
-  justify-content: space-between; // Cambiado: separar brand a la izquierda y nav a la derecha
+  align-items: center;
+  justify-content: space-between;
 
   background-color: var(--color-primario-primary);
-  border-bottom: $border-medium solid var(--color-bordes_marco_botones);
 
   font-family: $font-primary;
+  position: relative;
+  z-index: 60;
 }
 
 .app-header__brand {
   display: flex;
   align-items: center;
-  flex: 0 0 auto; // evitar que el brand crezca y empuje el nav
+  flex: 0 0 auto;
 }
 
 .app-header__logo {
@@ -26,190 +27,109 @@
   align-items: center;
   gap: $espaciado-12;
   text-decoration: none;
+  transition: opacity $transition-normal;
+}
+
+.app-header__logo:hover {
+  opacity: 0.8;
 }
 
 .app-header__title {
   font-family: $font-secondary;
   font-size: $font-size-xl;
   font-weight: $font-weight-bold;
-  color: var(--color-secundario-primary);
+  color: var(--color-texto_borde_cajas);
 }
 
-.app-header__nav {
+.app-header__controls {
   display: flex;
   align-items: center;
-  gap: $espaciado-16; // más separación entre items
-  justify-content: flex-end; // alinear los items del nav a la derecha
-  margin-left: auto; // empujar el nav al borde derecho del header
-  flex: 0 0 auto; // evitar que el nav ocupe todo el espacio disponible
-}
-
-/* Pills de navegación */
-.app-header__pill {
-  display: inline-flex;
-  align-items: center;
   gap: $espaciado-12;
-  padding: $espaciado-12 $espaciado-16;
-  border-radius: $radius-full; /* completamente redondeada */
-  text-decoration: none;
-  font-size: $font-size-md;
-  font-weight: $font-weight-medium;
-
-  /* Background: secundario-primary (en dark mapeará a secundario-dark) */
-  background-color: var(--color-secundario-primary);
-  /* Texto e iconos: usar color de bordes (var), mapeado por tema */
-  color: var(--color-bordes_marco_botones);
-  /* Borde: usar variable para permitir override en dark */
-  border: 2px solid var(--color-bordes_marco_botones);
-
-  box-shadow: 0 2px 6px rgba(31, 10, 26, 0.06);
-  transition: background-color $transition-normal, color $transition-normal, transform 0.12s;
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
-.app-header__pill:hover {
-  /* Hover: secundario-hover (en dark mapeará a secundario-dark_hover) */
-  background-color: var(--color-secundario-hover);
-  transform: translateY(-1px);
-  /* mantener texto e iconos usando la variable */
-  color: var(--color-bordes_marco_botones);
-}
-
-/* Estado activo/foco: usar el mismo color que hover y su variante dark */
-.app-header__pill.is-active,
-.app-header__pill.router-link-active,
-.app-header__pill[aria-current="page"],
-.app-header__pill:focus-visible {
-  background-color: var(--color-secundario-hover);
-  color: var(--color-bordes_marco_botones);
-  border-color: var(--color-bordes_marco_botones);
-}
-
-/* Asegurar que la etiqueta interna y el icono hereden el color */
-.app-header__pill .app-header__label,
-.app-header__pill .app-header__icon {
-  color: inherit;
-}
-
-/* Icono circular dentro de la pill */
-.app-header__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center; // CORREGIDO: centrar el icono dentro de su caja
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  font-size: 1.05rem;
-}
-
-.app-header__icon-svg { width: 24px; height: 24px; display: block; }
-
-/* Ensure SVGs inherit text color */
-.app-header__icon svg, .app-header__theme-icon-svg { color: inherit; }
-
-/* Asegurar que los SVG dentro de las pills usen el color del borde */
-.app-header__pill .app-header__icon-svg {
-  color: var(--color-bordes_marco_botones);
-  transition: color $transition-normal;
-}
-
-/* En estados hover/activo/focus mantener el color (se puede ajustar si quieres otro comportamiento) */
-.app-header__pill:hover .app-header__icon-svg,
-.app-header__pill.is-active .app-header__icon-svg,
-.app-header__pill.router-link-active .app-header__icon-svg,
-.app-header__pill[aria-current="page"] .app-header__icon-svg,
-.app-header__pill:focus-visible .app-header__icon-svg {
-  color: var(--color-bordes_marco_botones);
-}
-
-/* El toggle del tema también debe usar el color del borde */
-.app-header__theme-icon-svg {
-  transition: color $transition-normal, transform 0.18s ease;
-}
-
-/* Botón toggle de tema — pequeño, con borde y enfoque prominente */
-.app-header__theme-toggle {
-  width: 44px;
-  height: 44px;
-  margin-left: $espaciado-8;
-
-  border-radius: $radius-full;
-  border: 2px solid var(--color-bordes_marco_botones);
-  background-color: var(--color-terciario-primary);
-  cursor: pointer;
-
-  display: inline-flex;
+/* ======= Hamburguesa ======= */
+.app-header__hamburger {
+  display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color $transition-normal, transform 0.12s;
-
-  /* El icono interno heredará este color (currentColor en el SVG) */
-  color: var(--color-bordes_marco_botones);
-}
-
-/* Asegurar que los SVG internos hereden el color y no estén ocultos */
-.app-header__theme-toggle .app-header__icon-svg,
-.app-header__theme-toggle .app-header__theme-icon-svg {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  vertical-align: middle;
-  color: inherit; /* importante para heredarlo del botón */
-}
-
-/* Los paths deben usar stroke=currentColor en el markup; aquí sólo seguridad si hace falta */
-.app-header__theme-toggle .app-header__icon-svg path {
-  stroke: currentColor;
-}
-
-/* ======= Estilos para hamburguesa y menú responsivo ======= */
-
-/* Botón hamburguesa (oculto en desktop) */
-.app-header__hamburger {
-  display: none;
-  background: transparent;
+  background: var(--color-primario-primary);
   border: none;
   width: 44px;
   height: 44px;
   padding: 0;
-  margin-left: $espaciado-8;
+  margin: 0;
   cursor: pointer;
+  flex: 0 0 auto;
+  border-radius: $radius-lg;
+  transition: background-color $transition-normal;
+  color: var(--color-texto_borde_cajas);
+}
+
+.app-header__hamburger:hover {
+  background-color: var(--color-primario-hover);
+}
+
+.app-header__hamburger.is-open {
+  background-color: var(--color-primario-hover);
+}
+
+.app-header__hamburger.is-open:hover {
+  background-color: var(--color-primario-hover);
+}
+
+.app-header__hamburger:active {
+  background-color: var(--color-secundario-primary);
+}
+
+.app-header__hamburger svg {
+  width: 26px;
+  height: 18px;
+  display: block;
+  color: inherit;
+}
+
+/* ======= Botón de Tema ======= */
+.app-header__theme-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-lg;
+  border: none;
+  background-color: var(--color-primario-primary);
+  cursor: pointer;
+
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 auto;
+  transition: background-color $transition-normal;
+  color: var(--color-texto_borde_cajas);
+  padding: 0;
 }
 
-.app-header__hamburger-line {
+.app-header__theme-toggle:hover {
+  background-color: var(--color-primario-hover);
+}
+
+.app-header__theme-toggle:active {
+  background-color: var(--color-secundario-primary);
+}
+
+.app-header__theme-toggle svg {
   display: block;
-  width: 22px;
-  height: 2px;
-  background: rgba(0, 0, 0, 0.65);
-  border-radius: 2px;
-  margin: 3px 0;
-  transition: transform 0.18s ease, opacity 0.18s ease;
+  width: 24px;
+  height: 24px;
+  color: inherit;
 }
 
-/* new: hint dentro del botón hamburguesa (flecha + texto "desliza") */
-.app-header__hamburger-hint {
-  display: none; /* visible solo en móvil */
-  align-items: center;
-  gap: $espaciado-8;
-  margin-left: $espaciado-8;
-  font-size: $font-size-sm;
-  color: var(--color-bordes_marco_botones);
-}
-.app-header__hamburger-icon { font-size: 1.1rem; }
-.app-header__hamburger-text { text-transform: lowercase; }
-
-/* Overlay que cubre la pantalla cuando el menú está abierto */
+/* ======= Menú Desplegable (Sidebar) ======= */
 .app-header__overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.18s ease, visibility 0.18s ease;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
   z-index: 45;
 }
 
@@ -218,148 +138,145 @@
   visibility: visible;
 }
 
-/* Estilos móviles: nav colapsado, menú deslizable */
-@media (max-width: #{ $breakpoint-medio }) {
-  .app-header {
-    padding: 0 $espaciado-16;
-    position: relative;
-    z-index: 60;
-  }
-
-  .app-header__title { font-size: $font-size-lg; }
-
-  /* Mostrar hamburguesa */
-  .app-header__hamburger {
-    display: flex;
-    margin-left: auto; /* mover el botón hamburguesa a la derecha en móvil */
-  }
-
-  /* Mostrar hint dentro del boton */
-  .app-header__hamburger-hint { display: inline-flex; margin-left: 0; margin-right: $espaciado-8; }
-
-  /* Navegación como panel lateral oculto por defecto */
-  .app-header__nav {
-    position: fixed;
-    /* Mostrar el panel empezando justo debajo del header para que no ocupe toda la pantalla */
-    top: 72px; /* coincide con .app-header height */
-    right: 0;
-    height: auto;
-    max-height: calc(100vh - 88px); /* dejar un pequeño margen debajo (header 72px + 16px espacio) */
-    width: 260px;
-    padding: $espaciado-16;
-    background: var(--color-terciario-primary);
-    display: flex;
-    flex-direction: column;
-    gap: $espaciado-12;
-    align-items: flex-start;
-    transform: translateX(100%);
-    transition: transform 0.22s ease;
-    box-shadow: -8px 0 24px rgba(0,0,0,0.12);
-    z-index: 50;
-    overflow-y: auto; /* ajustar al contenido y permitir scroll si es necesario */
-    border-radius: 0 0 8px 8px; /* sutil redondeo inferior */
-  }
-
-  /* Sidebar header (logo + nombre) */
-  .app-header__nav-sidebar-header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: $espaciado-12;
-    padding: $espaciado-12 0;
-    border-bottom: 1px solid rgba(0,0,0,0.04);
-  }
-  .app-header__logo--sidebar { display:flex; align-items:center; gap: $espaciado-12; text-decoration:none; }
-  .app-header__svg-logo { width:36px; height:36px; }
-  .app-header__title--sidebar { font-size: $font-size-md; font-weight: $font-weight-bold; }
-
-  .app-header__sidebar-control { display:flex; align-items:center; gap: $espaciado-8; color: var(--color-bordes_marco_botones); }
-  .app-header__sidebar-arrow { font-size: 1.05rem; transition: transform 0.2s ease; }
-  .app-header__sidebar-text { font-size: $font-size-sm; text-transform: lowercase; }
-
-  /* Cuando el menú está abierto */
-  .app-header__nav.is-open {
-    transform: translateX(0);
-  }
-
-  /* Ajustes para los elementos dentro del nav en móvil */
-  .app-header__pill {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .app-header__theme-toggle {
-    margin-left: 0;
-  }
-
-  /* Icon sizes for small screens */
-  .app-header__icon-svg { width: 18px; height: 18px; }
-
-  /* Asegurar que el overlay no cubra el header fijo en móvil */
-  .app-header__overlay {
-    top: 72px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    /* mantener resto de propiedades (background/transition/z-index) heredados */
-  }
+.app-header__nav {
+  position: fixed;
+  top: 72px;
+  right: 0;
+  width: 100%;
+  max-height: calc(100vh - 72px);
+  padding: $espaciado-16 $espaciado-24;
+  background: var(--color-primario-primary);
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-12;
+  align-items: flex-start;
+  transform: translateX(100%);
+  transition: transform 0.22s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 50;
+  overflow-y: auto;
+  border-radius: 0;
 }
 
-/* Responsive: reducir espacios en pantallas pequeñas (antiguo bloque) */
-@media (max-width: #{ $breakpoint-medio }) {
-  .app-header__pill { padding: $espaciado-8 $espaciado-12; }
+.app-header__nav.is-open {
+  transform: translateX(0);
 }
 
-/* Specific: home icon should follow text color variable (light/dark) */
-.app-header__home .app-header__icon-svg {
+.app-header__menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: $espaciado-12;
+  padding: $espaciado-16 $espaciado-20;
+  text-decoration: none;
+  color: var(--color-texto_borde_cajas);
+  border-radius: $radius-md;
+  transition: background-color $transition-normal;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+}
+
+.app-header__menu-item:hover,
+.app-header__menu-item.is-active,
+.app-header__menu-item[aria-current="page"] {
+  background-color: var(--color-primario-hover);
   color: var(--color-texto_borde_cajas);
 }
 
-/* Asegurar que el SVG dentro del toggle use el color del borde incluso si hay overrides */
-.app-header__theme-toggle .app-header__theme-icon-svg {
-  display: inline-block; /* asegurar comportamiento de caja */
-  width: 18px;
-  height: 18px;
-  color: var(--color-bordes_marco_botones, #111) ; /* fallback si la variable no está definida */
-  opacity: 1 ;
-}
-
-/* Forzar visibilidad y tamaño del SVG dentro del toggle (fallbacks explícitos) */
-.app-header__theme-toggle svg {
-  display: block ;
-  width: 18px ;
-  height: 18px ;
-  visibility: visible ;
-  opacity: 1 ;
-}
-
-.app-header__controls {
+.app-header__menu-icon {
   display: flex;
   align-items: center;
-  gap: $espaciado-8;
-  margin-left: auto; /* empuja el control (hamburguesa + hint) al borde derecho */
-  flex: 0 0 auto;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  color: inherit;
+  border-radius: $radius-md;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Por defecto ocultar el hint en escritorio (ya era hidden), aseguramos estilo */
-.app-header__hamburger-hint { display: none; }
+.app-header__menu-icon svg {
+  width: 28px;
+  height: 28px;
+  color: inherit;
+}
 
+.app-header__menu-label {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: inherit;
+}
+
+/* ======= Responsive ======= */
 @media (max-width: #{ $breakpoint-medio }) {
-  /* En móvil, el wrapper debe ocupar el espacio de controls al final */
-  .app-header__controls {
-    margin-left: auto;
-    margin-right: 0;
-    display: flex;
-    align-items: center;
-    gap: $espaciado-8;
+  .app-header {
+    padding: 0 $espaciado-16;
   }
 
-  /* Mostrar hint al lado derecho del botón (ya empujado por margin-left:auto en el wrapper) */
-  .app-header__hamburger-hint {
-    display: inline-flex;
-    margin-left: $espaciado-8;
-    margin-right: 0;
-    align-items: center;
+  .app-header__title {
+    font-size: $font-size-lg;
+  }
+
+  .app-header__overlay {
+    top: 72px;
+  }
+}
+
+/* ======= Tema Oscuro ======= */
+[data-theme="dark"] {
+  .app-header__hamburger {
+    background-color: var(--color-primario-primary);
+
+    &:hover {
+      background-color: var(--color-primario-hover);
+    }
+
+    &.is-open {
+      background-color: var(--color-primario-hover);
+    }
+
+    &.is-open:hover {
+      background-color: var(--color-primario-hover);
+    }
+
+    &:active {
+      background-color: var(--color-primario-off);
+    }
+  }
+
+  .app-header__hamburger svg {
+    color: var(--color-texto_borde_cajas);
+  }
+
+  .app-header__theme-toggle {
+    background-color: var(--color-primario-primary);
+    color: var(--color-texto_borde_cajas);
+
+    &:hover {
+      background-color: var(--color-primario-hover);
+    }
+
+    &:active {
+      background-color: var(--color-primario-off);
+    }
+  }
+
+  .app-header__nav {
+    background: var(--color-primario-primary);
+  }
+
+  .app-header__menu-item {
+    color: var(--color-texto_borde_cajas);
+
+    &:hover,
+    &.is-active,
+    &[aria-current="page"] {
+      background-color: var(--color-primario-hover);
+      color: var(--color-texto_borde_cajas);
+    }
+  }
+
+  .app-header__menu-icon {
+    color: var(--color-texto_borde_cajas);
   }
 }

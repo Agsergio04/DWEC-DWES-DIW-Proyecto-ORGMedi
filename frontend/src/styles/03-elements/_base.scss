@@ -9,7 +9,7 @@ html {
 
 body {
   font-family: $font-primary;
-  background: var(--color-terciario-primary);
+  background: $color-footer-light;
   color: $color-texto_borde_cajas;
   min-height: 100vh;
   line-height: $line-height-normal;
@@ -98,3 +98,11 @@ li {
 button {
   cursor: pointer;
 }
+
+// Modo oscuro
+[data-theme="dark"] {
+  body {
+    background: $color-footer-dark;
+  }
+}
+
