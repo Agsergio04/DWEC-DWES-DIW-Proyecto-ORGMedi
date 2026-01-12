@@ -1,19 +1,23 @@
 <div class="tabs">
   <div class="tabs__header" role="tablist">
     <button
-      *ngFor="let tab of tabs"
+      #tabButton
+      *ngFor="let tab of tabs; let i = index"
       class="tabs__tab"
       [class.tabs__tab--active]="isActive(tab.id)"
       [disabled]="tab.disabled"
       [attr.aria-selected]="isActive(tab.id)"
+      [attr.aria-controls]="'panel-' + tab.id"
+      [attr.tabindex]="isActive(tab.id) ? 0 : -1"
       role="tab"
       (click)="selectTab(tab.id)"
+      (keydown)="onKeyDown($event, i)"
     >
       {{ tab.label }}
     </button>
   </div>
 
-  <div class="tabs__content">
+  <div class="tabs__content" role="tabpanel" [attr.aria-labelledby]="'tab-' + activeTabId">
     <ng-content></ng-content>
   </div>
 </div>
