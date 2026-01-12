@@ -3,29 +3,37 @@ import { authGuard } from './core/services/auth.guard';
 import { pendingChangesGuard } from './core/services/pending-changes.guard';
 import { medicinesResolver, medicineDetailResolver } from './core/services/medicines.resolver';
 import { profileResolver } from './core/services/profile.resolver';
+import { homeResolver } from './core/services/home.resolver';
+import { NotFoundPage } from './pages/not-found/not-found';
 
-// Rutas principales (carga inmediata)
-const MAIN_ROUTES: Routes = [
+// ============ RUTAS PRINCIPALES ============
+// Cargadas inmediatamente al iniciar la app
+export const MAIN_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
       import('./pages/home/home').then(m => m.HomePage),
     data: { 
-      preload: true, // Precarga opcional
-      breadcrumb: 'Inicio'
+      breadcrumb: 'Inicio',
+      description: 'Página de inicio de ORGMedi'
+    },
+    resolve: {
+      homeData: homeResolver
     }
   },
 ];
 
-// Rutas de autenticación (carga perezosa)
-const AUTH_ROUTES: Routes = [
+// ============ RUTAS DE AUTENTICACIÓN (LAZY) ============
+// Se cargan bajo demanda cuando el usuario navega a ellas
+export const AUTH_ROUTES: Routes = [
   {
     path: 'iniciar-sesion',
     loadComponent: () =>
       import('./pages/iniciar-sesion/login').then(m => m.LoginPage),
     data: { 
-      chunkName: 'iniciar-sesion',
-      breadcrumb: 'Iniciar Sesión'
+      chunkName: 'auth-login',
+      breadcrumb: 'Iniciar Sesión',
+      description: 'Página de login'
     }
   },
   {
@@ -33,25 +41,28 @@ const AUTH_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/registrarse/register').then(m => m.RegisterPage),
     data: { 
-      chunkName: 'registrarse',
-      breadcrumb: 'Registrarse'
+      chunkName: 'auth-register',
+      breadcrumb: 'Registrarse',
+      description: 'Página de registro'
     }
   },
 ];
 
-// Rutas de medicamentos (carga perezosa)
-const MEDICINES_ROUTES: Routes = [
+// ============ RUTAS DE MEDICAMENTOS (LAZY) ============
+// Cada subruta genera su propio chunk para optimizar carga
+export const MEDICINES_ROUTES: Routes = [
   {
     path: 'medicamentos',
     loadComponent: () =>
       import('./pages/medicines/medicines').then(m => m.MedicinesPage),
     data: { 
-      chunkName: 'medicamentos',
-      breadcrumb: 'Medicamentos'
+      chunkName: 'medicines-list',
+      breadcrumb: 'Medicamentos',
+      description: 'Listado de medicamentos'
     },
-    canActivate: [authGuard], // Requiere autenticación
+    canActivate: [authGuard],
     resolve: {
-      medicines: medicinesResolver // Precarga los medicamentos
+      medicines: medicinesResolver
     }
   },
   {
@@ -59,48 +70,53 @@ const MEDICINES_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/create-medicine/create-medicine').then(m => m.CreateMedicinePage),
     data: { 
-      chunkName: 'crear-medicamento',
-      breadcrumb: 'Crear Medicamento'
+      chunkName: 'medicines-create',
+      breadcrumb: 'Crear Medicamento',
+      description: 'Crear nuevo medicamento'
     },
     canActivate: [authGuard],
-    canDeactivate: [pendingChangesGuard] // Protege cambios sin guardar
+    canDeactivate: [pendingChangesGuard]
   },
   {
     path: 'medicamentos/crear-foto',
     loadComponent: () =>
       import('./pages/create-medicine-photo/create-medicine-photo').then(m => m.CreateMedicinePhotoPage),
     data: { 
-      chunkName: 'crear-foto-medicamento',
-      breadcrumb: 'Crear desde Foto'
+      chunkName: 'medicines-create-photo',
+      breadcrumb: 'Crear desde Foto',
+      description: 'Crear medicamento desde fotografía'
     },
     canActivate: [authGuard],
-    canDeactivate: [pendingChangesGuard] // Protege cambios sin guardar
+    canDeactivate: [pendingChangesGuard]
   },
   {
     path: 'medicamentos/:id/editar',
     loadComponent: () =>
       import('./pages/edit-medicine/edit-medicine').then(m => m.EditMedicinePage),
     data: { 
-      chunkName: 'editar-medicamento',
-      breadcrumb: 'Editar Medicamento'
+      chunkName: 'medicines-edit',
+      breadcrumb: 'Editar Medicamento',
+      description: 'Editar medicamento existente'
     },
     canActivate: [authGuard],
-    canDeactivate: [pendingChangesGuard], // Protege cambios sin guardar
+    canDeactivate: [pendingChangesGuard],
     resolve: {
-      medicine: medicineDetailResolver // Precarga el medicamento específico
+      medicine: medicineDetailResolver
     }
   },
 ];
 
-// Rutas de utilidades y desarrollo (carga perezosa)
-const UTILITY_ROUTES: Routes = [
+// ============ RUTAS DE UTILIDADES Y DESARROLLO (LAZY) ============
+// Componentes de desarrollo y utilidades bajo demanda
+export const UTILITY_ROUTES: Routes = [
   {
     path: 'calendario',
     loadComponent: () =>
       import('./pages/calendar/calendar').then(m => m.CalendarPage),
     data: { 
-      chunkName: 'calendario',
-      breadcrumb: 'Calendario'
+      chunkName: 'utils-calendar',
+      breadcrumb: 'Calendario',
+      description: 'Calendario de medicamentos'
     }
   },
   {
@@ -108,8 +124,9 @@ const UTILITY_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/guia-estilos/style-guide').then(m => m.StyleGuidePage),
     data: { 
-      chunkName: 'guia-estilos',
-      breadcrumb: 'Guía de Estilos'
+      chunkName: 'utils-styleguide',
+      breadcrumb: 'Guía de Estilos',
+      description: 'Guía de estilos de la aplicación'
     }
   },
   {
@@ -117,37 +134,49 @@ const UTILITY_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/demostracion/demo').then(m => m.DemoPage),
     data: { 
-      chunkName: 'demostracion',
-      breadcrumb: 'Demostración'
+      chunkName: 'utils-demo',
+      breadcrumb: 'Demostración',
+      description: 'Demostración de características'
     }
   },
 ];
 
-// Rutas de perfil (carga perezosa)
-const PROFILE_ROUTES: Routes = [
+// ============ RUTAS DE PERFIL (LAZY) ============
+// Perfil de usuario bajo demanda
+export const PROFILE_ROUTES: Routes = [
   {
     path: 'perfil',
     loadComponent: () =>
       import('./pages/profile/profile').then(m => m.ProfilePage),
     data: { 
-      chunkName: 'perfil',
-      breadcrumb: 'Perfil'
+      chunkName: 'user-profile',
+      breadcrumb: 'Perfil',
+      description: 'Perfil del usuario'
     },
-    canActivate: [authGuard], // Requiere autenticación
-    canDeactivate: [pendingChangesGuard], // Protege cambios sin guardar
+    canActivate: [authGuard],
+    canDeactivate: [pendingChangesGuard],
     resolve: {
-      profile: profileResolver // Precarga el perfil del usuario
+      profile: profileResolver
     }
   },
 ];
 
-// Rutas consolidadas con estrategia de carga perezosa
+// ============ CONSOLIDACIÓN DE RUTAS ============
+// Ordenadas por relevancia: principales > auth > medicamentos > perfil > utilidades > 404
 export const routes: Routes = [
   ...MAIN_ROUTES,
   ...AUTH_ROUTES,
   ...MEDICINES_ROUTES,
-  ...UTILITY_ROUTES,
   ...PROFILE_ROUTES,
-  // Ruta wildcard (debe ir al final)
-  { path: '**', redirectTo: '' }
+  ...UTILITY_ROUTES,
+  // Ruta wildcard (debe ir siempre al final)
+  { 
+    path: '**', 
+    loadComponent: () =>
+      import('./pages/not-found/not-found').then(m => m.NotFoundPage),
+    data: { 
+      chunkName: 'error-404',
+      breadcrumb: 'No Encontrado'
+    }
+  }
 ];

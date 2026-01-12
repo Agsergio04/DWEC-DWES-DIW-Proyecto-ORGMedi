@@ -23,7 +23,18 @@ export class MedicinesPage implements OnInit {
   error: ApiError | null = null;
 
   ngOnInit(): void {
-    this.loadMedicines();
+    // Intentar leer datos del resolver primero (precargas)
+    this.route.data.subscribe((data) => {
+      const resolvedMedicines = data['medicines'];
+      if (resolvedMedicines && resolvedMedicines.length > 0) {
+        this.medicines = resolvedMedicines;
+        this.isLoading = false;
+        this.error = null;
+      } else {
+        // Si no hay data resuelta o está vacía, cargar desde el servicio
+        this.loadMedicines();
+      }
+    });
   }
 
   /**

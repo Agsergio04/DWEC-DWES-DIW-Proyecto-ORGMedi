@@ -1,43 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
-interface MedicineFromPhoto {
-  name: string;
-  dosage: string;
-  frequency: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  quantity: number;
-  photoUrl?: string;
-}
+import { FormComponent } from '../../core/services/pending-changes.guard';
 
 @Component({
   selector: 'app-create-medicine-photo-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './create-medicine-photo.html',
   styleUrls: ['./create-medicine-photo.scss']
 })
-export class CreateMedicinePhotoPage {
-  form: MedicineFromPhoto = {
-    name: '',
-    dosage: '',
-    frequency: '',
-    description: '',
-    startDate: '',
-    endDate: '',
-    quantity: 0,
-    photoUrl: undefined
-  };
+export class CreateMedicinePhotoPage implements FormComponent {
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
 
+  form: FormGroup;
   photoFile: File | null = null;
   photoPreview: string | null = null;
   isProcessing = false;
-
-  constructor(private router: Router) {}
 
   frequencies = [
     'Una vez al día',
@@ -49,6 +30,18 @@ export class CreateMedicinePhotoPage {
     'Cada 12 horas',
     'Según sea necesario'
   ];
+
+  constructor() {
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      dosage: ['', Validators.required],
+      frequency: ['', Validators.required],
+      description: [''],
+      startDate: ['', Validators.required],
+      endDate: [''],
+      quantity: [0, [Validators.required, Validators.min(1)]]
+    });
+  }
 
   onPhotoSelected(event: any): void {
     const file: File = event.target.files[0];
@@ -74,32 +67,26 @@ export class CreateMedicinePhotoPage {
   extractDataFromPhoto(): void {
     // Aquí iría la lógica real para extraer datos de la foto
     // Por ahora, simulamos un resultado
-    this.form = {
-      ...this.form,
+    this.form.patchValue({
       name: 'Medicamento detectado',
       dosage: 'Dosis detectada',
       description: 'Información extraída de la foto'
-    };
+    });
+    // Marcar como sucio para que el guard detecte cambios
+    this.form.markAsDirty();
   }
 
   clearPhoto(): void {
     this.photoFile = null;
     this.photoPreview = null;
-    this.form = {
-      name: '',
-      dosage: '',
-      frequency: '',
-      description: '',
-      startDate: '',
-      endDate: '',
-      quantity: 0
-    };
+    this.form.reset();
+    this.form.markAsPristine();
   }
 
   saveMedicine(): void {
-    if (this.isFormValid()) {
+    if (this.form.valid) {
       // Aquí iría la lógica para guardar el medicamento
-      console.log('Medicamento guardado desde foto:', this.form);
+      console.log('Medicamento guardado desde foto:', this.form.value);
       // Navegar a la página de medicamentos
       this.router.navigate(['/medicamentos']);
     }
@@ -108,10 +95,6 @@ export class CreateMedicinePhotoPage {
   cancelCreate(): void {
     // Navegar a la página de medicamentos
     this.router.navigate(['/medicamentos']);
-  }
-
-  isFormValid(): boolean {
-    return !!(this.form.name && this.form.dosage && this.form.frequency && this.form.startDate);
   }
 }
 

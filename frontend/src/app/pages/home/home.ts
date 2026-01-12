@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { Medicine } from '../../components/shared/medicine-card/medicine-card';
+import { HomeData } from '../../core/services/home.resolver';
 
 @Component({
   selector: 'app-home-page',
@@ -9,7 +11,11 @@ import { Medicine } from '../../components/shared/medicine-card/medicine-card';
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })
-export class HomePage {
+export class HomePage implements OnInit {
+  private route = inject(ActivatedRoute);
+
+  homeData: HomeData | null = null;
+  
   medicines: Medicine[] = [
     {
       id: '1',
@@ -44,4 +50,11 @@ export class HomePage {
       icon: undefined
     }
   ];
+
+  ngOnInit(): void {
+    // Leer los datos precargados por el resolver
+    this.route.data.subscribe((data) => {
+      this.homeData = data['homeData'] || null;
+    });
+  }
 }

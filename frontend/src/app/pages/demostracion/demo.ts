@@ -38,8 +38,8 @@ export class DemoPage {
   selectedUser = signal<User | null>(null);
 
   // Exponer la observable del servicio para que la plantilla la consuma (evita warning "unused")
-  get selectedUserId$() {
-    return this.userService.selectedUserId$;
+  get selectedUser$() {
+    return this.userService.selectedUser$;
   }
 
   constructor(private themeService: ThemeService, public comm: CommunicationService, private userService: UserService) {}
@@ -65,6 +65,6 @@ export class DemoPage {
   // Métodos relacionados con users delegando a UserService
   onSelectUser(user: User) {
     this.selectedUser.set(user);
-    this.userService.selectUser(user.id);
+    this.userService.selectUser(user);
   }
 }

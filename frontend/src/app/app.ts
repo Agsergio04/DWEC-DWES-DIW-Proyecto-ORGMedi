@@ -2,12 +2,13 @@ import { Component, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { Header } from './components/layout/header/header';
 import { Footer } from './components/layout/footer/footer';
+import { BreadcrumbComponent } from './components/layout/breadcrumb/breadcrumb.component';
 import { ToastComponent } from './shared/toast.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Header, Footer],
+  imports: [RouterOutlet, Header, Footer, BreadcrumbComponent],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })

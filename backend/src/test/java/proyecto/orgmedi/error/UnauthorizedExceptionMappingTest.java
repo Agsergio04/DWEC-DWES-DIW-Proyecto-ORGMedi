@@ -47,6 +47,7 @@ public class UnauthorizedExceptionMappingTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/login")
                 .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                @SuppressWarnings("null")
                 .content("{\"correo\":\"nope@example.com\",\"contrasena\":\"x\"}"))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.error").exists());

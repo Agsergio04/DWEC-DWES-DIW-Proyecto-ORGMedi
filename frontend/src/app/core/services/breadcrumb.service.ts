@@ -13,6 +13,7 @@ export interface Breadcrumb {
 /**
  * Servicio para generar breadcrumbs dinámicos basados en la ruta actual
  * Se suscribe a NavigationEnd eventos y construye el árbol de rutas activas
+ * Soporta parámetros dinámicos en las labels (ej: "Editar {{medicina}}")
  */
 @Injectable({ providedIn: 'root' })
 export class BreadcrumbService {
@@ -61,10 +62,11 @@ export class BreadcrumbService {
         url += `/${routeURL}`;
 
         // Obtener la etiqueta del breadcrumb de los datos de la ruta
-        const label = child.snapshot.data['breadcrumb'] as string | undefined;
+        let label = child.snapshot.data['breadcrumb'] as string | undefined;
 
-        // Si la ruta tiene un breadcrumb configurado, añadirlo al array
+        // Si la label contiene parámetros dinámicos, reemplazarlos
         if (label) {
+          label = this.interpolateLabel(label, child.snapshot.params, child.snapshot.data);
           crumbs.push({ label, url });
         }
       }
@@ -72,5 +74,35 @@ export class BreadcrumbService {
       // Recursivamente procesar las rutas hijas
       this.buildCrumbs(child, url, crumbs);
     }
+  }
+
+  /**
+   * Interpola placeholders en la label con valores de parámetros o data
+   * Ej: "Editar {{medicineName}}" → "Editar Amoxicilina"
+   * @param label La label con posibles placeholders
+   * @param params Los parámetros de ruta
+   * @param data Los datos de la ruta
+   * @returns La label con los placeholders reemplazados
+   */
+  private interpolateLabel(label: string, params: any, data: any): string {
+    let result = label;
+
+    // Reemplazar {{param}} con el valor del parámetro
+    if (params) {
+      Object.keys(params).forEach(key => {
+        const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+        result = result.replace(regex, params[key]);
+      });
+    }
+
+    // Reemplazar {{data.field}} con el valor del data
+    if (data) {
+      Object.keys(data).forEach(key => {
+        const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+        result = result.replace(regex, data[key]);
+      });
+    }
+
+    return result;
   }
 }

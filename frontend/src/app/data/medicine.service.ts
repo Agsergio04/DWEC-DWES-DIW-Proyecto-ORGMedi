@@ -1,46 +1,48 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, throwError, of } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { 
   catchError, 
   map, 
-  retry, 
   tap, 
   retryWhen, 
   delay, 
   scan,
   timeout
 } from 'rxjs/operators';
+import { ApiService } from '../core/services/api.service';
 import {
   Medicine,
   CreateMedicineDto,
   UpdateMedicineDto,
   ApiListResponse,
-  ApiResponse,
   MedicineViewModel,
   MedicineGrouped,
-  ApiError
+  ApiError,
+  PaginatedResponse
 } from './models/medicine.model';
 
+/**
+ * Servicio de medicamentos
+ * Gestiona operaciones CRUD de medicamentos delegando en ApiService
+ */
 @Injectable({ providedIn: 'root' })
 export class MedicineService {
-  private http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/api/medicines';
+  private api = inject(ApiService);
 
   /**
    * Obtiene la lista completa de medicamentos
-   * GET /api/medicines
-   * Con retry automático y transformación a ViewModel
+   * GET /medicines
    * @returns Observable<MedicineViewModel[]>
    */
   getAll(): Observable<MedicineViewModel[]> {
-    return this.http.get<ApiListResponse<Medicine>>(this.apiUrl).pipe(
+    return this.api.get<ApiListResponse<Medicine>>('medicines').pipe(
       // Reintentar 2 veces con delay de 500ms en fallos 5xx
       retryWhen(errors =>
         errors.pipe(
           scan((acc, error: any) => {
             if (acc >= 2 || (error.status && error.status < 500)) {
-              throw error; // No reintentar si no es 5xx o ya reintentó 2 veces
+              throw error;
             }
             return acc + 1;
           }, 0),
@@ -56,12 +58,12 @@ export class MedicineService {
 
   /**
    * Obtiene un medicamento específico por ID
-   * GET /api/medicines/:id
+   * GET /medicines/:id
    * @param id ID del medicamento
    * @returns Observable<MedicineViewModel>
    */
   getById(id: string): Observable<MedicineViewModel> {
-    return this.http.get<Medicine>(`${this.apiUrl}/${id}`).pipe(
+    return this.api.get<Medicine>(`medicines/${id}`).pipe(
       // Timeout de 10 segundos
       timeout(10000),
       // Transformar a ViewModel
@@ -73,11 +75,11 @@ export class MedicineService {
 
   /**
    * Obtiene medicamentos activos (no vencidos)
-   * GET /api/medicines?status=active
+   * GET /medicines?status=active
    * @returns Observable<MedicineViewModel[]>
    */
   getActive(): Observable<MedicineViewModel[]> {
-    return this.http.get<ApiListResponse<Medicine>>(`${this.apiUrl}?status=active`).pipe(
+    return this.api.get<ApiListResponse<Medicine>>('medicines?status=active').pipe(
       // Reintentar 2 veces
       retryWhen(errors =>
         errors.pipe(
@@ -104,12 +106,12 @@ export class MedicineService {
 
   /**
    * Crea un nuevo medicamento
-   * POST /api/medicines
+   * POST /medicines
    * @param medicine Datos del medicamento a crear
    * @returns Observable<MedicineViewModel>
    */
   create(medicine: CreateMedicineDto): Observable<MedicineViewModel> {
-    return this.http.post<Medicine>(this.apiUrl, medicine).pipe(
+    return this.api.post<Medicine>('medicines', medicine).pipe(
       // Log del éxito
       tap(result => console.log('Medicamento creado:', result)),
       // Transformar a ViewModel
@@ -121,13 +123,13 @@ export class MedicineService {
 
   /**
    * Actualiza un medicamento completamente (PUT)
-   * PUT /api/medicines/:id
+   * PUT /medicines/:id
    * @param id ID del medicamento
    * @param medicine Datos completos actualizados
    * @returns Observable<MedicineViewModel>
    */
   update(id: string, medicine: Omit<Medicine, 'id'>): Observable<MedicineViewModel> {
-    return this.http.put<Medicine>(`${this.apiUrl}/${id}`, medicine).pipe(
+    return this.api.put<Medicine>(`medicines/${id}`, medicine).pipe(
       // Log del éxito
       tap(result => console.log('Medicamento actualizado:', result)),
       // Transformar a ViewModel
@@ -139,15 +141,15 @@ export class MedicineService {
 
   /**
    * Actualiza parcialmente un medicamento (PATCH)
-   * PATCH /api/medicines/:id
+   * PATCH /medicines/:id
    * @param id ID del medicamento
-   * @param partial Campos a actualizar
+   * @param partial Datos parciales a actualizar
    * @returns Observable<MedicineViewModel>
    */
   patch(id: string, partial: Partial<UpdateMedicineDto>): Observable<MedicineViewModel> {
-    return this.http.patch<Medicine>(`${this.apiUrl}/${id}`, partial).pipe(
+    return this.api.patch<Medicine>(`medicines/${id}`, partial).pipe(
       // Log del éxito
-      tap(result => console.log('Medicamento actualizado (parcial):', result)),
+      tap(result => console.log('Medicamento actualizado parcialmente:', result)),
       // Transformar a ViewModel
       map(result => this.transformMedicineToViewModel(result)),
       // Manejo de errores
@@ -157,12 +159,12 @@ export class MedicineService {
 
   /**
    * Elimina un medicamento
-   * DELETE /api/medicines/:id
+   * DELETE /medicines/:id
    * @param id ID del medicamento a eliminar
    * @returns Observable<void>
    */
   delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.api.delete<void>(`medicines/${id}`).pipe(
       // Log del éxito
       tap(() => console.log(`Medicamento ${id} eliminado`)),
       // Manejo de errores
@@ -178,6 +180,66 @@ export class MedicineService {
   getGroupedMedicines(): Observable<MedicineGrouped[]> {
     return this.getAll().pipe(
       map(medicines => this.groupMedicinesByStatus(medicines))
+    );
+  }
+
+  /**
+   * Busca medicamentos con filtros y paginación
+   * GET /medicines?page=1&pageSize=10&search=aspirina&status=active
+   * @param filters Objeto con filtros opcionales
+   * @returns Observable<ApiListResponse<MedicineViewModel>>
+   */
+  searchMedicines(filters: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    status?: 'active' | 'expired' | 'all';
+    sortBy?: 'name' | 'startDate' | 'endDate';
+    sortOrder?: 'asc' | 'desc';
+  } = {}): Observable<ApiListResponse<MedicineViewModel>> {
+    const params: Record<string, string | number> = {
+      page: filters.page ?? 1,
+      pageSize: filters.pageSize ?? 10
+    };
+
+    if (filters.search) params['search'] = filters.search;
+    if (filters.status && filters.status !== 'all') params['status'] = filters.status;
+    if (filters.sortBy) params['sortBy'] = filters.sortBy;
+    if (filters.sortOrder) params['sortOrder'] = filters.sortOrder;
+
+    return this.api.getWithParams<ApiListResponse<Medicine>>('medicines', params).pipe(
+      retryWhen(errors =>
+        errors.pipe(
+          scan((acc, error: any) => {
+            if (acc >= 2 || (error.status && error.status < 500)) {
+              throw error;
+            }
+            return acc + 1;
+          }, 0),
+          delay(500)
+        )
+      ),
+      map(response => ({
+        ...response,
+        items: this.transformMedicinesToViewModel(response.items)
+      })),
+      catchError(err => this.handleError(err, 'al buscar medicamentos'))
+    );
+  }
+
+  /**
+   * Obtiene medicamentos que expiran en un rango de días
+   * GET /medicines?expiringInDays=7
+   * @param days Número de días hasta expiración
+   * @returns Observable<MedicineViewModel[]>
+   */
+  getMedicinesExpiringInDays(days: number): Observable<MedicineViewModel[]> {
+    return this.api.getWithParams<ApiListResponse<Medicine>>('medicines', {
+      expiringInDays: days,
+      status: 'active'
+    }).pipe(
+      map(response => this.transformMedicinesToViewModel(response.items)),
+      catchError(err => this.handleError(err, `al obtener medicamentos que expiran en ${days} días`))
     );
   }
 
@@ -323,5 +385,109 @@ export class MedicineService {
     };
 
     return messages[status] || `Error ${status} ${context}`;
+  }
+
+  /**
+   * Obtiene una página de medicamentos con paginación
+   * GET /medicines?page={page}&pageSize={pageSize}
+   * 
+   * @param page Número de página (base 1)
+   * @param pageSize Tamaño de la página
+   * @returns Observable<PaginatedResponse<MedicineViewModel>>
+   * 
+   * Ejemplo de uso:
+   * ```typescript
+   * this.medicineService.getPage(1, 10).subscribe(response => {
+   *   console.log(response.items); // MedicineViewModel[]
+   *   console.log(response.total); // Total de registros
+   *   console.log(response.hasMore); // ¿Hay más páginas?
+   * });
+   * ```
+   */
+  getPage(page: number, pageSize: number): Observable<PaginatedResponse<MedicineViewModel>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+
+    // SIMULACIÓN: En producción, la API devolvería datos paginados reales
+    // Por ahora, simulamos paginación en el cliente obteniendo todos los datos
+    return this.getAll().pipe(
+      map(allMedicines => {
+        // Calcular índices de paginación
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        
+        // Obtener items de la página actual
+        const items = allMedicines.slice(startIndex, endIndex);
+        
+        // Calcular metadatos de paginación
+        const total = allMedicines.length;
+        const totalPages = Math.ceil(total / pageSize);
+        const hasMore = page < totalPages;
+
+        return {
+          items,
+          total,
+          page,
+          pageSize,
+          totalPages,
+          hasMore
+        };
+      }),
+      catchError(err => this.handleError(err, 'al cargar página de medicamentos'))
+    );
+  }
+
+  /**
+   * Busca medicamentos por término (búsqueda remota)
+   * GET /medicines/search?q={term}&pageSize={pageSize}
+   * 
+   * Busca en nombre, dosis y descripción del medicamento
+   * 
+   * @param term Término de búsqueda
+   * @param pageSize Límite de resultados (default: 20)
+   * @returns Observable<MedicineViewModel[]>
+   * 
+   * Ejemplo de uso:
+   * ```typescript
+   * this.medicineService.searchRemote('aspirina').subscribe(results => {
+   *   console.log(results); // Medicamentos que coinciden
+   * });
+   * ```
+   */
+  searchRemote(term: string, pageSize: number = 20): Observable<MedicineViewModel[]> {
+    if (!term || term.trim().length === 0) {
+      return of([]);
+    }
+
+    const params = new HttpParams()
+      .set('q', term.trim())
+      .set('pageSize', pageSize.toString());
+
+    // SIMULACIÓN: En producción, esto haría una búsqueda real en el backend
+    // Por ahora, simulamos filtrando todos los datos en el cliente
+    return this.getAll().pipe(
+      map(allMedicines => {
+        const searchTerm = term.toLowerCase().trim();
+        
+        // Buscar en múltiples campos
+        const results = allMedicines.filter(medicine =>
+          medicine.name.toLowerCase().includes(searchTerm) ||
+          medicine.dosage.toLowerCase().includes(searchTerm) ||
+          (medicine.description && medicine.description.toLowerCase().includes(searchTerm)) ||
+          (medicine.displayName && medicine.displayName.toLowerCase().includes(searchTerm))
+        );
+
+        // Limitar resultados
+        return results.slice(0, pageSize);
+      }),
+      // Timeout de 5 segundos
+      timeout(5000),
+      // Manejo de errores
+      catchError(err => {
+        console.error('Error en búsqueda remota:', err);
+        return of([]);
+      })
+    );
   }
 }

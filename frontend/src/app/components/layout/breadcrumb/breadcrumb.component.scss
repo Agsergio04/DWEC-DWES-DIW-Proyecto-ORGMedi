@@ -1,0 +1,126 @@
+.breadcrumb-container {
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-light, #f5f5f5);
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  font-size: 0.875rem;
+}
+
+.breadcrumb-empty {
+  min-height: 1.5rem;
+}
+
+.breadcrumb {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.breadcrumb-separator {
+  color: var(--text-muted, #999);
+  margin: 0 0.25rem;
+  user-select: none;
+}
+
+.breadcrumb-icon {
+  margin-right: 0.25rem;
+  font-size: 1rem;
+}
+
+.breadcrumb-link {
+  color: var(--primary-color, #007bff);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--primary-light, #e7f3ff);
+    color: var(--primary-dark, #0056b3);
+    text-decoration: none;
+  }
+
+  &:focus {
+    outline: 2px solid var(--primary-color, #007bff);
+    outline-offset: 1px;
+    border-radius: 2px;
+  }
+}
+
+.breadcrumb-text {
+  color: var(--text-secondary, #666);
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 0.25rem 0.5rem;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.breadcrumb-current {
+  color: var(--text-secondary, #666);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .breadcrumb {
+    font-size: 0.8rem;
+    gap: 0.125rem;
+  }
+
+  .breadcrumb-text {
+    max-width: 150px;
+  }
+
+  .breadcrumb-separator {
+    margin: 0 0.125rem;
+  }
+
+  .breadcrumb-link {
+    padding: 0.125rem 0.25rem;
+  }
+
+  .breadcrumb-icon {
+    display: none;
+  }
+
+  .breadcrumb-label {
+    display: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .breadcrumb-container {
+    background-color: var(--bg-dark, #2a2a2a);
+    border-bottom-color: var(--border-dark, #444);
+  }
+
+  .breadcrumb-separator {
+    color: var(--text-muted-dark, #999);
+  }
+
+  .breadcrumb-text {
+    color: var(--text-secondary-dark, #bbb);
+  }
+
+  .breadcrumb-link {
+    color: var(--primary-light, #66b3ff);
+
+    &:hover {
+      background-color: var(--primary-dark-bg, #1a3a52);
+    }
+  }
+}

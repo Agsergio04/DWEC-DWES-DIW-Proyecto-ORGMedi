@@ -42,7 +42,7 @@
       <strong>Usuario seleccionado:</strong> {{ s.name }} (id: {{ s.id }})
 
       <div style="margin-top:.5rem">
-        <small>SelectedUserId (desde UserService): <span *ngIf="(selectedUserId$ | async) as id; else none">{{ id }}</span><ng-template #none><em>(n/a)</em></ng-template></small>
+        <small>SelectedUser (desde UserService): <span *ngIf="(selectedUser$ | async) as user; else none">{{ user?.name }}</span><ng-template #none><em>(n/a)</em></ng-template></small>
       </div>
     </div>
   </section>

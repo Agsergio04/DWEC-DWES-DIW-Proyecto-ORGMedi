@@ -1,6 +1,5 @@
 import { inject } from '@angular/core';
-import { ResolveFn, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Router } from '@angular/router';
+import { ResolveFn, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 
 /**
  * Interface para el perfil de usuario
@@ -20,6 +19,7 @@ export interface UserProfile {
 /**
  * Resolver para el perfil del usuario
  * Precarga los datos del perfil antes de activar la ruta de perfil
+ * En caso de error, redirige a /medicamentos con mensaje de error
  * En una aplicación real, esto llamaría a un servicio HTTP con autenticación
  */
 export const profileResolver: ResolveFn<UserProfile | null> = (
@@ -39,14 +39,19 @@ export const profileResolver: ResolveFn<UserProfile | null> = (
   //       router.navigate(['/iniciar-sesion']);
   //       return of(null);
   //     }
-  //     return userService.getProfile(user.id);
-  //   }),
-  //   catchError(error => {
-  //     console.error('Error cargando perfil:', error);
-  //     router.navigate(['/medicamentos']);
-  //     return of(null);
+  //     return userService.getProfile(user.id).pipe(
+  //       timeout(5000), // timeout de 5s
+  //       catchError(error => {
+  //         console.error('Error cargando perfil:', error);
+  //         router.navigate(['/medicamentos'], {
+  //           state: { error: 'No se pudo cargar el perfil' }
+  //         });
+  //         return of(null);
+  //       })
+  //     );
   //   })
   // );
+  // return currentUser;
 
   // Por ahora, retornamos datos de ejemplo
   const mockProfile: UserProfile = {
@@ -61,14 +66,20 @@ export const profileResolver: ResolveFn<UserProfile | null> = (
     doctorContact: '+34 91 123 4567'
   };
 
-  // Simulamos una carga asíncrona
-  return new Promise<UserProfile | null>((resolve) => {
+  // Simulamos una carga asíncrona con error controlado
+  return new Promise<UserProfile | null>((resolve, reject) => {
     setTimeout(() => {
+      // Simular error aleatorio 10% de las veces (descomentar para probar)
+      // if (Math.random() < 0.1) {
+      //   reject(new Error('Error simulado al cargar perfil'));
+      // }
       resolve(mockProfile);
     }, 300); // Pequeña simulación de latencia de red
   }).catch((error) => {
     console.error('Error cargando perfil:', error);
-    router.navigate(['/medicamentos']);
+    router.navigate(['/medicamentos'], {
+      state: { error: 'No se pudo cargar el perfil del usuario' }
+    });
     return null;
   });
 };

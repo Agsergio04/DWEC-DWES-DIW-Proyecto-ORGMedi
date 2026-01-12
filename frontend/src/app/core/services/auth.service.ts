@@ -37,6 +37,23 @@ export class AuthService {
   }
 
   /**
+   * Obtener el token JWT guardado en localStorage
+   */
+  getToken(): string | null {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem('authToken');
+  }
+
+  /**
+   * Guardar el token JWT en localStorage
+   */
+  setToken(token: string): void {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('authToken', token);
+    }
+  }
+
+  /**
    * Simular login
    * En una app real, esto llamaría a un API
    */

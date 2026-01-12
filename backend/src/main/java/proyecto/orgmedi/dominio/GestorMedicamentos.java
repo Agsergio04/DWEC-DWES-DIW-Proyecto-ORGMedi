@@ -24,6 +24,7 @@ public class GestorMedicamentos {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "gestor_id")
+    @Builder.Default
     private java.util.List<Medicamento> medicamentos = new java.util.ArrayList<>();
 
     @Override

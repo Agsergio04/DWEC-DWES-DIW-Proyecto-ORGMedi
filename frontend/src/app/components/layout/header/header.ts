@@ -4,12 +4,11 @@ import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/ro
 import { Subscription } from 'rxjs';
 import { ThemeService } from '../../../core/services/theme.service';
 import { ToastComponent } from '../../../shared/toast.component';
-import { BreadcrumbComponent } from '../../shared/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, ToastComponent, BreadcrumbComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, ToastComponent],
   templateUrl: './header.html',
   styleUrls: ['./header.scss']
 })

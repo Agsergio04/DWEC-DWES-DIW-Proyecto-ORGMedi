@@ -1,0 +1,55 @@
+<nav 
+  class="breadcrumb-container" 
+  aria-label="breadcrumb"
+  *ngIf="(breadcrumbs$ | async) as breadcrumbs; else noBreadcrumbs"
+>
+  <ol class="breadcrumb">
+    <!-- Siempre incluye el enlace a Inicio -->
+    <li class="breadcrumb-item">
+      <a 
+        routerLink="/" 
+        class="breadcrumb-link"
+        [attr.aria-current]="breadcrumbs.length === 0 ? 'page' : null"
+      >
+        <span class="breadcrumb-icon">🏠</span>
+        <span class="breadcrumb-label">Inicio</span>
+      </a>
+    </li>
+
+    <!-- Dinámicos breadcrumbs de las rutas -->
+    <li 
+      *ngFor="let crumb of breadcrumbs; let last = last" 
+      class="breadcrumb-item"
+      [class.breadcrumb-current]="last"
+    >
+      <span class="breadcrumb-separator">/</span>
+      
+      <!-- Enlace si no es el último (página actual) -->
+      <ng-container *ngIf="!last">
+        <a 
+          [routerLink]="crumb.url" 
+          class="breadcrumb-link"
+        >
+          {{ crumb.label }}
+        </a>
+      </ng-container>
+
+      <!-- Texto si es el último (página actual) -->
+      <ng-container *ngIf="last">
+        <span 
+          class="breadcrumb-text" 
+          [attr.aria-current]="'page'"
+        >
+          {{ crumb.label }}
+        </span>
+      </ng-container>
+    </li>
+  </ol>
+</nav>
+
+<!-- Template si no hay breadcrumbs (en página de inicio) -->
+<ng-template #noBreadcrumbs>
+  <nav class="breadcrumb-container breadcrumb-empty" aria-label="breadcrumb">
+    <!-- Vacío para no causar saltos de layout -->
+  </nav>
+</ng-template>

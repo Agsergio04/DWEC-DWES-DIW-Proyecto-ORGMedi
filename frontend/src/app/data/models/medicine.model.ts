@@ -58,6 +58,19 @@ export interface ApiListResponse<T> {
 }
 
 /**
+ * Respuesta paginada desde la API
+ * Incluye información de paginación
+ */
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
+/**
  * Respuesta genérica de un recurso desde la API
  */
 export interface ApiResponse<T> {

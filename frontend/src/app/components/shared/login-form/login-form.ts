@@ -23,7 +23,7 @@ export class LoginFormComponent {
 
   constructor() {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
@@ -40,13 +40,13 @@ export class LoginFormComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    const { username, password } = this.loginForm.value;
+    const { email, password } = this.loginForm.value;
 
-    // Llamar a authService.login() 
-    this.authService.login(username, password).subscribe({
+    // Llamar a authService.login() con email
+    this.authService.login(email, password).subscribe({
       next: (success) => {
         if (success) {
-          // Obtener la URL de retorno del queryParam, o usar /home por defecto
+          // Obtener la URL de retorno del queryParam, o usar / por defecto
           const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
           this.router.navigateByUrl(returnUrl);
         }

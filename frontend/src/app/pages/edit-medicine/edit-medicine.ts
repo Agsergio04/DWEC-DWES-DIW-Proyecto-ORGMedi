@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MedicineService } from '../../data/medicine.service';
+import { Medicine as ResolverMedicine } from '../../core/services/medicines.resolver';
 import { Medicine, CreateMedicineDto } from '../../data/models/medicine.model';
+import { FormComponent } from '../../core/services/pending-changes.guard';
 
 @Component({
   selector: 'app-edit-medicine-page',
@@ -12,7 +14,7 @@ import { Medicine, CreateMedicineDto } from '../../data/models/medicine.model';
   templateUrl: './edit-medicine.html',
   styleUrls: ['./edit-medicine.scss']
 })
-export class EditMedicinePage implements OnInit {
+export class EditMedicinePage implements OnInit, FormComponent {
   private medicineService = inject(MedicineService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -53,11 +55,20 @@ export class EditMedicinePage implements OnInit {
     // Obtener el ID de la ruta
     this.medicineId = this.route.snapshot.paramMap.get('id');
 
-    if (this.medicineId) {
-      this.loadMedicine(this.medicineId);
-    } else {
-      this.error = 'ID de medicamento inválido';
-    }
+    // Intentar leer datos del resolver primero (precargas)
+    this.route.data.subscribe((data) => {
+      const resolvedMedicine: ResolverMedicine | null = data['medicine'];
+      if (resolvedMedicine) {
+        this.loadMedicineFromResolved(resolvedMedicine);
+        // Actualizar el breadcrumb dinámico con el nombre del medicamento
+        this.route.data['medicineName'] = resolvedMedicine.name;
+      } else if (this.medicineId) {
+        // Si no hay data resuelta, cargar desde el servicio
+        this.loadMedicine(this.medicineId);
+      } else {
+        this.error = 'ID de medicamento inválido';
+      }
+    });
 
     // Escuchar cambios en el formulario
     this.form.valueChanges.subscribe(() => {
@@ -66,7 +77,28 @@ export class EditMedicinePage implements OnInit {
   }
 
   /**
-   * Carga el medicamento desde el servicio
+   * Carga el medicamento desde los datos precargados del resolver
+   */
+  private loadMedicineFromResolved(medicine: ResolverMedicine): void {
+    this.loading = false;
+    this.error = null;
+    
+    // Llenar el formulario con los datos precargados
+    this.form.patchValue({
+      name: medicine.name,
+      dosage: medicine.dosage,
+      frequency: medicine.frequency,
+      description: medicine.description || '',
+      startDate: medicine.startDate,
+      endDate: medicine.endDate || '',
+      quantity: medicine.quantity || 0
+    });
+    // Marcar como no modificado después de cargar los datos
+    this.form.markAsPristine();
+  }
+
+  /**
+   * Carga el medicamento desde el servicio (fallback)
    */
   loadMedicine(id: string): void {
     this.loading = true;

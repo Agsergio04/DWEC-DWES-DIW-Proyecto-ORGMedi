@@ -15,6 +15,7 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(ApiException.class)
+    @SuppressWarnings("null")
     public ResponseEntity<ApiErrorResponse> handleApiException(ApiException ex) {
         logger.warn("API exception: {} - {}", ex.getStatus(), ex.getMessage());
         ApiErrorResponse body = new ApiErrorResponse(ex.getMessage());

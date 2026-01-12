@@ -38,9 +38,9 @@ public class JwtUtil {
         Date exp = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
-                .setSubject(correo)
-                .setIssuedAt(now)
-                .setExpiration(exp)
+                .subject(correo)
+                .issuedAt(now)
+                .expiration(exp)
                 .signWith(key)
                 .compact();
     }
@@ -65,10 +65,10 @@ public class JwtUtil {
         try {
 
             return Jwts.parser()
-                    .setSigningKey(key)
+                    .verifyWith(key)
                     .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+                    .parseSignedClaims(token)
+                    .getPayload();
         } catch (JwtException | IllegalArgumentException ex) {
 
             throw ex;

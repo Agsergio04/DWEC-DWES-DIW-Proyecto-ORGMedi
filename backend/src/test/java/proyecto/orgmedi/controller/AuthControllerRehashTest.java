@@ -47,6 +47,7 @@ public class AuthControllerRehashTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     void rehashPassword_whenValidRequest_returnsOk() throws Exception {
         AuthRequest request = new AuthRequest();
         request.setCorreo("test@mail.com");

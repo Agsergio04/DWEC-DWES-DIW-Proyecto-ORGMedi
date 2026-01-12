@@ -54,6 +54,7 @@ public class MedicamentoServiceTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     void createMedicamento_conflict() {
         Medicamento m = new Medicamento();
         m.setNombre("Ibuprofen");

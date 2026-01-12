@@ -10,6 +10,7 @@ import java.util.Optional;
 import proyecto.orgmedi.error.NotFoundException;
 
 @Service
+@SuppressWarnings("null")
 public class GestorMedicamentosService {
     private final GestorMedicamentosRepository gestorMedicamentosRepository;
 

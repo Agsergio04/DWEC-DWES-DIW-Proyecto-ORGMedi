@@ -1,7 +1,11 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withPreloading, PreloadAllModules, withViewTransitions } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
+import { authInterceptor } from './core/services/auth.interceptor';
+import { errorInterceptor } from './core/services/error.interceptor';
+import { loggingInterceptor } from './core/services/logging.interceptor';
 
 
 import { Header } from './components/layout/header/header';
@@ -10,11 +14,16 @@ import { Footer } from './components/layout/footer/footer';
 
 
 
-
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes)
+    provideRouter(
+      routes,
+      withPreloading(PreloadAllModules), // Precarga todos los componentes lazy en segundo plano
+      withViewTransitions() // Habilita transiciones suaves entre vistas y preservación del scroll
+    ),
+    provideHttpClient(
+      withInterceptors([authInterceptor, errorInterceptor, loggingInterceptor])
+    )
   ]
 };
