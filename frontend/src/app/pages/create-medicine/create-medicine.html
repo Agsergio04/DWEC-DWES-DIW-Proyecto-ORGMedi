@@ -2,15 +2,14 @@
   <div class="page__container">
     <h1>Nuevo Medicamento</h1>
 
-    <form class="medicine-form" (ngSubmit)="saveMedicine()">
+    <form class="medicine-form" [formGroup]="form" (ngSubmit)="saveMedicine()">
       <div class="form-group">
         <label for="name" class="form-label">Nombre del Medicamento *</label>
         <input
           id="name"
           type="text"
           class="form-input"
-          [(ngModel)]="form.name"
-          name="name"
+          formControlName="name"
           placeholder="Ej: Amoxicilina"
           required
         />
@@ -23,8 +22,7 @@
             id="dosage"
             type="text"
             class="form-input"
-            [(ngModel)]="form.dosage"
-            name="dosage"
+            formControlName="dosage"
             placeholder="Ej: 500mg"
             required
           />
@@ -36,8 +34,7 @@
             id="quantity"
             type="number"
             class="form-input"
-            [(ngModel)]="form.quantity"
-            name="quantity"
+            formControlName="quantity"
             placeholder="Ej: 30"
           />
         </div>
@@ -48,8 +45,7 @@
         <select
           id="frequency"
           class="form-select"
-          [(ngModel)]="form.frequency"
-          name="frequency"
+          formControlName="frequency"
           required
         >
           <option value="">Selecciona una frecuencia</option>
@@ -64,8 +60,7 @@
             id="startDate"
             type="date"
             class="form-input"
-            [(ngModel)]="form.startDate"
-            name="startDate"
+            formControlName="startDate"
             required
           />
         </div>
@@ -76,8 +71,7 @@
             id="endDate"
             type="date"
             class="form-input"
-            [(ngModel)]="form.endDate"
-            name="endDate"
+            formControlName="endDate"
           />
         </div>
       </div>
@@ -87,8 +81,7 @@
         <textarea
           id="description"
           class="form-textarea"
-          [(ngModel)]="form.description"
-          name="description"
+          formControlName="description"
           placeholder="Ej: Tomar con alimentos, evitar alcohol..."
           rows="4"
         ></textarea>
@@ -96,11 +89,15 @@
 
       <div class="form-actions">
         <button type="submit" class="btn btn--primary" [disabled]="!isFormValid()">
-          Guardar Medicamento
+          {{ saving ? 'Guardando...' : 'Guardar Medicamento' }}
         </button>
         <button type="button" class="btn btn--secondary" (click)="cancelCreate()">
           Cancelar
         </button>
+      </div>
+
+      <div *ngIf="error" class="error-message">
+        {{ error }}
       </div>
     </form>
   </div>

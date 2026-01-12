@@ -24,7 +24,7 @@
             <button class="medicine__action-btn medicine__action-btn--edit" (click)="editMedicine(medicine.id)">
               ✏️ Editar
             </button>
-            <button class="medicine__action-btn medicine__action-btn--delete" (click)="deleteMedicine(medicine.id)">
+            <button class="medicine__action-btn medicine__action-btn--delete" (click)="deleteMedicine(medicine)">
               🗑️ Eliminar
             </button>
           </div>
@@ -41,7 +41,7 @@
           [medicine]="medicine"
           variant="basic">
           <div class="medicine-card-actions">
-            <button class="medicine__action-btn medicine__action-btn--delete" (click)="deleteMedicine(medicine.id)">
+            <button class="medicine__action-btn medicine__action-btn--delete" (click)="deleteMedicine(medicine)">
               🗑️ Eliminar
             </button>
           </div>

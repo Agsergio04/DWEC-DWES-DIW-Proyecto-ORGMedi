@@ -1,37 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
-interface MedicineForm {
-  name: string;
-  dosage: string;
-  frequency: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  quantity: number;
-}
+import { MedicineService } from '../../data/medicine.service';
+import { CreateMedicineDto, ApiError } from '../../data/models/medicine.model';
 
 @Component({
   selector: 'app-create-medicine-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './create-medicine.html',
   styleUrls: ['./create-medicine.scss']
 })
 export class CreateMedicinePage {
-  form: MedicineForm = {
-    name: '',
-    dosage: '',
-    frequency: '',
-    description: '',
-    startDate: '',
-    endDate: '',
-    quantity: 0
-  };
+  private medicineService = inject(MedicineService);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
 
-  constructor(private router: Router) {}
+  form: FormGroup;
+  saving = false;
+  error: ApiError | null = null;
 
   frequencies = [
     'Una vez al día',
@@ -44,22 +32,81 @@ export class CreateMedicinePage {
     'Según sea necesario'
   ];
 
-  saveMedicine(): void {
-    if (this.isFormValid()) {
-      // Aquí iría la lógica para guardar el medicamento
-      console.log('Medicamento guardado:', this.form);
-      // Navegar a la página de medicamentos
-      this.router.navigate(['/medicamentos']);
-    }
-  }
-
-  cancelCreate(): void {
-    // Navegar a la página de medicamentos
-    this.router.navigate(['/medicamentos']);
+  constructor() {
+    this.form = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      dosage: ['', Validators.required],
+      frequency: ['', Validators.required],
+      description: [''],
+      startDate: ['', Validators.required],
+      endDate: [''],
+      quantity: [0, [Validators.required, Validators.min(1)]]
+    });
   }
 
   isFormValid(): boolean {
-    return !!(this.form.name && this.form.dosage && this.form.frequency && this.form.startDate);
+    return this.form.valid;
+  }
+
+  /**
+   * Guarda el medicamento usando el servicio
+   */
+  saveMedicine(): void {
+    if (this.form.invalid) {
+      this.error = {
+        code: 'VALIDATION_ERROR',
+        message: 'Por favor completa todos los campos requeridos',
+        timestamp: new Date().toISOString()
+      };
+      return;
+    }
+
+    this.saving = true;
+    this.error = null;
+
+    const formData: CreateMedicineDto = this.form.value;
+
+    this.medicineService.create(formData).subscribe({
+      next: (medicine) => {
+        console.log('Medicamento creado:', medicine);
+        this.router.navigate(['/medicamentos']);
+        this.saving = false;
+      },
+      error: (err: ApiError) => {
+        console.error('Error al crear medicamento:', err);
+        this.error = err;
+        this.saving = false;
+      }
+    });
+  }
+
+  /**
+   * Cancela la creación y navega atrás
+   */
+  cancelCreate(): void {
+    this.router.navigate(['/medicamentos']);
+  }
+
+  /**
+   * Obtiene el error de un control del formulario
+   * @param controlName Nombre del control
+   */
+  getFieldError(controlName: string): string | null {
+    const control = this.form.get(controlName);
+    if (!control || !control.errors || !control.touched) {
+      return null;
+    }
+
+    if (control.errors['required']) {
+      return `${controlName} es requerido`;
+    }
+    if (control.errors['minlength']) {
+      return `${controlName} debe tener al menos ${control.errors['minlength'].requiredLength} caracteres`;
+    }
+    if (control.errors['min']) {
+      return `${controlName} debe ser mayor que 0`;
+    }
+
+    return null;
   }
 }
-

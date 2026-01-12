@@ -1696,3 +1696,6 @@ Ejemplo de inclusión en Markdown:
 
 ![Style Guide - Botones](docs/style-guide-2.png)
 ```
+
+---
+

@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Medicine } from '../../core/services/medicines.resolver';
+import { MedicineService } from '../../data/medicine.service';
+import { Medicine, CreateMedicineDto } from '../../data/models/medicine.model';
 
 @Component({
   selector: 'app-edit-medicine-page',
@@ -12,54 +13,18 @@ import { Medicine } from '../../core/services/medicines.resolver';
   styleUrls: ['./edit-medicine.scss']
 })
 export class EditMedicinePage implements OnInit {
+  private medicineService = inject(MedicineService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
+
   medicineId: string | null = null;
   form: FormGroup;
   isDirty = false;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private fb: FormBuilder
-  ) {
-    this.form = this.fb.group({
-      name: ['', Validators.required],
-      dosage: ['', Validators.required],
-      frequency: ['', Validators.required],
-      description: [''],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      quantity: [0, [Validators.required, Validators.min(0)]]
-    });
-  }
-
-  ngOnInit(): void {
-    // Obtener el medicamento del resolver
-    this.route.data.subscribe((data) => {
-      if (data && data['medicine']) {
-        const medicine: Medicine = data['medicine'];
-        this.medicineId = medicine.id;
-        
-        // Llenar el formulario con los datos del medicamento resuelto
-        this.form.patchValue({
-          name: medicine.name,
-          dosage: medicine.dosage,
-          frequency: medicine.frequency,
-          description: medicine.description || '',
-          startDate: medicine.startDate,
-          endDate: medicine.endDate,
-          quantity: medicine.quantity
-        });
-
-        // Marcar como no modificado después de cargar los datos
-        this.form.markAsPristine();
-      }
-    });
-
-    // Escuchar cambios en el formulario
-    this.form.valueChanges.subscribe(() => {
-      this.isDirty = this.form.dirty;
-    });
-  }
+  saving = false;
+  loading = false;
+  error: string | null = null;
+  originalMedicine: Medicine | null = null;
 
   frequencies = [
     'Una vez al día',
@@ -72,28 +37,167 @@ export class EditMedicinePage implements OnInit {
     'Según sea necesario'
   ];
 
-  saveMedicine(): void {
-    if (this.form.valid) {
-      // Aquí iría la lógica para actualizar el medicamento
-      console.log('Medicamento actualizado:', this.form.value);
-      this.form.markAsPristine();
-      // Navegar a la página de medicamentos
-      this.router.navigate(['/medicamentos']);
-    }
+  constructor(fb: FormBuilder) {
+    this.form = fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      dosage: ['', Validators.required],
+      frequency: ['', Validators.required],
+      description: [''],
+      startDate: ['', Validators.required],
+      endDate: [''],
+      quantity: [0, [Validators.required, Validators.min(1)]]
+    });
   }
 
+  ngOnInit(): void {
+    // Obtener el ID de la ruta
+    this.medicineId = this.route.snapshot.paramMap.get('id');
+
+    if (this.medicineId) {
+      this.loadMedicine(this.medicineId);
+    } else {
+      this.error = 'ID de medicamento inválido';
+    }
+
+    // Escuchar cambios en el formulario
+    this.form.valueChanges.subscribe(() => {
+      this.isDirty = this.form.dirty;
+    });
+  }
+
+  /**
+   * Carga el medicamento desde el servicio
+   */
+  loadMedicine(id: string): void {
+    this.loading = true;
+    this.error = null;
+
+    this.medicineService.getById(id).subscribe({
+      next: (medicine) => {
+        this.originalMedicine = medicine;
+        // Llenar el formulario con los datos del medicamento
+        this.form.patchValue({
+          name: medicine.name,
+          dosage: medicine.dosage,
+          frequency: medicine.frequency,
+          description: medicine.description || '',
+          startDate: medicine.startDate,
+          endDate: medicine.endDate || '',
+          quantity: medicine.quantity || 0
+        });
+        // Marcar como no modificado después de cargar los datos
+        this.form.markAsPristine();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar medicamento:', err);
+        this.error = err.message || 'Error al cargar el medicamento. Intenta nuevamente.';
+        this.loading = false;
+      }
+    });
+  }
+
+  /**
+   * Actualiza el medicamento
+   */
+  saveMedicine(): void {
+    if (this.form.invalid || !this.medicineId) {
+      this.error = 'Por favor completa todos los campos requeridos';
+      return;
+    }
+
+    this.saving = true;
+    this.error = null;
+
+    const formData: Omit<Medicine, 'id'> = this.form.value;
+
+    this.medicineService.update(this.medicineId, formData).subscribe({
+      next: (medicine) => {
+        console.log('Medicamento actualizado:', medicine);
+        this.form.markAsPristine();
+        this.router.navigate(['/medicamentos']);
+        this.saving = false;
+      },
+      error: (err) => {
+        console.error('Error al actualizar medicamento:', err);
+        this.error = err.message || 'Error al actualizar el medicamento. Intenta nuevamente.';
+        this.saving = false;
+      }
+    });
+  }
+
+  /**
+   * Cancela la edición
+   */
   cancelEdit(): void {
-    // Navegar hacia atrás a la página de medicamentos
+    if (this.isDirty) {
+      const confirmCancel = confirm('¿Descartar cambios y volver?');
+      if (!confirmCancel) {
+        return;
+      }
+    }
     this.router.navigate(['/medicamentos']);
   }
 
+  /**
+   * Elimina el medicamento con confirmación
+   */
   deleteMedicine(): void {
-    if (confirm('¿Estás seguro de que deseas eliminar este medicamento?')) {
-      // Aquí iría la lógica para eliminar el medicamento
-      console.log('Medicamento eliminado');
-      // Navegar a la página de medicamentos
-      this.router.navigate(['/medicamentos']);
+    if (!confirm('¿Estás seguro de que deseas eliminar este medicamento?')) {
+      return;
+    }
+
+    if (!this.medicineId) {
+      this.error = 'ID de medicamento inválido';
+      return;
+    }
+
+    this.saving = true;
+    this.error = null;
+
+    this.medicineService.delete(this.medicineId).subscribe({
+      next: () => {
+        console.log('Medicamento eliminado');
+        this.router.navigate(['/medicamentos']);
+        this.saving = false;
+      },
+      error: (err) => {
+        console.error('Error al eliminar medicamento:', err);
+        this.error = err.message || 'Error al eliminar el medicamento. Intenta nuevamente.';
+        this.saving = false;
+      }
+    });
+  }
+
+  /**
+   * Resetea el formulario a los valores originales
+   */
+  reset(): void {
+    if (this.originalMedicine) {
+      this.form.reset(this.originalMedicine);
+      this.form.markAsPristine();
     }
   }
-}
 
+  /**
+   * Obtiene el error de un control del formulario
+   */
+  getFieldError(controlName: string): string | null {
+    const control = this.form.get(controlName);
+    if (!control || !control.errors || !control.touched) {
+      return null;
+    }
+
+    if (control.errors['required']) {
+      return `${controlName} es requerido`;
+    }
+    if (control.errors['minlength']) {
+      return `${controlName} debe tener al menos ${control.errors['minlength'].requiredLength} caracteres`;
+    }
+    if (control.errors['min']) {
+      return `${controlName} debe ser mayor que 0`;
+    }
+
+    return null;
+  }
+}
