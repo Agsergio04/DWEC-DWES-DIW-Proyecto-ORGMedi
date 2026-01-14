@@ -1,19 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { DataInputComponent } from '../data-input/data-input';
+import { ButtonComponent } from '../button/button';
 import { passwordStrength } from '../../../validators/password-strength.validator';
-import { passwordMatch } from '../../../validators/cross-field.validators';
 import { AsyncValidatorsService } from '../../../shared/async-validators.service';
+
+export interface RegisterFormData {
+  username: string;
+  password: string;
+  email: string;
+}
 
 @Component({
   selector: 'app-register-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, DataInputComponent, ButtonComponent],
   templateUrl: './register-form.html',
   styleUrls: ['./register-form.scss'],
 })
 export class RegisterFormComponent {
+  @Output() submitted = new EventEmitter<RegisterFormData>();
+
   registerForm: FormGroup;
 
   constructor(private fb: FormBuilder, private asyncValidators: AsyncValidatorsService) {
@@ -23,14 +32,13 @@ export class RegisterFormComponent {
         asyncValidators: [this.asyncValidators.usernameAvailable()],
         updateOn: 'blur'
       }],
+      password: ['', [Validators.required, passwordStrength()]],
       email: ['', {
         validators: [Validators.required, Validators.email],
         asyncValidators: [this.asyncValidators.emailUnique()],
         updateOn: 'blur'
-      }],
-      password: ['', [Validators.required, passwordStrength()]],
-      repeatPassword: ['', [Validators.required]]
-    }, { validators: passwordMatch('password', 'repeatPassword') });
+      }]
+    });
   }
 
   onSubmit() {
@@ -39,9 +47,8 @@ export class RegisterFormComponent {
       return;
     }
 
-    const { username, email } = this.registerForm.value;
-    console.log('Registro válido:', { username, email });
-    alert('Registro enviado para: ' + username);
+    const { username, password, email } = this.registerForm.value;
+    this.submitted.emit({ username, password, email });
   }
 
   getErrorMessage(controlName: string): string {

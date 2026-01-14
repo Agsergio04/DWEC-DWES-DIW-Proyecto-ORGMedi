@@ -15,6 +15,7 @@ export class ButtonComponent {
   @Input() disabled = false;
   @Input() width: string | undefined;
   @Input() height: string | undefined;
+  @Input() icon: string | undefined;
 
   // Nuevo API
   @Input() type: 'button'|'submit'|'reset' = 'button';

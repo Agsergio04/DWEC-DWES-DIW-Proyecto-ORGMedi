@@ -1,0 +1,19 @@
+<div class="data-input-wrapper">
+  <div class="data-input__container">
+    <img 
+      *ngIf="icon" 
+      [src]="icon" 
+      alt="icon" 
+      class="data-input__icon"
+    />
+    <input
+      class="data-input__input"
+      [type]="type"
+      [placeholder]="label || placeholder"
+      [disabled]="disabled"
+      [value]="value"
+      (input)="onInputChange($event)"
+      (blur)="onBlur()"
+    />
+  </div>
+</div>

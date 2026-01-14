@@ -13,5 +13,6 @@
   (keydown)="onKeydown($event)"
   [attr.type]="type"
 >
+  <img *ngIf="icon" [src]="icon" class="button__icon" />
   <ng-content></ng-content>
 </button>

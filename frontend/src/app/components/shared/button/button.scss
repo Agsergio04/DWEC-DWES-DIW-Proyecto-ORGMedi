@@ -2,6 +2,7 @@
 
 .button {
   display: inline-flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: $espaciado-8;
@@ -12,6 +13,17 @@
   transition: transform $transition-rapida, background-color $transition-normal, box-shadow $transition-normal;
   text-decoration: none;
   line-height: 1;
+  white-space: nowrap;
+
+  .button__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.25em;
+    width: 1.25em;
+    flex-shrink: 0;
+    object-fit: contain;
+  }
 
   &.button--fullwidth {
     width: 100%;
