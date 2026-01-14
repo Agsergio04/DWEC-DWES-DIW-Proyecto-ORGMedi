@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: orgmedi-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JWT_SECRET: clave_secreta_demo_clave_mucho_mas_larga_0123456789
+      JWT_EXPIRATION: 86400000
+      # Configuración de base de datos (descomentar y ajustar si se usa MySQL en Docker)
+      # SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/orgmedi?useSSL=false&serverTimezone=UTC
+      # SPRING_DATASOURCE_USERNAME: root
+      # SPRING_DATASOURCE_PASSWORD: password
+      # SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
+      SPRING_DATASOURCE_URL: jdbc:h2:mem:orgmedi;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      SPRING_DATASOURCE_DRIVERNAME: org.h2.Driver
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: ""
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
+      SPRING_H2_CONSOLE_ENABLED: "true"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "false"
+    networks:
+      - orgmedi-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: orgmedi-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - orgmedi-network
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+
+  # Base de datos MySQL (opcional, descomentar si quieres usarla)
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: orgmedi-mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: password
+  #     MYSQL_DATABASE: orgmedi
+  #     MYSQL_USER: orgmedi_user
+  #     MYSQL_PASSWORD: orgmedi_pass
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   networks:
+  #     - orgmedi-network
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+networks:
+  orgmedi-network:
+    driver: bridge
+
+# volumes:
+#   mysql_data:

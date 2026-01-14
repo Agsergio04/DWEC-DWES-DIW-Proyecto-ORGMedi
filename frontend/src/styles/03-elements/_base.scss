@@ -9,7 +9,7 @@ html {
 
 body {
   font-family: $font-primary;
-  background: $color-footer-light;
+  background: var(--color-fondo);
   color: $color-texto_borde_cajas;
   min-height: 100vh;
   line-height: $line-height-normal;

@@ -56,12 +56,10 @@ export class EditMedicinePage implements OnInit, FormComponent {
     this.medicineId = this.route.snapshot.paramMap.get('id');
 
     // Intentar leer datos del resolver primero (precargas)
-    this.route.data.subscribe((data) => {
+    this.route.data.subscribe((data: any) => {
       const resolvedMedicine: ResolverMedicine | null = data['medicine'];
       if (resolvedMedicine) {
         this.loadMedicineFromResolved(resolvedMedicine);
-        // Actualizar el breadcrumb dinámico con el nombre del medicamento
-        this.route.data['medicineName'] = resolvedMedicine.name;
       } else if (this.medicineId) {
         // Si no hay data resuelta, cargar desde el servicio
         this.loadMedicine(this.medicineId);

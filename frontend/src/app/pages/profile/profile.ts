@@ -1,14 +1,29 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FormComponent } from '../../core/services/pending-changes.guard';
 import { UserProfile } from '../../core/services/profile.resolver';
+import { DataInputComponent } from '../../components/shared/data-input/data-input';
+import { ButtonComponent } from '../../components/shared/button/button';
+
+interface ProfileFormModel {
+  name: FormControl<string>;
+  email: FormControl<string>;
+  phone: FormControl<string>;
+  dateOfBirth: FormControl<string>;
+  medicalConditions: FormControl<string>;
+  allergies: FormControl<string>;
+  doctorName: FormControl<string>;
+  doctorContact: FormControl<string>;
+  address: FormControl<string>;
+  bloodType: FormControl<string>;
+}
 
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DataInputComponent, ButtonComponent],
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss']
 })
@@ -17,7 +32,7 @@ export class ProfilePage implements FormComponent, OnInit {
   private route = inject(ActivatedRoute);
 
   // Implementa la interfaz FormComponent
-  form: FormGroup = this.fb.group({
+  form: FormGroup<ProfileFormModel> = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     phone: [''],
@@ -25,8 +40,10 @@ export class ProfilePage implements FormComponent, OnInit {
     medicalConditions: [''],
     allergies: [''],
     doctorName: [''],
-    doctorContact: ['']
-  });
+    doctorContact: [''],
+    address: [''],
+    bloodType: ['']
+  }) as FormGroup<ProfileFormModel>;
 
   userProfile: UserProfile | null = null;
   isEditing = false;

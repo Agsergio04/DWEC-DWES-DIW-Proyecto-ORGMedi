@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataInputComponent } from '../data-input/data-input';
 import { ButtonComponent } from '../button/button';
@@ -13,6 +13,12 @@ export interface RegisterFormData {
   email: string;
 }
 
+interface RegisterFormModel {
+  username: FormControl<string>;
+  password: FormControl<string>;
+  email: FormControl<string>;
+}
+
 @Component({
   selector: 'app-register-form',
   standalone: true,
@@ -23,7 +29,7 @@ export interface RegisterFormData {
 export class RegisterFormComponent {
   @Output() submitted = new EventEmitter<RegisterFormData>();
 
-  registerForm: FormGroup;
+  registerForm: FormGroup<RegisterFormModel>;
 
   constructor(private fb: FormBuilder, private asyncValidators: AsyncValidatorsService) {
     this.registerForm = this.fb.group({

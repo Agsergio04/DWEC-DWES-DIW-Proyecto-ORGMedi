@@ -74,7 +74,7 @@ export class ThemeService {
     if (theme === 'dark') {
       root.setAttribute('data-theme', 'dark');
     } else if (theme === 'light') {
-      root.removeAttribute('data-theme');
+      root.setAttribute('data-theme', 'light');
     } else {
       // system
       this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -82,7 +82,7 @@ export class ThemeService {
         if (mq.matches) {
           root.setAttribute('data-theme', 'dark');
         } else {
-          root.removeAttribute('data-theme');
+          root.setAttribute('data-theme', 'light');
         }
       };
 

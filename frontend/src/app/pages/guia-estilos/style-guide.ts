@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-// Importar componentes del proyecto (usar nombres exportados reales)
-import { SharedModule } from '../../components/shared/shared.module';
+// Importar componentes del proyecto
 import { FormInputComponent } from '../../components/shared/form-input/form-input';
 import { FormTextareaComponent } from '../../components/shared/form-textarea/form-textarea';
 import { FormSelectComponent } from '../../components/shared/form-select/form-select';
@@ -18,7 +17,6 @@ import { ThemeSwitcher } from '../../components/shared/theme-switcher/theme-swit
   standalone: true,
   imports: [
     CommonModule,
-    SharedModule,
     FormInputComponent,
     FormTextareaComponent,
     FormSelectComponent,
@@ -29,6 +27,7 @@ import { ThemeSwitcher } from '../../components/shared/theme-switcher/theme-swit
     MedicineCardComponent,
     ThemeSwitcher
   ],
+  schemas: [NO_ERRORS_SCHEMA],
   templateUrl: './style-guide.html',
   styleUrls: ['./style-guide.scss']
 })
@@ -44,8 +43,7 @@ export class StyleGuidePage implements OnInit {
     ModalComponent,
     TabsComponent,
     AlertComponent,
-    MedicineCardComponent,
-    SharedModule
+    MedicineCardComponent
   ];
 
   // Opciones de ejemplo para el select

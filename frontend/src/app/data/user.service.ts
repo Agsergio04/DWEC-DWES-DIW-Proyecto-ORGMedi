@@ -95,7 +95,14 @@ export class UserService {
   getUserById(id: string): Observable<UserViewModel> {
     return this.api.get<User>(`users/${id}`).pipe(
       timeout(10000), // 10 segundos de timeout
-      map(user => this.transformU con transformación a ViewModel
+      map(user => this.transformUserToViewModel(user)),
+      catchError(err => this.handleError(err, `al obtener usuario ${id}`))
+    );
+  }
+
+  /**
+   * GET /api/users/email/:email
+   * Obtiene un usuario por email con transformación a ViewModel
    * @param email Email del usuario
    * @returns Observable<UserViewModel>
    */
@@ -104,13 +111,12 @@ export class UserService {
       timeout(10000),
       map(user => this.transformUserToViewModel(user)),
       catchError(err => this.handleError(err, `al buscar usuario por email ${email}`))
-    
+    );
+  }
 
   /**
-   * GET /api/users/email/:email
-   * Obtiene un usuario por email
-   */
-  getUserByEmail(email: st con transformación a ViewModel
+   * POST /api/users
+   * Crea un nuevo usuario con transformación a ViewModel
    * @param dto Datos del usuario a crear
    * @returns Observable<UserViewModel>
    */
@@ -119,12 +125,12 @@ export class UserService {
       tap(result => console.log('Usuario creado:', result)),
       map(user => this.transformUserToViewModel(user)),
       catchError(err => this.handleError(err, 'al crear usuario'))
-    
+    );
+  }
+
   /**
-   * POST /api/users
-   * Crea un nuevo usuario
-   */
-  createUser(dto: CreateUserDto): Obser con transformación a ViewModel
+   * PUT /api/users/:id
+   * Actualiza completamente un usuario con transformación a ViewModel
    * @param id ID del usuario
    * @param dto Datos completos del usuario
    * @returns Observable<UserViewModel>
@@ -132,7 +138,14 @@ export class UserService {
   updateUser(id: string, dto: UpdateUserDto): Observable<UserViewModel> {
     return this.api.put<User>(`users/${id}`, dto).pipe(
       tap(result => console.log('Usuario actualizado:', result)),
-      map(user => this.transformUserTo con transformación a ViewModel
+      map(user => this.transformUserToViewModel(user)),
+      catchError(err => this.handleError(err, `al actualizar usuario ${id}`))
+    );
+  }
+
+  /**
+   * PATCH /api/users/:id
+   * Actualiza parcialmente un usuario con transformación a ViewModel
    * @param id ID del usuario
    * @param dto Datos parciales del usuario
    * @returns Observable<UserViewModel>
@@ -142,11 +155,12 @@ export class UserService {
       tap(result => console.log('Usuario actualizado parcialmente:', result)),
       map(user => this.transformUserToViewModel(user)),
       catchError(err => this.handleError(err, `al actualizar usuario ${id}`))
-    
-   * PUT /api/users/:id
-   * Actualiza completamente un usuario
-   */
-  updateUser(id: string con manejo de errores
+    );
+  }
+
+  /**
+   * DELETE /api/users/:id
+   * Elimina un usuario con manejo de errores
    * @param id ID del usuario a eliminar
    * @returns Observable<void>
    */
@@ -200,33 +214,33 @@ export class UserService {
 
   /**
    * Busca usuarios con filtros y paginación
-   * GET /users?page=1&pageSize=10&search=juan&active=true
-   * @param filters Objeto con filtros opcionales
-   * @returns Observable<ApiUsersListResponse>
    */
-  searchUsers(filters: {
-    page?: number;
-    pageSize?: number;
-    search?: string;
-    active?: boolean;
-    hasMedicalConditions?: boolean;
-    hasAllergies?: boolean;
-    sortBy?: 'name' | 'email' | 'createdAt';
-    sortOrder?: 'asc' | 'desc';
-  } = {}): Observable<{ items: UserViewModel[]; total: number }> {
-    const params: Record<string, string | number | boolean> = {
+  searchUsers(filters: any = {}): Observable<any> {
+    const params: Record<string, any> = {
       page: filters.page ?? 1,
       pageSize: filters.pageSize ?? 10
     };
 
-    if (filters.search) params['search'] = filters.search;
-    if (filters.active !== undefined) params['active'] = filters.active;
-    if (filters.hasMedicalConditions !== undefined) params['hasMedicalConditions'] = filters.hasMedicalConditions;
-    if (filters.hasAllergies !== undefined) params['hasAllergies'] = filters.hasAllergies;
-    if (filters.sortBy) params['sortBy'] = filters.sortBy;
-    if (filters.sortOrder) params['sortOrder'] = filters.sortOrder;
+    if (filters.search) {
+      params['search'] = filters.search;
+    }
+    if (filters.active !== undefined) {
+      params['active'] = filters.active;
+    }
+    if (filters.hasMedicalConditions !== undefined) {
+      params['hasMedicalConditions'] = filters.hasMedicalConditions;
+    }
+    if (filters.hasAllergies !== undefined) {
+      params['hasAllergies'] = filters.hasAllergies;
+    }
+    if (filters.sortBy) {
+      params['sortBy'] = filters.sortBy;
+    }
+    if (filters.sortOrder) {
+      params['sortOrder'] = filters.sortOrder;
+    }
 
-    return this.api.getWithParams<{ items: User[]; total: number }>('users', params).pipe(
+    return this.api.getWithParams<any>('users', params).pipe(
       retryWhen(errors =>
         errors.pipe(
           scan((acc, error: any) => {
@@ -238,8 +252,8 @@ export class UserService {
           delay(500)
         )
       ),
-      map(response => ({
-        items: response.items.map(user => this.transformUserToViewModel(user)),
+      map((response: any) => ({
+        items: response.items.map((user: any) => this.transformUserToViewModel(user)),
         total: response.total
       })),
       catchError(err => this.handleError(err, 'al buscar usuarios'))
@@ -339,21 +353,7 @@ export class UserService {
       }
     }
     
-    return throwError(() => new Error(userMessage)){id}`);
-  }
-
-  /**
-   * Selecciona un usuario en la UI
-   */
-  selectUser(user: User | null) {
-    this.selectedUserSubject.next(user);
-  }
-
-  /**
-   * Obtiene el usuario actualmente seleccionado
-   */
-  getSelectedUser(): User | null {
-    return this.selectedUserSubject.value;
+    return throwError(() => new Error(userMessage));
   }
 }
 

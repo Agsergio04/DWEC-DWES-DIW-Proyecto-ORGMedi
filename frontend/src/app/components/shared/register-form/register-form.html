@@ -1,10 +1,9 @@
 <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
 	<fieldset class="register-form__fieldset">
 		<div class="register-form__field-group">
-			<label class="register-form__label">Introduce un nuevo nombre de usuario para cambiarlo:</label>
+			<label class="register-form__label">Introduce el nombre de usuario :</label>
 			<app-data-input
 				formControlName="username"
-				label="Usuario123"
 				placeholder="Usuario123"
 				icon="/Icono Usuario.svg"
 				type="text"
@@ -14,10 +13,9 @@
 		</div>
 
 		<div class="register-form__field-group">
-			<label class="register-form__label">Introduce el nombre de usuario:</label>
+			<label class="register-form__label">Introduce la contraseña:</label>
 			<app-data-input
 				formControlName="password"
-				label="Contraseña"
 				placeholder="Contraseña"
 				icon="/Icono contraseña.svg"
 				type="password"
@@ -35,7 +33,6 @@
 			<label class="register-form__label">Introduce el email:</label>
 			<app-data-input
 				formControlName="email"
-				label="Email"
 				placeholder="correo@ejemplo.com"
 				icon="/Icono de email.svg"
 				type="email"
@@ -48,16 +45,25 @@
 			variant="primary"
 			[width]="'100%'"
 			[padding]="'12px 24px'"
-			[fontSize]="'1.125rem'"
+			[fontSize]="'1.25rem'"
 			type="submit"
 			[disabled]="registerForm.invalid || registerForm.pending"
 		>
 			{{ registerForm.pending ? 'Validando...' : 'Crear Cuenta' }}
 		</app-button>
 
-		<div class="register-form__login-link">
-		  <p>¿Ya tienes cuenta?</p>
-		  <a routerLink="/iniciar-sesion" class="link-primary">Iniciar sesión</a>
+		<div class="register-form__login-section">
+			<p class="register-form__login-text">¿Ya tienes cuenta?</p>
+			<a routerLink="/iniciar-sesion" class="register-form__login-link">
+				<app-button
+					variant="primary"
+					[width]="'100%'"
+					[padding]="'12px 24px'"
+					[fontSize]="'1.25rem'"
+				>
+					Iniciar Sesion
+				</app-button>
+			</a>
 		</div>
 	</fieldset>
 </form>

@@ -19,6 +19,8 @@
   /* Bordes y caja (modo claro) */
   --color-bordes_marco_botones: #{vars.$color-bordes_marco_botones};
   --color-texto_borde_cajas: #{vars.$color-texto_borde_cajas};
+  /* Fondos */
+  --color-fondo: #{vars.$color-fondo-light};
   /* RGB helpers */
   --color-bordes_marco_botones-rgb: #{color.channel(vars.$color-bordes_marco_botones, "red", $space: rgb)}, #{color.channel(vars.$color-bordes_marco_botones, "green", $space: rgb)}, #{color.channel(vars.$color-bordes_marco_botones, "blue", $space: rgb)};
   --color-texto_borde_cajas-rgb: #{color.channel(vars.$color-texto_borde_cajas, "red", $space: rgb)}, #{color.channel(vars.$color-texto_borde_cajas, "green", $space: rgb)}, #{color.channel(vars.$color-texto_borde_cajas, "blue", $space: rgb)};
@@ -109,6 +111,27 @@
   --shadow-xl: #{vars.$shadow-xl};
 }
 
+:root[data-theme='light'] {
+  /* Colores modo claro explícito */
+  --color-primario-hover: #{vars.$color-primario-hover};
+  --color-primario-primary: #{vars.$color-primario-primary};
+  --color-primario-disabled: #{vars.$color-primario-disabled};
+  --color-secundario-hover: #{vars.$color-secundario-hover};
+  --color-secundario-primary: #{vars.$color-secundario-primary};
+  --color-secundario-disabled: #{vars.$color-secundario-disabled};
+  --color-afirmacion-hover: #{vars.$color-afirmacion-hover};
+  --color-afirmacion-primary: #{vars.$color-afirmacion-primary};
+  --color-afirmacion-disabled: #{vars.$color-afirmacion-disabled};
+  --color-negacion-hover: #{vars.$color-negacion-hover};
+  --color-negacion-primary: #{vars.$color-negacion-primary};
+  --color-negacion-disabled: #{vars.$color-negacion-disabled};
+  --color-bordes_marco_botones: #{vars.$color-bordes_marco_botones};
+  --color-texto_borde_cajas: #{vars.$color-texto_borde_cajas};
+  --color-fondo: #{vars.$color-fondo-light};
+  --color-bordes_marco_botones-rgb: #{color.channel(vars.$color-bordes_marco_botones, "red", $space: rgb)}, #{color.channel(vars.$color-bordes_marco_botones, "green", $space: rgb)}, #{color.channel(vars.$color-bordes_marco_botones, "blue", $space: rgb)};
+  --color-texto_borde_cajas-rgb: #{color.channel(vars.$color-texto_borde_cajas, "red", $space: rgb)}, #{color.channel(vars.$color-texto_borde_cajas, "green", $space: rgb)}, #{color.channel(vars.$color-texto_borde_cajas, "blue", $space: rgb)};
+}
+
 :root[data-theme='dark'] {
   /* Colors dark theme */
   --color-primario-hover: #{vars.$color-primario-dark_hover};
@@ -125,6 +148,8 @@
   --color-negacion-disabled: #{vars.$color-negacion-dark};
   --color-bordes_marco_botones: #{vars.$color-bordes_marco_botones_dark};
   --color-texto_borde_cajas: #{vars.$color-texto_borde_cajas_dark};
+  /* Fondos modo oscuro */
+  --color-fondo: #{vars.$color-fondo-dark};
   /* RGB helpers dark */
   --color-bordes_marco_botones-rgb: #{color.channel(vars.$color-bordes_marco_botones_dark, "red", $space: rgb)}, #{color.channel(vars.$color-bordes_marco_botones_dark, "green", $space: rgb)}, #{color.channel(vars.$color-bordes_marco_botones_dark, "blue", $space: rgb)};
   --color-texto_borde_cajas-rgb: #{color.channel(vars.$color-texto_borde_cajas_dark, "red", $space: rgb)}, #{color.channel(vars.$color-texto_borde_cajas_dark, "green", $space: rgb)}, #{color.channel(vars.$color-texto_borde_cajas_dark, "blue", $space: rgb)};

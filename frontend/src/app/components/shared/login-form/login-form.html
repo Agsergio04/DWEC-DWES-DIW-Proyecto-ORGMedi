@@ -1,26 +1,24 @@
 <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
 	<fieldset class="login-form__fieldset">
 		<div class="login-form__field-group">
-			<label class="login-form__label">Introduce el nombre de usuario:</label>
+			<label class="login-form__label">Introduce el nombre de usuario :</label>
 			<app-data-input
-				formControlName="username"
-				label="Usuario123"
+				formControlName="email"
 				placeholder="Usuario123"
 				icon="/Icono Usuario.svg"
 				type="text"
 			></app-data-input>
-			<div class="form-error" *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">{{ getErrorMessage('username') }}</div>
+			<div class="form-error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">{{ getErrorMessage('email') }}</div>
 		</div>
 
 		<div class="login-form__field-group">
-			<label class="login-form__label">Introduce la contraseña:</label>
+			<label class="login-form__label">Introduce la contraseña :</label>
 			<app-data-input
 				formControlName="password"
-				label="Contraseña"
 				placeholder="Contraseña"
 				icon="/Icono contraseña.svg"
 				type="password"
-			></app-data-input>
+    ></app-data-input>
 			<div class="form-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">{{ getErrorMessage('password') }}</div>
 		</div>
 
@@ -28,7 +26,7 @@
 			variant="primary"
 			[width]="'100%'"
 			[padding]="'12px 24px'"
-			[fontSize]="'1.125rem'"
+			[fontSize]="'1.25rem'"
 			type="submit"
 			[disabled]="loginForm.invalid || isLoading"
 		>
@@ -42,7 +40,7 @@
 					variant="primary"
 					[width]="'100%'"
 					[padding]="'12px 24px'"
-					[fontSize]="'1.125rem'"
+					[fontSize]="'1.25rem'"
 				>
 					Crear Cuenta
 				</app-button>

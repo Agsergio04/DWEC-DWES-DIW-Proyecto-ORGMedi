@@ -1,10 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { DataInputComponent } from '../data-input/data-input';
 import { ButtonComponent } from '../button/button';
+
+interface LoginFormModel {
+  email: FormControl<string>;
+  password: FormControl<string>;
+}
 
 @Component({
   selector: 'app-login-form',
@@ -14,7 +19,7 @@ import { ButtonComponent } from '../button/button';
   styleUrls: ['./login-form.scss'],
 })
 export class LoginFormComponent {
-  loginForm: FormGroup;
+  loginForm: FormGroup<LoginFormModel>;
   isLoading = false;
   errorMessage = '';
 
@@ -27,7 +32,7 @@ export class LoginFormComponent {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
-    });
+    }) as FormGroup<LoginFormModel>;
   }
 
   /**

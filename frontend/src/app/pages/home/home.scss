@@ -1,10 +1,12 @@
 @use '../../../styles/00-settings/variables' as *;
 
 .page--home {
-  padding: $espaciado-48 $espaciado-32;
-  min-height: auto;
-  display: block;
-  background: linear-gradient(135deg, $color-primario-primary 0%, $color-primario-hover 100%);
+  padding: $espaciado-32;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: var(--color-fondo);
+
 }
 
 .page__container {
@@ -16,106 +18,132 @@
   gap: $espaciado-48;
 }
 
-// Hero Section
-.hero {
+.home-header {
   text-align: center;
-  padding: $espaciado-48 0;
 }
 
-.hero__title {
+.home-title {
   font-family: $font-secondary;
-  font-size: 3.5rem;
+  font-size: $font-size-5xl;
   font-weight: $font-weight-bold;
-  color: $color-texto_borde_cajas;
-  margin-bottom: $espaciado-24;
+  color: var(--color-texto_borde_cajas);
+  text-align: center;
+  margin: 0 0 $espaciado-16 0;
 }
 
-.hero__description {
+.home-description {
   font-size: $font-size-lg;
-  color: $color-texto_borde_cajas;
+  color: var(--color-texto_borde_cajas);
   line-height: $line-height-relaxed;
-  max-width: 600px;
+  text-align: center;
+  max-width: 700px;
   margin: 0 auto;
 }
 
-// Features Section
-.features {
-  display: grid;
-  grid-template-columns: 1fr;
+// Sección de características
+.features-section {
+  display: flex;
+  flex-direction: column;
   gap: $espaciado-48;
-  padding: $espaciado-48 0;
 }
 
-.feature {
-  text-align: center;
-}
-
-.feature__icon {
-  font-size: 3rem;
-  margin-bottom: $espaciado-24;
-  display: inline-block;
-}
-
-.feature__title {
-  font-family: $font-secondary;
-  font-size: $font-size-2xl;
-  font-weight: $font-weight-bold;
-  color: $color-texto_borde_cajas;
-  margin-bottom: $espaciado-16;
-}
-
-.feature__description {
-  font-size: $font-size-md;
-  color: $color-texto_borde_cajas;
-  line-height: $line-height-relaxed;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-// CTA Section
-.cta {
-  text-align: center;
+.feature-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: $espaciado-32;
   padding: $espaciado-32 0;
-}
-
-.cta__button {
-  display: inline-block;
-  padding: $espaciado-16 $espaciado-48;
-  background-color: $color-primario-hover;
-  color: white;
-  text-decoration: none;
-  border-radius: $radius-full;
-  font-size: $font-size-lg;
-  font-weight: $font-weight-bold;
-  transition: all $transition-normal;
-  box-shadow: $shadow-md;
+  background: transparent;
+  transition: transform 0.3s ease;
 
   &:hover {
-    background-color: $color-primario-primary;
-    transform: translateY(-2px);
-    box-shadow: $shadow-lg;
+    transform: translateX(8px);
   }
 
-  &:active {
-    transform: translateY(0);
+  .feature-icon-wrapper {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feature-icon {
+    width: $espaciado-32;
+    height: $espaciado-32;
+    object-fit: contain;
+    color: var(--color-texto_borde_cajas);
+  }
+
+  .feature-content {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-8;
+  }
+
+  h2 {
+    font-family: $font-secondary;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: var(--color-texto_borde_cajas);
+    margin: 0;
+    text-align: left;
+  }
+
+  p {
+    font-size: $font-size-md;
+    color: var(--color-texto_borde_cajas);
+    line-height: $line-height-relaxed;
+    margin: 0;
+    text-align: left;
   }
 }
 
-@media (max-width: $breakpoint-medio) {
+// Botón centrado
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+// Responsive
+@media (max-width: 768px) {
   .page--home {
-    padding: $espaciado-32 $espaciado-16;
+    padding: $espaciado-24;
+    min-height: auto;
   }
 
-  .hero__title {
-    font-size: 2.5rem;
-  }
-
-  .features {
+  .page__container {
     gap: $espaciado-32;
   }
 
-  .cta__button {
-    padding: $espaciado-12 $espaciado-32;
+  .home-title {
+    font-size: $font-size-3xl;
+  }
+
+  .home-description {
+    font-size: $font-size-md;
+  }
+
+  .feature-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: $espaciado-24;
+    padding: $espaciado-24 0;
+  }
+
+  .feature-card h2 {
+    font-size: $font-size-xl;
+    text-align: center;
+  }
+
+  .feature-card p {
+    text-align: center;
+  }
+
+  .feature-card .feature-icon {
+    width: 60px;
+    height: 60px;
   }
 }
 

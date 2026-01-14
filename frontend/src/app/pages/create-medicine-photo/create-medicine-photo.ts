@@ -96,5 +96,9 @@ export class CreateMedicinePhotoPage implements FormComponent {
     // Navegar a la página de medicamentos
     this.router.navigate(['/medicamentos']);
   }
+
+  isFormValid(): boolean {
+    return this.form.valid && this.photoFile !== null;
+  }
 }
 
