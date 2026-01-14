@@ -2,22 +2,11 @@
 @use '../../../../styles/00-settings/_variables' as *;
 @use '../../../../styles/01-tools/_mixins' as *;
 
-// ============================================
-// LOGIN FORM COMPONENT STYLES
-// ============================================
-
 .login-form {
   width: 100%;
-  max-width: 420px;
-  margin: $espaciado-48 auto;
-  padding: $espaciado-32;
-
-  background: var(--color-primario-primary);
-  border: $border-medium solid var(--color-bordes_marco_botones);
-  border-radius: $radius-lg;
-  box-shadow: 0 4px 24px rgba(31, 10, 26, 0.08);
-
-  font-family: $font-primary;
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-20;
 }
 
 .login-form__fieldset {
@@ -26,33 +15,70 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: $espaciado-20;
+  gap: $espaciado-24;
 }
 
-.login-form__legend {
-  font-family: $font-secondary;
-  font-size: $font-size-3xl;
-  font-weight: $font-weight-bold;
-  color: $color-secundario-primary;
-  text-align: center;
-  margin: 0 0 $espaciado-20 0;
-}
-
-// ============================================
-// FORM GROUP (inputs contenedores)
-// ============================================
-
-.form-group {
+.login-form__field-group {
   display: flex;
   flex-direction: column;
   gap: $espaciado-12;
 }
 
-.form-label {
-  font-size: $font-size-sm;
+.login-form__label {
+  font-family: $font-primary;
+  font-size: $font-size-md;
   font-weight: $font-weight-medium;
   color: var(--color-texto_borde_cajas);
+  margin-bottom: $espaciado-4;
+}
+
+.form-error {
+  font-size: $font-size-sm;
+  color: #ff0202;
+  margin-top: $espaciado-8;
+}
+
+.loading {
+  font-size: $font-size-sm;
+  color: var(--color-primario-primary);
+  margin-top: $espaciado-8;
+}
+
+.login-form__register-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $espaciado-16;
+  margin-top: $espaciado-16;
+}
+
+.login-form__register-text {
   font-family: $font-primary;
+  font-size: $font-size-md;
+  color: var(--color-texto_borde_cajas);
+  margin: 0;
+}
+
+.login-form__register-link {
+  width: 100%;
+  text-decoration: none;
+  display: block;
+}
+
+/* Dark theme */
+:root[data-theme="dark"] {
+  .login-form__label,
+  .login-form__register-text {
+    color: var(--color-texto_borde_cajas);
+  }
+
+  .login-form__register-button {
+    background-color: var(--color-primario-dark);
+
+    &:hover {
+      background-color: var(--color-primario-off);
+    }
+  }
 }
 
 .form-input {
@@ -96,10 +122,6 @@
   margin-top: -$espaciado-8;
 }
 
-// ============================================
-// BOTÓN SUBMIT
-// ============================================
-
 .login-form__submit {
   width: 100%;
   padding: $espaciado-12 $espaciado-20;
@@ -138,10 +160,6 @@
   }
 }
 
-// ============================================
-// LINK DE REGISTRO
-// ============================================
-
 .login-form__register-link {
   text-align: center;
   margin-top: $espaciado-20;
@@ -169,10 +187,6 @@
   }
 }
 
-// ============================================
-// DARK MODE (si lo implementas)
-// ============================================
-
 [data-theme="dark"] {
   .login-form {
     background: $color-primario-dark;
@@ -196,22 +210,6 @@
       border-color: $color-primario-dark;
       background: $color-secundario-dark_hover;
       box-shadow: 0 0 0 3px rgba($color-primario-dark, 0.15);
-    }
-  }
-
-  .login-form__submit {
-    background: $color-secundario-dark;
-
-    &:hover {
-      background: $color-secundario-dark_hover;
-    }
-  }
-
-  .link-primary {
-    color: $color-primario-dark;
-
-    &:hover {
-      color: $color-primario-dark_hover;
     }
   }
 }

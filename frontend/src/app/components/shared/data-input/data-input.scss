@@ -43,11 +43,12 @@
   outline: none;
   font-family: $font-primary;
   font-size: $font-size-md;
-  color: var(--color-texto_borde_cajas);
+  color: #1a1a1a;
   padding: 0;
+  font-weight: $font-weight-medium;
 
   &::placeholder {
-    color: rgba(58, 71, 48, 0.6);
+    color: rgba(26, 26, 26, 0.5);
   }
 
   &:disabled {

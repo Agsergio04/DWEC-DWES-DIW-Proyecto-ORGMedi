@@ -57,7 +57,16 @@
 
 		<div class="register-form__login-section">
 			<p class="register-form__login-text">¿Ya tienes cuenta?</p>
-			<a routerLink="/login" class="register-form__login-button">Iniciar Sesion</a>
+			<a routerLink="/login" class="register-form__login-link">
+				<app-button
+					variant="primary"
+					[width]="'100%'"
+					[padding]="'12px 24px'"
+					[fontSize]="'1.125rem'"
+				>
+					Iniciar Sesion
+				</app-button>
+			</a>
 		</div>
 	</fieldset>
 </form>

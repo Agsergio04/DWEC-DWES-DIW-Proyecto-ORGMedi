@@ -1,2 +1,48 @@
-.login-page { max-width: 560px; margin: 2rem auto; }
+@use '../../../styles/00-settings/variables' as *;
+
+.login-page {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: calc(100vh - 100px);
+	padding: $espaciado-32 $espaciado-20;
+}
+
+.login-page__container {
+	width: 100%;
+	max-width: 600px;
+	display: flex;
+	flex-direction: column;
+	gap: $espaciado-20;
+}
+
+.login-page__title {
+	font-family: $font-secondary;
+	font-size: 2.5rem;
+	font-weight: $font-weight-bold;
+	color: var(--color-texto_borde_cajas);
+	text-align: center;
+	margin: 0 0 $espaciado-12 0;
+}
+
+.login-page__description {
+	font-family: $font-primary;
+	font-size: $font-size-md;
+	color: var(--color-texto_borde_cajas);
+	text-align: center;
+	margin: 0 0 $espaciado-24 0;
+	line-height: 1.6;
+}
+
+/* Dark theme */
+:root[data-theme="dark"] {
+
+	.login-page__title {
+		color: var(--color-texto_borde_cajas);
+	}
+
+	.login-page__description {
+		color: var(--color-texto_borde_cajas);
+	}
+}
 

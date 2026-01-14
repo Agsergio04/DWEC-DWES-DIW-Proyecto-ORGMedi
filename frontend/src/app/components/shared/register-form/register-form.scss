@@ -59,30 +59,10 @@
   margin: 0;
 }
 
-.register-form__login-button {
+.register-form__login-link {
   width: 100%;
-  text-align: center;
-  padding: $espaciado-12 $espaciado-24;
-  background-color: var(--color-primario-primary);
-  color: white;
   text-decoration: none;
-  border-radius: $radius-md;
-  font-family: $font-primary;
-  font-size: $font-size-md;
-  font-weight: $font-weight-medium;
-  transition: all $transition-normal;
-  border: 2px solid transparent;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
+  display: block;
 }
 
 /* Dark theme */
