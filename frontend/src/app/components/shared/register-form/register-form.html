@@ -1,23 +1,27 @@
 <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
 	<fieldset class="register-form__fieldset">
-		<legend class="register-form__legend">Crear cuenta</legend>
-		<div class="form-group">
-			<label for="username">Nombre de Usuario</label>
-			<input id="username" class="form-input" placeholder="Nombre de Usuario" formControlName="username" />
+		<div class="register-form__field-group">
+			<label class="register-form__label">Introduce un nuevo nombre de usuario para cambiarlo:</label>
+			<app-data-input
+				formControlName="username"
+				label="Usuario123"
+				placeholder="Usuario123"
+				icon="/Icono Usuario.svg"
+				type="text"
+			></app-data-input>
 			<div *ngIf="registerForm.get('username')?.pending" class="loading">Comprobando disponibilidad...</div>
 			<div class="form-error" *ngIf="registerForm.get('username')?.touched && registerForm.get('username')?.invalid">{{ getErrorMessage('username') }}</div>
 		</div>
 
-		<div class="form-group">
-			<label for="email">Correo electrónico</label>
-			<input id="email" type="email" class="form-input" placeholder="Correo electrónico" formControlName="email" />
-			<div *ngIf="registerForm.get('email')?.pending" class="loading">Verificando...</div>
-			<div class="form-error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">{{ getErrorMessage('email') }}</div>
-		</div>
-
-		<div class="form-group">
-			<label for="password">Contraseña</label>
-			<input id="password" type="password" class="form-input" placeholder="Contraseña" formControlName="password" />
+		<div class="register-form__field-group">
+			<label class="register-form__label">Introduce el nombre de usuario:</label>
+			<app-data-input
+				formControlName="password"
+				label="Contraseña"
+				placeholder="Contraseña"
+				icon="/Icono contraseña.svg"
+				type="password"
+			></app-data-input>
 			<div class="form-error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
 				<div *ngIf="registerForm.get('password')?.errors?.['noUppercase']">Debe contener al menos una letra mayúscula</div>
 				<div *ngIf="registerForm.get('password')?.errors?.['noLowercase']">Debe contener al menos una letra minúscula</div>
@@ -27,19 +31,33 @@
 			</div>
 		</div>
 
-		<div class="form-group">
-			<label for="repeatPassword">Repetir contraseña</label>
-			<input id="repeatPassword" type="password" class="form-input" placeholder="Repetir contraseña" formControlName="repeatPassword" />
-			<div class="form-error" *ngIf="(registerForm.get('repeatPassword')?.touched && registerForm.get('repeatPassword')?.invalid) || registerForm.errors?.['mismatch']">{{ getErrorMessage('repeatPassword') || (registerForm.errors?.['mismatch'] ? 'Las contraseñas no coinciden' : '') }}</div>
+		<div class="register-form__field-group">
+			<label class="register-form__label">Introduce el email:</label>
+			<app-data-input
+				formControlName="email"
+				label="Email"
+				placeholder="correo@ejemplo.com"
+				icon="/Icono de email.svg"
+				type="email"
+			></app-data-input>
+			<div *ngIf="registerForm.get('email')?.pending" class="loading">Verificando...</div>
+			<div class="form-error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">{{ getErrorMessage('email') }}</div>
 		</div>
 
-		<button type="submit" class="register-form__submit" [disabled]="registerForm.invalid || registerForm.pending">
-		  {{ registerForm.pending ? 'Validando...' : 'Crear cuenta' }}
-		</button>
+		<app-button
+			variant="primary"
+			[width]="'100%'"
+			[padding]="'12px 24px'"
+			[fontSize]="'1.125rem'"
+			type="submit"
+			[disabled]="registerForm.invalid || registerForm.pending"
+		>
+			{{ registerForm.pending ? 'Validando...' : 'Crear Cuenta' }}
+		</app-button>
 
 		<div class="register-form__login-link">
 		  <p>¿Ya tienes cuenta?</p>
 		  <a routerLink="/iniciar-sesion" class="link-primary">Iniciar sesión</a>
 		</div>
- 	</fieldset>
- </form>
+	</fieldset>
+</form>

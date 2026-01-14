@@ -1,6 +1,16 @@
-<form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <fieldset class="login-form__fieldset">
-    <legend class="login-form__legend">Iniciar sesión</legend>
+<form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
+	<fieldset class="login-form__fieldset">
+		<div class="login-form__field-group">
+			<label class="login-form__label">Introduce el nombre de usuario:</label>
+			<app-data-input
+				formControlName="username"
+				label="Usuario123"
+				placeholder="Usuario123"
+				icon="/Icono Usuario.svg"
+				type="text"
+			></app-data-input>
+			<div class="form-error" *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">{{ getErrorMessage('username') }}</div>
+		</div>
 
     <!-- Mensaje de error -->
     <div class="form-error-message" *ngIf="errorMessage">

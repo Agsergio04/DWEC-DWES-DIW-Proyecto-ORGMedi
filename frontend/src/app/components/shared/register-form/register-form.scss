@@ -2,19 +2,11 @@
 @use '../../../../styles/00-settings/_variables' as *;
 @use '../../../../styles/01-tools/_mixins' as *;
 
-/* Copiado y adaptado de login-form.scss para que register use los mismos colores */
 .register-form {
   width: 100%;
-  max-width: 420px;
-  margin: $espaciado-48 auto;
-  padding: $espaciado-32;
-
-  background: var(--color-primario-primary);
-  border: $border-medium solid var(--color-bordes_marco_botones);
-  border-radius: $radius-lg;
-  box-shadow: 0 4px 24px rgba(31, 10, 26, 0.08);
-
-  font-family: $font-primary;
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-20;
 }
 
 .register-form__fieldset {
@@ -23,29 +15,70 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: $espaciado-20;
+  gap: $espaciado-24;
 }
 
-.register-form__legend {
-  font-family: $font-secondary;
-  font-size: $font-size-3xl;
-  font-weight: $font-weight-bold;
-  color: $color-secundario-primary;
-  text-align: center;
-  margin: 0 0 $espaciado-20 0;
-}
-
-.form-group {
+.register-form__field-group {
   display: flex;
   flex-direction: column;
   gap: $espaciado-12;
 }
 
-.form-label {
-  font-size: $font-size-sm;
+.register-form__label {
+  font-family: $font-primary;
+  font-size: $font-size-md;
   font-weight: $font-weight-medium;
   color: var(--color-texto_borde_cajas);
+  margin-bottom: $espaciado-4;
+}
+
+.form-error {
+  font-size: $font-size-sm;
+  color: #ff0202;
+  margin-top: $espaciado-8;
+}
+
+.loading {
+  font-size: $font-size-sm;
+  color: var(--color-primario-primary);
+  margin-top: $espaciado-8;
+}
+
+.register-form__login-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $espaciado-16;
+  margin-top: $espaciado-16;
+}
+
+.register-form__login-text {
   font-family: $font-primary;
+  font-size: $font-size-md;
+  color: var(--color-texto_borde_cajas);
+  margin: 0;
+}
+
+.register-form__login-link {
+  width: 100%;
+  text-decoration: none;
+  display: block;
+}
+
+/* Dark theme */
+:root[data-theme="dark"] {
+  .register-form__label,
+  .register-form__login-text {
+    color: var(--color-texto_borde_cajas);
+  }
+
+  .register-form__login-button {
+    background-color: var(--color-primario-dark);
+
+    &:hover {
+      background-color: var(--color-primario-off);
+    }
+  }
 }
 
 .form-input {
