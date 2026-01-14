@@ -2,9 +2,9 @@
 
 .page--home {
   padding: $espaciado-48 $espaciado-32;
-  min-height: calc(100vh - 72px - 200px);
-  display: flex;
-  align-items: center;
+  min-height: auto;
+  display: block;
+  background: linear-gradient(135deg, $color-primario-primary 0%, $color-primario-hover 100%);
 }
 
 .page__container {
@@ -13,47 +13,106 @@
   width: 100%;
 }
 
-.page--home h1 {
+// Hero Section
+.hero {
+  text-align: center;
+  padding: $espaciado-48 0;
+}
+
+.hero__title {
   font-family: $font-secondary;
-  font-size: $font-size-4xl;
+  font-size: 3.5rem;
   font-weight: $font-weight-bold;
-  color: var(--color-primario-primary);
-  margin-bottom: $espaciado-16;
-}
-
-.page--home p {
-  font-size: $font-size-lg;
-  color: var(--color-texto_borde_cajas);
-  line-height: $line-height-relaxed;
-}
-
-// Sección de medicamentos
-.medicines-section {
-  margin-top: $espaciado-48;
-}
-
-.medicines-section h2 {
-  font-family: $font-secondary;
-  font-size: $font-size-2xl;
-  font-weight: $font-weight-bold;
-  color: var(--color-primario-primary);
+  color: $color-texto_borde_cajas;
   margin-bottom: $espaciado-24;
 }
 
-.medicines-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: $espaciado-24;
+.hero__description {
+  font-size: $font-size-lg;
+  color: $color-texto_borde_cajas;
+  line-height: $line-height-relaxed;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-@media (max-width: 768px) {
-  .medicines-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: $espaciado-16;
+// Features Section
+.features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $espaciado-48;
+  padding: $espaciado-48 0;
+}
+
+.feature {
+  text-align: center;
+}
+
+.feature__icon {
+  font-size: 3rem;
+  margin-bottom: $espaciado-24;
+  display: inline-block;
+}
+
+.feature__title {
+  font-family: $font-secondary;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-texto_borde_cajas;
+  margin-bottom: $espaciado-16;
+}
+
+.feature__description {
+  font-size: $font-size-md;
+  color: $color-texto_borde_cajas;
+  line-height: $line-height-relaxed;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+// CTA Section
+.cta {
+  text-align: center;
+  padding: $espaciado-32 0;
+}
+
+.cta__button {
+  display: inline-block;
+  padding: $espaciado-16 $espaciado-48;
+  background-color: $color-primario-hover;
+  color: white;
+  text-decoration: none;
+  border-radius: $radius-full;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  transition: all $transition-normal;
+  box-shadow: $shadow-md;
+
+  &:hover {
+    background-color: $color-primario-primary;
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
   }
 
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: $breakpoint-medio) {
   .page--home {
     padding: $espaciado-32 $espaciado-16;
+  }
+
+  .hero__title {
+    font-size: 2.5rem;
+  }
+
+  .features {
+    gap: $espaciado-32;
+  }
+
+  .cta__button {
+    padding: $espaciado-12 $espaciado-32;
   }
 }
 

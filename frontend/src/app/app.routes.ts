@@ -129,16 +129,6 @@ export const UTILITY_ROUTES: Routes = [
       description: 'Guía de estilos de la aplicación'
     }
   },
-  {
-    path: 'demostracion',
-    loadComponent: () =>
-      import('./pages/demostracion/demo').then(m => m.DemoPage),
-    data: { 
-      chunkName: 'utils-demo',
-      breadcrumb: 'Demostración',
-      description: 'Demostración de características'
-    }
-  },
 ];
 
 // ============ RUTAS DE PERFIL (LAZY) ============

@@ -21,6 +21,16 @@ import {
   UserStats
 } from './models/user.model';
 
+// Re-exportar los tipos para que otros módulos puedan importarlos desde user.service
+export type { 
+  User, 
+  CreateUserDto, 
+  UpdateUserDto, 
+  ApiUsersListResponse, 
+  UserViewModel, 
+  UserStats 
+};
+
 /**
  * Servicio de usuarios
  * Gestiona operaciones CRUD de usuarios vía HTTP con manejo de respuestas mejorado

@@ -1,6 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { MedicineService } from '../../data/medicine.service';
-import { UserService, User } from '../../data/user.service';
+import { UserService } from '../../data/user.service';
+import { User } from '../../data/models/user.model';
 import { Medicine } from '../../data/models/medicine.model';
 
 /**
