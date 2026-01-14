@@ -1,32 +1,42 @@
 <section class="page page--home">
   <div class="page__container">
-    <div class="hero">
-      <h1 class="hero__title">ORGMedi</h1>
-      <p class="hero__description">
-        ORGMedi es una aplicación con la cual podrás gestionar el consumo de los medicamentos de manera sencilla, cómoda y a tu gusto.
-      </p>
+    <div class="home-header">
+      <h1 class="home-title">ORGMedi</h1>
+      <p class="home-description">ORGMedi es una aplicacion con la cual podras gestionar el consumo de los medicamentos de manera sencilla, cómoda y a tu gusto.</p>
     </div>
 
-    <div class="features">
-      <div class="feature">
-        <div class="feature__icon">⚙️</div>
-        <h2 class="feature__title">Medicamentos personalizados</h2>
-        <p class="feature__description">
-          ORGMedi es la herramienta por la cual podrás gestionar tu calendario con el consumo de medicamentos de manera visual e intuitiva.
-        </p>
+    <div class="features-section">
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">
+          <img src="frontend/public/Icono Pastillas.svg" alt="Medicamentos personalizados" class="feature-icon" />
+        </div>
+        <div class="feature-content">
+          <h2>Medicamentos personalizados</h2>
+          <p>ORGMedi es la herramienta por la cual podras gestionar tu calendario con el consumo de medicamentos de manera visual e intuitiva.</p>
+        </div>
       </div>
 
-      <div class="feature">
-        <div class="feature__icon">📅</div>
-        <h2 class="feature__title">Calendario de consumo</h2>
-        <p class="feature__description">
-          ORGMedi es la herramienta por la cual podrás personalizar un calendario con el consumo de medicamentos diseñada solo para ti.
-        </p>
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">
+          <img src="/Icono Home.svg" alt="Calendario de consumo" class="feature-icon" />
+        </div>
+        <div class="feature-content">
+          <h2>Calendario de consumo</h2>
+          <p>ORGMedi es la herramienta por la cual podras personalizar un calendario con el consumo de medicamentos diseñada solo para ti.</p>
+        </div>
       </div>
     </div>
 
-    <div class="cta">
-      <a href="/registrarse" class="cta__button">Comienza Ahora</a>
+    <div class="button-wrapper">
+      <app-button 
+        variant="primary" 
+        [width]="'18rem'"
+        [height]="'2.75rem'"
+        [fontSize]="'1.75rem'"
+        (clicked)="navigateToRegister()"
+      >
+        Comienza Ahora
+      </app-button>
     </div>
   </div>
 </section>

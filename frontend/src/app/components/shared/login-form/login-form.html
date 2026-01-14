@@ -12,52 +12,41 @@
 			<div class="form-error" *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">{{ getErrorMessage('username') }}</div>
 		</div>
 
-    <!-- Mensaje de error -->
-    <div class="form-error-message" *ngIf="errorMessage">
-      {{ errorMessage }}
-    </div>
+		<div class="login-form__field-group">
+			<label class="login-form__label">Introduce la contraseña:</label>
+			<app-data-input
+				formControlName="password"
+				label="Contraseña"
+				placeholder="Contraseña"
+				icon="/Icono contraseña.svg"
+				type="password"
+			></app-data-input>
+			<div class="form-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">{{ getErrorMessage('password') }}</div>
+		</div>
 
-    <!-- Campo Usuario -->
-    <div class="form-group">
-      <label class="form-label" for="username">Introduce el nombre de usuario</label>
-      <input
-        id="username"
-        type="text"
-        class="form-input"
-        placeholder="Nombre de Usuario"
-        formControlName="username"
-        [disabled]="isLoading"
-      />
-      <span class="form-error" *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">
-        {{ getErrorMessage('username') }}
-      </span>
-    </div>
+		<app-button
+			variant="primary"
+			[width]="'100%'"
+			[padding]="'12px 24px'"
+			[fontSize]="'1.125rem'"
+			type="submit"
+			[disabled]="loginForm.invalid || isLoading"
+		>
+			{{ isLoading ? 'Iniciando sesión...' : 'Iniciar Sesion' }}
+		</app-button>
 
-    <!-- Campo Contraseña -->
-    <div class="form-group">
-      <label class="form-label" for="password">Introduce la contraseña</label>
-      <input
-        id="password"
-        type="password"
-        class="form-input"
-        placeholder="Contraseña"
-        formControlName="password"
-        [disabled]="isLoading"
-      />
-      <span class="form-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
-        {{ getErrorMessage('password') }}
-      </span>
-    </div>
-
-    <!-- Botón Submit -->
-    <button type="submit" class="login-form__submit" [disabled]="loginForm.invalid || isLoading">
-      {{ isLoading ? 'Iniciando sesión...' : 'Iniciar sesión' }}
-    </button>
-
-    <!-- Link a Registro -->
-    <div class="login-form__register-link">
-      <p>¿No tienes cuenta?</p>
-      <a routerLink="/registrarse" class="link-primary">Crear cuenta</a>
-    </div>
-  </fieldset>
+		<div class="login-form__register-section">
+			<p class="login-form__register-text">¿No tienes cuenta?</p>
+			<a routerLink="/registrarse" class="login-form__register-link">
+				<app-button
+					variant="primary"
+					[width]="'100%'"
+					[padding]="'12px 24px'"
+					[fontSize]="'1.125rem'"
+				>
+					Crear Cuenta
+				</app-button>
+			</a>
+		</div>
+	</fieldset>
 </form>
