@@ -1,16 +1,22 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MedicineCardComponent } from '../../components/shared/medicine-card/medicine-card';
+import { Router } from '@angular/router';
+import { ButtonComponent } from '../../components/shared/button/button';
 import { Medicine } from '../../components/shared/medicine-card/medicine-card';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, MedicineCardComponent],
+  imports: [CommonModule, ButtonComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })
 export class HomePage {
+  constructor(private router: Router) {}
+
+  navigateToRegister() {
+    this.router.navigate(['/register']);
+  }
   medicines: Medicine[] = [
     {
       id: '1',

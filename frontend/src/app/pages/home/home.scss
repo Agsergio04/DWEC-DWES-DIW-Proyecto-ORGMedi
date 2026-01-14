@@ -1,59 +1,169 @@
 @use '../../../styles/00-settings/variables' as *;
 
 .page--home {
-  padding: $espaciado-48 $espaciado-32;
+  padding: $espaciado-32;
   min-height: calc(100vh - 72px - 200px);
   display: flex;
   align-items: center;
+  background: linear-gradient(135deg, rgba(255, 192, 203, 0.1) 0%, rgba(255, 182, 193, 0.05) 100%);
 }
 
 .page__container {
   max-width: 960px;
   margin: 0 auto;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-48;
 }
 
-.page--home h1 {
+
+.home-header {
+  text-align: center;
+}
+
+.home-title {
   font-family: $font-secondary;
-  font-size: $font-size-4xl;
+  font-size: $font-size-5xl;
   font-weight: $font-weight-bold;
-  color: var(--color-primario-primary);
-  margin-bottom: $espaciado-16;
+  color: var(--color-texto_borde_cajas);
+  text-align: center;
+  margin: 0 0 $espaciado-16 0;
 }
 
-.page--home p {
+.home-description {
   font-size: $font-size-lg;
   color: var(--color-texto_borde_cajas);
   line-height: $line-height-relaxed;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
-// Sección de medicamentos
-.medicines-section {
-  margin-top: $espaciado-48;
+// Sección de características
+.features-section {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-48;
 }
 
-.medicines-section h2 {
-  font-family: $font-secondary;
-  font-size: $font-size-2xl;
-  font-weight: $font-weight-bold;
-  color: var(--color-primario-primary);
-  margin-bottom: $espaciado-24;
-}
+.feature-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: $espaciado-32;
+  padding: $espaciado-32 0;
+  background: transparent;
+  transition: transform 0.3s ease;
 
-.medicines-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: $espaciado-24;
-}
-
-@media (max-width: 768px) {
-  .medicines-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: $espaciado-16;
+  &:hover {
+    transform: translateX(8px);
   }
 
+  .feature-icon-wrapper {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feature-icon {
+    width: $espaciado-32;
+    height: $espaciado-32;
+    object-fit: contain;
+    color: var(--color-texto_borde_cajas);
+  }
+
+  .feature-content {
+    display: flex;
+    flex-direction: column;
+    gap: $espaciado-8;
+  }
+
+  h2 {
+    font-family: $font-secondary;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: var(--color-texto_borde_cajas);
+    margin: 0;
+    text-align: left;
+  }
+
+  p {
+    font-size: $font-size-md;
+    color: var(--color-texto_borde_cajas);
+    line-height: $line-height-relaxed;
+    margin: 0;
+    text-align: left;
+  }
+}
+
+// Botón principal
+.btn-primary {
+  align-self: center;
+  padding: $espaciado-16 $espaciado-40;
+  background: var(--color-primario-primary);
+  color: var(--color-bordes_marco_botones);
+  border: none;
+  border-radius: 8px;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+  font-family: $font-primary;
+
+  &:hover {
+    background: var(--color-primario-hover);
+  }
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
   .page--home {
-    padding: $espaciado-32 $espaciado-16;
+    padding: $espaciado-24;
+    min-height: auto;
+  }
+
+  .page__container {
+    gap: $espaciado-32;
+  }
+
+  .home-title {
+    font-size: $font-size-3xl;
+  }
+
+  .home-description {
+    font-size: $font-size-md;
+  }
+
+  .feature-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: $espaciado-24;
+    padding: $espaciado-24 0;
+  }
+
+  .feature-card h2 {
+    font-size: $font-size-xl;
+    text-align: center;
+  }
+
+  .feature-card p {
+    text-align: center;
+  }
+
+  .feature-card .feature-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .btn-primary {
+    padding: $espaciado-12 $espaciado-24;
+    font-size: $font-size-md;
   }
 }
 

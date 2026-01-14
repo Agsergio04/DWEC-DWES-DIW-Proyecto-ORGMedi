@@ -1,7 +1,39 @@
 <section class="page page--home">
   <div class="page__container">
-    <h1>Bienvenido a ORGMedi</h1>
-    <p>Esta es la página principal (Home).</p>
+    <div class="home-header">
+      <h1 class="home-title">ORGMedi</h1>
+      <p class="home-description">ORGMedi es una aplicacion con la cual podras gestionar el consumo de los medicamentos de manera sencilla,comoda y a tu gusto.</p>
+    </div>
+
+    <div class="features-section">
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">
+          <img src="/Icono engranaje.svg" alt="Medicamentos personalizados" class="feature-icon" />
+        </div>
+        <div class="feature-content">
+          <h2>Medicamentos personalizados</h2>
+          <p>ORGMedi es la herramienta por la cual podras gestionar tu calendario con el consumo de medicamentos de manera visual e intuitiva.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-wrapper">
+          <img src="/Icono Calendario.svg" alt="Calendario de consumo" class="feature-icon" />
+        </div>
+        <div class="feature-content">
+          <h2>Calendario de consumo</h2>
+          <p>ORGMedi es la herramienta por la cual podras personalizar un calendario con el consumo de medicamentos diseñada solo para ti .</p>
+        </div>
+      </div>
+    </div>
+
+    <app-button 
+      variant="primary" 
+      size="lg"
+      (clicked)="navigateToRegister()"
+    >
+      Comienza Ahora
+    </app-button>
   </div>
 </section>
 

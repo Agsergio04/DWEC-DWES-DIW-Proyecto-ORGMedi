@@ -12,6 +12,8 @@ export class ButtonComponent {
   @Input() variant: 'primary'|'secondary'|'ghost'|'danger' = 'primary';
   @Input() size: 'sm'|'md'|'lg' = 'md';
   @Input() disabled = false;
+  @Input() width: string | undefined;
+  @Input() height: string | undefined;
 
   // Nuevo API
   @Input() type: 'button'|'submit'|'reset' = 'button';
