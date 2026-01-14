@@ -98,27 +98,13 @@
   }
 }
 
-// Botón principal
-.btn-primary {
-  align-self: center;
-  padding: $espaciado-16 $espaciado-40;
-  background: var(--color-primario-primary);
-  color: var(--color-bordes_marco_botones);
-  border: none;
-  border-radius: 8px;
-  font-size: $font-size-lg;
-  font-weight: $font-weight-bold;
-  cursor: pointer;
-  font-family: $font-primary;
-
-  &:hover {
-    background: var(--color-primario-hover);
-  }
-
-  &:active {
-    opacity: 0.9;
-  }
+// Botón centrado
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
+
 
 // Responsive
 @media (max-width: 768px) {

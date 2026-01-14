@@ -17,27 +17,21 @@
     width: 100%;
   }
 
-  // Ajustes de tamaño: más espacio horizontal para clic más cómodo
-  &.button--sm {
-    padding: $espaciado-6 $espaciado-12;
-    font-size: $font-size-sm;
-  }
-  &.button--md {
-    padding: $espaciado-12 $espaciado-24;
-    font-size: $font-size-md;
-  }
-  &.button--lg {
-    padding: $espaciado-16 $espaciado-32;
-    font-size: $font-size-lg;
-  }
-
   &.button--primary {
     background-color: var(--color-primario-primary);
-    color: #fff;
+    color: var(--color-bordes_marco_botones);
+    
+    &:hover {
+      background-color: var(--color-primario-hover);
+    }
+
+    &:active {
+      opacity: 0.9;
+    }
   }
   &.button--secondary {
     background-color: var(--color-secundario-primary);
-    color: #fff;
+    color: var(--color-bordes_marco_botones);
   }
   &.button--ghost {
     background-color: transparent;
@@ -46,7 +40,7 @@
   }
   &.button--danger {
     background-color: var(--color-negacion-primary, #ff0202);
-    color: #fff;
+    color: var(--color-bordes_marco_botones);
   }
 
   &:hover {
@@ -71,28 +65,26 @@
   }
 }
 
-/* Dark theme overrides: en modo oscuro los botones primarios usan color secundario oscuro */
+/* Dark theme overrides */
 :root[data-theme="dark"] {
   .button--primary {
-    background-color: var(--color-secundario-primary) ;
-    color: #fff;
+    background-color: var(--color-primario-dark);
+    color: var(--color-bordes_marco_botones);
+
+    &:hover {
+      background-color: var(--color-primario-off);
+    }
   }
-  .button--primary:hover,
-  .button--primary:focus {
-    background-color: var(--color-secundario-hover) ;
-    color: #fff;
-  }
-  /* Cuando el botón está activo (página actual o clase is-active) */
-  .button--primary.is-active,
-  .button--primary.router-link-active {
-    background-color: var(--color-secundario-primary) ;
-    color: #fff;
-  }
-  .button--primary.is-active:hover,
-  .button--primary.router-link-active:hover {
-    background-color: var(--color-secundario-hover) ;
+  .button--secondary {
+    background-color: var(--color-secundario-dark);
+    color: var(--color-bordes_marco_botones);
+
+    &:hover {
+      background-color: var(--color-secundario-dark_hover);
+    }
   }
   .button--ghost {
-    color: var(--color-secundario-primary);
+    color: var(--color-primario-dark);
+    border-color: var(--color-bordes_marco_botones-dark);
   }
 }

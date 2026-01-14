@@ -10,7 +10,8 @@ import { CommonModule } from '@angular/common';
 })
 export class ButtonComponent {
   @Input() variant: 'primary'|'secondary'|'ghost'|'danger' = 'primary';
-  @Input() size: 'sm'|'md'|'lg' = 'md';
+  @Input() padding: string = '12px 24px';
+  @Input() fontSize: string = '1rem';
   @Input() disabled = false;
   @Input() width: string | undefined;
   @Input() height: string | undefined;
