@@ -3,9 +3,9 @@ import { provideRouter, withPreloading, PreloadAllModules, withViewTransitions }
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
-import { authInterceptor } from './core/services/auth.interceptor';
-import { errorInterceptor } from './core/services/error.interceptor';
-import { loggingInterceptor } from './core/services/logging.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { loggingInterceptor } from './core/interceptors/logging.interceptor';
 
 
 import { Header } from './components/layout/header/header';

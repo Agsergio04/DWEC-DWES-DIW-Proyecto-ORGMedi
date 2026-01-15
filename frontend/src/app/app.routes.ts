@@ -14,22 +14,21 @@ import { NotFoundPage } from './pages/not-found/not-found';
  * Las rutas se organizan en grupos lógicos para mejor mantenibilidad.
  * 
  * ESTRUCTURA:
- * - MAIN_ROUTES: Rutas principales (home)
  * - AUTH_ROUTES: Autenticación (login, registro)
- * - MEDICINES_ROUTES: Gestión de medicamentos con parámetros (:id)
- * - PROFILE_ROUTES: Perfil de usuario (extensible a rutas hijas)
- * - UTILITY_ROUTES: Utilidades y desarrollo
+ * - MEDICINES_ROUTES: Gestión de medicamentos
+ * - PROFILE_ROUTES: Perfil de usuario
+ * - UTILITY_ROUTES: Utilidades (calendario, guía de estilos)
+ * - HOME_ROUTE: Página de inicio (lazy loading)
  * 
  * PATRONES IMPLEMENTADOS:
- * 1. Rutas base simples → /home, /medicamentos
- * 2. Rutas con parámetros → /medicamentos/:id/editar
- * 3. Rutas hijas anidadas → /perfil (preparado para subrutas)
+ * 1. Lazy loading en todas las rutas → Optimización de carga inicial
+ * 2. Rutas base simples → /medicamentos
+ * 3. Rutas con parámetros → /medicamentos/:id/editar
  * 4. Guards de seguridad → authGuard, pendingChangesGuard
- * 5. Lazy loading con chunks → Optimización de carga inicial
- * 6. Resolvers → Precargar datos antes de activar ruta
- * 7. Breadcrumbs → Navegación contextualizada
+ * 5. Resolvers → Precargar datos antes de activar ruta
+ * 6. Breadcrumbs → Navegación contextualizada
  * 
- * GUARDS IMPLEMENTADOS (Tarea 4):
+ * GUARDS IMPLEMENTADOS:
  * ==============================
  * - authGuard: Protege rutas autenticadas (login requerido)
  * - pendingChangesGuard: Previene salir con cambios sin guardar
@@ -41,7 +40,7 @@ import { NotFoundPage } from './pages/not-found/not-found';
  * { path: 'crear', canDeactivate: [pendingChangesGuard], ... }
  * { path: 'login', canActivate: [publicGuard], ... }
  * 
- * NAVEGACIÓN PROGRAMÁTICA (Tarea 2):
+ * NAVEGACIÓN PROGRAMÁTICA:
  * ==================================
  * Usar NavigationService para navegar desde componentes:
  * 
@@ -52,25 +51,7 @@ import { NotFoundPage } from './pages/not-found/not-found';
  * - State: this.nav.navigateWithState([path], { data })
  * 
  * Ver: src/app/core/services/navigation.service.ts
- * Ejemplos: src/app/core/services/navigation-examples.component.ts
  */
-
-// ============ RUTAS PRINCIPALES ============
-// Cargadas inmediatamente al iniciar la app
-export const MAIN_ROUTES: Routes = [
-  {
-    path: '',
-    loadComponent: () =>
-      import('./pages/home/home').then(m => m.HomePage),
-    data: { 
-      breadcrumb: 'Inicio',
-      description: 'Página de inicio de ORGMedi'
-    },
-    resolve: {
-      homeData: homeResolver
-    }
-  },
-];
 
 // ============ RUTAS DE AUTENTICACIÓN (LAZY) ============
 // Se cargan bajo demanda cuando el usuario navega a ellas
@@ -93,6 +74,24 @@ export const AUTH_ROUTES: Routes = [
       chunkName: 'auth-register',
       breadcrumb: 'Registrarse',
       description: 'Página de registro'
+    }
+  },
+];
+
+// ============ RUTAS PRINCIPALES - HOME (LAZY) ============
+// Se cargan bajo demanda para optimizar bundle inicial
+export const MAIN_ROUTES: Routes = [
+  {
+    path: '',
+    loadComponent: () =>
+      import('./pages/home/home').then(m => m.HomePage),
+    data: { 
+      chunkName: 'main-home',
+      breadcrumb: 'Inicio',
+      description: 'Página de inicio de ORGMedi'
+    },
+    resolve: {
+      homeData: homeResolver
     }
   },
 ];

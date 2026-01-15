@@ -5,8 +5,31 @@ import { catchError } from 'rxjs/operators';
 
 /**
  * Servicio API base
- * Centraliza la configuración de URL base y maneja errores de forma genérica
- * Todos los servicios de dominio deben delegar en este servicio
+ * Centraliza la configuración de URL base y maneja errores de forma genérica.
+ * 
+ * DESCRIPCIÓN:
+ * Este servicio encapsula toda la lógica de peticiones HTTP hacia el backend.
+ * Proporciona métodos para GET, POST, PUT, PATCH, DELETE y operaciones especiales
+ * como subida de archivos y descargas.
+ * 
+ * CARACTERÍSTICAS:
+ * - Gestión centralizada de URL base y endpoints
+ * - Manejo uniforme de errores HTTP
+ * - Utilidades para parámetros y headers personalizados
+ * - Soporte para FormData, Blobs y respuestas de texto
+ * - Tipado genérico para todas las operaciones
+ * 
+ * TODOS LOS SERVICIOS DE DOMINIO deben delegar en este servicio para mantener
+ * consistencia y facilitar cambios en la configuración global.
+ * 
+ * EJEMPLO DE USO:
+ * @Injectable({ providedIn: 'root' })
+ * export class ProductService {
+ *   constructor(private api: ApiService) {}
+ *   getProducts() {
+ *     return this.api.get<Product[]>('products');
+ *   }
+ * }
  */
 @Injectable({ providedIn: 'root' })
 export class ApiService {
