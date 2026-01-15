@@ -1,0 +1,18 @@
+<div class="not-found-container">
+  <div class="not-found-content">
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">Página no encontrada</h2>
+    <p class="error-description">
+      La página que buscas no existe o ha sido movida.
+    </p>
+    <app-button
+      variant="primary"
+      [width]="'18rem'"
+      [height]="'2.75rem'"
+      [fontSize]="'1.75rem'"
+      (clicked)="navigateToHome()"
+    >
+      Volver al inicio
+    </app-button>
+  </div>
+</div>

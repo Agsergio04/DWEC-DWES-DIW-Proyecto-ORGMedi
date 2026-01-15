@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormComponent } from '../../core/services/pending-changes.guard';
+import { PendingChangesComponent } from '../../core/services/pending-changes.guard';
 
 @Component({
   selector: 'app-create-medicine-photo-page',
@@ -11,7 +11,7 @@ import { FormComponent } from '../../core/services/pending-changes.guard';
   templateUrl: './create-medicine-photo.html',
   styleUrls: ['./create-medicine-photo.scss']
 })
-export class CreateMedicinePhotoPage implements FormComponent {
+export class CreateMedicinePhotoPage implements PendingChangesComponent {
   private router = inject(Router);
   private fb = inject(FormBuilder);
 

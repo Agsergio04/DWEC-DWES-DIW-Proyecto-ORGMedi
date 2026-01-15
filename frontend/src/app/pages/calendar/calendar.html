@@ -1,37 +1,55 @@
 <section class="page page--calendar">
   <div class="page__container">
-    <h1>Calendario</h1>
+    <div class="calendar__title-section">
+      <h1>Calendario</h1>
+      <p class="calendar__description">Aquí podrás gestionar cuando has consumido los medicamentos</p>
+    </div>
+
+    <div class="calendar__date-section">
+      <span class="calendar__date">{{ currentDate | date: 'd/MM/yyyy' }}</span>
+    </div>
 
     <div class="calendar">
-      <div class="calendar__header">
+      <div class="calendar__week-header">
         <button class="calendar__nav-button" (click)="previousMonth()">‹</button>
-        <h2 class="calendar__month">{{ currentMonth }}</h2>
-        <button class="calendar__nav-button" (click)="nextMonth()">›</button>
-      </div>
+        
+        <div class="calendar__week-view">
+          <div class="calendar__weekdays-horizontal">
+            <div class="calendar__weekday">Lun</div>
+            <div class="calendar__weekday">Mar</div>
+            <div class="calendar__weekday">Mier</div>
+            <div class="calendar__weekday">Jue</div>
+            <div class="calendar__weekday">Vie</div>
+            <div class="calendar__weekday">Sab</div>
+            <div class="calendar__weekday">Dom</div>
+          </div>
 
-      <div class="calendar__weekdays">
-        <div class="calendar__weekday">Lun</div>
-        <div class="calendar__weekday">Mar</div>
-        <div class="calendar__weekday">Mié</div>
-        <div class="calendar__weekday">Jue</div>
-        <div class="calendar__weekday">Vie</div>
-        <div class="calendar__weekday">Sáb</div>
-        <div class="calendar__weekday">Dom</div>
-      </div>
-
-      <div class="calendar__days">
-        <div *ngFor="let i of [].constructor(firstDayOfWeek)" class="calendar__empty-day"></div>
-        <div
-          *ngFor="let day of daysInMonth"
-          [ngClass]="['calendar__day', isToday(day) ? 'calendar__day--today' : '']"
-        >
-          {{ day }}
+          <div class="calendar__week-buttons">
+            <app-calendar-button 
+              *ngFor="let day of getWeekDays()"
+              [day]="day"
+              [isToday]="isToday(day)"
+              [isSelected]="selectedDay === day"
+              (daySelected)="onDaySelected($event)">
+            </app-calendar-button>
+          </div>
         </div>
+
+        <button class="calendar__nav-button" (click)="nextMonth()">›</button>
       </div>
     </div>
 
-    <div class="calendar__info">
-      <p>Selecciona un día para ver los medicamentos programados.</p>
+    <div class="calendar__time-section">
+      <span class="calendar__time">{{ selectedDay ? '04:30' : '--:--' }}</span>
+    </div>
+
+    <div class="calendar__medicines-list">
+      <app-medicine-card-calendar 
+        *ngFor="let medicine of medicines"
+        [medicine]="medicine"
+        (markAsConsumed)="onMedicineConsumed($event)"
+        (markAsNotConsumed)="onMedicineNotConsumed($event)">
+      </app-medicine-card-calendar>
     </div>
   </div>
 </section>

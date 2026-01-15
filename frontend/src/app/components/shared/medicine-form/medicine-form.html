@@ -1,0 +1,153 @@
+<form class="medicine-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+
+  <!-- Nombre del Medicamento -->
+  <div class="form-group">
+    <label class="form-label">Introduce el nombre del medicamento:</label>
+    <input
+      type="text"
+      class="form-input"
+      formControlName="name"
+      placeholder="Nombre del medicamento"
+      [disabled]="isSubmitting"
+      required
+    />
+  </div>
+
+  <!-- Cantidad en Mg -->
+  <div class="form-group">
+    <label class="form-label">Introduce la cantidad del medicamento:</label>
+    <input
+      type="text"
+      class="form-input"
+      formControlName="dosage"
+      placeholder="Cantidad(En Mg)"
+      [disabled]="isSubmitting"
+      required
+    />
+  </div>
+
+  <!-- Hora de Inicio -->
+  <div class="form-group">
+    <label class="form-label">Introduce la hora de inicio:</label>
+    <input
+      type="time"
+      class="form-input"
+      formControlName="description"
+      placeholder="Hora de inicio(08:00 AM)"
+      [disabled]="isSubmitting"
+    />
+  </div>
+
+  <!-- Fecha de Inicio con SVG -->
+  <div class="form-group date-input-group">
+    <label class="form-label">Introduce la fecha de inicio cuando la vas a tomar:</label>
+    <div class="date-input-wrapper">
+      <svg class="calendar-icon" width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        
+        <path
+          d="M8 4H28C29.1046 4 30 4.89543 30 6V28C30 29.1046 29.1046 30 28 30H8C6.89543 30 6 29.1046 6 28V6C6 4.89543 6.89543 4 8 4Z"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M12 2V8M24 2V8M6 12H30"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <input
+        type="date"
+        class="form-input date-input"
+        formControlName="startDate"
+        [disabled]="isSubmitting"
+        required
+      />
+    </div>
+  </div>
+
+  <!-- Fecha de Fin con SVG -->
+  <div class="form-group date-input-group">
+    <label class="form-label">Introduce la fecha de fin cuando la vas a acabar de tomar:</label>
+    <div class="date-input-wrapper">
+      <svg class="calendar-icon" width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M8 4H28C29.1046 4 30 4.89543 30 6V28C30 29.1046 29.1046 30 28 30H8C6.89543 30 6 29.1046 6 28V6C6 4.89543 6.89543 4 8 4Z"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M12 2V8M24 2V8M6 12H30"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <input
+        type="date"
+        class="form-input date-input"
+        formControlName="endDate"
+        [disabled]="isSubmitting"
+      />
+      <span class="date-label">Fecha Fin(dd/mm/yyyy)</span>
+    </div>
+  </div>
+
+  <!-- Selectores de Frecuencia y Color -->
+  <div class="selectors-row">
+    <div class="selector-group">
+      <label class="form-label">Seleccione la frecuencia de consumo de la pastilla:</label>
+      <app-data-input-selector
+        [options]="frequencyOptions"
+        [selectedOption]="selectedFrequency"
+        [type]="'text'"
+        [disabled]="isSubmitting"
+        placeholder="Selecciona cada cuanto"
+        (optionSelected)="onFrequencySelected($event)">
+      </app-data-input-selector>
+    </div>
+
+    <div class="selector-group">
+      <label class="form-label">Selecciona el color de la pastilla :</label>
+      <app-data-input-selector
+        [options]="colorOptions"
+        [selectedOption]="selectedColor"
+        [type]="'color'"
+        [disabled]="isSubmitting"
+        placeholder="Selecciona un color"
+        (optionSelected)="onColorSelected($event)">
+      </app-data-input-selector>
+    </div>
+  </div>
+
+  <!-- Botones de Acción -->
+  <div class="form-actions">
+    <app-button
+      variant="secondary"
+      [width]="'18rem'"
+      [height]="'2.75rem'"
+      [disabled]="isSubmitting"
+      (clicked)="onCancel()"
+    >
+      {{ cancelButtonText }}
+    </app-button>
+
+    <app-button
+
+      variant="primary"
+      [width]="'18rem'"
+      [height]="'2.75rem'"
+      [disabled]="isSubmitting || !form.valid"
+      (clicked)="onSubmit()"
+    >
+      {{ submitButtonText }}
+    </app-button>
+  </div>
+
+</form>

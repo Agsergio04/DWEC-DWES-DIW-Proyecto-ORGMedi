@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router } from '@angular/router';
 import { MedicineService } from '../../data/medicine.service';
 import { CreateMedicineDto, ApiError } from '../../data/models/medicine.model';
-import { FormComponent } from '../../core/services/pending-changes.guard';
+import { PendingChangesComponent } from '../../core/services/pending-changes.guard';
 
 @Component({
   selector: 'app-create-medicine-page',
@@ -13,7 +13,7 @@ import { FormComponent } from '../../core/services/pending-changes.guard';
   templateUrl: './create-medicine.html',
   styleUrls: ['./create-medicine.scss']
 })
-export class CreateMedicinePage implements FormComponent {
+export class CreateMedicinePage implements PendingChangesComponent {
   private medicineService = inject(MedicineService);
   private router = inject(Router);
   private fb = inject(FormBuilder);

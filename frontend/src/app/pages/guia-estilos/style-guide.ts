@@ -11,6 +11,8 @@ import { TabsComponent } from '../../components/shared/tabs/tabs';
 import { AlertComponent } from '../../components/shared/alert/alert';
 import { MedicineCardComponent } from '../../components/shared/medicine-card/medicine-card';
 import { ThemeSwitcher } from '../../components/shared/theme-switcher/theme-switcher';
+import { MedicineFormComponent, MedicineFormData } from '../../components/shared/medicine-form/medicine-form';
+import { ButtonComponent } from '../../components/shared/button/button';
 
 @Component({
   selector: 'app-style-guide',
@@ -25,7 +27,9 @@ import { ThemeSwitcher } from '../../components/shared/theme-switcher/theme-swit
     TabsComponent,
     AlertComponent,
     MedicineCardComponent,
-    ThemeSwitcher
+    ThemeSwitcher,
+    MedicineFormComponent,
+    ButtonComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   templateUrl: './style-guide.html',
@@ -43,7 +47,8 @@ export class StyleGuidePage implements OnInit {
     ModalComponent,
     TabsComponent,
     AlertComponent,
-    MedicineCardComponent
+    MedicineCardComponent,
+    MedicineFormComponent
   ];
 
   // Opciones de ejemplo para el select
@@ -63,6 +68,17 @@ export class StyleGuidePage implements OnInit {
     startDate: '2026-01-11',
     endDate: '2026-02-11',
     quantity: 21
+  };
+
+  // Datos iniciales para el formulario de ejemplo
+  medicineFormData: MedicineFormData = {
+    name: 'Amoxicilina',
+    dosage: '500mg',
+    frequency: 'Cada 6 horas',
+    description: '08:00 AM',
+    startDate: '2026-01-15',
+    endDate: '2026-02-15',
+    quantity: 30
   };
 
   // Estado demo modal
@@ -107,5 +123,20 @@ export class StyleGuidePage implements OnInit {
 
   onDeleteMedicine(medicineId: string): void {
     console.log('Eliminar medicamento:', medicineId);
+  }
+
+  /**
+   * Maneja el envío del formulario de medicina
+   */
+  onMedicineFormSubmit(formData: MedicineFormData): void {
+    console.log('Formulario de medicina enviado:', formData);
+    alert(`Medicamento: ${formData.name}\nCantidad: ${formData.dosage}\nFecha de inicio: ${formData.startDate}`);
+  }
+
+  /**
+   * Maneja la cancelación del formulario de medicina
+   */
+  onMedicineFormCancel(): void {
+    console.log('Formulario de medicina cancelado');
   }
 }

@@ -1,0 +1,98 @@
+.medicine-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, rgba(217, 123, 191, 0.6) 0%, rgba(217, 123, 191, 0.4) 100%);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.medicine-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.medicine-card__content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.medicine-card__icon {
+  font-size: 28px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.medicine-card__name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #d97bbf;
+  margin: 0;
+}
+
+.medicine-card__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.medicine-card__btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding: 0;
+}
+
+.medicine-card__btn--check {
+  background-color: #4caf50;
+}
+
+.medicine-card__btn--check:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.medicine-card__btn--check:active {
+  transform: scale(0.95);
+}
+
+.medicine-card__btn--check.medicine-card__btn--active {
+  background-color: #4caf50;
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
+}
+
+.medicine-card__btn--close {
+  background-color: #ff4444;
+}
+
+.medicine-card__btn--close:hover {
+  background-color: #dd0000;
+  transform: scale(1.05);
+}
+
+.medicine-card__btn--close:active {
+  transform: scale(0.95);
+}
+
+.medicine-card__btn--close.medicine-card__btn--active {
+  background-color: #ff4444;
+  box-shadow: 0 0 12px rgba(255, 68, 68, 0.6);
+}

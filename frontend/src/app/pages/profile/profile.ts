@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { FormComponent } from '../../core/services/pending-changes.guard';
+import { PendingChangesComponent } from '../../core/services/pending-changes.guard';
 import { UserProfile } from '../../core/services/profile.resolver';
 import { DataInputComponent } from '../../components/shared/data-input/data-input';
 import { ButtonComponent } from '../../components/shared/button/button';
@@ -27,7 +27,7 @@ interface ProfileFormModel {
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss']
 })
-export class ProfilePage implements FormComponent, OnInit {
+export class ProfilePage implements PendingChangesComponent, OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
 

@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { tap, catchError, map } from 'rxjs/operators';
 
 export interface AuthUser {
   id: number;
@@ -7,12 +9,23 @@ export interface AuthUser {
   email: string;
 }
 
+export interface AuthRequest {
+  correo: string;
+  contrasena: string;
+}
+
+export interface AuthResponse {
+  token: string;
+}
+
 /**
  * Servicio de autenticación
- * Gestiona el estado de login/logout del usuario
+ * Gestiona el estado de login/logout del usuario y comunica con la API
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private http = inject(HttpClient);
+  private readonly baseUrl = 'http://localhost:8080/api/auth';
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.checkStoredAuth());
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.getStoredUser());
 
@@ -54,31 +67,43 @@ export class AuthService {
   }
 
   /**
-   * Simular login
-   * En una app real, esto llamaría a un API
+   * Realizar login en el backend
+   * Envía email/contraseña y recibe JWT en la respuesta
    */
   login(email: string, password: string): Observable<boolean> {
-    return new Observable(observer => {
-      // Simular llamada a API con delay
-      setTimeout(() => {
+    const request: AuthRequest = {
+      correo: email,
+      contrasena: password
+    };
+
+    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, request).pipe(
+      tap((response) => {
+        // Guardar el token JWT
+        this.setToken(response.token);
+
+        // Extraer información del usuario del email (simplificado)
+        // En una app real, se podría decodificar el JWT o hacer una petición adicional
         const user: AuthUser = {
           id: 1,
-          name: 'Usuario Demo',
+          name: email,
           email: email
         };
 
-        // Guardar en localStorage
+        // Guardar estado en localStorage
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('currentUser', JSON.stringify(user));
 
         // Actualizar subjects
         this.isLoggedInSubject.next(true);
         this.currentUserSubject.next(user);
-
-        observer.next(true);
-        observer.complete();
-      }, 500);
-    });
+      }),
+      // Transformar a boolean
+      map(() => true),
+      catchError(err => {
+        console.error('Error en login:', err);
+        return throwError(() => err);
+      })
+    );
   }
 
   /**

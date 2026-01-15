@@ -11,7 +11,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
  * - /public/*
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem('auth_token');
+  const token = localStorage.getItem('authToken');
 
   // No añadir token a rutas públicas
   const isAuthUrl = req.url.includes('/auth/login') || 

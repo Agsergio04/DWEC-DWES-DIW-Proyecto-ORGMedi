@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { ResolveFn, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { catchError, of, map, timeout } from 'rxjs';
+import { catchError, of, timeout } from 'rxjs';
 
 // Interface para medicamentos (movida desde medicine-card)
 export interface Medicine {
@@ -17,16 +17,44 @@ export interface Medicine {
 }
 
 /**
- * Resolver para medicamentos
- * Precarga la lista de medicamentos antes de activar la ruta
- * En una aplicación real, esto llamaría a un servicio HTTP
+ * RESOLVER: medicinesResolver
+ * ===========================
+ * 
+ * Tarea 5: Resolvers - Precargar datos antes de activar la ruta
+ * 
+ * Flujo:
+ * 1. Usuario navega a /medicamentos
+ * 2. Angular ejecuta medicinesResolver ANTES de renderizar MedicinesPage
+ * 3. El resolver carga la lista de medicamentos
+ * 4. Solo cuando completa, se activa la ruta y se renderiza el componente
+ * 5. MedicinesPage recibe datos en route.data (nunca null)
+ * 
+ * Ventajas:
+ * ✅ El componente SIEMPRE tiene datos (si la ruta se activó)
+ * ✅ Loading unificado: spinner global, no en cada componente
+ * ✅ Manejo de errores: redirige automáticamente si falla
+ * ✅ UX mejorada: no hay saltos visuales ni parpadeos
+ * 
+ * Desventajas:
+ * ⚠️ Si el resolver es lento, retarda la navegación
+ * ⚠️ Si falla, se redirige (no se ve el componente)
+ * 
+ * @see docs/RESOLVERS.md para documentación completa
+ * @see app.routes.ts para uso en rutas
+ * @see medicines.ts para lectura de datos en componente
  */
 export const medicinesResolver: ResolveFn<Medicine[]> = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
-  // Aquí iría una llamada HTTP real a un API
-  // Por ahora retornamos los medicamentos desde un servicio local
+  // En producción, inyectar MedicineService real:
+  // const service = inject(MedicineService);
+  // return service.getMedicines().pipe(
+  //   timeout(5000),
+  //   catchError(err => { ... })
+  // );
+
+  // Datos simulados (para desarrollo)
   const medicines: Medicine[] = [
     {
       id: '1',
@@ -84,7 +112,6 @@ export const medicinesResolver: ResolveFn<Medicine[]> = (
   ];
 
   // Simulamos una carga asíncrona que podría fallar
-  // En una app real, esto sería: return inject(MedicineService).getMedicines()
   return new Promise<Medicine[]>((resolve, reject) => {
     setTimeout(() => {
       // Simular error aleatorio 10% de las veces (descomentar para probar)
@@ -94,20 +121,45 @@ export const medicinesResolver: ResolveFn<Medicine[]> = (
       resolve(medicines);
     }, 300); // Pequeña simulación de latencia de red
   }).catch((error) => {
-    console.error('Error cargando medicamentos:', error);
+    console.error('[Resolver] Error cargando medicamentos:', error);
     // Redirigir a inicio si hay error
     const router = inject(Router);
     router.navigate(['/'], {
-      state: { error: 'No se pudieron cargar los medicamentos' }
+      state: { error: 'No se pudieron cargar los medicamentos. Intenta nuevamente.' }
     });
     return [];
   });
 };
 
 /**
- * Resolver para medicamento individual por ID
- * Precarga un medicamento específico antes de activar la ruta de edición
- * Si no existe, redirige a /medicamentos
+ * RESOLVER: medicineDetailResolver
+ * ================================
+ * 
+ * Tarea 5: Resolvers - Precargar medicamento por ID
+ * 
+ * Flujo:
+ * 1. Usuario navega a /medicamentos/123/editar
+ * 2. Angular extrae el ID (123) de los parámetros de ruta
+ * 3. El resolver lo busca en el backend
+ * 4. Si existe → lo resuelve y renderiza EditMedicineComponent con datos
+ * 5. Si NO existe → redirige a /medicamentos con mensaje de error
+ * 
+ * Ventajas:
+ * ✅ El componente no necesita validar si existe el medicamento
+ * ✅ Si el ID es inválido, se redirige automáticamente
+ * ✅ Carga unificada: no hay carrera entre componente y servicio
+ * 
+ * Flujo de Error:
+ * /medicamentos/999/editar (no existe)
+ *   → medicineDetailResolver busca
+ *   → NO encuentra
+ *   → router.navigate(['/medicamentos'], { state: { error: '...' } })
+ *   → MedicinesPage lee el error de navigation.extras.state
+ *   → Usuario ve lista con mensaje de error
+ * 
+ * @see docs/RESOLVERS.md para documentación completa
+ * @see app.routes.ts para uso en rutas
+ * @see edit-medicine.ts para lectura de datos en componente
  */
 export const medicineDetailResolver: ResolveFn<Medicine | null> = (
   route: ActivatedRouteSnapshot,
@@ -116,15 +168,22 @@ export const medicineDetailResolver: ResolveFn<Medicine | null> = (
   const router = inject(Router);
   const id = route.paramMap.get('id');
 
+  // ============ VALIDACIÓN DE ID ============
   if (!id) {
-    console.warn('No ID proporcionado para medicamento');
+    console.warn('[medicineDetailResolver] No ID proporcionado para medicamento');
     router.navigate(['/medicamentos'], {
       state: { error: 'ID de medicamento inválido' }
     });
     return null;
   }
 
-  // Simulamos la búsqueda del medicamento
+  // ============ DATOS SIMULADOS ============
+  // En producción: const service = inject(MedicineService);
+  // return service.getById(id).pipe(
+  //   timeout(5000),
+  //   catchError(err => { ... })
+  // );
+
   const medicines: Medicine[] = [
     {
       id: '1',
@@ -184,7 +243,7 @@ export const medicineDetailResolver: ResolveFn<Medicine | null> = (
   const medicine = medicines.find((m) => m.id === id);
 
   if (!medicine) {
-    console.warn(`Medicamento con ID ${id} no encontrado`);
+    console.warn(`[Resolver] Medicamento con ID ${id} no encontrado`);
     router.navigate(['/medicamentos'], {
       state: { error: `Medicamento con ID ${id} no existe` }
     });
@@ -197,9 +256,9 @@ export const medicineDetailResolver: ResolveFn<Medicine | null> = (
       resolve(medicine);
     }, 300);
   }).catch((error) => {
-    console.error('Error cargando detalle de medicamento:', error);
+    console.error('[Resolver] Error cargando detalle de medicamento:', error);
     router.navigate(['/medicamentos'], {
-      state: { error: 'Error al cargar medicamento' }
+      state: { error: 'Error al cargar medicamento. Intenta nuevamente.' }
     });
     return null;
   });

@@ -1,0 +1,158 @@
+.demo-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #f0f8ff 0%, #f5f5f5 100%);
+  min-height: 100vh;
+}
+
+.demo-header {
+  text-align: center;
+  margin-bottom: 50px;
+  padding-bottom: 30px;
+  border-bottom: 3px solid #b8e6a1;
+
+  h1 {
+    font-size: 2.5rem;
+    color: #2d5a2d;
+    margin: 0 0 10px 0;
+    font-weight: 700;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+  }
+}
+
+.demo-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 40px;
+  margin-bottom: 40px;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.demo-section {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+  }
+}
+
+.section-header {
+  margin-bottom: 25px;
+
+  h2 {
+    font-size: 1.5rem;
+    color: #2d5a2d;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+  }
+
+  .section-description {
+    font-size: 0.9rem;
+    color: #888;
+    margin: 0;
+    font-style: italic;
+  }
+}
+
+.demo-example {
+  margin: 25px 0;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  border-left: 4px solid #b8e6a1;
+}
+
+.result-section {
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 2px solid #e0e0e0;
+
+  h3 {
+    font-size: 1rem;
+    color: #2d5a2d;
+    margin: 0 0 12px 0;
+    font-weight: 600;
+  }
+}
+
+.result-box {
+  background: linear-gradient(135deg, #f0fff4 0%, #e8f5e9 100%);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #c8e6c9;
+
+  p {
+    margin: 8px 0;
+    font-size: 0.95rem;
+    color: #333;
+
+    strong {
+      color: #2d5a2d;
+      font-weight: 600;
+    }
+  }
+
+  .color-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    margin-top: 12px;
+    border: 2px solid #999;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Animación de entrada */
+.demo-section {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .demo-container {
+    padding: 20px 10px;
+  }
+
+  .demo-header {
+    h1 {
+      font-size: 1.8rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  .demo-section {
+    padding: 20px;
+  }
+
+  .section-header h2 {
+    font-size: 1.3rem;
+  }
+}

@@ -4,13 +4,12 @@
 .medicine-card {
   border-radius: 16px;
   overflow: hidden;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: box-shadow $transition-normal;
-  cursor: pointer;
+  background: transparent;
+  box-shadow: none;
+  transition: transform 0.2s ease;
 
   &:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
   }
 
   &--expired {
@@ -18,24 +17,17 @@
   }
 
   &--expiring {
-    border: 2px solid var(--color-negacion-primary);
+    // border: 2px solid var(--color-negacion-primary);
   }
 }
 
-// ===== CONTENEDOR PRINCIPAL =====
-.medicine-card__container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-// ===== HEADER: Icono + Título + Botones =====
+// ===== HEADER: Icono + Título + Botón Editar =====
 .medicine-card__header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 24px;
-  background: linear-gradient(135deg, $color-primario-primary 0%, #D67AA8 100%);
+  gap: 16px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #E64FA6 0%, #D946A6 100%);
   border-radius: 16px 16px 0 0;
 }
 
@@ -44,243 +36,239 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
   flex-shrink: 0;
   background: transparent;
-  border-radius: 12px;
 
   svg {
-    width: 32px;
-    height: 32px;
-    color: #00F5D4;
-    transform: rotate(-45deg);
+    width: 40px;
+    height: 40px;
   }
 }
 
 // Título del medicamento
 .medicine-card__title {
-  color: #00F5D4;
-  font-size: 32px;
+  color: white;
+  font-size: 28px;
   font-weight: $font-weight-bold;
   margin: 0;
   line-height: 1.1;
-  font-family: 'Playfair Display', 'Serif', serif;
+  font-family: $font-secondary;
   flex: 1;
 }
 
-// Botones de acción
-.medicine-card__actions {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
+// Botón de editar
 .medicine-card__action-btn {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   border: none;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.2);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
   padding: 0;
+  flex-shrink: 0;
 
   img {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     object-fit: contain;
-    filter: brightness(0.3);
+    filter: brightness(1);
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.35);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
   }
 
   &:active {
-    transform: translateY(0);
-  }
-
-  &--edit {
-    &:hover {
-      background: rgba(59, 130, 246, 0.3);
-    }
-  }
-
-  &--delete {
-    &:hover {
-      background: rgba(239, 68, 68, 0.3);
-    }
+    transform: scale(0.95);
   }
 }
 
-// ===== GRID DE INFORMACIÓN =====
-.medicine-card__info-grid {
+// ===== INFORMACIÓN EN DOS FILAS =====
+.medicine-card__info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+  background: transparent;
+}
+
+.medicine-card__info-row {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  background: $color-rosa-claro;
-  padding: 24px;
-  border-radius: 16px;
-  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 16px 24px;
+  background: rgba(230, 79, 166, 0.08);
+  border-radius: 0 0 16px 16px;
+
+  &:first-child {
+    border-radius: 0;
+    border-bottom: 1px solid rgba(230, 79, 166, 0.15);
+  }
+
+  &:last-child {
+    border-radius: 0 0 16px 16px;
+  }
 }
 
-// Item de información
 .medicine-card__info-item {
   display: flex;
+  gap: 12px;
   align-items: flex-start;
-  gap: 10px;
 }
 
-// Icono de información
 .medicine-card__info-icon {
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
-  color: #4A1F2A;
-  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
   flex-shrink: 0;
+  color: #E64FA6;
 
   svg {
-    width: 100%;
-    height: 100%;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    fill: none;
+    width: 20px;
+    height: 20px;
+    color: inherit;
   }
 }
 
-// Texto de información
 .medicine-card__info-text {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1;
 }
 
-// Etiqueta (label)
-.medicine-card__label {
-  font-size: 13px;
-  color: #4A1F2A;
-  font-weight: 500;
-  line-height: 1.2;
+.medicine-card__info-label {
+  display: block;
+  font-size: 12px;
+  font-weight: $font-weight-medium;
+  color: #666666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-// Valor
-.medicine-card__value {
-  font-size: 15px;
-  color: #4A1F2A;
-  font-weight: 600;
-  line-height: 1.3;
+.medicine-card__info-value {
+  display: block;
+  font-size: 14px;
+  font-weight: $font-weight-semibold;
+  color: #333333;
+}
+
+.medicine-card__info-value {
+  display: block;
+  font-size: 14px;
+  font-weight: $font-weight-semibold;
+  color: #333333;
 }
 
 // ===== DARK MODE =====
 [data-theme="dark"] {
-  .medicine-card {
-    background: $color-primario-dark_hover;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-
-    &:hover {
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-    }
+  .medicine-card__header {
+    background: linear-gradient(135deg, #C73790 0%, #B52680 100%);
   }
 
-  .medicine-card__container {
-    background: linear-gradient(135deg, $color-primario-dark 0%, #7A4861 100%);
+  .medicine-card__info-row {
+    background: rgba(199, 55, 144, 0.12);
+    border-color: rgba(199, 55, 144, 0.2);
   }
 
-  .medicine-card__info-grid {
-    background: $color-rosa-claro-dark;
+  .medicine-card__info-icon {
+    color: #E64FA6;
+  }
+
+  .medicine-card__info-label {
+    color: #999999;
+  }
+
+  .medicine-card__info-value {
+    color: #E0E0E0;
   }
 
   .medicine-card__title {
     color: #FFFFFF;
-  }
-
-  .medicine-card__label,
-  .medicine-card__value,
-  .medicine-card__info-icon {
-    color: #FFFFFF;
-  }
-
-  .medicine-card__action-btn {
-    background: $color-primario-dark;
-
-    img {
-      opacity: 0.9;
-    }
-
-    &:hover {
-      background: $color-primario-dark_hover;
-      opacity: 1;
-    }
-
-    &--edit:hover {
-      background: $color-primario-dark_hover;
-    }
-
-    &--delete:hover {
-      background: $color-primario-dark_hover;
-    }
   }
 }
 
 // ===== RESPONSIVE =====
 @media (max-width: 640px) {
-  .medicine-card__container {
-    padding: 20px;
-    gap: 16px;
-  }
-
   .medicine-card__header {
-    flex-wrap: wrap;
+    padding: 16px 20px;
+    gap: 12px;
   }
 
   .medicine-card__title {
     font-size: 24px;
-    flex-basis: 100%;
   }
 
-  .medicine-card__actions {
-    margin-left: auto;
+  .medicine-card__info-row {
+    padding: 12px 20px;
+    gap: 8px;
   }
 
-  .medicine-card__info-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+  .medicine-card__action-btn {
+    width: 32px;
+    height: 32px;
+
+    img {
+      width: 18px;
+      height: 18px;
+    }
   }
 }
 
 @media (max-width: 480px) {
-  .medicine-card__container {
-    padding: 16px;
+  .medicine-card__header {
+    padding: 12px 16px;
   }
 
   .medicine-card__title {
     font-size: 20px;
   }
 
-  .medicine-card__label {
-    font-size: 12px;
-  }
-
-  .medicine-card__value {
-    font-size: 14px;
-  }
-
-  .medicine-card__action-btn {
-    width: 36px;
-    height: 36px;
+  .medicine-card__icon {
+    width: 32px;
+    height: 32px;
 
     svg {
-      width: 18px;
-      height: 18px;
+      width: 32px;
+      height: 32px;
     }
+  }
+
+  .medicine-card__info-row {
+    padding: 12px 16px;
+    gap: 8px;
+  }
+
+  .medicine-card__info-item {
+    gap: 8px;
+  }
+
+  .medicine-card__info-icon {
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .medicine-card__info-label {
+    font-size: 11px;
+  }
+
+  .medicine-card__info-value {
+    font-size: 13px;
   }
 }

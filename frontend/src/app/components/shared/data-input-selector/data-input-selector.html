@@ -1,0 +1,53 @@
+<div class="selector-container">
+  <div 
+    class="selector-button"
+    [class.open]="isOpen"
+    [class.selected]="selectedOption !== null"
+    [class.disabled]="disabled"
+    (click)="toggleDropdown()"
+    (blur)="closeDropdown()"
+    tabindex="0">
+    
+    <span class="selector-text">{{ getDisplayText() }}</span>
+    
+    <svg 
+      class="selector-arrow"
+      [class.rotated]="isOpen"
+      width="20" 
+      height="20" 
+      viewBox="0 0 20 20" 
+      fill="none">
+      <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <div class="options-container" *ngIf="isOpen">
+    <div class="options-list" [class.color-mode]="type === 'color'">
+      <div 
+        *ngFor="let option of options"
+        class="option-item"
+        [class.color-option]="type === 'color'"
+        [class.selected]="selectedOption?.id === option.id"
+        (click)="selectOption(option)">
+        
+        <ng-container [ngSwitch]="type">
+          <!-- Modo texto -->
+          <span *ngSwitchCase="'text'" class="option-text">
+            {{ option.label }}
+          </span>
+
+          <!-- Modo color -->
+          <ng-container *ngSwitchCase="'color'">
+            <div class="color-wrapper">
+              <div 
+                class="color-box" 
+                [style.backgroundColor]="option.color">
+              </div>
+              <span class="color-label">{{ option.label }}</span>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

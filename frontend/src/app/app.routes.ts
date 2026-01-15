@@ -6,6 +6,55 @@ import { profileResolver } from './core/services/profile.resolver';
 import { homeResolver } from './core/services/home.resolver';
 import { NotFoundPage } from './pages/not-found/not-found';
 
+/**
+ * CONFIGURACIÓN DE RUTAS - ORGMedi
+ * ========================================
+ * 
+ * La SPA utiliza el sistema de routing modular de Angular con lazy loading.
+ * Las rutas se organizan en grupos lógicos para mejor mantenibilidad.
+ * 
+ * ESTRUCTURA:
+ * - MAIN_ROUTES: Rutas principales (home)
+ * - AUTH_ROUTES: Autenticación (login, registro)
+ * - MEDICINES_ROUTES: Gestión de medicamentos con parámetros (:id)
+ * - PROFILE_ROUTES: Perfil de usuario (extensible a rutas hijas)
+ * - UTILITY_ROUTES: Utilidades y desarrollo
+ * 
+ * PATRONES IMPLEMENTADOS:
+ * 1. Rutas base simples → /home, /medicamentos
+ * 2. Rutas con parámetros → /medicamentos/:id/editar
+ * 3. Rutas hijas anidadas → /perfil (preparado para subrutas)
+ * 4. Guards de seguridad → authGuard, pendingChangesGuard
+ * 5. Lazy loading con chunks → Optimización de carga inicial
+ * 6. Resolvers → Precargar datos antes de activar ruta
+ * 7. Breadcrumbs → Navegación contextualizada
+ * 
+ * GUARDS IMPLEMENTADOS (Tarea 4):
+ * ==============================
+ * - authGuard: Protege rutas autenticadas (login requerido)
+ * - pendingChangesGuard: Previene salir con cambios sin guardar
+ * - publicGuard: Redirige si ya estás autenticado (login, registro)
+ * - adminGuard: Validará permisos de admin (cuando se implemente roles)
+ * 
+ * Ejemplo de aplicación:
+ * { path: 'medicamentos', canActivate: [authGuard], ... }
+ * { path: 'crear', canDeactivate: [pendingChangesGuard], ... }
+ * { path: 'login', canActivate: [publicGuard], ... }
+ * 
+ * NAVEGACIÓN PROGRAMÁTICA (Tarea 2):
+ * ==================================
+ * Usar NavigationService para navegar desde componentes:
+ * 
+ * - Navegación simple: this.nav.goToMedicines()
+ * - Con parámetros: this.nav.goToEditMedicine(id)
+ * - Query params: this.nav.searchMedicines({ busqueda, categoria })
+ * - Fragmentos: this.nav.goToSection([path], 'anchor')
+ * - State: this.nav.navigateWithState([path], { data })
+ * 
+ * Ver: src/app/core/services/navigation.service.ts
+ * Ejemplos: src/app/core/services/navigation-examples.component.ts
+ */
+
 // ============ RUTAS PRINCIPALES ============
 // Cargadas inmediatamente al iniciar la app
 export const MAIN_ROUTES: Routes = [
@@ -50,6 +99,7 @@ export const AUTH_ROUTES: Routes = [
 
 // ============ RUTAS DE MEDICAMENTOS (LAZY) ============
 // Cada subruta genera su propio chunk para optimizar carga
+// Sigue el patrón: /medicamentos (listado) → /medicamentos/crear (crear) → /medicamentos/:id/editar (editar)
 export const MEDICINES_ROUTES: Routes = [
   {
     path: 'medicamentos',
@@ -128,11 +178,12 @@ export const UTILITY_ROUTES: Routes = [
       breadcrumb: 'Guía de Estilos',
       description: 'Guía de estilos de la aplicación'
     }
-  },
+  }
 ];
 
-// ============ RUTAS DE PERFIL (LAZY) ============
-// Perfil de usuario bajo demanda
+// ============ RUTAS DE PERFIL CON HIJAS ANIDADAS (LAZY) ============
+// Sección de usuario con subrutas usando <router-outlet> interno
+// Rutas: /perfil → /perfil/editar (si existe), etc.
 export const PROFILE_ROUTES: Routes = [
   {
     path: 'perfil',
@@ -148,6 +199,7 @@ export const PROFILE_ROUTES: Routes = [
     resolve: {
       profile: profileResolver
     }
+    // Las subrutas se pueden añadir aquí en el futuro con: children: [...]
   },
 ];
 
@@ -159,7 +211,12 @@ export const routes: Routes = [
   ...MEDICINES_ROUTES,
   ...PROFILE_ROUTES,
   ...UTILITY_ROUTES,
-  // Ruta wildcard (debe ir siempre al final)
+  
+  // ============ RUTA WILDCARD PARA 404 ============
+  // IMPORTANTE: Debe ir SIEMPRE al final de todas las rutas
+  // Captura cualquier URL no reconocida y muestra página 404 personalizada
+  // Patrón: ** (dos asteriscos) coincide con cualquier ruta no definida
+  // Ejemplo: /ruta-inexistente → NotFoundPage
   { 
     path: '**', 
     loadComponent: () =>

@@ -1,0 +1,23 @@
+<div class="medicine-card">
+  <div class="medicine-card__content">
+    <span class="medicine-card__icon">{{ medicine.icon }}</span>
+    <span class="medicine-card__name">{{ medicine.name }}</span>
+  </div>
+  
+  <div class="medicine-card__actions">
+    <button 
+      class="medicine-card__btn medicine-card__btn--check"
+      (click)="onCheck()"
+      [class.medicine-card__btn--active]="medicine.consumed"
+      aria-label="Marcar como consumido">
+      ✓
+    </button>
+    <button 
+      class="medicine-card__btn medicine-card__btn--close"
+      (click)="onClose()"
+      [class.medicine-card__btn--active]="!medicine.consumed"
+      aria-label="Marcar como no consumido">
+      ✕
+    </button>
+  </div>
+</div>

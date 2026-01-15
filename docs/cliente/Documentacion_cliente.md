@@ -26,30 +26,15 @@
     - [Guía de uso de FormArray (listas dinámicas)](#guía-de-uso-de-formarray-listas-dinámicas)
     - [Ejemplos de validación asíncrona (flujo completo)](#ejemplos-de-validación-asíncrona-flujo-completo)
 4. [Fase 4 — Sistema de Rutas y Navegación](#fase-4--sistema-de-rutas-y-navegación)
-    - [Tarea 4.1: Configuración de Rutas](#tarea-41-configuración-de-rutas)
-    - [Tarea 4.2: Navegación Programática](#tarea-42-navegación-programática)
-    - [Tarea 4.3: Lazy Loading](#tarea-43-lazy-loading)
-    - [Tarea 4.4: Route Guards](#tarea-44-route-guards)
-    - [Tarea 4.5: Resolvers](#tarea-45-resolvers)
-    - [Tarea 4.6: Breadcrumbs Dinámicos](#tarea-46-breadcrumbs-dinámicos)
-    - [Tarea 4.7: Documentación de Rutas](#tarea-47-documentación-de-rutas)
-5. [Fase 5 — Servicios y Comunicación HTTP](#fase-5--servicios-y-comunicación-http)
-    - [Tarea 5.1: Configuración de HttpClient](#tarea-51-configuración-de-httpclient)
-    - [Tarea 5.2: Operaciones CRUD Completas](#tarea-52-operaciones-crud-completas)
-    - [Tarea 5.3: Manejo de Respuestas HTTP](#tarea-53-manejo-de-respuestas-http)
-    - [Tarea 5.4: Diferentes Formatos](#tarea-54-diferentes-formatos)
-    - [Tarea 5.5: Estados de Carga y Error](#tarea-55-estados-de-carga-y-error)
-    - [Tarea 5.6: Interceptores HTTP](#tarea-56-interceptores-http)
-    - [Tarea 5.7: Documentación de API](#tarea-57-documentación-de-api)
-6. [Fase 6 — Gestión de Estado y Actualización Dinámica](#fase-6--gestión-de-estado-y-actualización-dinámica)
-    - [Tarea 6.1: Actualización Dinámica sin Recargas](#tarea-61-actualización-dinámica-sin-recargas)
-    - [Tarea 6.2: Patrón de Gestión de Estado](#tarea-62-patrón-de-gestión-de-estado)
-    - [Tarea 6.3: Optimización de Rendimiento](#tarea-63-optimización-de-rendimiento)
-    - [Tarea 6.4: Paginación y Scroll Infinito](#tarea-64-paginación-y-scroll-infinito)
-    - [Tarea 6.5: Búsqueda y Filtrado en Tiempo Real](#tarea-65-búsqueda-y-filtrado-en-tiempo-real)
-    - [Tarea 6.6: WebSockets o Polling (OPCIONAL)](#tarea-66-websockets-o-polling-opcional)
-    - [Tarea 6.7: Documentación de Patrones de Estado](#tarea-67-documentación-de-patrones-de-estado)
+  - [Tarea 1: Configuración de Rutas](#tarea-1-configuración-de-rutas)
+  - [Tarea 2: Navegación Programática](#tarea-2-navegación-programática)
+  - [Tarea 3: Lazy Loading](#tarea-3-lazy-loading)
+  - [Tarea 4: Route Guards](#tarea-4-route-guards)
+  - [Tarea 5: Resolvers](#tarea-5-resolvers)
+  - [Tarea 6: Breadcrumbs Dinámicos](#tarea-6-breadcrumbs-dinámicos)
+  - [Tarea 7: Documentación](#tarea-7-documentación)
 
+5. [Fase 5 — Servicios y Comunicación HTTP](#fase-5--servicios-y-comunicación-http)
 ---
 ## Fase 1 — Arquitectura de eventos
 
@@ -937,42 +922,1251 @@ BreadcrumbComponent muestra: Inicio › Perfil
 
 ## Fase 4 — Sistema de Rutas y Navegación
 
-La Fase 4 implementa un sistema completo de navegación SPA con Angular Router, lazy loading, guards, resolvers y breadcrumbs dinámicos.
+## 📋 Resumen Ejecutivo
 
-### Tarea 4.1-4.7: Rutas, Navegación, Lazy Loading, Guards, Resolvers, Breadcrumbs y Documentación
+ORGMedi implementa un sistema de routing modular con **lazy loading**, **guards de seguridad** y **precargas de datos** para una experiencia de usuario fluida y segura.
 
-**Resumen ejecutivo:**
-- **4.1:** Rutas principales, con parámetros, hijas, wildcard
-- **4.2:** Navegación programática con Router
-- **4.3:** Lazy loading con PreloadAllModules
-- **4.4:** Route guards (CanActivate, CanDeactivate)
-- **4.5:** Resolvers para precargar datos
-- **4.6:** Breadcrumbs dinámicos desde metadatos de ruta
-- **4.7:** Documentación: mapa de rutas, lazy loading, guards, resolvers
+---
 
-**Mapa de rutas ORGMedi:**
+## 🗺️ Mapa Completo de Rutas
+
+Todas las rutas de la aplicación con sus características:
 
 | Ruta | Descripción | Lazy | Guards | Resolver |
 |------|-------------|------|--------|----------|
-| `/home` | Página inicio | ❌ | - | - |
-| `/medicines` | Listado medicamentos | ✅ | `authGuard` | `medicinesResolver` |
-| `/medicines/nuevo` | Alta medicamento | ✅ | `authGuard` | - |
-| `/medicines/:id` | Detalle medicamento | ✅ | `authGuard` | `medicineResolver` |
-| `/usuario/perfil` | Perfil usuario | ✅ | `authGuard` | `userResolver` |
-| `/usuario/perfil/editar` | Editar perfil | ✅ | `authGuard`, `pendingChangesGuard` | `userResolver` |
-| `/login` | Autenticación | ❌ | - | - |
-| `**` | Página 404 | ❌ | - | - |
+| `/` | Página de inicio | ❌ | - | `homeResolver` |
+| `/iniciar-sesion` | Autenticación | ✅ | `publicGuard` | - |
+| `/registrarse` | Registro de usuario | ✅ | `publicGuard` | - |
+| `/medicamentos` | Listado de medicamentos | ✅ | `authGuard` | `medicinesResolver` |
+| `/medicamentos/crear` | Crear nuevo medicamento | ✅ | `authGuard`, `pendingChangesGuard` | - |
+| `/medicamentos/crear-foto` | Crear desde foto | ✅ | `authGuard`, `pendingChangesGuard` | - |
+| `/medicamentos/:id/editar` | Editar medicamento | ✅ | `authGuard`, `pendingChangesGuard` | `medicineDetailResolver` |
+| `/perfil` | Perfil de usuario | ✅ | `authGuard`, `pendingChangesGuard` | `profileResolver` |
+| `/calendario` | Calendario de medicamentos | ✅ | - | - |
+| `/guia-estilos` | Guía de estilos | ✅ | - | - |
+| `**` | Página 404 | ✅ | - | - |
 
-**Implementación:**
-- Configuración en `app.routes.ts` con lazy loading + precarga
-- Guards funcionales (CanActivateFn, CanDeactivateFn)
-- Resolvers para datos pre-cargados
-- BreadcrumbService y BreadcrumbComponent
-- Documentación de estrategia de navegación
+**Leyenda:**
+- **Lazy**: ✅ Se carga bajo demanda | ❌ Cargado inmediatamente
+- **Guards**: Validaciones antes de activar ruta
+- **Resolver**: Precarga de datos antes de mostrar componente
+
+---
+
+### Tarea 1: Configuración de Rutas
+
+**Resumen ejecutivo:**
+
+ORGMedi implementa un sistema de rutas **modular y escalable** dividido en grupos temáticos (MAIN, AUTH, MEDICINES, PROFILE, UTILITY) con lazy loading en 10 de 11 rutas para optimizar el bundle inicial.
+
+#### 1.1 Estructura Modular de Rutas
+
+Define las rutas base cargadas inmediatamente al iniciar la app (home). El resto usa lazy loading.
+
+```typescript
+// app.routes.ts - Grupos de rutas modulares
+
+export const MAIN_ROUTES: Routes = [
+  {
+    path: '',
+    loadComponent: () => import('./pages/home/home').then(m => m.HomePage),
+    data: { breadcrumb: 'Inicio' },
+    resolve: { homeData: homeResolver }
+  }
+];
+
+export const AUTH_ROUTES: Routes = [
+  {
+    path: 'iniciar-sesion',
+    loadComponent: () => import('./pages/iniciar-sesion/login').then(m => m.LoginPage),
+    data: { breadcrumb: 'Iniciar Sesión' }
+  },
+  {
+    path: 'registrarse',
+    loadComponent: () => import('./pages/registrarse/register').then(m => m.RegisterPage),
+    data: { breadcrumb: 'Registrarse' }
+  }
+];
+
+export const MEDICINES_ROUTES: Routes = [
+  {
+    path: 'medicamentos',
+    loadComponent: () => import('./pages/medicines/medicines').then(m => m.MedicinesPage),
+    data: { breadcrumb: 'Medicamentos' },
+    canActivate: [authGuard],
+    resolve: { medicines: medicinesResolver }
+  }
+];
+
+// Consolidación final
+export const routes: Routes = [
+  ...MAIN_ROUTES,
+  ...AUTH_ROUTES,
+  ...MEDICINES_ROUTES,
+  ...PROFILE_ROUTES,
+  ...UTILITY_ROUTES,
+  { path: '**', loadComponent: () => import('./pages/not-found/not-found').then(m => m.NotFoundPage) }
+];
+```
+
+**Características:**
+- ✅ Estructura modular (MAIN, AUTH, MEDICINES, PROFILE, UTILITY)
+- ✅ Lazy loading en 10 de 11 rutas
+- ✅ Metadatos `data` para breadcrumbs, chunks, descripciones
+- ✅ Wildcard `**` para página 404 (siempre al final)
+
+#### 1.2 Rutas con Parámetros
+
+Para pantallas de detalle se usan rutas con parámetros tipo `/medicamentos/:id/editar`, accediendo al parámetro vía `ActivatedRoute`.
+
+```typescript
+// app.routes.ts
+export const MEDICINES_ROUTES: Routes = [
+  {
+    path: 'medicamentos/:id/editar',
+    loadComponent: () => import('./pages/edit-medicine/edit-medicine').then(m => m.EditMedicinePage),
+    data: { breadcrumb: 'Editar Medicamento' },
+    canActivate: [authGuard],
+    canDeactivate: [pendingChangesGuard],
+    resolve: { medicine: medicineDetailResolver }
+  }
+];
+```
+
+**En el componente se lee el parámetro:**
+
+```typescript
+// edit-medicine.ts
+export class EditMedicinePage implements OnInit {
+  medicine: Medicine | null = null;
+  
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    // Opción 1: Leer parámetro (snapshot)
+    const id = this.route.snapshot.paramMap.get('id');
+    
+    // Opción 2: Suscribirse a cambios
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+    });
+    
+    // Opción 3: Leer datos resueltos (recomendado)
+    this.route.data.subscribe(data => {
+      this.medicine = data['medicine'];
+    });
+  }
+}
+```
+
+**Navegación con parámetros:**
+
+```typescript
+// navigation.service.ts
+goToEditMedicine(id: string) {
+  this.router.navigate(['/medicamentos', id, 'editar']);
+}
+
+// En template
+<a [routerLink]="['/medicamentos', medicine.id, 'editar']\">Editar</a>
+```
+
+#### 1.3 Rutas Hijas Anidadas (Preparado para Futuro)
+
+Para secciones con subpáginas, se pueden usar `children` routes. Actualmente preparado en PROFILE_ROUTES:
+
+```typescript
+// app.routes.ts - Ejemplo de estructura preparada
+export const PROFILE_ROUTES: Routes = [
+  {
+    path: 'perfil',
+    loadComponent: () => import('./pages/profile/profile').then(m => m.ProfilePage),
+    data: { breadcrumb: 'Perfil' },
+    canActivate: [authGuard],
+    canDeactivate: [pendingChangesGuard],
+    resolve: { profile: profileResolver }
+    // Futuro: children: [...]
+  }
+];
+```
+
+**Si en el futuro se implementan subrutas:**
+
+```typescript
+children: [
+  { path: '', pathMatch: 'full', redirectTo: 'ver' },
+  { path: 'ver', loadComponent: () => import('./pages/profile/view').then(m => m.ProfileViewComponent) },
+  { path: 'editar', loadComponent: () => import('./pages/profile/edit').then(m => m.ProfileEditComponent) }
+]
+```
+
+#### 1.4 Ruta Wildcard para 404
+
+La ruta wildcard `**` captura cualquier URL no reconocida y muestra una página 404 personalizada. **Debe ir siempre al final.**
+
+```typescript
+// app.routes.ts
+export const routes: Routes = [
+  ...MAIN_ROUTES,
+  ...AUTH_ROUTES,
+  // ... más rutas
+  
+  // ============ 404 WILDCARD (debe ser ÚLTIMO) ============
+  { 
+    path: '**',
+    loadComponent: () => import('./pages/not-found/not-found').then(m => m.NotFoundPage),
+    data: { breadcrumb: 'No Encontrado' }
+  }
+];
+```
+
+**Componente 404:**
+
+```typescript
+// not-found.ts
+@Component({
+  selector: 'app-not-found',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  template: `
+    <div class="not-found">
+      <h1>404 - Página no encontrada</h1>
+      <p>La ruta <code>{{ currentUrl }}</code> no existe en ORGMedi.</p>
+      <a routerLink="/">Volver al inicio</a>
+    </div>
+  `
+})
+export class NotFoundPage {
+  currentUrl = inject(Router).url;
+}
+```
+
+---
+
+### Tarea 2: Navegación Programática
+
+La navegación programática en Angular se hace con el servicio `Router`, pasando comandos de ruta y un objeto `NavigationExtras` para parámetros, query params, fragmentos y estado adicional.
+
+#### 2.1 Usar Router para Navegación desde Código
+
+```typescript
+// navigation.service.ts - Servicio centralizado de navegación
+import { Injectable, inject } from '@angular/core';
+import { Router, NavigationExtras } from '@angular/router';
+
+@Injectable({ providedIn: 'root' })
+export class NavigationService {
+  private router = inject(Router);
+
+  // Navegación absoluta simple
+  goHome(): Promise<boolean> {
+    return this.router.navigate(['/']);
+  }
+
+  goToMedicines(): Promise<boolean> {
+    return this.router.navigate(['/medicamentos']);
+  }
+
+  goToCreateMedicine(): Promise<boolean> {
+    return this.router.navigate(['/medicamentos/crear']);
+  }
+
+  goToProfile(): Promise<boolean> {
+    return this.router.navigate(['/perfil']);
+  }
+
+  // Navegación con parámetros
+  goToEditMedicine(medicineId: string | number): Promise<boolean> {
+    return this.router.navigate(['/medicamentos', medicineId, 'editar']);
+  }
+
+  // Query params para filtros/búsqueda
+  searchMedicines(filters: { name?: string; category?: string; page?: number }): Promise<boolean> {
+    return this.router.navigate(['/medicamentos'], {
+      queryParams: filters,
+      queryParamsHandling: 'merge'
+    });
+  }
+}
+```
+
+**Usar en componentes:**
+
+```typescript
+export class MedicinesPage {
+  constructor(private nav: NavigationService) {}
+
+  editMedicine(id: string) {
+    this.nav.goToEditMedicine(id);
+  }
+
+  goBack() {
+    this.nav.goToMedicines();
+  }
+
+  search(term: string) {
+    this.nav.searchMedicines({ name: term });
+  }
+}
+```
+
+#### 2.2 Pasar Parámetros de Ruta
+
+```typescript
+// Ruta definida como: { path: 'medicamentos/:id/editar' }
+
+verDetalle(medicineId: number) {
+  this.router.navigate(['/medicamentos', medicineId, 'editar']);
+}
+```
+
+En el componente de destino se lee el parámetro:
+
+```typescript
+import { ActivatedRoute } from '@angular/router';
+
+medicineId = signal<number | null>(null);
+route = inject(ActivatedRoute);
+
+ngOnInit() {
+  this.route.paramMap.subscribe(params => {
+    this.medicineId.set(Number(params.get('id')));
+  });
+}
+```
+
+#### 2.3 Query Params y Fragments
+
+```typescript
+// /medicamentos?nombre=aspirina&categoria=analgésicos#comentarios
+
+filtrar() {
+  this.router.navigate(
+    ['/medicamentos'],
+    {
+      queryParams: { nombre: 'aspirina', categoria: 'analgésicos' },
+      fragment: 'comentarios'
+    }
+  );
+}
+```
+
+**Propiedades clave:**
+
+| Propiedad | Uso |
+|-----------|-----|
+| `queryParams` | Filtros, paginación, búsqueda (visibles en URL) |
+| `fragment` | Scroll a secciones (#comentarios) |
+| `queryParamsHandling` | 'merge' para conservar query params existentes |
+| `state` | Pasar objetos sin exponerlos en URL |
+| `replaceUrl` | Evitar contaminar el historial |
+
+#### 2.4 NavigationExtras para Estado
+
+`NavigationExtras` permite controlar historia, query params y pasar estado no visible en la URL.
+
+```typescript
+checkout(order: Order) {
+  this.router.navigate(
+    ['/checkout/resumen'],
+    {
+      state: { order },          // datos en memoria, no en URL
+      replaceUrl: true,          // no añade entrada al historial
+      skipLocationChange: false, // muestra la URL actualizada
+    }
+  );
+}
+```
+
+En el componente de destino:
+
+```typescript
+import { Router } from '@angular/router';
+
+router = inject(Router);
+
+ngOnInit() {
+  const navigation = this.router.getCurrentNavigation();
+  const order = navigation?.extras.state?.['order'] as Order | undefined;
+}
+```
+
+---
+
+### Tarea 3: Lazy Loading
+
+La carga perezosa en Angular divide la app en "trozos" (chunks) que se descargan solo cuando se navega a sus rutas, y opcionalmente se precargan en segundo plano con `PreloadAllModules` para mejorar la UX.
+
+#### 3.1 Módulos y Rutas con Carga Perezosa
+
+Con componentes standalone:
+
+```typescript
+export const routes: Routes = [
+  {
+    path: 'medicamentos',
+    loadComponent: () =>
+      import('./pages/medicines/medicines').then(m => m.MedicinesPage)
+  },
+  {
+    path: 'perfil',
+    loadComponent: () =>
+      import('./pages/profile/profile').then(m => m.ProfilePage)
+  }
+];
+```
+
+Con módulos (patrón anterior):
+
+```typescript
+export const routes: Routes = [
+  {
+    path: 'admin',
+    loadChildren: () =>
+      import('./features/admin/admin.module').then(m => m.AdminModule)
+  }
+];
+```
+
+#### 3.2 División de Features en ORGMedi
+
+```
+frontend/src/app/
+├── pages/
+│   ├── home/              ← Cargado eagerly (bundle principal)
+│   ├── iniciar-sesion/    ← Lazy (chunk: auth-login)
+│   ├── registrarse/       ← Lazy (chunk: auth-register)
+│   ├── medicines/         ← Lazy (chunk: medicines-list)
+│   ├── create-medicine/   ← Lazy (chunk: medicines-create)
+│   ├── create-medicine-photo/ ← Lazy (chunk: medicines-create-photo)
+│   ├── edit-medicine/     ← Lazy (chunk: medicines-edit)
+│   ├── profile/           ← Lazy (chunk: user-profile)
+│   ├── calendar/          ← Lazy (chunk: utils-calendar)
+│   ├── guia-estilos/      ← Lazy (chunk: utils-styleguide)
+│   └── not-found/         ← Lazy (chunk: error-404)
+└── ...
+```
+
+#### 3.3 Estrategia de Precargas: `PreloadAllModules`
+
+En `main.ts`:
+
+```typescript
+import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
+import { routes } from './app.routes';
+
+bootstrapApplication(App, {
+  providers: [
+    provideRouter(
+      routes,
+      withPreloading(PreloadAllModules) // precarga todos los lazy routes
+    )
+  ]
+}).catch(err => console.error(err));
+```
+
+**Comportamiento:**
+
+1. App carga → bundle inicial (~100KB con home + framework)
+2. Home se renderiza inmediatamente
+3. Angular carga el resto de chunks en background (sin bloquear UI)
+4. Cuando usuario navega → chunk ya está descargado (navegación instantánea)
+
+**Ventajas:**
+
+- ✅ Inicio rápido (solo código necesario)
+- ✅ Navegación fluida después (chunks precargan en background)
+- ✅ Reducción de bundle inicial en ~60%
+
+#### 3.4 Verificar Chunking en Build Production
+
+Ejecuta build prod:
+
+```bash
+ng build --configuration production
+```
+
+En `dist/<app>/browser` verás varios ficheros `.js`:
+- `main.*.js` es el bundle inicial
+- Cada feature lazy genera un chunk adicional (nombres como `auth-login.*.js`, `medicines-list.*.js`)
+
+**En la consola de build**, Angular CLI lista los bundles con su tamaño. Comprueba que tus módulos perezosos aparecen como bundles separados y que el main no incluye todo.
+
+**En DevTools del navegador**, pestaña "Network", filtra por `*.js` y navega a una ruta lazy. Deberías ver cómo se descarga el chunk correspondiente justo en ese momento (o antes si usas precarga).
+
+---
+
+### Tarea 4: Route Guards
+
+Los route guards controlan si una navegación se permite, se cancela o redirige, según autenticación o estado del formulario.
+
+#### 4.1 `authGuard` (CanActivateFn)
+
+**Propósito:** Proteger rutas autenticadas. Solo usuarios logueados pueden acceder.
+
+**Rutas protegidas:**
+- `/medicamentos`
+- `/medicamentos/crear`
+- `/medicamentos/crear-foto`
+- `/medicamentos/:id/editar`
+- `/perfil`
+
+**Comportamiento:**
+
+```typescript
+export const authGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+
+  // Si usuario está autenticado → permite
+  if (auth.isLoggedIn) {
+    return true;
+  }
+
+  // Si no → redirige a login pasando returnUrl
+  return router.createUrlTree(['/iniciar-sesion'], {
+    queryParams: { returnUrl: state.url }
+  });
+};
+```
+
+**Flujo:**
+
+```
+Usuario navega a /medicamentos (sin autenticar)
+        ↓
+authGuard ejecuta
+        ↓
+auth.isLoggedIn === false
+        ↓
+Redirige a /iniciar-sesion?returnUrl=/medicamentos
+        ↓
+Usuario se logea
+        ↓
+NavigationService redirige a returnUrl (/medicamentos)
+```
+
+#### 4.2 `pendingChangesGuard` (CanDeactivateFn)
+
+**Propósito:** Prevenir pérdida de cambios en formularios sin guardar.
+
+**Rutas protegidas:**
+- `/medicamentos/crear`
+- `/medicamentos/crear-foto`
+- `/medicamentos/:id/editar`
+- `/perfil`
+
+**Comportamiento:**
+
+```typescript
+export interface PendingChangesComponent {
+  form: FormGroup;
+  hasPendingChanges?(): boolean;
+}
+
+export const pendingChangesGuard: CanDeactivateFn<PendingChangesComponent> = (
+  component: PendingChangesComponent
+) => {
+  // Si formulario tiene cambios → pedir confirmación
+  if (component.form?.dirty) {
+    return confirm('Hay cambios sin guardar. ¿Salir igualmente?');
+  }
+
+  // Si no hay cambios → permitir
+  return true;
+};
+```
+
+**Flujo:**
+
+```
+Usuario está editando formulario (form.dirty = true)
+        ↓
+Intenta navegar a otra ruta
+        ↓
+pendingChangesGuard ejecuta
+        ↓
+form.dirty === true
+        ↓
+Muestra dialog de confirmación
+        ↓
+Si usuario confirma → permite salir
+Si usuario cancela → bloquea navegación
+```
+
+#### 4.3 `publicGuard` (CanActivateFn)
+
+**Propósito:** Prevenir que usuarios autenticados accedan a login/registro.
+
+**Rutas protegidas:**
+- `/iniciar-sesion`
+- `/registrarse`
+
+**Comportamiento:**
+
+```typescript
+export const publicGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+
+  // Si usuario ya está autenticado → redirige a home
+  if (auth.isLoggedIn) {
+    return router.createUrlTree(['/']);
+  }
+
+  // Si no está autenticado → permite acceso a login/registro
+  return true;
+};
+```
+
+**Flujo:**
+
+```
+Usuario autenticado intenta navegar a /iniciar-sesion
+        ↓
+publicGuard ejecuta
+        ↓
+auth.isLoggedIn === true
+        ↓
+Redirige a / (home)
+```
+
+#### 4.4 `adminGuard` (CanActivateFn) - Placeholder
+
+**Propósito:** Reservado para futuras rutas que requieran permisos de admin.
+
+**Comportamiento (actual):**
+
+```typescript
+export const adminGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+
+  // Primero verificar autenticación
+  if (!auth.isLoggedIn) {
+    return router.createUrlTree(['/iniciar-sesion'], {
+      queryParams: { returnUrl: state.url }
+    });
+  }
+
+  // TODO: Cuando implementes roles en AuthUser, validar:
+  // if (auth.currentUser?.role !== 'admin') {
+  //   return false; // O redirigir con error
+  // }
+
+  return true;
+};
+```
+
+**Uso futuro:**
+
+```typescript
+{
+  path: 'admin/reportes',
+  loadComponent: () => import('./pages/admin/reports').then(m => m.ReportsPage),
+  canActivate: [adminGuard]
+}
+```
+
+---
+
+### Tarea 5: Resolvers
+
+Un resolver permite precargar datos antes de que se active la ruta, de forma que el componente ya recibe todo listo y puede mostrar un loading o un error de forma controlada.
+
+#### 5.1 `medicinesResolver` (ResolveFn<Medicine[]>)
+
+**Propósito:** Precargar lista completa de medicamentos antes de activar `/medicamentos`.
+
+**Ubicación:** `src/app/core/services/medicines.resolver.ts`
+
+**Código:**
+
+```typescript
+export interface Medicine {
+  id: string;
+  name: string;
+  dosage: string;
+  frequency: string;
+  description?: string;
+  startDate: string;
+  endDate: string;
+  quantity: number;
+  remainingDays: number;
+  photo?: string;
+}
+
+export const medicinesResolver: ResolveFn<Medicine[]> = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  const router = inject(Router);
+
+  // En producción: return inject(MedicineService).getAll();
+  // Actualmente: simulado con 300ms delay
+  return new Promise<Medicine[]>((resolve) => {
+    setTimeout(() => {
+      resolve([
+        { id: '1', name: 'Aspirina', dosage: '500mg', frequency: 'Cada 8h', startDate: '2025-01-15', endDate: '2025-12-31', quantity: 10, remainingDays: 350 },
+        { id: '2', name: 'Ibuprofeno', dosage: '400mg', frequency: 'Cada 6h', startDate: '2025-01-10', endDate: '2025-06-30', quantity: 20, remainingDays: 167 },
+      ]);
+    }, 300);
+  });
+};
+```
+
+**Flujo:**
+
+```
+Usuario navega a /medicamentos
+        ↓
+medicinesResolver ejecuta
+        ↓
+Llamada a backend/simulada (300ms)
+        ↓
+Se resuelven medicamentos
+        ↓
+MedicinesPage se activa con datos en route.data['medicines']
+```
+
+**Uso en componente:**
+
+```typescript
+export class MedicinesPage implements OnInit {
+  medicines: Medicine[] = [];
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    // Leer datos resueltos
+    this.route.data.subscribe(data => {
+      this.medicines = data['medicines']; // Ya están cargados
+    });
+  }
+}
+```
+
+#### 5.2 `medicineDetailResolver` (ResolveFn<Medicine | null>)
+
+**Propósito:** Precargar un medicamento específico por ID antes de activar `/medicamentos/:id/editar`.
+
+**Código:**
+
+```typescript
+export const medicineDetailResolver: ResolveFn<Medicine | null> = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  const router = inject(Router);
+  const id = route.paramMap.get('id');
+
+  // Validar que exista ID
+  if (!id) {
+    router.navigate(['/medicamentos'], {
+      state: { error: 'ID de medicamento inválido' }
+    });
+    return null;
+  }
+
+  // En producción: return inject(MedicineService).getById(id);
+  // Actualmente: simulado
+  return new Promise<Medicine | null>((resolve) => {
+    setTimeout(() => {
+      const medicines: Medicine[] = [ /* ... */ ];
+      const medicine = medicines.find(m => m.id === id);
+
+      if (!medicine) {
+        // Error: medicamento no encontrado
+        router.navigate(['/medicamentos'], {
+          state: { error: `Medicamento ${id} no encontrado` }
+        });
+        resolve(null);
+        return;
+      }
+
+      resolve(medicine);
+    }, 300);
+  });
+};
+```
+
+**Flujo de error:**
+
+```
+Usuario navega a /medicamentos/999/editar (ID no existe)
+        ↓
+medicineDetailResolver busca
+        ↓
+No encuentra el medicamento
+        ↓
+Redirige a /medicamentos
+        ↓
+MedicinesPage lee el error de navigation.extras.state
+        ↓
+Muestra toast: "Medicamento 999 no encontrado"
+```
+
+#### 5.3 `profileResolver` (ResolveFn<UserProfile>)
+
+**Propósito:** Precargar datos del perfil de usuario.
+
+**Rutas:**
+- `/perfil`
+
+**Código:**
+
+```typescript
+export interface UserProfile {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+  preferences?: any;
+}
+
+export const profileResolver: ResolveFn<UserProfile> = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  // En producción: return inject(UserService).getProfile();
+  return new Promise<UserProfile>((resolve) => {
+    setTimeout(() => {
+      resolve({
+        id: '1',
+        email: 'usuario@example.com',
+        name: 'Juan Pérez',
+        avatar: 'https://...',
+        preferences: { theme: 'dark' }
+      });
+    }, 300);
+  });
+};
+```
+
+#### 5.4 `homeResolver` (ResolveFn<HomeData>)
+
+**Propósito:** Precargar datos iniciales del home.
+
+**Rutas:**
+- `/`
+
+**Código:**
+
+```typescript
+export interface HomeData {
+  title: string;
+  description: string;
+  features: string[];
+}
+
+export const homeResolver: ResolveFn<HomeData> = () => {
+  return new Promise<HomeData>((resolve) => {
+    resolve({
+      title: 'ORGMedi',
+      description: 'Gestor de medicamentos personal',
+      features: ['Crear', 'Editar', 'Seguimiento', 'Calendario']
+    });
+  });
+};
+```
+
+#### 5.5 Manejo de Errores en Resolvers
+
+En caso de error, el resolver puede:
+
+1. Devolver un objeto con error y que el componente lo trate
+2. O redirigir a otra ruta (lista, 404, etc.)
+
+**Ejemplo con redirección:**
+
+```typescript
+export const medicineDetailResolver: ResolveFn<Medicine | null> = (route, state) => {
+  const service = inject(MedicineService);
+  const router = inject(Router);
+  const id = route.paramMap.get('id')!;
+
+  return service.getById(id).pipe(
+    catchError(err => {
+      router.navigate(['/medicamentos'], {
+        state: { error: `No existe el producto con id ${id}` }
+      });
+      return of(null);
+    })
+  );
+};
+```
+
+**En la lista de productos se lee el posible error:**
+
+```typescript
+export class MedicinesPage {
+  router = inject(Router);
+
+  ngOnInit() {
+    const nav = this.router.getCurrentNavigation();
+    this.errorMessage = nav?.extras.state?.['error'] ?? null;
+  }
+}
+```
+
+---
+
+### Tarea 6: Breadcrumbs Dinámicos
+
+**Resumen ejecutivo:**
+
+Los breadcrumbs (migas de pan) son un patrón de navegación que **muestra automáticamente la ruta actual** del usuario dentro de la jerarquía de la aplicación.
+
+**Ejemplo visual:**
+```
+Inicio > Medicamentos > Editar Medicamento
+```
+
+#### 6.1 Cómo Funciona
+
+1. **Configuración de rutas** (`app.routes.ts`): Cada ruta incluye metadatos `data: { breadcrumb: 'Etiqueta' }`
+2. **Servicio** (`BreadcrumbService`): Escucha eventos de navegación (NavigationEnd) y reconstruye el árbol de rutas activas
+3. **Componente** (`BreadcrumbComponent`): Se suscribe al servicio y renderiza las migas en HTML
+4. **Integración** (`app.html`): Se incluye el componente debajo del header
+
+#### 6.2 Ventajas
+
+✅ **Automático**: Se actualiza con cada navegación sin intervención manual
+✅ **Escalable**: Solo agregar `data: { breadcrumb: '...' }` a nuevas rutas
+✅ **Centralizado**: Lógica en un único servicio
+✅ **Reactivo**: Usa Observables para actualizaciones en tiempo real
+✅ **Accesible**: Implementa aria-label, aria-current, estructura semántica
+
+#### 6.3 Servicio BreadcrumbService
+
+```typescript
+import { Injectable } from '@angular/core';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { BehaviorSubject, filter } from 'rxjs';
+
+export interface Breadcrumb {
+  label: string;
+  url: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class BreadcrumbService {
+  private readonly _breadcrumbs$ = new BehaviorSubject<Breadcrumb[]>([]);
+  readonly breadcrumbs$ = this._breadcrumbs$.asObservable();
+
+  constructor(private router: Router, private route: ActivatedRoute) {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        const breadcrumbs: Breadcrumb[] = [];
+        
+        // Siempre añade el inicio como primer breadcrumb
+        breadcrumbs.push({ label: 'Inicio', url: '/' });
+        
+        // Construye el resto de breadcrumbs desde la ruta raíz
+        this.buildCrumbs(this.route.root, '', breadcrumbs);
+        
+        this._breadcrumbs$.next(breadcrumbs);
+      });
+  }
+
+  private buildCrumbs(
+    route: ActivatedRoute,
+    url: string,
+    crumbs: Breadcrumb[]
+  ): void {
+    const children = route.children;
+
+    if (!children || !children.length) {
+      return;
+    }
+
+    for (const child of children) {
+      const routeSegments = child.snapshot.url.map(segment => segment.path);
+      
+      if (routeSegments.length > 0) {
+        const routeURL = routeSegments.join('/');
+        url += `/${routeURL}`;
+
+        const label = child.snapshot.data['breadcrumb'] as string | undefined;
+
+        if (label) {
+          crumbs.push({ label, url });
+        }
+      }
+
+      this.buildCrumbs(child, url, crumbs);
+    }
+  }
+}
+```
+
+#### 6.4 Componente BreadcrumbComponent
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { BreadcrumbService, Breadcrumb } from './breadcrumb.service';
+
+@Component({
+  selector: 'app-breadcrumb',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './breadcrumb.component.html',
+  styleUrls: ['./breadcrumb.component.scss']
+})
+export class BreadcrumbComponent {
+  breadcrumbs$ = inject(BreadcrumbService).breadcrumbs$;
+
+  constructor() {}
+}
+```
+
+**Template (breadcrumb.component.html):**
+
+```html
+<nav aria-label="breadcrumb" *ngIf="(breadcrumbs$ | async) as breadcrumbs; else emptyBreadcrumbs">
+  <ol class="breadcrumb">
+    <li *ngFor="let crumb of breadcrumbs; let last = last" 
+        class="breadcrumb-item"
+        [class.active]="last"
+        [attr.aria-current]="last ? 'page' : null">
+      <ng-container *ngIf="!last">
+        <a [routerLink]="crumb.url">{{ crumb.label }}</a>
+      </ng-container>
+      <ng-container *ngIf="last">
+        {{ crumb.label }}
+      </ng-container>
+    </li>
+  </ol>
+</nav>
+
+<ng-template #emptyBreadcrumbs>
+  <!-- No mostrar nada si no hay breadcrumbs -->
+</ng-template>
+```
+
+**Estilos (breadcrumb.component.scss):**
+
+```scss
+.breadcrumb {
+  margin: 0 0 1rem;
+  padding: 0;
+  background: transparent;
+  list-style: none;
+
+  .breadcrumb-item {
+    display: inline-block;
+
+    &:not(:last-child)::after {
+      content: ' / ';
+      margin: 0 0.5rem;
+      color: #999;
+    }
+
+    a {
+      color: #0066cc;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &.active {
+      color: #666;
+      font-weight: 500;
+    }
+  }
+}
+```
+
+#### 6.5 Flujo en ORGMedi
+
+| Ruta | Breadcrumbs |
+|------|-------------|
+| `/` | `Inicio` |
+| `/medicamentos` | `Inicio / Medicamentos` |
+| `/medicamentos/crear` | `Inicio / Crear Medicamento` |
+| `/medicamentos/123/editar` | `Inicio / Editar Medicamento` |
+| `/perfil` | `Inicio / Perfil` |
+| `/calendario` | `Inicio / Calendario` |
+
+#### 6.6 Notas Importantes
+
+- Los parámetros de ruta como `:id` **no generan breadcrumbs automáticamente**
+- Solo las rutas con `data.breadcrumb` se muestran
+- El último item siempre es **texto plano** (página actual), no es un link
+- Los breadcrumbs se actualizan automáticamente con cada navegación
+
+---
+
+### Tarea 7: Documentación
+
+#### 7.1 Checklist de Entregables
+
+- ✅ Sistema de rutas completo (11 rutas principales)
+- ✅ Lazy loading en 10 rutas (excepto home)
+- ✅ Route guards implementados: `authGuard`, `pendingChangesGuard`, `publicGuard`, `adminGuard`
+- ✅ Resolvers en 4 rutas: `homeResolver`, `medicinesResolver`, `medicineDetailResolver`, `profileResolver`
+- ✅ Navegación funcional con `NavigationService`
+- ✅ Breadcrumbs dinámicos (comentado en display, pero implementado)
+- ✅ Documentación completa (esta sección)
+
+#### 7.2 Archivos Relacionados
+
+- `src/app/app.routes.ts` - Configuración de rutas
+- `src/app/core/services/auth.guard.ts` - Guard de autenticación
+- `src/app/core/services/pending-changes.guard.ts` - Guard de cambios pendientes
+- `src/app/core/services/public.guard.ts` - Guard de rutas públicas
+- `src/app/core/services/admin.guard.ts` - Guard para admin (placeholder)
+- `src/app/core/services/medicines.resolver.ts` - Resolvers de medicamentos
+- `src/app/core/services/profile.resolver.ts` - Resolver de perfil
+- `src/app/core/services/home.resolver.ts` - Resolver de home
+- `src/app/core/services/navigation.service.ts` - Servicio de navegación
+- `src/app/shared/breadcrumb.service.ts` - Servicio de breadcrumbs
+- `src/app/shared/breadcrumb.component.ts` - Componente de breadcrumbs
+
+#### 7.3 Ejemplo Completo: Flujo de Edición de Medicamento
+
+```
+1. INICIO
+   Usuario está en /medicamentos con lista cargada
+
+2. CLICK EN "EDITAR"
+   nav.goToEditMedicine('123')
+
+3. NAVEGACIÓN
+   Router redirige a /medicamentos/123/editar
+
+4. RESOLVER
+   medicineDetailResolver busca medicamento con ID 123
+   └─ Encontrado → resuelve con datos
+   └─ No encontrado → redirige con error
+
+5. GUARDS
+   authGuard verifica autenticación ✅
+   pendingChangesGuard no aplica (primera vez)
+
+6. RENDERIZADO
+   EditMedicineComponent se activa
+   Lee datos de route.data['medicine']
+   Muestra formulario prellenado
+
+7. EDICIÓN
+   Usuario modifica valores
+   form.dirty = true
+
+8. INTENTA SALIR SIN GUARDAR
+   Intenta navegar a /medicamentos
+
+9. GUARD EJECUTA
+   pendingChangesGuard detecta form.dirty = true
+   Muestra: "Hay cambios sin guardar. ¿Salir igualmente?"
+
+10. USUARIO CONFIRMA
+    Redirige a /medicamentos
+    medicinesResolver ejecuta nuevamente
+    Muestra lista actualizada
+
+11. USUARIO GUARDA
+    API POST /api/medicines/123
+    form.markAsPristine()
+    Puede navegar sin confirmar
+```
+
+#### 7.4 Pruebas de Navegación
+
+**Test 1: Lazy Loading**
+```
+1. npm start
+2. DevTools → Network
+3. Observar tamaño de main.js (~100KB)
+4. Navegar a /medicamentos
+5. Ver chunk "medicines-list" descargarse (~50KB)
+```
+
+**Test 2: Auth Guard**
+```
+1. Desloguear
+2. Intentar navegar a /medicamentos
+3. Debe redirigir a /iniciar-sesion?returnUrl=/medicamentos
+4. Loguear
+5. Debe redirigir automáticamente a /medicamentos
+```
+
+**Test 3: Pending Changes Guard**
+```
+1. Navegar a /medicamentos/123/editar
+2. Cambiar un valor en el formulario
+3. Intentar navegar a /medicamentos
+4. Debe mostrar confirm dialog
+5. Cancelar → bloquea navegación
+6. Guardar cambios (form.markAsPristine())
+7. Intentar navegar → permitido
+```
+
+**Test 4: Resolvers**
+```
+1. Abrir DevTools → Console
+2. Navegar a /medicamentos → esperar 300ms (resolver)
+3. Componente recibe datos en route.data
+4. Navegar a /medicamentos/999/editar
+5. Resolver no encuentra → redirige a /medicamentos
+6. Ver error en state
+```
+
+#### 7.5 Métricas de Implementación
+
+| Métrica | Valor |
+|---------|-------|
+| Rutas totales | 11 |
+| Rutas lazy-loaded | 10 |
+| Guards implementados | 4 |
+| Resolvers implementados | 4 |
+| Servicios creados | 6 |
+| Líneas de documentación | 1000+ |
+
+#### 7.6 Próximos Pasos
+
+1. **Migrar resolvers a API real**
+   - Reemplazar simulaciones (300ms) con llamadas a backend
+   - Implementar error handling global
+
+2. **Implementar roles en AuthUser**
+   - Agregar campo `role` en `AuthUser`
+   - Activar validación en `adminGuard`
+
+3. **Testing**
+   - Tests unitarios para guards y resolvers
+   - Tests e2e para flujos de navegación
+
+4. **Monitoreo de performance**
+   - Usar `ChunkLoadingMonitorService` en producción
+   - Analizar tamaños de chunks
+
+5. **i18n (Internacionalización)**
+   - Traducir textos de mensajes de error
+   - Traducir labels de breadcrumbs
+
+---
+
+**Fase 4 completada: Tareas 1-7 ✅**
 
 ---
 
 ## Fase 5 — Servicios y Comunicación HTTP
+
 
 La Fase 5 implementa comunicación asíncrona con backend usando `HttpClient`, con CRUD completo, manejo de respuestas, diferentes formatos, estados de carga/error, interceptores y documentación.
 

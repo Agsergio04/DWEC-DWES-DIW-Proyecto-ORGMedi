@@ -5,23 +5,24 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MedicineService } from '../../data/medicine.service';
 import { Medicine as ResolverMedicine } from '../../core/services/medicines.resolver';
 import { Medicine, CreateMedicineDto } from '../../data/models/medicine.model';
-import { FormComponent } from '../../core/services/pending-changes.guard';
+import { PendingChangesComponent } from '../../core/services/pending-changes.guard';
+import { MedicineFormComponent, MedicineFormData } from '../../components/shared/medicine-form/medicine-form';
 
 @Component({
   selector: 'app-edit-medicine-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MedicineFormComponent],
   templateUrl: './edit-medicine.html',
   styleUrls: ['./edit-medicine.scss']
 })
-export class EditMedicinePage implements OnInit, FormComponent {
+export class EditMedicinePage implements OnInit, PendingChangesComponent {
   private medicineService = inject(MedicineService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
   medicineId: string | null = null;
-  form: FormGroup;
+  form: FormGroup = new FormGroup({});
   isDirty = false;
   saving = false;
   loading = false;
@@ -229,5 +230,60 @@ export class EditMedicinePage implements OnInit, FormComponent {
     }
 
     return null;
+  }
+
+  /**
+   * Obtiene los datos del medicamento para el formulario
+   */
+  getMedicineFormData(): MedicineFormData | null {
+    if (!this.originalMedicine) {
+      return null;
+    }
+    return {
+      name: this.originalMedicine.name,
+      dosage: this.originalMedicine.dosage,
+      description: this.originalMedicine.description || '',
+      startDate: this.originalMedicine.startDate,
+      endDate: this.originalMedicine.endDate || '',
+      quantity: this.originalMedicine.quantity || 0,
+      frequency: this.originalMedicine.frequency
+    };
+  }
+
+  /**
+   * Maneja el envío del formulario desde el componente medicine-form
+   */
+  onFormSubmit(formData: MedicineFormData): void {
+    if (!this.medicineId) {
+      this.error = 'ID de medicamento inválido';
+      return;
+    }
+
+    this.saving = true;
+    this.error = null;
+
+    const medicineDto: CreateMedicineDto = {
+      name: formData.name,
+      dosage: formData.dosage,
+      frequency: formData.frequency,
+      description: formData.description,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      quantity: formData.quantity
+    };
+
+    this.medicineService.update(this.medicineId, medicineDto as Omit<Medicine, 'id'>).subscribe({
+      next: () => {
+        console.log('Medicamento actualizado');
+        this.form.markAsPristine();
+        this.router.navigate(['/medicamentos']);
+        this.saving = false;
+      },
+      error: (err) => {
+        console.error('Error al actualizar medicamento:', err);
+        this.error = err.message || 'Error al guardar el medicamento. Intenta nuevamente.';
+        this.saving = false;
+      }
+    });
   }
 }

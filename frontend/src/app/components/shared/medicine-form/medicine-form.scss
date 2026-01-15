@@ -1,0 +1,180 @@
+@use '../../../../styles/00-settings/variables' as *;
+
+.medicine-form {
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-12;
+  margin-bottom: $espaciado-24;
+}
+
+.form-label {
+  font-weight: $font-weight-medium;
+  color: var(--color-texto_borde_cajas);
+  font-size: $font-size-md;
+  margin-bottom: $espaciado-4;
+}
+
+.form-input {
+  padding: $espaciado-16;
+  background-color: #b8e6a1;
+  border: 2px solid #a8d98f;
+  border-radius: 12px;
+  font-size: $font-size-md;
+  color: var(--color-texto_borde_cajas);
+  font-family: inherit;
+  transition: all 0.3s ease;
+  height: 48px;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: rgba(var(--color-texto_borde_cajas-rgb), 0.6);
+  }
+
+  &:focus {
+    outline: none;
+    background-color: #a8d98f;
+    border-color: #98cc7f;
+    box-shadow: 0 0 0 3px rgba(168, 217, 143, 0.2);
+  }
+
+  &:hover:not(:disabled) {
+    border-color: #98cc7f;
+    background-color: #a8d98f;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Input de fecha con SVG
+.date-input-group {
+  margin-bottom: $espaciado-24;
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $espaciado-12;
+  padding: $espaciado-16;
+  background-color: #b8e6a1;
+  border: 2px solid #a8d98f;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #a8d98f;
+    border-color: #98cc7f;
+  }
+
+  &:focus-within {
+    background-color: #a8d98f;
+    border-color: #98cc7f;
+    box-shadow: 0 0 0 3px rgba(168, 217, 143, 0.2);
+  }
+}
+
+.calendar-icon {
+  color: var(--color-texto_borde_cajas);
+  flex-shrink: 0;
+}
+
+.date-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--color-texto_borde_cajas);
+  cursor: pointer;
+  padding: 0;
+  font-size: $font-size-md;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: rgba(var(--color-texto_borde_cajas-rgb), 0.6);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.date-label {
+  font-size: $font-size-sm;
+  color: rgba(var(--color-texto_borde_cajas-rgb), 0.7);
+  min-width: fit-content;
+}
+
+// Selectores en fila
+.selectors-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $espaciado-32;
+  margin-bottom: $espaciado-32;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: $espaciado-24;
+  }
+}
+
+.selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-12;
+}
+
+// Form actions
+.form-actions {
+  display: flex;
+  gap: $espaciado-24;
+  justify-content: space-between;
+  margin-top: $espaciado-40;
+  flex-wrap: wrap;
+
+  app-button {
+    flex: 1;
+    min-width: 150px;
+    padding: $espaciado-16 $espaciado-24;
+    font-size: $font-size-md;
+    font-weight: $font-weight-medium;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: $espaciado-16;
+
+    app-button {
+      width: 100%;
+      min-width: unset;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .selectors-row {
+    grid-template-columns: 1fr;
+    gap: $espaciado-24;
+  }
+
+  .date-input-wrapper {
+    flex-wrap: wrap;
+  }
+
+  .date-label {
+    min-width: 100%;
+  }
+}

@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -28,6 +28,7 @@ interface RegisterFormModel {
 })
 export class RegisterFormComponent {
   @Output() submitted = new EventEmitter<RegisterFormData>();
+  @Input() disabled = false;
 
   registerForm: FormGroup<RegisterFormModel>;
 
@@ -48,7 +49,7 @@ export class RegisterFormComponent {
   }
 
   onSubmit() {
-    if (this.registerForm.invalid) {
+    if (this.registerForm.invalid || this.disabled) {
       this.registerForm.markAllAsTouched();
       return;
     }

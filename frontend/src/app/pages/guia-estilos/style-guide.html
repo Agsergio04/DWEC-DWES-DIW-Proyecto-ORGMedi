@@ -257,51 +257,19 @@
     <section class="style-guide__section" id="forms">
       <div class="style-guide__section-header">
         <h2 class="style-guide__section-title">📋 Formularios</h2>
-        <p class="style-guide__section-desc">Componentes de entrada: inputs, textarea, selects y validadores</p>
+        <p class="style-guide__section-desc">Componente reutilizable que integra inputs, selectores, fechas y validación</p>
       </div>
 
       <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Campos de Texto</h3>
-        <div class="style-guide__form-grid">
-          <app-form-input label="Nombre completo" placeholder="Ej: Juan García"></app-form-input>
-          <app-form-input label="Email" type="email" placeholder="ejemplo@dominio.com"></app-form-input>
-          <app-form-input label="Teléfono" type="tel" placeholder="6XXXXXXXX"></app-form-input>
-          <app-form-input label="Fecha" type="date"></app-form-input>
-        </div>
-      </div>
-
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Componentes Complejos</h3>
-        <div class="style-guide__form-grid">
-          <app-form-textarea label="Descripción" placeholder="Escribe aquí..."></app-form-textarea>
-          <app-form-select label="Categoría" [options]="selectOptions"></app-form-select>
-        </div>
-      </div>
-
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Estados de Validación</h3>
-        <div class="style-guide__validation-demo">
-          <div class="validation-item valid">
-            <span class="validation-icon">✓</span>
-            <div>
-              <p class="validation-label">Campo Válido</p>
-              <p class="validation-text">El campo cumple con todos los validadores</p>
-            </div>
-          </div>
-          <div class="validation-item error">
-            <span class="validation-icon">✕</span>
-            <div>
-              <p class="validation-label">Campo Inválido</p>
-              <p class="validation-text">El campo contiene un error que debe corregirse</p>
-            </div>
-          </div>
-          <div class="validation-item pending">
-            <span class="validation-icon">⟳</span>
-            <div>
-              <p class="validation-label">Validando</p>
-              <p class="validation-text">Se está validando el campo con validadores asíncronos</p>
-            </div>
-          </div>
+        <h3 class="style-guide__subsection-title">Formulario de Medicamento</h3>
+        <div class="form-example-container">
+          <app-medicine-form
+            [initialData]="medicineFormData"
+            submitButtonText="Guardar medicamento"
+            cancelButtonText="Cancelar"
+            (formSubmit)="onMedicineFormSubmit($event)"
+            (formCancel)="onMedicineFormCancel()">
+          </app-medicine-form>
         </div>
       </div>
     </section>
@@ -323,38 +291,6 @@
                 <button class="btn btn-delete">🗑️ Eliminar</button>
               </div>
             </app-medicine-card>
-          </div>
-        </div>
-
-        <div class="style-guide__subsection">
-          <h4 class="style-guide__subsection-title">Características</h4>
-          <ul class="style-guide__feature-list">
-            <li><strong>Header con gradiente:</strong> Colores primarios del sistema</li>
-            <li><strong>Icono de píldora:</strong> Variante primera con rotación</li>
-            <li><strong>Grid responsive:</strong> 2 columnas en desktop, 1 en móvil</li>
-            <li><strong>Dark mode:</strong> Soportado completamente</li>
-            <li><strong>Accesibilidad:</strong> Labels semánticos y ARIA labels</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Formulario en Card</h3>
-        <div class="style-guide__card-grid">
-          <div class="card-full">
-            <app-card title="Crear Medicamento">
-              <div class="med-form">
-                <app-form-input label="Nombre" placeholder="Paracetamol"></app-form-input>
-                <app-form-input label="Dosis (mg)" placeholder="500"></app-form-input>
-                <app-form-input label="Inicio" type="date"></app-form-input>
-                <app-form-input label="Fin" type="date"></app-form-input>
-                <app-form-select label="Frecuencia" [options]="selectOptions" class="full-width"></app-form-select>
-                <div class="card-actions">
-                  <app-button variant="primary">Guardar</app-button>
-                  <app-button variant="ghost">Cancelar</app-button>
-                </div>
-              </div>
-            </app-card>
           </div>
         </div>
       </div>
@@ -419,6 +355,7 @@
       </div>
     </section>
 
+    <!-- FORMULARIO DE MEDICINA -->
     <!-- ESPACIADO -->
     <section class="style-guide__section" id="spacing">
       <div class="style-guide__section-header">

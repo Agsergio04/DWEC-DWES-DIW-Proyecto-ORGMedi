@@ -3,12 +3,13 @@ import { Router, RouterOutlet } from '@angular/router';
 import { Header } from './components/layout/header/header';
 import { Footer } from './components/layout/footer/footer';
 import { ToastComponent } from './shared/toast.component';
+import { BreadcrumbComponent } from './shared/breadcrumb.component';
 import { ThemeService } from './core/services/theme.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Header, Footer],
+  imports: [RouterOutlet, Header, Footer, BreadcrumbComponent],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })

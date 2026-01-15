@@ -1,0 +1,156 @@
+/**
+ * BREADCRUMB COMPONENT STYLES
+ * ===========================
+ * 
+ * Estilos para la navegación de breadcrumbs dinámicos.
+ * 
+ * ESTRUCTURA:
+ * - .breadcrumb: contenedor principal (lista)
+ * - .breadcrumb-item: item individual
+ * - .breadcrumb-item.active: último item (página actual)
+ * - .breadcrumb-item::before: separador visual ">"
+ * - a: links para navegación
+ * 
+ * DISEÑO:
+ * - Separador ">" entre items (más moderno que "/")
+ * - Último item en negrita para destacar página actual
+ * - Links con hover para interactividad
+ * - Responsivo (adapta a diferentes tamaños)
+ */
+
+.breadcrumb {
+  /* Reset de estilos por defecto */
+  margin: 0 0 1rem 0;
+  padding: 0;
+  list-style: none;
+  background: transparent;
+  
+  /* Flexbox para alineación horizontal */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  
+  /* Tipografía */
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #666);
+}
+
+.breadcrumb-item {
+  /* Posicionamiento para el ::before */
+  position: relative;
+  
+  /* Espacio después del item */
+  padding-right: 0.5rem;
+  
+  /* Alineación vertical */
+  display: flex;
+  align-items: center;
+}
+
+/**
+ * SEPARADOR: >
+ * 
+ * Añade un separador ">" antes de cada item (excepto el primero).
+ * La pseudoclase + selecciona items que tienen un hermano anterior.
+ * 
+ * NOTA: El primer item (Inicio) no tiene separador porque no hay elemento anterior.
+ */
+.breadcrumb-item + .breadcrumb-item {
+  padding-left: 0.5rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: '›';  /* Mayor/menor que estilizado */
+  display: inline-block;
+  margin: 0 0.5rem;
+  color: var(--color-text-muted, #999);
+  font-weight: normal;
+}
+
+/**
+ * LINKS: Navegación
+ * 
+ * - Color secundario (azul típicamente)
+ * - Sin decoración de texto
+ * - Hover: subrayado para feedback visual
+ * - Active/visited: color respetado
+ */
+.breadcrumb-item a {
+  color: var(--color-primary, #0066cc);
+  text-decoration: none;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.breadcrumb-item a:hover {
+  color: var(--color-primary-dark, #0052a3);
+  text-decoration: underline;
+}
+
+.breadcrumb-item a:visited {
+  color: var(--color-primary, #0066cc);
+}
+
+/**
+ * ITEM ACTIVO: Última miga
+ * 
+ * El último item (página actual) no es un link, es texto plano.
+ * Se distingue visualmente con:
+ * - Texto más oscuro
+ * - Font-weight: bold
+ * - Sin decoración de link
+ */
+.breadcrumb-item.active {
+  color: var(--color-text-primary, #333);
+  font-weight: 600;
+  
+  /* El último item no tiene separador ::after */
+  &::after {
+    content: '';
+  }
+}
+
+/**
+ * RESPONSIVO: Dispositivos pequeños
+ * 
+ * En pantallas muy pequeñas, podría ocultarse el breadcrumb
+ * o reducirse el tamaño de fuente.
+ * 
+ * OPCIONAL: descomenta según necesidad
+ */
+@media (max-width: 576px) {
+  .breadcrumb {
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .breadcrumb-item + .breadcrumb-item::before {
+    margin: 0 0.25rem;
+  }
+}
+
+/**
+ * MODO OSCURO (si usas CSS variables)
+ * 
+ * Para soportar dark mode, ajusta las variables:
+ * - --color-text-secondary
+ * - --color-text-primary
+ * - --color-primary
+ * - --color-primary-dark
+ */
+@media (prefers-color-scheme: dark) {
+  .breadcrumb {
+    color: var(--color-text-secondary-dark, #aaa);
+  }
+
+  .breadcrumb-item a {
+    color: var(--color-primary-light, #66b2ff);
+  }
+
+  .breadcrumb-item a:hover {
+    color: var(--color-primary-lighter, #99ccff);
+  }
+
+  .breadcrumb-item.active {
+    color: var(--color-text-primary-dark, #e0e0e0);
+  }
+}

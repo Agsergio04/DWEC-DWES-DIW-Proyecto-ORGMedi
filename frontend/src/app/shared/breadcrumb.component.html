@@ -1,0 +1,52 @@
+<!-- 
+  BREADCRUMB COMPONENT TEMPLATE
+  ============================
+  
+  Renderiza dinámicamente la ruta de migas de navegación.
+  Se actualiza automáticamente con cada NavigationEnd event.
+  
+  ESTRUCTURA:
+  - <nav> semántica con aria-label="breadcrumb"
+  - <ol> lista ordenada (estructura de navegación)
+  - Item "Inicio" como raíz siempre visible
+  - Items dinámicos *ngFor construidos por BreadcrumbService
+  - Último item sin link (página actual)
+  - Resto con links para navegar atrás
+  
+  EJEMPLO (ruta /medicamentos/123/editar):
+  
+  Inicio > Medicamentos > Editar Medicamento
+  ^       ^                ^
+  link    link             texto
+-->
+
+<nav aria-label="breadcrumb" *ngIf="(breadcrumbs$ | async) as breadcrumbs; else noBreadcrumbs">
+  <ol class="breadcrumb">
+    
+    <!-- ITEM: Inicio (siempre presente como raíz) -->
+    <li class="breadcrumb-item">
+      <a routerLink="/">Inicio</a>
+    </li>
+
+    <!-- ITEMS: Dinámicos generados desde BreadcrumbService -->
+    <li
+      *ngFor="let crumb of breadcrumbs; let last = last"
+      class="breadcrumb-item"
+      [class.active]="last"
+      [attr.aria-current]="last ? 'page' : null"
+    >
+      <!-- Si NO es último: link clickeable para navegación -->
+      <ng-container *ngIf="!last">
+        <a [routerLink]="crumb.url">{{ crumb.label }}</a>
+      </ng-container>
+
+      <!-- Si ES último: texto plano (página actual) -->
+      <ng-container *ngIf="last">
+        {{ crumb.label }}
+      </ng-container>
+    </li>
+  </ol>
+</nav>
+
+<!-- FALLBACK: Si no hay breadcrumbs, no mostrar nada -->
+<ng-template #noBreadcrumbs></ng-template>

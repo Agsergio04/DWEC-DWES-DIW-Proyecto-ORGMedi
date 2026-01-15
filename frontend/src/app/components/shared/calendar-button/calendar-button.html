@@ -1,0 +1,8 @@
+<button 
+  class="calendar-button"
+  [class.calendar-button--today]="isToday"
+  [class.calendar-button--selected]="isSelected"
+  (click)="onClick()"
+  [attr.aria-label]="'Día ' + day">
+  {{ day }}
+</button>
