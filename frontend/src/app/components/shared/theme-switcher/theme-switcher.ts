@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ThemeService, AppTheme } from '../../../core/services/theme.service';
+import { ThemeService, AppTheme } from '../../../core/services/ui';
 
 @Component({
   selector: 'app-theme-switcher',

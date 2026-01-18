@@ -4,7 +4,7 @@ import { Header } from './components/layout/header/header';
 import { Footer } from './components/layout/footer/footer';
 import { ToastComponent } from './shared/toast.component';
 import { BreadcrumbComponent } from './shared/breadcrumb.component';
-import { ThemeService } from './core/services/theme.service';
+import { ThemeService } from './core/services/ui';
 
 @Component({
   selector: 'app-root',

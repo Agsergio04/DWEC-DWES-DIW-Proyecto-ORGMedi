@@ -1,98 +1,212 @@
+/* ===== CONTENEDOR PRINCIPAL ===== */
 .medicine-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(135deg, rgba(217, 123, 191, 0.6) 0%, rgba(217, 123, 191, 0.4) 100%);
-  border-radius: 16px;
+  background: linear-gradient(135deg, #E879F9 0%, #DB2777 100%);
+  border-radius: 12px;
   padding: 16px 20px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .medicine-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-.medicine-card__content {
+/* ===== HEADER: Botones + Icono + Título ===== */
+.medicine-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+/* Contenedor de botones (izquierda) */
+.medicine-card__buttons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.medicine-card__title-section {
   display: flex;
   align-items: center;
   gap: 12px;
   flex: 1;
+  min-width: 0;
 }
 
+/* Iconos de píldora */
 .medicine-card__icon {
-  font-size: 28px;
-  width: 40px;
-  height: 40px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.3);
 }
 
-.medicine-card__name {
-  font-size: 20px;
-  font-weight: 700;
-  color: #d97bbf;
-  margin: 0;
-}
-
-.medicine-card__actions {
-  display: flex;
-  gap: 12px;
-}
-
-.medicine-card__btn {
+.medicine-card__icon-img {
   width: 48px;
-  height: 48px;
+  height: 36px;
+  object-fit: contain;
+}
+
+/* Título del medicamento */
+.medicine-card__title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  color: white;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ===== BOTONES ===== */
+.medicine-card__btn {
+  background: rgba(255, 255, 255, 0.25);
   border: none;
-  border-radius: 12px;
-  font-size: 20px;
-  font-weight: bold;
+  border-radius: 8px;
+  padding: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  padding: 0;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
-.medicine-card__btn--check {
-  background-color: #4caf50;
-}
-
-.medicine-card__btn--check:hover {
-  background-color: #45a049;
+.medicine-card__btn:hover {
+  background: rgba(255, 255, 255, 0.35);
   transform: scale(1.05);
 }
 
-.medicine-card__btn--check:active {
+.medicine-card__btn:active {
   transform: scale(0.95);
 }
 
-.medicine-card__btn--check.medicine-card__btn--active {
-  background-color: #4caf50;
-  box-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
+.medicine-card__btn-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
-.medicine-card__btn--close {
-  background-color: #ff4444;
+.medicine-card__btn--delete:hover {
+  background: rgba(239, 68, 68, 0.4);
 }
 
-.medicine-card__btn--close:hover {
-  background-color: #dd0000;
-  transform: scale(1.05);
+.medicine-card__btn--edit:hover {
+  background: rgba(255, 255, 255, 0.35);
 }
 
-.medicine-card__btn--close:active {
-  transform: scale(0.95);
+/* ===== INFORMACIÓN EN FILAS ===== */
+.medicine-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.medicine-card__btn--close.medicine-card__btn--active {
-  background-color: #ff4444;
-  box-shadow: 0 0 12px rgba(255, 68, 68, 0.6);
+.medicine-card__row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.medicine-card__field {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex: 1;
+  min-width: 160px;
+  font-size: 13px;
+}
+
+.medicine-card__label {
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+.medicine-card__value {
+  font-weight: 600;
+  word-break: break-word;
+}
+
+/* Estados */
+.medicine-card--expiring {
+  border: 2px solid #fbbf24;
+}
+
+.medicine-card--expired {
+  opacity: 0.7;
+  border: 2px solid #ef4444;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .medicine-card {
+    padding: 14px 16px;
+  }
+
+  .medicine-card__title {
+    font-size: 20px;
+  }
+
+  .medicine-card__icon-img {
+    width: 42px;
+    height: 32px;
+  }
+
+  .medicine-card__row {
+    gap: 16px;
+  }
+
+  .medicine-card__field {
+    font-size: 12px;
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .medicine-card {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .medicine-card__title {
+    font-size: 18px;
+  }
+
+  .medicine-card__header {
+    gap: 10px;
+  }
+
+  .medicine-card__title-section {
+    gap: 10px;
+  }
+
+  .medicine-card__icon-img {
+    width: 40px;
+    height: 30px;
+  }
+
+  .medicine-card__btn {
+    padding: 6px;
+  }
+
+  .medicine-card__btn-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .medicine-card__row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .medicine-card__field {
+    font-size: 11px;
+    min-width: 100%;
+  }
 }

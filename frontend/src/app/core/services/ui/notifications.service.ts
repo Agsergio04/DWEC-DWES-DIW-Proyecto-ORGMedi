@@ -1,8 +1,8 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, timer, BehaviorSubject, EMPTY } from 'rxjs';
 import { switchMap, shareReplay, catchError, tap, startWith, retry } from 'rxjs/operators';
-import { ApiService } from './api.service';
-import { ToastService } from '../../shared/toast.service';
+import { ApiService } from '../data/api.service';
+import { ToastService } from '../../../shared/toast.service';
 
 /**
  * Modelo de notificación

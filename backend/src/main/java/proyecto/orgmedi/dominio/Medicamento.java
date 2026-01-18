@@ -40,6 +40,37 @@ public class Medicamento {
     @Column(nullable = false)
     private Integer frecuencia;
 
+    // Métodos para cambiar un atributo a la vez
+    public void cambiarCantidadMg(Integer nuevaCantidad) {
+        if (nuevaCantidad != null && nuevaCantidad > 0) {
+            this.cantidadMg = nuevaCantidad;
+        }
+    }
+
+    public void cambiarFechaInicio(LocalDate nuevaFecha) {
+        if (nuevaFecha != null) {
+            this.fechaInicio = nuevaFecha;
+        }
+    }
+
+    public void cambiarFechaFin(LocalDate nuevaFecha) {
+        if (nuevaFecha != null) {
+            this.fechaFin = nuevaFecha;
+        }
+    }
+
+    public void cambiarColor(String nuevoColor) {
+        if (nuevoColor != null && !nuevoColor.isBlank()) {
+            this.color = nuevoColor;
+        }
+    }
+
+    public void cambiarFrecuencia(Integer nuevaFrecuencia) {
+        if (nuevaFrecuencia != null && nuevaFrecuencia > 0) {
+            this.frecuencia = nuevaFrecuencia;
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

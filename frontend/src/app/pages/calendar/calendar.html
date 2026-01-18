@@ -47,8 +47,7 @@
       <app-medicine-card-calendar 
         *ngFor="let medicine of medicines"
         [medicine]="medicine"
-        (markAsConsumed)="onMedicineConsumed($event)"
-        (markAsNotConsumed)="onMedicineNotConsumed($event)">
+        (medicineSelected)="onMedicineSelected($event)">
       </app-medicine-card-calendar>
     </div>
   </div>

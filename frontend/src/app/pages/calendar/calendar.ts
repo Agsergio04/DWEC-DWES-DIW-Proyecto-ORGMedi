@@ -88,17 +88,10 @@ export class CalendarPage {
     this.selectedDay = day;
   }
 
-  onMedicineConsumed(medicineId: number): void {
+  onMedicineSelected(medicineId: number): void {
     const medicine = this.medicines.find(m => m.id === medicineId);
     if (medicine) {
-      medicine.consumed = true;
-    }
-  }
-
-  onMedicineNotConsumed(medicineId: number): void {
-    const medicine = this.medicines.find(m => m.id === medicineId);
-    if (medicine) {
-      medicine.consumed = false;
+      medicine.consumed = !medicine.consumed;
     }
   }
 

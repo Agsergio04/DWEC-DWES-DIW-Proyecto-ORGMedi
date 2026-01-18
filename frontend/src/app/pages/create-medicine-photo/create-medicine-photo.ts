@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PendingChangesComponent } from '../../core/services/pending-changes.guard';
+import { PendingChangesComponent } from '../../core/services/guards';
 
 @Component({
   selector: 'app-create-medicine-photo-page',

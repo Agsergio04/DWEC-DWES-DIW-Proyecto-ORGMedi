@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HomeData } from '../../core/services/home.resolver';
+import { HomeData } from '../../core/services/resolvers';
 import { ButtonComponent } from '../../components/shared/button/button';
 
 @Component({

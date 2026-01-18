@@ -160,7 +160,7 @@ export class ChunkMonitorService {
 /**
  * USO EN COMPONENTES:
  * 
- * import { ChunkMonitorService } from './core/services/chunk-monitor.service';
+ * import { ChunkMonitorService } from './core/services/monitoring';
  * 
  * @Component({...})
  * export class MyComponent {

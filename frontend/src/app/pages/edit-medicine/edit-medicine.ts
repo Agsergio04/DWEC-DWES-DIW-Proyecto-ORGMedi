@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MedicineService } from '../../data/medicine.service';
-import { Medicine as ResolverMedicine } from '../../core/services/medicines.resolver';
+import { Medicine as ResolverMedicine } from '../../core/services/resolvers';
 import { Medicine, CreateMedicineDto } from '../../data/models/medicine.model';
-import { PendingChangesComponent } from '../../core/services/pending-changes.guard';
+import { PendingChangesComponent } from '../../core/services/guards';
 import { MedicineFormComponent, MedicineFormData } from '../../components/shared/medicine-form/medicine-form';
 
 @Component({

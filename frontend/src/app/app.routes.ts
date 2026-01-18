@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/services/auth.guard';
-import { pendingChangesGuard } from './core/services/pending-changes.guard';
-import { medicinesResolver, medicineDetailResolver } from './core/services/medicines.resolver';
-import { profileResolver } from './core/services/profile.resolver';
-import { homeResolver } from './core/services/home.resolver';
+import { authGuard } from './core/services/auth';
+import { pendingChangesGuard } from './core/services/guards';
+import { medicinesResolver, medicineDetailResolver } from './core/services/resolvers';
+import { profileResolver } from './core/services/resolvers';
+import { homeResolver } from './core/services/resolvers';
 import { NotFoundPage } from './pages/not-found/not-found';
 
 /**

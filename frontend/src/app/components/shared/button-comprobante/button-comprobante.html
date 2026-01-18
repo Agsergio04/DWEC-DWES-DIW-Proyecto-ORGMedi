@@ -1,0 +1,9 @@
+<button 
+  class="button-comprobante"
+  [class.button-comprobante--checked]="localState"
+  [class.button-comprobante--unchecked]="!localState"
+  (click)="onClick()"
+  [attr.aria-label]="localState ? 'Marcar como no realizado' : 'Marcar como realizado'">
+  <span *ngIf="localState" class="button-comprobante__icon button-comprobante__icon--check">✓</span>
+  <span *ngIf="!localState" class="button-comprobante__icon button-comprobante__icon--close">✕</span>
+</button>

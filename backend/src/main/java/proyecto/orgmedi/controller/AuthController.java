@@ -3,11 +3,13 @@ package proyecto.orgmedi.controller;
 
 import proyecto.orgmedi.dto.auth.AuthRequest;
 import proyecto.orgmedi.dto.auth.AuthResponse;
+import proyecto.orgmedi.dto.auth.RegisterRequest;
 import proyecto.orgmedi.dominio.Usuario;
 import proyecto.orgmedi.repo.UsuarioRepository;
 import proyecto.orgmedi.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import jakarta.validation.Valid;
@@ -71,6 +73,38 @@ public class AuthController {
         String token = jwtUtil.generateToken(request.getCorreo());
         logger.info("Login success for correo={}", request.getCorreo());
         return ResponseEntity.ok(new AuthResponse(token));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+        // Verificar si el correo ya existe
+        if (usuarioRepository.findByCorreo(request.getCorreo()).isPresent()) {
+            logger.warn("Register failed: email already exists for correo={}", request.getCorreo());
+            throw new UnauthorizedException("El correo ya está registrado");
+        }
+
+        // Verificar si el usuario ya existe
+        if (usuarioRepository.findByUsuario(request.getUsuario()).isPresent()) {
+            logger.warn("Register failed: username already exists for usuario={}", request.getUsuario());
+            throw new UnauthorizedException("El usuario ya está registrado");
+        }
+
+        // Hash de la contraseña
+        String hashedPassword = passwordEncoder.encode(request.getContrasena());
+
+        // Crear nuevo usuario
+        Usuario usuario = new Usuario();
+        usuario.setCorreo(request.getCorreo());
+        usuario.setUsuario(request.getUsuario());
+        usuario.setContrasena(hashedPassword);
+
+        // Guardar en la BD
+        Usuario savedUsuario = usuarioRepository.save(usuario);
+        logger.info("Register success for correo={}", request.getCorreo());
+
+        // Generar token JWT
+        String token = jwtUtil.generateToken(request.getCorreo());
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(token));
     }
 
     @PostMapping("/rehash")

@@ -2,8 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { PendingChangesComponent } from '../../core/services/pending-changes.guard';
-import { UserProfile } from '../../core/services/profile.resolver';
+import { PendingChangesComponent } from '../../core/services/guards';
+import { UserProfile } from '../../core/services/resolvers';
 import { DataInputComponent } from '../../components/shared/data-input/data-input';
 import { ButtonComponent } from '../../components/shared/button/button';
 

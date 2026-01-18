@@ -78,29 +78,52 @@ export class AuthService {
 
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, request).pipe(
       tap((response) => {
-        // Guardar el token JWT
         this.setToken(response.token);
-
-        // Extraer información del usuario del email (simplificado)
-        // En una app real, se podría decodificar el JWT o hacer una petición adicional
         const user: AuthUser = {
           id: 1,
           name: email,
           email: email
         };
-
-        // Guardar estado en localStorage
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('currentUser', JSON.stringify(user));
-
-        // Actualizar subjects
         this.isLoggedInSubject.next(true);
         this.currentUserSubject.next(user);
       }),
-      // Transformar a boolean
       map(() => true),
       catchError(err => {
         console.error('Error en login:', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  /**
+   * Realizar registro en el backend
+   * Envía email/usuario/contraseña y recibe JWT en la respuesta
+   */
+  register(email: string, username: string, password: string): Observable<boolean> {
+    const request = {
+      correo: email,
+      usuario: username,
+      contrasena: password
+    };
+
+    return this.http.post<AuthResponse>(`${this.baseUrl}/register`, request).pipe(
+      tap((response) => {
+        this.setToken(response.token);
+        const user: AuthUser = {
+          id: 1,
+          name: username,
+          email: email
+        };
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.isLoggedInSubject.next(true);
+        this.currentUserSubject.next(user);
+      }),
+      map(() => true),
+      catchError(err => {
+        console.error('Error en registro:', err);
         return throwError(() => err);
       })
     );

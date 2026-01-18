@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild } fro
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { ThemeService } from '../../../core/services/theme.service';
+import { ThemeService } from '../../../core/services/ui';
 import { ToastComponent } from '../../../shared/toast.component';
 
 @Component({

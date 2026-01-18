@@ -10,7 +10,7 @@ import {
   scan,
   timeout
 } from 'rxjs/operators';
-import { ApiService } from '../core/services/api.service';
+import { ApiService } from '../core/services/data';
 import {
   Medicine,
   CreateMedicineDto,

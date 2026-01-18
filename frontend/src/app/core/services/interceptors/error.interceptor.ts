@@ -1,7 +1,7 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
-import { ToastService } from '../../shared/toast.service';
+import { ToastService } from '../../../shared/toast.service';
 
 /**
  * Interceptor de manejo global de errores HTTP

@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Observable, Subject, timer, EMPTY } from 'rxjs';
 import { retryWhen, tap, delayWhen, catchError } from 'rxjs/operators';
-import { ToastService } from '../../shared/toast.service';
+import { ToastService } from '../../../shared/toast.service';
 
 /**
  * Servicio para conexiones WebSocket en tiempo real

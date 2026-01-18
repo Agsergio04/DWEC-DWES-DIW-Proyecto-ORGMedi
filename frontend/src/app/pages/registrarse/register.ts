@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RegisterFormComponent } from '../../components/shared/register-form/register-form';
 import { RegisterFormData } from '../../components/shared/register-form/register-form';
-import { UserService } from '../../data/user.service';
+import { AuthService } from '../../core/services/auth';
 import { ToastService } from '../../shared/toast.service';
 
 @Component({
@@ -14,7 +14,7 @@ import { ToastService } from '../../shared/toast.service';
   styleUrls: ['./register.scss']
 })
 export class RegisterPage {
-  private userService = inject(UserService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private toastService = inject(ToastService);
   isLoading = false;
@@ -26,17 +26,12 @@ export class RegisterPage {
   onRegisterSubmit(data: RegisterFormData) {
     this.isLoading = true;
 
-    // Transformar los datos del formulario al DTO del backend
-    const createUserDto = {
-      correo: data.email,
-      usuario: data.username,
-      contrasena: data.password
-    };
-
-    this.userService.createUser(createUserDto as any).subscribe({
-      next: (user) => {
-        this.toastService.success('Cuenta creada exitosamente. Por favor, inicia sesión.');
-        this.router.navigate(['/iniciar-sesion']);
+    this.authService.register(data.email, data.username, data.password).subscribe({
+      next: (success) => {
+        if (success) {
+          this.toastService.success('Cuenta creada exitosamente. Redirigiendo al calendario...');
+          this.router.navigate(['/calendario']);
+        }
         this.isLoading = false;
       },
       error: (err) => {

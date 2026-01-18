@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService } from '../../../core/services/auth';
 import { DataInputComponent } from '../data-input/data-input';
 import { ButtonComponent } from '../button/button';
 
@@ -53,14 +53,13 @@ export class LoginFormComponent {
     this.authService.login(email, password).subscribe({
       next: (success) => {
         if (success) {
-          // Obtener la URL de retorno del queryParam, o usar / por defecto
-          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
-          this.router.navigateByUrl(returnUrl);
+          // Navegar al calendario después de login exitoso
+          this.router.navigate(['/calendario']);
         }
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = 'Error al iniciar sesión. Intenta de nuevo.';
+        this.errorMessage = err.error?.message || 'Error al iniciar sesión. Intenta de nuevo.';
         this.isLoading = false;
       }
     });

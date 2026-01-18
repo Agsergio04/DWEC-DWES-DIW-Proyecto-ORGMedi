@@ -6,7 +6,7 @@
  */
 
 import { Injectable, inject } from '@angular/core';
-import { ApiService } from './api.service';
+import { ApiService } from './data/api.service';
 import { Observable } from 'rxjs';
 
 /**

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { BreadcrumbService, Breadcrumb } from '../../../core/services/breadcrumb.service';
+import { BreadcrumbService, Breadcrumb } from '../../../core/services/ui';
 
 /**
  * Componente para mostrar breadcrumbs (migas de pan)
