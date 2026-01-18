@@ -1,14 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MedicineCardComponent } from '../../components/shared/medicine-card/medicine-card';
+import { MedicineCardCalendarComponent } from '../../components/shared/medicine-card-calendar/medicine-card-calendar';
 import { MedicineService } from '../../data/medicine.service';
 import { MedicineViewModel, ApiError } from '../../data/models/medicine.model';
 
 @Component({
   selector: 'app-medicines-page',
   standalone: true,
-  imports: [CommonModule, MedicineCardComponent],
+  imports: [CommonModule, MedicineCardCalendarComponent],
   templateUrl: './medicines.html',
   styleUrls: ['./medicines.scss']
 })
@@ -67,6 +67,32 @@ export class MedicinesPage implements OnInit {
   }
 
   /**
+   * Verifica si un medicamento ha vencido
+   */
+  isExpired(medicine: MedicineViewModel): boolean {
+    return medicine.isExpired || false;
+  }
+
+  /**
+   * Verifica si un medicamento está por vencer (dentro de 7 días)
+   */
+  isExpiring(medicine: MedicineViewModel): boolean {
+    if (!medicine.endDate) return false;
+    const endDate = new Date(medicine.endDate);
+    const today = new Date();
+    const daysUntilExpiry = (endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24);
+    return daysUntilExpiry <= 7 && daysUntilExpiry > 0;
+  }
+
+  /**
+   * Toggle consumo del medicamento
+   */
+  toggleConsumption(id: number): void {
+    console.log('Toggle consumo para medicamento:', id);
+    // TODO: Implementar toggle de consumo
+  }
+
+  /**
    * Navega a la página de crear medicamento
    */
   navigateToCreate(): void {
@@ -84,15 +110,18 @@ export class MedicinesPage implements OnInit {
    * Navega a la página de editar medicamento
    * @param medicineId ID del medicamento a editar
    */
-  editMedicine(medicineId: string): void {
+  editMedicine(medicineId: string | number): void {
     this.router.navigate(['/editar-medicamento', medicineId]);
   }
 
   /**
    * Elimina un medicamento con confirmación
-   * @param medicine Medicamento a eliminar
+   * @param medicineId ID del medicamento a eliminar
    */
-  deleteMedicine(medicine: MedicineViewModel): void {
+  deleteMedicine(medicineId: string | number): void {
+    const medicine = this.medicines.find(m => String(m.id) === String(medicineId));
+    if (!medicine) return;
+
     if (!confirm(`¿Está seguro de que desea eliminar "${medicine.name}"?`)) {
       return;
     }

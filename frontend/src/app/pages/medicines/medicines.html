@@ -1,63 +1,36 @@
 <section class="page page--medicines">
   <div class="page__container">
-    <div class="medicines__header">
-      <h1>Mis Medicamentos</h1>
-      <div class="medicines__actions">
-        <button class="medicines__btn medicines__btn--primary" (click)="navigateToCreate()">
-          + Nuevo Medicamento
-        </button>
-        <button class="medicines__btn medicines__btn--secondary" (click)="navigateToCreateFromPhoto()">
-          📸 Por Foto
-        </button>
-      </div>
+    <!-- Encabezado -->
+    <div class="medicines__title-section">
+      <h1>Medicamentos</h1>
+      <p class="medicines__description">Aqui podras gestionar cuando has consumido los medicamentos</p>
     </div>
 
-    <!-- Medicamentos Activos -->
-    <div class="medicines__section" *ngIf="activeMedicines.length > 0">
-      <h2 class="medicines__section-title">Medicamentos Activos</h2>
-      <div class="medicines__grid">
-        <app-medicine-card
-          *ngFor="let medicine of activeMedicines"
-          [medicine]="medicine"
-          variant="detailed">
-          <div class="medicine-card-actions">
-            <button class="medicine__action-btn medicine__action-btn--edit" (click)="editMedicine(medicine.id)">
-              ✏️ Editar
-            </button>
-            <button class="medicine__action-btn medicine__action-btn--delete" (click)="deleteMedicine(medicine)">
-              🗑️ Eliminar
-            </button>
-          </div>
-        </app-medicine-card>
-      </div>
-    </div>
-
-    <!-- Medicamentos Vencidos -->
-    <div class="medicines__section" *ngIf="expiredMedicines.length > 0">
-      <h2 class="medicines__section-title medicines__section-title--expired">Medicamentos Vencidos</h2>
-      <div class="medicines__grid">
-        <app-medicine-card
-          *ngFor="let medicine of expiredMedicines"
-          [medicine]="medicine"
-          variant="basic">
-          <div class="medicine-card-actions">
-            <button class="medicine__action-btn medicine__action-btn--delete" (click)="deleteMedicine(medicine)">
-              🗑️ Eliminar
-            </button>
-          </div>
-        </app-medicine-card>
-      </div>
+    <!-- Lista de medicamentos o mensaje vacío -->
+    <div *ngIf="medicines.length > 0; else noMedicines" class="medicines__list">
+      <app-medicine-card-calendar
+        *ngFor="let medicine of medicines"
+        [medicine]="medicine"
+        [isExpired]="isExpired(medicine)"
+        [isExpiring]="isExpiring(medicine)"
+        (medicineEdit)="editMedicine($event)"
+        (medicineDelete)="deleteMedicine($event)"
+        (medicineSelected)="toggleConsumption($event)">
+      </app-medicine-card-calendar>
     </div>
 
     <!-- Sin medicamentos -->
-    <div class="medicines__empty" *ngIf="medicines.length === 0">
-      <svg width="80" height="80" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M11.1716 11.3726C10.8001 11.8078 10.5055 12.3244 10.3045 12.8929C10.1035 13.4615 10 14.0709 10 14.6863C10 15.3017 10.1035 15.9111 10.3045 16.4797C10.5055 17.0482 10.8001 17.5649 11.1716 18L18 26L24.8284 18C25.5786 17.1212 26 15.9292 26 14.6863C26 13.4434 25.5786 12.2514 24.8284 11.3726C24.0783 10.4937 23.0609 10 22 10C20.9391 10 19.9217 10.4937 19.1716 11.3726L18 12.7452L16.8285 11.3726C16.457 10.9374 16.0161 10.5922 15.5308 10.3567C15.0455 10.1212 14.5253 10 14 10C13.4747 10 12.9546 10.1212 12.4693 10.3567C11.984 10.5922 11.543 10.9374 11.1716 11.3726Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-      <h3>No hay medicamentos</h3>
-      <p>Comienza añadiendo tu primer medicamento</p>
-      <button class="medicines__btn medicines__btn--primary" (click)="navigateToCreate()">
-        + Nuevo Medicamento
+    <ng-template #noMedicines>
+      <p class="medicines__empty-message">No se han creado medicamentos todavia</p>
+    </ng-template>
+
+    <!-- Botones de acción -->
+    <div class="medicines__actions">
+      <button class="medicines__action-btn medicines__action-btn--photo" (click)="navigateToCreateFromPhoto()">
+        📷 Crear un nuevo medicamento por foto
+      </button>
+      <button class="medicines__action-btn medicines__action-btn--manual" (click)="navigateToCreate()">
+        ➕ Crear un nuevo medicamento manualmente
       </button>
     </div>
   </div>
