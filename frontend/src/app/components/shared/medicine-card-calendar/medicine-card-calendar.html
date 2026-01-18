@@ -1,10 +1,12 @@
 <article class="medicine-card-calendar">
   <!-- Icono + Título -->
   <div class="medicine-card-calendar__content">
-    <div class="medicine-card-calendar__icon">
-      {{ medicine.icon }}
+    <div class="medicine-card-calendar__icon" [style.--medicine-color]="medicine.color || '#D97BBF'">
+      <img src="/Icono Medicamento.svg" alt="Medicamento" class="medicine-card-calendar__icon-img">
     </div>
-    <h3 class="medicine-card-calendar__title">{{ medicine.name }}</h3>
+    <h3 class="medicine-card-calendar__title" [style.--medicine-color]="medicine.color || '#D97BBF'">
+      {{ medicine.name }}
+    </h3>
   </div>
 
   <!-- Botón de estado (consumido/no consumido) -->
