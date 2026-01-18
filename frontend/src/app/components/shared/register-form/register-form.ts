@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } 
 import { RouterModule } from '@angular/router';
 import { DataInputComponent } from '../data-input/data-input';
 import { ButtonComponent } from '../button/button';
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner';
 import { passwordStrength } from '../../../validators/password-strength.validator';
 import { AsyncValidatorsService } from '../../../shared/async-validators.service';
 
@@ -22,13 +23,14 @@ interface RegisterFormModel {
 @Component({
   selector: 'app-register-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, DataInputComponent, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, DataInputComponent, ButtonComponent, LoadingSpinnerComponent],
   templateUrl: './register-form.html',
   styleUrls: ['./register-form.scss'],
 })
 export class RegisterFormComponent {
   @Output() submitted = new EventEmitter<RegisterFormData>();
   @Input() disabled = false;
+  @Input() isLoading = false;
 
   registerForm: FormGroup<RegisterFormModel>;
 

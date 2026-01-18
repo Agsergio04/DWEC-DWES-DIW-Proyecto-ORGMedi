@@ -1,4 +1,6 @@
 <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
+	<app-loading-spinner [isVisible]="isLoading" message="Iniciando sesión..."></app-loading-spinner>
+
 	<fieldset class="login-form__fieldset">
 		<div class="login-form__field-group">
 			<label class="login-form__label">Introduce el nombre de usuario :</label>

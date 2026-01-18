@@ -1,4 +1,6 @@
 <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
+	<app-loading-spinner [isVisible]="isLoading" message="Creando cuenta..."></app-loading-spinner>
+
 	<fieldset class="register-form__fieldset">
 		<div class="register-form__field-group">
 			<label class="register-form__label">Introduce el nombre de usuario :</label>
@@ -47,9 +49,9 @@
 			[padding]="'12px 24px'"
 			[fontSize]="'1.25rem'"
 			type="submit"
-			[disabled]="registerForm.invalid || registerForm.pending"
+			[disabled]="registerForm.invalid || registerForm.pending || isLoading"
 		>
-			{{ registerForm.pending ? 'Validando...' : 'Crear Cuenta' }}
+			{{ registerForm.pending || isLoading ? 'Validando...' : 'Crear Cuenta' }}
 		</app-button>
 
 		<div class="register-form__login-section">

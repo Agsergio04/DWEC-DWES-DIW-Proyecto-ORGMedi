@@ -5,6 +5,7 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
 import { DataInputComponent } from '../data-input/data-input';
 import { ButtonComponent } from '../button/button';
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner';
 
 interface LoginFormModel {
   email: FormControl<string>;
@@ -14,7 +15,7 @@ interface LoginFormModel {
 @Component({
   selector: 'app-login-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, DataInputComponent, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, DataInputComponent, ButtonComponent, LoadingSpinnerComponent],
   templateUrl: './login-form.html',
   styleUrls: ['./login-form.scss'],
 })
