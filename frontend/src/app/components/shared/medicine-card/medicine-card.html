@@ -2,13 +2,15 @@
   <div class="medicine-card__container">
     <!-- ===== HEADER: Icono + Título + Botón Borrar ===== -->
     <div class="medicine-card__header">
-      <!-- Icono de píldora -->
-      <div class="medicine-card__icon">
-        {{ medicine.icon || '💊' }}
+      <!-- Icono de píldora (SVG) con color dinámico -->
+      <div class="medicine-card__icon" [style.--medicine-color]="medicine.color || '#D97BBF'">
+        <img src="/Icono Medicamento.svg" alt="Medicamento" class="medicine-card__icon-img">
       </div>
       
-      <!-- Título del medicamento -->
-      <h3 class="medicine-card__title">{{ medicine.name }}</h3>
+      <!-- Título del medicamento (con color dinámico) -->
+      <h3 class="medicine-card__title" [style.--medicine-color]="medicine.color || '#D97BBF'">
+        {{ medicine.name }}
+      </h3>
       
       <!-- Botón de borrar -->
       <button class="medicine-card__delete-btn" 

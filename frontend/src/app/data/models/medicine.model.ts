@@ -20,6 +20,8 @@ export interface Medicine {
   endDate?: string;
   quantity?: number;
   remainingDays?: number;
+  color?: string;
+  icon?: string;
   createdAt: string;
   updatedAt: string;
 }
