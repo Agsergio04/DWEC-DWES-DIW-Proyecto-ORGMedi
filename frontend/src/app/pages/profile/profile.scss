@@ -2,7 +2,8 @@
 
 .page--profile {
   padding: $espaciado-48 $espaciado-32;
-  min-height: calc(100vh - 72px - 200px);
+  min-height: calc(100vh - 72px);
+  background: linear-gradient(180deg, rgba(217, 123, 191, 0.1) 0%, rgba(217, 123, 191, 0.05) 100%);
 }
 
 .page__container {
@@ -11,90 +12,120 @@
   width: 100%;
 }
 
-.profile__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: $espaciado-32;
+// ===== TÍTULO Y DESCRIPCIÓN =====
+.profile__title-section {
+  text-align: center;
+  margin-bottom: $espaciado-48;
 }
 
 .page--profile h1 {
   font-family: $font-secondary;
   font-size: $font-size-3xl;
   font-weight: $font-weight-bold;
-  color: var(--color-primario-primary);
+  color: var(--color-texto_borde_cajas);
+  margin: 0 0 $espaciado-8 0;
+}
+
+.profile__description {
+  font-size: $font-size-md;
+  color: rgba(var(--color-texto_borde_cajas-rgb), 0.7);
   margin: 0;
+  line-height: 1.5;
 }
 
-.profile__edit-button {
-  background: var(--color-primario-primary);
-  color: white;
-  border: none;
-  padding: $espaciado-12 $espaciado-20;
-  border-radius: $radius-md;
-  cursor: pointer;
-  font-weight: $font-weight-semibold;
-  transition: background $transition-normal;
-
-  &:hover {
-    background: var(--color-primario-hover);
-  }
-}
-
-.profile__card {
-  background: white;
-  border: $border-thin solid var(--color-bordes_marco_botones);
-  border-radius: $radius-lg;
+// ===== SECCIONES =====
+.profile__section {
+  background: rgba(255, 255, 255, 0.7);
   padding: $espaciado-32;
+  border-radius: 16px;
+  margin-bottom: $espaciado-32;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.profile__avatar {
-  display: flex;
-  justify-content: center;
-  margin-bottom: $espaciado-24;
+.profile__section-title {
+  font-family: $font-secondary;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-texto_borde_cajas);
+  margin: 0 0 $espaciado-8 0;
 }
 
-.profile__info {
-  display: flex;
-  flex-direction: column;
-  gap: $espaciado-20;
-}
-
-.profile__info-item {
-  display: flex;
-  flex-direction: column;
-  gap: $espaciado-8;
-}
-
-.profile__label {
-  font-weight: $font-weight-semibold;
-  color: rgba(var(--color-texto_borde_cajas-rgb), 0.7);
+.profile__section-subtitle {
   font-size: $font-size-sm;
-  text-transform: uppercase;
+  color: rgba(var(--color-texto_borde_cajas-rgb), 0.6);
+  margin: 0 0 $espaciado-20 0;
 }
 
-.profile__value {
-  color: var(--color-texto_borde_cajas);
-  font-size: $font-size-md;
-  margin: 0;
+.profile__input-label {
+  font-size: $font-size-sm;
+  color: rgba(var(--color-texto_borde_cajas-rgb), 0.7);
+  margin: $espaciado-16 0 $espaciado-12 0;
+  font-weight: $font-weight-medium;
 }
 
-.profile__input,
-.profile__textarea {
-  padding: $espaciado-12 $espaciado-12;
-  border: $border-thin solid var(--color-bordes_marco_botones);
-  border-radius: $radius-md;
-  font-size: $font-size-md;
-  color: var(--color-texto_borde_cajas);
-  background: white;
-  font-family: inherit;
-  transition: border-color $transition-normal;
+// ===== BOTÓN CERRAR SESIÓN =====
+.profile__logout-btn {
+  margin-top: $espaciado-16;
+  min-height: 50px;
+  font-weight: $font-weight-bold;
+}
 
-  &:focus {
-    outline: none;
-    border-color: var(--color-primario-primary);
-    box-shadow: 0 0 0 2px rgba(var(--color-primario-primary), 0.1);
+// ===== RESPONSIVE =====
+@media (max-width: 768px) {
+  .page--profile {
+    padding: $espaciado-32 $espaciado-16;
+  }
+
+  .profile__section {
+    padding: $espaciado-24 $espaciado-20;
+  }
+
+  .page--profile h1 {
+    font-size: $font-size-2xl;
+  }
+
+  .profile__section-title {
+    font-size: $font-size-xl;
+  }
+}
+
+@media (max-width: 480px) {
+  .page--profile {
+    padding: $espaciado-24 $espaciado-12;
+  }
+
+  .page__container {
+    max-width: 100%;
+  }
+
+  .profile__section {
+    padding: $espaciado-20 $espaciado-16;
+    margin-bottom: $espaciado-20;
+  }
+
+  .page--profile h1 {
+    font-size: $font-size-xl;
+  }
+
+  .profile__section-title {
+    font-size: $font-size-lg;
+  }
+}
+
+// ===== DARK MODE =====
+[data-theme="dark"] {
+  .profile__section {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .page--profile h1,
+  .profile__section-title {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .profile__section-subtitle,
+  .profile__input-label {
+    color: rgba(255, 255, 255, 0.6);
   }
 }
 

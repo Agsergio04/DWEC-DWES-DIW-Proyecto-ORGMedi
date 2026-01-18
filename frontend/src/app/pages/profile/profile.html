@@ -1,117 +1,80 @@
 <section class="page page--profile">
   <div class="page__container">
-    <div class="profile__header">
-      <h1>Mi Perfil</h1>
-      <app-button 
-        [variant]="isEditing ? 'secondary' : 'primary'"
-        (click)="toggleEdit()"
+    <!-- Encabezado -->
+    <div class="profile__title-section">
+      <h1>Perfil</h1>
+      <p class="profile__description">Aqui podras gestionar cuando has consumido los medicamentos</p>
+    </div>
+
+    <!-- Sección: Nombre de Usuario -->
+    <div class="profile__section">
+      <h2 class="profile__section-title">Nombre de Usuario</h2>
+      <p class="profile__section-subtitle">Aqui puedes ver el nombre de usuario</p>
+      
+      <p class="profile__input-label">Introduce un nuevo nombre de usuario para cambiarlo:</p>
+      <app-data-input
+        formControlName="username"
+        placeholder="Usuario123"
+        icon="/Icono Usuario.svg"
+        type="text"
+      ></app-data-input>
+
+      <app-button
+        variant="primary"
+        [width]="'100%'"
+        [padding]="'12px 24px'"
+        [fontSize]="'1rem'"
+        (click)="changeUsername()"
+        [disabled]="!form.get('username')?.value"
       >
-        {{ isEditing ? 'Cancelar' : 'Editar' }}
+        Cambiar el nombre de usuario
       </app-button>
     </div>
 
-    <div class="profile__card" [formGroup]="form">
-      <div class="profile__avatar">
-        <svg width="80" height="80" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="18" cy="18" r="18" fill="url(#gradient)"/>
-          <path d="M22.5714 13.5556C22.5714 14.4985 22.0898 15.4029 21.2325 16.0697C20.3752 16.7365 19.2124 17.1111 18 17.1111C16.7876 17.1111 15.6248 16.7365 14.7675 16.0697C13.9102 15.4029 13.4286 14.4985 13.4286 13.5556C13.4286 12.6126 13.9102 11.7082 14.7675 11.0414C15.6248 10.3746 16.7876 10 18 10C19.2124 10 20.3752 10.3746 21.2325 11.0414C22.0898 11.7082 22.5714 12.6126 22.5714 13.5556ZM18 19.7778C15.8783 19.7778 13.8434 20.4333 12.3431 21.6002C10.8429 22.7671 10 24.3498 10 26H26C26 24.3498 25.1571 22.7671 23.6569 21.6002C22.1566 20.4333 20.1217 19.7778 18 19.7778Z" fill="white" />
-          <defs>
-            <linearGradient id="gradient" x1="0" y1="0" x2="36" y2="36">
-              <stop offset="0%" stop-color="#E177B5" />
-              <stop offset="100%" stop-color="#D3B5C6" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
+    <!-- Sección: Contraseña -->
+    <div class="profile__section">
+      <h2 class="profile__section-title">Contraseña</h2>
+      <p class="profile__section-subtitle">Introduce la contraseña actual y luego la nueva contraseña para poder cambiarla.</p>
+      
+      <p class="profile__input-label">Introduce la contraseña actual:</p>
+      <app-data-input
+        formControlName="currentPassword"
+        placeholder="Introduce la contraseña"
+        icon="/Icono contraseña.svg"
+        type="password"
+      ></app-data-input>
 
-      <div class="profile__info">
-        <div class="profile__info-item">
-          <label class="profile__label">Nombre</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ form.get('name')?.value }}</p>
-          <app-data-input 
-            *ngIf="isEditing" 
-            formControlName="name"
-            placeholder="Tu nombre"
-            type="text"
-          ></app-data-input>
-        </div>
+      <p class="profile__input-label">Introduce la contraseña a la que se quiere cambiar:</p>
+      <app-data-input
+        formControlName="newPassword"
+        placeholder="Introduce la nueva contraseña"
+        icon="/Icono contraseña.svg"
+        type="password"
+      ></app-data-input>
 
-        <div class="profile__info-item">
-          <label class="profile__label">Email</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ form.get('email')?.value }}</p>
-          <app-data-input 
-            *ngIf="isEditing" 
-            formControlName="email"
-            placeholder="tu@email.com"
-            type="email"
-          ></app-data-input>
-        </div>
-
-        <div class="profile__info-item">
-          <label class="profile__label">Teléfono</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ form.get('phone')?.value }}</p>
-          <app-data-input 
-            *ngIf="isEditing" 
-            formControlName="phone"
-            placeholder="Tu teléfono"
-            type="tel"
-          ></app-data-input>
-        </div>
-
-        <div class="profile__info-item">
-          <label class="profile__label">Fecha de Nacimiento</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ form.get('dateOfBirth')?.value }}</p>
-          <app-data-input 
-            *ngIf="isEditing" 
-            formControlName="dateOfBirth"
-            placeholder="DD/MM/YYYY"
-            type="date"
-          ></app-data-input>
-        </div>
-
-        <div class="profile__info-item">
-          <label class="profile__label">Tipo de Sangre</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ form.get('bloodType')?.value }}</p>
-          <app-data-input 
-            *ngIf="isEditing" 
-            formControlName="bloodType"
-            placeholder="O+, A-, etc"
-            type="text"
-          ></app-data-input>
-        </div>
-
-        <div class="profile__info-item">
-          <label class="profile__label">Dirección</label>
-          <p class="profile__value" *ngIf="!isEditing">{{ form.get('address')?.value }}</p>
-          <app-data-input 
-            *ngIf="isEditing" 
-            formControlName="address"
-            placeholder="Tu dirección"
-            type="text"
-          ></app-data-input>
-        </div>
-      </div>
-
-      <div class="profile__actions" *ngIf="isEditing">
-        <app-button 
-          variant="primary"
-          [width]="'100%'"
-          [padding]="'12px 24px'"
-          (click)="saveProfile()" 
-          [disabled]="form.invalid"
-        >
-          Guardar Cambios
-        </app-button>
-        <app-button 
-          variant="secondary"
-          [width]="'100%'"
-          [padding]="'12px 24px'"
-          (click)="cancelEdit()"
-        >
-          Cancelar
-        </app-button>
-      </div>
+      <app-button
+        variant="primary"
+        [width]="'100%'"
+        [padding]="'12px 24px'"
+        [fontSize]="'1rem'"
+        (click)="changePassword()"
+        [disabled]="!form.get('currentPassword')?.value || !form.get('newPassword')?.value"
+      >
+        Cambiar la contraseña
+      </app-button>
     </div>
+
+    <!-- Botón Cerrar Sesión -->
+    <app-button
+      variant="primary"
+      [width]="'100%'"
+      [padding]="'12px 24px'"
+      [fontSize]="'1rem'"
+      (click)="logout()"
+      class="profile__logout-btn"
+    >
+      Cerrar sesion
+    </app-button>
   </div>
 </section>
 

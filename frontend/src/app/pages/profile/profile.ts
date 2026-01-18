@@ -1,23 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { PendingChangesComponent } from '../../core/services/guards';
-import { UserProfile } from '../../core/services/resolvers';
+import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth';
 import { DataInputComponent } from '../../components/shared/data-input/data-input';
 import { ButtonComponent } from '../../components/shared/button/button';
 
 interface ProfileFormModel {
-  name: FormControl<string>;
-  email: FormControl<string>;
-  phone: FormControl<string>;
-  dateOfBirth: FormControl<string>;
-  medicalConditions: FormControl<string>;
-  allergies: FormControl<string>;
-  doctorName: FormControl<string>;
-  doctorContact: FormControl<string>;
-  address: FormControl<string>;
-  bloodType: FormControl<string>;
+  username: FormControl<string>;
+  currentPassword: FormControl<string>;
+  newPassword: FormControl<string>;
 }
 
 @Component({
@@ -27,111 +19,47 @@ interface ProfileFormModel {
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss']
 })
-export class ProfilePage implements PendingChangesComponent, OnInit {
+export class ProfilePage implements OnInit {
   private fb = inject(FormBuilder);
-  private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  // Implementa la interfaz FormComponent
   form: FormGroup<ProfileFormModel> = this.fb.group({
-    name: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    phone: [''],
-    dateOfBirth: [''],
-    medicalConditions: [''],
-    allergies: [''],
-    doctorName: [''],
-    doctorContact: [''],
-    address: [''],
-    bloodType: ['']
+    username: ['', Validators.required],
+    currentPassword: ['', Validators.required],
+    newPassword: ['', Validators.required]
   }) as FormGroup<ProfileFormModel>;
 
-  userProfile: UserProfile | null = null;
-  isEditing = false;
-
   ngOnInit(): void {
-    // Obtener el perfil del resolver
-    this.route.data.subscribe((data) => {
-      if (data && data['profile']) {
-        this.userProfile = data['profile'];
-        
-        if (this.userProfile) {
-          // Cargar los datos en el formulario
-          this.form.patchValue({
-            name: this.userProfile.name,
-            email: this.userProfile.email,
-            phone: this.userProfile.phone || '',
-            dateOfBirth: this.userProfile.dateOfBirth || '',
-            medicalConditions: (this.userProfile.medicalConditions || []).join(', '),
-            allergies: (this.userProfile.allergies || []).join(', '),
-            doctorName: this.userProfile.doctorName || '',
-            doctorContact: this.userProfile.doctorContact || ''
-          });
-          
-          this.form.markAsPristine(); // El formulario comienza sin cambios
-        }
-      }
-    });
+    // Inicializar formulario
   }
 
-  toggleEdit(): void {
-    this.isEditing = !this.isEditing;
-    if (!this.isEditing) {
-      // Si cancela la edición, restaurar los datos originales
-      if (this.userProfile) {
-        this.form.patchValue({
-          name: this.userProfile.name,
-          email: this.userProfile.email,
-          phone: this.userProfile.phone || '',
-          dateOfBirth: this.userProfile.dateOfBirth || '',
-          medicalConditions: (this.userProfile.medicalConditions || []).join(', '),
-          allergies: (this.userProfile.allergies || []).join(', '),
-          doctorName: this.userProfile.doctorName || '',
-          doctorContact: this.userProfile.doctorContact || ''
-        });
-        this.form.markAsPristine();
-      }
+  changeUsername(): void {
+    if (this.form.get('username')?.invalid) {
+      return;
     }
+
+    const username = this.form.get('username')?.value;
+    // Llamar a servicio para cambiar nombre de usuario
+    console.log('Cambiar nombre de usuario a:', username);
+    // TODO: Implementar cambio de nombre de usuario
   }
 
-  saveProfile(): void {
-    if (this.form.valid) {
-      // Actualizar el perfil con los nuevos datos
-      if (this.userProfile) {
-        this.userProfile = {
-          ...this.userProfile,
-          name: this.form.value.name,
-          email: this.form.value.email,
-          phone: this.form.value.phone,
-          dateOfBirth: this.form.value.dateOfBirth,
-          medicalConditions: this.form.value.medicalConditions?.split(',').map((c: string) => c.trim()) || [],
-          allergies: this.form.value.allergies?.split(',').map((a: string) => a.trim()) || [],
-          doctorName: this.form.value.doctorName,
-          doctorContact: this.form.value.doctorContact
-        };
-      }
-      
-      this.isEditing = false;
-      this.form.markAsPristine(); // Marcar como guardado (no sucio)
-      alert('Perfil actualizado correctamente');
+  changePassword(): void {
+    if (this.form.get('currentPassword')?.invalid || this.form.get('newPassword')?.invalid) {
+      return;
     }
+
+    const currentPassword = this.form.get('currentPassword')?.value;
+    const newPassword = this.form.get('newPassword')?.value;
+    // Llamar a servicio para cambiar contraseña
+    console.log('Cambiar contraseña');
+    // TODO: Implementar cambio de contraseña
   }
 
-  cancelEdit(): void {
-    this.isEditing = false;
-    // Restaurar los datos originales
-    if (this.userProfile) {
-      this.form.patchValue({
-        name: this.userProfile.name,
-        email: this.userProfile.email,
-        phone: this.userProfile.phone || '',
-        dateOfBirth: this.userProfile.dateOfBirth || '',
-        medicalConditions: (this.userProfile.medicalConditions || []).join(', '),
-        allergies: (this.userProfile.allergies || []).join(', '),
-        doctorName: this.userProfile.doctorName || '',
-        doctorContact: this.userProfile.doctorContact || ''
-      });
-      this.form.markAsPristine();
-    }
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/iniciar-sesion']);
   }
 }
 
