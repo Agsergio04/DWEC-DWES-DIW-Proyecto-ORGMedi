@@ -41,7 +41,8 @@ export class CreateMedicinePage implements PendingChangesComponent {
       description: [''],
       startDate: ['', Validators.required],
       endDate: [''],
-      quantity: [0, [Validators.required, Validators.min(1)]]
+      quantity: [0, [Validators.required, Validators.min(1)]],
+      color: ['#D97BBF']
     });
   }
 

@@ -1,103 +1,121 @@
 <section class="page page--create-medicine">
   <div class="page__container">
-    <h1>Nuevo Medicamento</h1>
+    <!-- Encabezado -->
+    <div class="create-medicine__title-section">
+      <h1>Crear Medicamento</h1>
+      <p class="create-medicine__description">Aqui podras gestionar cuando has consumido los medicamentos</p>
+    </div>
 
-    <form class="medicine-form" [formGroup]="form" (ngSubmit)="saveMedicine()">
+    <!-- Formulario -->
+    <form class="create-medicine__form" [formGroup]="form" (ngSubmit)="saveMedicine()">
+      <!-- Nombre del medicamento -->
       <div class="form-group">
-        <label for="name" class="form-label">Nombre del Medicamento *</label>
+        <label for="name" class="form-label">Introduce el nombre del medicamento:</label>
         <input
           id="name"
           type="text"
           class="form-input"
           formControlName="name"
-          placeholder="Ej: Amoxicilina"
+          placeholder="Nombre del medicamento"
           required
         />
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="dosage" class="form-label">Dosis *</label>
-          <input
-            id="dosage"
-            type="text"
-            class="form-input"
-            formControlName="dosage"
-            placeholder="Ej: 500mg"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="quantity" class="form-label">Cantidad</label>
-          <input
-            id="quantity"
-            type="number"
-            class="form-input"
-            formControlName="quantity"
-            placeholder="Ej: 30"
-          />
-        </div>
-      </div>
-
+      <!-- Cantidad -->
       <div class="form-group">
-        <label for="frequency" class="form-label">Frecuencia *</label>
-        <select
-          id="frequency"
-          class="form-select"
-          formControlName="frequency"
+        <label for="dosage" class="form-label">Introduce la cantidad del medicamento:</label>
+        <input
+          id="dosage"
+          type="text"
+          class="form-input"
+          formControlName="dosage"
+          placeholder="Cantidad(En Mg)"
           required
-        >
-          <option value="">Selecciona una frecuencia</option>
-          <option *ngFor="let freq of frequencies" [value]="freq">{{ freq }}</option>
-        </select>
+        />
       </div>
 
+      <!-- Hora de inicio -->
+      <div class="form-group">
+        <label for="startTime" class="form-label">Introduce la hora de inicio:</label>
+        <input
+          id="startTime"
+          type="time"
+          class="form-input"
+          placeholder="Hora de inicio(08:00 AM)"
+        />
+      </div>
+
+      <!-- Fecha de inicio -->
+      <div class="form-group">
+        <label for="startDate" class="form-label">Introduce la fecha de inicio cuando la vas a tomar:</label>
+        <input
+          id="startDate"
+          type="date"
+          class="form-input"
+          formControlName="startDate"
+          placeholder="Fecha Inicio(dd/mm/yyyy)"
+          required
+        />
+      </div>
+
+      <!-- Fecha de fin -->
+      <div class="form-group">
+        <label for="endDate" class="form-label">Introduce la fecha de fin cuando la vas a acabar de tomar:</label>
+        <input
+          id="endDate"
+          type="date"
+          class="form-input"
+          formControlName="endDate"
+          placeholder="Fecha Fin(dd/mm/yyyy)"
+        />
+      </div>
+
+      <!-- Fila: Frecuencia y Color -->
       <div class="form-row">
         <div class="form-group">
-          <label for="startDate" class="form-label">Fecha de Inicio *</label>
-          <input
-            id="startDate"
-            type="date"
-            class="form-input"
-            formControlName="startDate"
+          <label for="frequency" class="form-label">Seleccione la frecuencia de consumo de la pastilla:</label>
+          <select
+            id="frequency"
+            class="form-select"
+            formControlName="frequency"
             required
-          />
+          >
+            <option value="">Selecciona cada cuanto</option>
+            <option *ngFor="let freq of frequencies" [value]="freq">{{ freq }}</option>
+          </select>
         </div>
 
         <div class="form-group">
-          <label for="endDate" class="form-label">Fecha de Fin</label>
-          <input
-            id="endDate"
-            type="date"
-            class="form-input"
-            formControlName="endDate"
-          />
+          <label for="color" class="form-label">Selecciona el color de la pastilla :</label>
+          <select
+            id="color"
+            class="form-select"
+            formControlName="color"
+          >
+            <option value="">Selecciona un color</option>
+            <option value="#D97BBF">Rosa/Magenta</option>
+            <option value="#00CED1">Cian/Turquesa</option>
+            <option value="#FFFF00">Amarillo</option>
+            <option value="#FFA500">Naranja</option>
+            <option value="#9370DB">Púrpura</option>
+            <option value="#FF1493">Rosa Fuerte</option>
+          </select>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="description" class="form-label">Notas / Instrucciones</label>
-        <textarea
-          id="description"
-          class="form-textarea"
-          formControlName="description"
-          placeholder="Ej: Tomar con alimentos, evitar alcohol..."
-          rows="4"
-        ></textarea>
-      </div>
-
+      <!-- Botones -->
       <div class="form-actions">
-        <button type="submit" class="btn btn--primary" [disabled]="!isFormValid()">
-          {{ saving ? 'Guardando...' : 'Guardar Medicamento' }}
-        </button>
-        <button type="button" class="btn btn--secondary" (click)="cancelCreate()">
+        <button type="button" class="btn btn--cancel" (click)="cancelCreate()">
           Cancelar
         </button>
+        <button type="submit" class="btn btn--create" [disabled]="!isFormValid()">
+          {{ saving ? 'Creando...' : 'Crear' }}
+        </button>
       </div>
 
+      <!-- Mensaje de error -->
       <div *ngIf="error" class="error-message">
-        {{ error }}
+        {{ error.message }}
       </div>
     </form>
   </div>
