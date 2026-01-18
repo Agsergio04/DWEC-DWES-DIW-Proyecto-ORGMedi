@@ -1,56 +1,18 @@
-<article class="medicine-card" [class.medicine-card--expired]="isExpired" [class.medicine-card--expiring]="isExpiring">
-  <!-- Encabezado: Botones (izquierda) + Icono + Título -->
-  <div class="medicine-card__header">
-    <!-- Botones (izquierda) -->
-    <div class="medicine-card__buttons">
-      <button class="medicine-card__btn medicine-card__btn--delete" 
-              aria-label="Eliminar medicamento"
-              (click)="onDelete()">
-        <img src="/Icono Negacion.svg" alt="" class="medicine-card__btn-icon">
-      </button>
-
-      <button class="medicine-card__btn medicine-card__btn--edit" 
-              aria-label="Editar medicamento"
-              (click)="onEdit()">
-        <img src="/Icono Editar.svg" alt="" class="medicine-card__btn-icon">
-      </button>
+<article class="medicine-card-calendar">
+  <!-- Icono + Título -->
+  <div class="medicine-card-calendar__content">
+    <div class="medicine-card-calendar__icon">
+      {{ medicine.icon }}
     </div>
-
-    <!-- Icono + Título -->
-    <div class="medicine-card__title-section">
-      <div class="medicine-card__icon">
-        <img src="/Icono Medicamento.svg" alt="" class="medicine-card__icon-img">
-      </div>
-      <h3 class="medicine-card__title">{{ medicine.name }}</h3>
-    </div>
+    <h3 class="medicine-card-calendar__title">{{ medicine.name }}</h3>
   </div>
 
-  <!-- Información: Cantidad, Frecuencia, Fechas -->
-  <div class="medicine-card__info">
-    <!-- Primera fila: Cantidad y Frecuencia -->
-    <div class="medicine-card__row">
-      <div class="medicine-card__field">
-        <span class="medicine-card__label">Cantidad:</span>
-        <span class="medicine-card__value">{{ medicine.dosage }}</span>
-      </div>
-
-      <div class="medicine-card__field">
-        <span class="medicine-card__label">Frecuencia:</span>
-        <span class="medicine-card__value">{{ medicine.frequency }}</span>
-      </div>
-    </div>
-
-    <!-- Segunda fila: Fechas -->
-    <div class="medicine-card__row">
-      <div class="medicine-card__field">
-        <span class="medicine-card__label">Fecha Inicio:</span>
-        <span class="medicine-card__value">{{ medicine.startDate }}</span>
-      </div>
-
-      <div class="medicine-card__field">
-        <span class="medicine-card__label">Fecha Fin:</span>
-        <span class="medicine-card__value">{{ medicine.endDate || '-' }}</span>
-      </div>
-    </div>
-  </div>
+  <!-- Botón de estado (consumido/no consumido) -->
+  <button 
+    class="medicine-card-calendar__status-btn"
+    [class.medicine-card-calendar__status-btn--consumed]="medicine.consumed"
+    (click)="toggleConsumption()"
+    [attr.aria-label]="'Marcar ' + medicine.name + ' como ' + (medicine.consumed ? 'no consumido' : 'consumido')">
+    {{ medicine.consumed ? '✓' : '✕' }}
+  </button>
 </article>

@@ -25,21 +25,21 @@ export class CalendarPage {
     {
       id: 1,
       name: 'Amoxicilina',
-      icon: '💊',
+      icon: '�',
       color: '#d97bbf',
       consumed: false
     },
     {
       id: 2,
       name: 'Omeprazol',
-      icon: '💊',
+      icon: '💛',
       color: '#ffc107',
       consumed: true
     },
     {
       id: 3,
-      name: 'Ozempic',
-      icon: '💊',
+      name: 'Osample',
+      icon: '🩵',
       color: '#00bcd4',
       consumed: false
     }

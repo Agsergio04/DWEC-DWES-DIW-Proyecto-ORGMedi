@@ -1,61 +1,44 @@
 /* ===== CONTENEDOR PRINCIPAL ===== */
-.medicine-card {
-  background: linear-gradient(135deg, #E879F9 0%, #DB2777 100%);
-  border-radius: 12px;
+.medicine-card-calendar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   padding: 16px 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #E879F9 0%, #DB2777 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s, box-shadow 0.2s;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  min-height: 64px;
 }
 
-.medicine-card:hover {
+.medicine-card-calendar:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* ===== HEADER: Botones + Icono + Título ===== */
-.medicine-card__header {
+/* ===== CONTENIDO: Icono + Nombre ===== */
+.medicine-card-calendar__content {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 12px;
-}
-
-/* Contenedor de botones (izquierda) */
-.medicine-card__buttons {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.medicine-card__title-section {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  gap: 16px;
   flex: 1;
   min-width: 0;
 }
 
-/* Iconos de píldora */
-.medicine-card__icon {
+.medicine-card-calendar__icon {
+  font-size: 32px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.medicine-card__icon-img {
   width: 48px;
-  height: 36px;
-  object-fit: contain;
+  height: 48px;
 }
 
-/* Título del medicamento */
-.medicine-card__title {
-  font-size: 22px;
+.medicine-card-calendar__title {
+  font-size: 20px;
   font-weight: 700;
   margin: 0;
   color: white;
@@ -63,150 +46,83 @@
   overflow-wrap: break-word;
 }
 
-/* ===== BOTONES ===== */
-.medicine-card__btn {
-  background: rgba(255, 255, 255, 0.25);
+/* ===== BOTÓN DE ESTADO ===== */
+.medicine-card-calendar__status-btn {
+  background-color: #ff4444;
   border: none;
-  border-radius: 8px;
-  padding: 8px;
+  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.medicine-card__btn:hover {
-  background: rgba(255, 255, 255, 0.35);
-  transform: scale(1.05);
+.medicine-card-calendar__status-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.medicine-card__btn:active {
+.medicine-card-calendar__status-btn:active {
   transform: scale(0.95);
 }
 
-.medicine-card__btn-icon {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-}
-
-.medicine-card__btn--delete:hover {
-  background: rgba(239, 68, 68, 0.4);
-}
-
-.medicine-card__btn--edit:hover {
-  background: rgba(255, 255, 255, 0.35);
-}
-
-/* ===== INFORMACIÓN EN FILAS ===== */
-.medicine-card__info {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.medicine-card__row {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.medicine-card__field {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  flex: 1;
-  min-width: 160px;
-  font-size: 13px;
-}
-
-.medicine-card__label {
-  font-weight: 500;
-  opacity: 0.95;
-}
-
-.medicine-card__value {
-  font-weight: 600;
-  word-break: break-word;
-}
-
-/* Estados */
-.medicine-card--expiring {
-  border: 2px solid #fbbf24;
-}
-
-.medicine-card--expired {
-  opacity: 0.7;
-  border: 2px solid #ef4444;
+.medicine-card-calendar__status-btn--consumed {
+  background-color: #4caf50;
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  .medicine-card {
+  .medicine-card-calendar {
     padding: 14px 16px;
+    min-height: 56px;
   }
 
-  .medicine-card__title {
+  .medicine-card-calendar__icon {
+    font-size: 28px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .medicine-card-calendar__title {
+    font-size: 16px;
+  }
+
+  .medicine-card-calendar__status-btn {
+    width: 40px;
+    height: 40px;
     font-size: 20px;
-  }
-
-  .medicine-card__icon-img {
-    width: 42px;
-    height: 32px;
-  }
-
-  .medicine-card__row {
-    gap: 16px;
-  }
-
-  .medicine-card__field {
-    font-size: 12px;
-    min-width: 140px;
   }
 }
 
 @media (max-width: 480px) {
-  .medicine-card {
+  .medicine-card-calendar {
     padding: 12px 14px;
-    gap: 10px;
+    min-height: 48px;
+    gap: 12px;
   }
 
-  .medicine-card__title {
+  .medicine-card-calendar__icon {
+    font-size: 24px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .medicine-card-calendar__title {
+    font-size: 14px;
+  }
+
+  .medicine-card-calendar__status-btn {
+    width: 36px;
+    height: 36px;
     font-size: 18px;
-  }
-
-  .medicine-card__header {
-    gap: 10px;
-  }
-
-  .medicine-card__title-section {
-    gap: 10px;
-  }
-
-  .medicine-card__icon-img {
-    width: 40px;
-    height: 30px;
-  }
-
-  .medicine-card__btn {
-    padding: 6px;
-  }
-
-  .medicine-card__btn-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .medicine-card__row {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .medicine-card__field {
-    font-size: 11px;
-    min-width: 100%;
   }
 }

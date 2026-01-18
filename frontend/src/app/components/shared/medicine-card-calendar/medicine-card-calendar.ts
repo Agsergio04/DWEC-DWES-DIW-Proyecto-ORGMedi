@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 interface Medicine {
   id: number;
   name: string;
+  icon: string;
+  color?: string;
+  consumed?: boolean;
   dosage?: string;
   frequency?: string;
   startDate?: string;
   endDate?: string;
-  consumed?: boolean;
 }
 
 @Component({
@@ -25,6 +27,7 @@ export class MedicineCardCalendarComponent {
   
   @Output() medicineEdit = new EventEmitter<number>();
   @Output() medicineDelete = new EventEmitter<number>();
+  @Output() medicineSelected = new EventEmitter<number>();
 
   onEdit(): void {
     this.medicineEdit.emit(this.medicine.id);
@@ -32,6 +35,10 @@ export class MedicineCardCalendarComponent {
 
   onDelete(): void {
     this.medicineDelete.emit(this.medicine.id);
+  }
+
+  toggleConsumption(): void {
+    this.medicineSelected.emit(this.medicine.id);
   }
 }
   

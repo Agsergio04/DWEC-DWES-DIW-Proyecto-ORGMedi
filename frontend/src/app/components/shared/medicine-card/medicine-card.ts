@@ -10,7 +10,7 @@ import { MedicineViewModel } from '../../../data/models/medicine.model';
   styleUrls: ['./medicine-card.scss']
 })
 export class MedicineCardComponent implements OnInit {
-  @Input() medicine!: MedicineViewModel;
+  @Input() medicine!: MedicineViewModel & { icon?: string };
   @Output() edit = new EventEmitter<string>();
   @Output() delete = new EventEmitter<string>();
 
