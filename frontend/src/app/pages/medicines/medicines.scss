@@ -67,6 +67,10 @@
   font-size: $font-size-md;
   transition: background $transition-normal, transform $transition-normal;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $espaciado-8;
 
   &:hover {
     transform: translateY(-2px);
@@ -89,6 +93,12 @@
       background: var(--color-primario-hover);
     }
   }
+}
+
+.medicines__action-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
 // ===== RESPONSIVE =====

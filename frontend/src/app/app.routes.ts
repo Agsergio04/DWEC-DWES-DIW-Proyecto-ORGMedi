@@ -98,7 +98,7 @@ export const MAIN_ROUTES: Routes = [
 
 // ============ RUTAS DE MEDICAMENTOS (LAZY) ============
 // Cada subruta genera su propio chunk para optimizar carga
-// Sigue el patrón: /medicamentos (listado) → /medicamentos/crear (crear) → /medicamentos/:id/editar (editar)
+// Sigue el patrón: /medicamentos (listado) → /medicamentos/crear-medicamento (crear) → /medicamento/:id/editar-medicamento (editar)
 export const MEDICINES_ROUTES: Routes = [
   {
     path: 'medicamentos',
@@ -115,7 +115,7 @@ export const MEDICINES_ROUTES: Routes = [
     }
   },
   {
-    path: 'medicamentos/crear',
+    path: 'medicamentos/crear-medicamento',
     loadComponent: () =>
       import('./pages/create-medicine/create-medicine').then(m => m.CreateMedicinePage),
     data: { 
@@ -139,7 +139,7 @@ export const MEDICINES_ROUTES: Routes = [
     canDeactivate: [pendingChangesGuard]
   },
   {
-    path: 'medicamentos/:id/editar',
+    path: 'medicamento/:id/editar-medicamento',
     loadComponent: () =>
       import('./pages/edit-medicine/edit-medicine').then(m => m.EditMedicinePage),
     data: { 

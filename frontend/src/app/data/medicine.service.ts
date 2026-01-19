@@ -32,11 +32,11 @@ export class MedicineService {
 
   /**
    * Obtiene la lista completa de medicamentos
-   * GET /medicines
+   * GET /medicamentos
    * @returns Observable<MedicineViewModel[]>
    */
   getAll(): Observable<MedicineViewModel[]> {
-    return this.api.get<ApiListResponse<Medicine>>('medicines').pipe(
+    return this.api.get<Medicine[]>('medicamentos').pipe(
       // Reintentar 2 veces con delay de 500ms en fallos 5xx
       retryWhen(errors =>
         errors.pipe(
@@ -50,7 +50,7 @@ export class MedicineService {
         )
       ),
       // Transformar respuesta a ViewModel
-      map(response => this.transformMedicinesToViewModel(response.items)),
+      map(items => this.transformMedicinesToViewModel(items || [])),
       // Manejo de errores
       catchError(err => this.handleError(err, 'al cargar medicamentos'))
     );
@@ -58,12 +58,12 @@ export class MedicineService {
 
   /**
    * Obtiene un medicamento específico por ID
-   * GET /medicines/:id
+   * GET /medicamentos/:id
    * @param id ID del medicamento
    * @returns Observable<MedicineViewModel>
    */
   getById(id: string): Observable<MedicineViewModel> {
-    return this.api.get<Medicine>(`medicines/${id}`).pipe(
+    return this.api.get<Medicine>(`medicamentos/${id}`).pipe(
       // Timeout de 10 segundos
       timeout(10000),
       // Transformar a ViewModel
@@ -75,11 +75,11 @@ export class MedicineService {
 
   /**
    * Obtiene medicamentos activos (no vencidos)
-   * GET /medicines?status=active
+   * GET /medicamentos?status=active
    * @returns Observable<MedicineViewModel[]>
    */
   getActive(): Observable<MedicineViewModel[]> {
-    return this.api.get<ApiListResponse<Medicine>>('medicines?status=active').pipe(
+    return this.api.get<Medicine[]>('medicamentos?status=active').pipe(
       // Reintentar 2 veces
       retryWhen(errors =>
         errors.pipe(
@@ -93,8 +93,8 @@ export class MedicineService {
         )
       ),
       // Transformar y filtrar
-      map(response => 
-        this.transformMedicinesToViewModel(response.items).filter(m => m.isActive)
+      map(items => 
+        this.transformMedicinesToViewModel(items || []).filter(m => m.isActive)
       ),
       // Manejo de errores - devolver lista vacía para no romper el flujo
       catchError(() => {
@@ -106,12 +106,12 @@ export class MedicineService {
 
   /**
    * Crea un nuevo medicamento
-   * POST /medicines
+   * POST /medicamentos
    * @param medicine Datos del medicamento a crear
    * @returns Observable<MedicineViewModel>
    */
   create(medicine: CreateMedicineDto): Observable<MedicineViewModel> {
-    return this.api.post<Medicine>('medicines', medicine).pipe(
+    return this.api.post<Medicine>('medicamentos', medicine).pipe(
       // Log del éxito
       tap(result => console.log('Medicamento creado:', result)),
       // Transformar a ViewModel
@@ -123,13 +123,13 @@ export class MedicineService {
 
   /**
    * Actualiza un medicamento completamente (PUT)
-   * PUT /medicines/:id
+   * PUT /medicamentos/:id
    * @param id ID del medicamento
    * @param medicine Datos completos actualizados
    * @returns Observable<MedicineViewModel>
    */
-  update(id: string, medicine: Omit<Medicine, 'id'>): Observable<MedicineViewModel> {
-    return this.api.put<Medicine>(`medicines/${id}`, medicine).pipe(
+  update(id: string | number, medicine: Omit<Medicine, 'id'>): Observable<MedicineViewModel> {
+    return this.api.put<Medicine>(`medicamentos/${id}`, medicine).pipe(
       // Log del éxito
       tap(result => console.log('Medicamento actualizado:', result)),
       // Transformar a ViewModel
@@ -141,13 +141,13 @@ export class MedicineService {
 
   /**
    * Actualiza parcialmente un medicamento (PATCH)
-   * PATCH /medicines/:id
+   * PATCH /medicamentos/:id
    * @param id ID del medicamento
    * @param partial Datos parciales a actualizar
    * @returns Observable<MedicineViewModel>
    */
   patch(id: string, partial: Partial<UpdateMedicineDto>): Observable<MedicineViewModel> {
-    return this.api.patch<Medicine>(`medicines/${id}`, partial).pipe(
+    return this.api.patch<Medicine>(`medicamentos/${id}`, partial).pipe(
       // Log del éxito
       tap(result => console.log('Medicamento actualizado parcialmente:', result)),
       // Transformar a ViewModel
@@ -159,12 +159,12 @@ export class MedicineService {
 
   /**
    * Elimina un medicamento
-   * DELETE /medicines/:id
+   * DELETE /medicamentos/:id
    * @param id ID del medicamento a eliminar
    * @returns Observable<void>
    */
-  delete(id: string): Observable<void> {
-    return this.api.delete<void>(`medicines/${id}`).pipe(
+  delete(id: string | number): Observable<void> {
+    return this.api.delete<void>(`medicamentos/${id}`).pipe(
       // Log del éxito
       tap(() => console.log(`Medicamento ${id} eliminado`)),
       // Manejo de errores
@@ -207,7 +207,7 @@ export class MedicineService {
     if (filters.sortBy) params['sortBy'] = filters.sortBy;
     if (filters.sortOrder) params['sortOrder'] = filters.sortOrder;
 
-    return this.api.getWithParams<ApiListResponse<Medicine>>('medicines', params).pipe(
+    return this.api.getWithParams<ApiListResponse<Medicine>>('medicamentos', params).pipe(
       retryWhen(errors =>
         errors.pipe(
           scan((acc, error: any) => {
@@ -229,12 +229,12 @@ export class MedicineService {
 
   /**
    * Obtiene medicamentos que expiran en un rango de días
-   * GET /medicines?expiringInDays=7
+   * GET /medicamentos?expiringInDays=7
    * @param days Número de días hasta expiración
    * @returns Observable<MedicineViewModel[]>
    */
   getMedicinesExpiringInDays(days: number): Observable<MedicineViewModel[]> {
-    return this.api.getWithParams<ApiListResponse<Medicine>>('medicines', {
+    return this.api.getWithParams<ApiListResponse<Medicine>>('medicamentos', {
       expiringInDays: days,
       status: 'active'
     }).pipe(
@@ -250,10 +250,15 @@ export class MedicineService {
   /**
    * Transforma un medicamento a ViewModel
    * Agrega campos calculados para la UI
+   * Compatible con campos del backend: nombre, cantidadMg, fechaInicio, fechaFin, etc.
    */
   private transformMedicineToViewModel(medicine: Medicine): MedicineViewModel {
-    const startDate = new Date(medicine.startDate);
-    const endDate = medicine.endDate ? new Date(medicine.endDate) : null;
+    // Soportar tanto fechaInicio como startDate
+    const startDateStr = (typeof medicine.fechaInicio === 'string' ? medicine.fechaInicio : medicine.fechaInicio?.toString()) || '';
+    const endDateStr = (typeof medicine.fechaFin === 'string' ? medicine.fechaFin : medicine.fechaFin?.toString()) || '';
+    
+    const startDate = new Date(startDateStr);
+    const endDate = endDateStr ? new Date(endDateStr) : null;
     const today = new Date();
 
     // Calcular días hasta vencimiento
@@ -269,15 +274,23 @@ export class MedicineService {
       expirationStatus = 'expired';
     }
 
+    // Nombre para mostrar
+    const nombre = medicine.nombre || 'Medicamento sin nombre';
+    const cantidad = medicine.cantidadMg || 0;
+    
     return {
       ...medicine,
+      nombre: nombre,
+      cantidadMg: cantidad,
+      fechaInicio: startDateStr,
+      fechaFin: endDateStr,
       formattedStartDate: this.formatDate(startDate),
       formattedEndDate: endDate ? this.formatDate(endDate) : undefined,
       isActive: !endDate || endDate > today,
       isExpired: endDate ? endDate <= today : false,
       daysUntilExpiration: daysUntilExpiration || undefined,
       expirationStatus,
-      displayName: `${medicine.name} - ${medicine.dosage}`
+      displayName: `${nombre} - ${cantidad}mg`
     };
   }
 
@@ -472,9 +485,8 @@ export class MedicineService {
         
         // Buscar en múltiples campos
         const results = allMedicines.filter(medicine =>
-          medicine.name.toLowerCase().includes(searchTerm) ||
-          medicine.dosage.toLowerCase().includes(searchTerm) ||
-          (medicine.description && medicine.description.toLowerCase().includes(searchTerm)) ||
+          medicine.nombre.toLowerCase().includes(searchTerm) ||
+          medicine.cantidadMg.toString().includes(searchTerm) ||
           (medicine.displayName && medicine.displayName.toLowerCase().includes(searchTerm))
         );
 

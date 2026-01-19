@@ -4,20 +4,25 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.lang.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-    @Autowired
-    private JwtUtil jwtUtil;
+    private static final Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
+    private final JwtUtil jwtUtil;
+    
+    public JwtRequestFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain)
@@ -26,19 +31,29 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String correo = null;
         String jwt;
 
+        logger.debug("[JwtRequestFilter] Processing request to: " + request.getRequestURI());
+        logger.debug("[JwtRequestFilter] Authorization header: " + (authHeader != null ? "present" : "missing"));
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
+            logger.debug("[JwtRequestFilter] Token found, validating...");
             // Validar token primero y luego extraer el subject
             if (jwtUtil.validateToken(jwt)) {
                 try {
                     correo = jwtUtil.extractCorreo(jwt);
+                    logger.debug("[JwtRequestFilter] ✓ Token valid, extracted correo: " + correo);
                 } catch (Exception e) {
-                    // Token inválido o problema al extraer
+                    logger.error("[JwtRequestFilter] Error extracting correo from token: " + e.getMessage());
                 }
+            } else {
+                logger.warn("[JwtRequestFilter] Token validation failed");
             }
+        } else {
+            logger.debug("[JwtRequestFilter] No Bearer token found");
         }
 
         if (correo != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            logger.info("[JwtRequestFilter] Setting authentication for correo: " + correo);
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(correo, null, null);
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

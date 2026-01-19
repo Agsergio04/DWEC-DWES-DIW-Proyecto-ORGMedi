@@ -25,7 +25,7 @@ export interface AuthResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api/auth';
+  private readonly baseUrl = '/api/auth';
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.checkStoredAuth());
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.getStoredUser());
 
@@ -110,6 +110,7 @@ export class AuthService {
 
     return this.http.post<AuthResponse>(`${this.baseUrl}/register`, request).pipe(
       tap((response) => {
+        console.log('[AuthService] Register successful, token:', response.token.substring(0, 20) + '...');
         this.setToken(response.token);
         const user: AuthUser = {
           id: 1,
@@ -120,6 +121,7 @@ export class AuthService {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.isLoggedInSubject.next(true);
         this.currentUserSubject.next(user);
+        console.log('[AuthService] Token saved to localStorage:', localStorage.getItem('authToken')?.substring(0, 20) + '...');
       }),
       map(() => true),
       catchError(err => {
@@ -133,6 +135,7 @@ export class AuthService {
    * Cerrar sesión
    */
   logout(): void {
+    localStorage.removeItem('authToken');
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('currentUser');
     this.isLoggedInSubject.next(false);

@@ -11,8 +11,8 @@ import { MedicineViewModel } from '../../../data/models/medicine.model';
 })
 export class MedicineCardComponent implements OnInit {
   @Input() medicine!: MedicineViewModel;
-  @Output() edit = new EventEmitter<string>();
-  @Output() delete = new EventEmitter<string>();
+  @Output() edit = new EventEmitter<number>();
+  @Output() delete = new EventEmitter<number>();
 
   isExpired = false;
   isExpiring = false;
@@ -22,9 +22,9 @@ export class MedicineCardComponent implements OnInit {
   }
 
   checkExpiration() {
-    if (this.medicine && this.medicine.endDate) {
+    if (this.medicine && this.medicine.fechaFin) {
       const today = new Date();
-      const endDate = new Date(this.medicine.endDate);
+      const endDate = new Date(this.medicine.fechaFin);
       const daysUntilExpiry = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
       
       this.isExpired = daysUntilExpiry < 0;
@@ -37,18 +37,18 @@ export class MedicineCardComponent implements OnInit {
   }
 
   onDelete() {
-    if (confirm(`¿Estás seguro de que deseas eliminar "${this.medicine.name}"?`)) {
+    if (confirm(`¿Estás seguro de que deseas eliminar "${this.medicine.nombre}"?`)) {
       this.delete.emit(this.medicine.id);
     }
   }
 
   getDaysUntilExpiry(): string {
-    if (!this.medicine || !this.medicine.endDate) {
+    if (!this.medicine || !this.medicine.fechaFin) {
       return 'N/A';
     }
     
     const today = new Date();
-    const endDate = new Date(this.medicine.endDate);
+    const endDate = new Date(this.medicine.fechaFin);
     const daysUntilExpiry = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
     
     if (daysUntilExpiry < 0) {
@@ -63,10 +63,10 @@ export class MedicineCardComponent implements OnInit {
   }
 
   getFrequencyLabel(): string {
-    return this.medicine?.frequency || 'No especificada';
+    return this.medicine?.frecuencia ? `Cada ${this.medicine.frecuencia} hora(s)` : 'No especificada';
   }
 
   getDosageLabel(): string {
-    return this.medicine?.dosage || 'No especificada';
+    return this.medicine?.cantidadMg ? `${this.medicine.cantidadMg}mg` : 'No especificada';
   }
 }

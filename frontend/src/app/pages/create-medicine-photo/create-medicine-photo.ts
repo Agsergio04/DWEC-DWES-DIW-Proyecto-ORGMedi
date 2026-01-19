@@ -36,6 +36,7 @@ export class CreateMedicinePhotoPage implements PendingChangesComponent {
       name: ['', Validators.required],
       dosage: ['', Validators.required],
       frequency: ['', Validators.required],
+      horaInicio: ['', Validators.required],
       description: [''],
       startDate: ['', Validators.required],
       endDate: [''],

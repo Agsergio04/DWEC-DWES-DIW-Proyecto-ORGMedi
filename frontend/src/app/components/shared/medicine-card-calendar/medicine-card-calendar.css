@@ -37,6 +37,12 @@
   height: 48px;
 }
 
+.medicine-card-calendar__icon-svg {
+  width: 48px;
+  height: 48px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
 .medicine-card-calendar__icon-img {
   width: 48px;
   height: 48px;
@@ -49,7 +55,6 @@
   font-size: 20px;
   font-weight: 700;
   margin: 0;
-  color: var(--medicine-color, #D97BBF);
   word-break: break-word;
   overflow-wrap: break-word;
 }

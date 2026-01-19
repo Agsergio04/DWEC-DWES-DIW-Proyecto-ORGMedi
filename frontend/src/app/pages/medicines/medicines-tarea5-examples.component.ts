@@ -279,7 +279,7 @@ export class CreateMedicineTarea5Component {
     this.medicineService.create(medicineData).subscribe({
       next: (createdMedicine) => {
         this.setSavingSuccess(true);
-        this.toastService.success(`Medicamento "${createdMedicine.name}" creado`);
+        this.toastService.success(`Medicamento "${createdMedicine.nombre}" creado`);
         
         setTimeout(() => {
           this.router.navigate(['/medicinas', createdMedicine.id]);

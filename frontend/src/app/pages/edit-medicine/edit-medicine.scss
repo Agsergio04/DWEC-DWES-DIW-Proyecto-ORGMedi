@@ -2,14 +2,20 @@
 
 .page--edit-medicine {
   padding: $espaciado-48 $espaciado-32;
-  min-height: calc(100vh - 72px - 200px);
-  background: linear-gradient(135deg, rgba(217, 123, 191, 0.05) 0%, rgba(181, 225, 119, 0.05) 100%);
+  min-height: calc(100vh - 72px);
+  background: linear-gradient(180deg, rgba(217, 123, 191, 0.1) 0%, rgba(217, 123, 191, 0.05) 100%);
 }
 
 .page__container {
-  max-width: 900px;
+  max-width: 600px;
   margin: 0 auto;
   width: 100%;
+}
+
+// ===== ENCABEZADO =====
+.edit-medicine__title-section {
+  text-align: center;
+  margin-bottom: $espaciado-48;
 }
 
 .page--edit-medicine h1 {
@@ -17,25 +23,23 @@
   font-size: $font-size-3xl;
   font-weight: $font-weight-bold;
   color: var(--color-texto_borde_cajas);
-  margin-bottom: $espaciado-32;
-  text-align: center;
+  margin: 0 0 $espaciado-8 0;
 }
 
+.edit-medicine__description {
+  font-size: $font-size-md;
+  color: rgba(var(--color-texto_borde_cajas-rgb), 0.7);
+  margin: 0;
+  line-height: 1.5;
+}
+
+// ===== LOADING =====
 .loading-message {
   text-align: center;
   padding: $espaciado-32;
   color: var(--color-texto_borde_cajas);
   font-size: $font-size-lg;
   animation: pulse 1.5s infinite;
-}
-
-.error-message {
-  background-color: var(--color-negacion-primary);
-  color: white;
-  padding: $espaciado-16;
-  border-radius: 8px;
-  margin-bottom: $espaciado-24;
-  font-weight: $font-weight-medium;
 }
 
 @keyframes pulse {
@@ -47,14 +51,179 @@
   }
 }
 
-// Responsive
+// ===== FORMULARIO =====
+.edit-medicine__form {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-24;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-8;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $espaciado-16;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-label {
+  font-weight: $font-weight-medium;
+  color: var(--color-texto_borde_cajas);
+  font-size: $font-size-sm;
+  line-height: 1.4;
+}
+
+.form-input,
+.form-select {
+  padding: $espaciado-12 $espaciado-16;
+  border: none;
+  border-radius: $radius-sm;
+  background: #A8E6A1;
+  font-size: $font-size-md;
+  color: var(--color-texto_borde_cajas);
+  font-family: inherit;
+  font-weight: $font-weight-medium;
+
+  &::placeholder {
+    color: rgba(var(--color-texto_borde_cajas-rgb), 0.5);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(168, 230, 161, 0.3);
+  }
+}
+
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  padding-right: $espaciado-32;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right $espaciado-12 center;
+  padding-right: $espaciado-40;
+}
+
+// ===== BOTONES =====
+.form-actions {
+  display: flex;
+  gap: $espaciado-16;
+  margin-top: $espaciado-32;
+}
+
+.btn {
+  flex: 1;
+  padding: $espaciado-12 $espaciado-24;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-md;
+  transition: background $transition-normal, transform $transition-normal;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &--cancel {
+    background: var(--color-primario-primary);
+    color: white;
+
+    &:hover {
+      background: var(--color-primario-hover);
+    }
+  }
+
+  &--save {
+    background: var(--color-primario-primary);
+    color: white;
+
+    &:hover {
+      background: var(--color-primario-hover);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+}
+
+// ===== MENSAJE DE ERROR =====
+.error-message {
+  padding: $espaciado-12 $espaciado-16;
+  background: rgba(var(--color-negacion-primary), 0.1);
+  color: var(--color-negacion-primary);
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  margin-top: $espaciado-16;
+}
+
+// ===== RESPONSIVE =====
 @media (max-width: 768px) {
   .page--edit-medicine {
-    padding: $espaciado-24 $espaciado-16;
+    padding: $espaciado-32 $espaciado-16;
   }
 
   .page--edit-medicine h1 {
     font-size: $font-size-2xl;
-    margin-bottom: $espaciado-24;
+  }
+
+  .edit-medicine__title-section {
+    margin-bottom: $espaciado-32;
+  }
+
+  .btn {
+    padding: $espaciado-12 $espaciado-16;
+    font-size: $font-size-md;
+  }
+}
+
+@media (max-width: 480px) {
+  .page--edit-medicine {
+    padding: $espaciado-24 $espaciado-12;
+  }
+
+  .page--edit-medicine h1 {
+    font-size: $font-size-xl;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ===== DARK MODE =====
+[data-theme="dark"] {
+  .page--edit-medicine h1,
+  .form-label {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .edit-medicine__description {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .form-input,
+  .form-select {
+    background: rgba(168, 230, 161, 0.8);
+    color: rgba(0, 0, 0, 0.9);
+
+    &::placeholder {
+      color: rgba(0, 0, 0, 0.4);
+    }
   }
 }

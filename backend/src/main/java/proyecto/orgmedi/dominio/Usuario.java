@@ -30,7 +30,7 @@ public class Usuario {
     @Column(nullable = false)
     private String contrasena;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private GestorMedicamentos gestorMedicamentos;
 
     @Override

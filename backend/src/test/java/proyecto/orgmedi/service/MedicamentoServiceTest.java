@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import proyecto.orgmedi.dominio.Medicamento;
 import proyecto.orgmedi.dto.medicamento.MedicamentoDTO;
-import proyecto.orgmedi.error.ConflictException;
+import proyecto.orgmedi.error.BadRequestException;
 import proyecto.orgmedi.error.NotFoundException;
 
 import java.time.LocalDate;
@@ -26,10 +26,12 @@ public class MedicamentoServiceTest {
     private MedicamentoService medicamentoService;
 
     @Test
+    @SuppressWarnings("null")
     void createMedicamento_success_withDto() {
         MedicamentoDTO dto = MedicamentoDTO.builder()
                 .nombre("Paracetamol")
                 .cantidadMg(500)
+                .horaInicio("08:00")
                 .fechaInicio(LocalDate.parse("2025-01-01"))
                 .fechaFin(LocalDate.parse("2025-01-10"))
                 .color("Blanco")
@@ -39,12 +41,12 @@ public class MedicamentoServiceTest {
         Medicamento m = new Medicamento();
         m.setNombre(dto.getNombre());
         m.setCantidadMg(dto.getCantidadMg());
+        m.setHoraInicio(dto.getHoraInicio());
         m.setFechaInicio(dto.getFechaInicio());
         m.setFechaFin(dto.getFechaFin());
         m.setColor(dto.getColor());
         m.setFrecuencia(dto.getFrecuencia());
 
-        when(medicamentoRepository.findById(dto.getNombre())).thenReturn(Optional.empty());
         when(medicamentoRepository.save(any(Medicamento.class))).thenReturn(m);
 
         Medicamento saved = medicamentoService.createMedicamento(dto);
@@ -58,24 +60,24 @@ public class MedicamentoServiceTest {
     void createMedicamento_conflict() {
         Medicamento m = new Medicamento();
         m.setNombre("Ibuprofen");
-        when(medicamentoRepository.findById(m.getNombre())).thenReturn(Optional.of(m));
 
-        assertThrows(ConflictException.class, () -> medicamentoService.createMedicamento(m));
+        assertThrows(BadRequestException.class, () -> medicamentoService.createMedicamento(m));
     }
 
     @Test
-    void getByNombreOrThrow_notFound() {
-        when(medicamentoRepository.findById("X")).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> medicamentoService.getByNombreOrThrow("X"));
+    void getByIdOrThrow_notFound() {
+        when(medicamentoRepository.findById(999L)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> medicamentoService.getByIdOrThrow(999L));
     }
 
     @Test
-    void deleteByNombreOrThrow_success() {
+    void deleteByIdOrThrow_success() {
         Medicamento m = new Medicamento();
+        m.setId(1L);
         m.setNombre("Aspirina");
-        when(medicamentoRepository.findById("Aspirina")).thenReturn(Optional.of(m));
+        when(medicamentoRepository.findById(1L)).thenReturn(Optional.of(m));
 
-        assertDoesNotThrow(() -> medicamentoService.deleteByNombreOrThrow("Aspirina"));
-        verify(medicamentoRepository).deleteById("Aspirina");
+        assertDoesNotThrow(() -> medicamentoService.deleteByIdOrThrow(1L));
+        verify(medicamentoRepository).deleteById(1L);
     }
 }

@@ -26,21 +26,18 @@ public class MedicamentoService {
         return medicamentoRepository.findAll();
     }
 
-    public Optional<Medicamento> findByNombre(String nombre) {
-        return medicamentoRepository.findById(nombre);
+    public Optional<Medicamento> findById(Long id) {
+        return medicamentoRepository.findById(id);
     }
 
-    public Medicamento getByNombreOrThrow(String nombre) {
-        return medicamentoRepository.findById(nombre)
+    public Medicamento getByIdOrThrow(Long id) {
+        return medicamentoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Medicamento no encontrado"));
     }
 
     public Medicamento createMedicamento(Medicamento medicamento) {
         if (medicamento.getNombre() == null || medicamento.getNombre().isBlank()) {
             throw new BadRequestException("Nombre inválido");
-        }
-        if (medicamentoRepository.findById(medicamento.getNombre()).isPresent()) {
-            throw new ConflictException("Medicamento ya existe");
         }
         return medicamentoRepository.save(medicamento);
     }
@@ -50,43 +47,44 @@ public class MedicamentoService {
         if (dto.getNombre() == null || dto.getNombre().isBlank()) {
             throw new BadRequestException("Nombre inválido");
         }
-        if (medicamentoRepository.findById(dto.getNombre()).isPresent()) {
-            throw new ConflictException("Medicamento ya existe");
-        }
         Medicamento m = fromDto(dto);
         return medicamentoRepository.save(m);
     }
 
-    public Medicamento updateMedicamento(String nombre, Medicamento medicamento) {
-        if (medicamentoRepository.findById(nombre).isEmpty()) {
+    public Medicamento updateMedicamento(Long id, Medicamento medicamento) {
+        if (medicamentoRepository.findById(id).isEmpty()) {
             throw new NotFoundException("Medicamento no encontrado");
         }
-        medicamento.setNombre(nombre);
+        medicamento.setId(id);
         return medicamentoRepository.save(medicamento);
     }
 
     // update from DTO
-    public Medicamento updateMedicamento(String nombre, MedicamentoDTO dto) {
-        if (medicamentoRepository.findById(nombre).isEmpty()) {
+    public Medicamento updateMedicamento(Long id, MedicamentoDTO dto) {
+        if (medicamentoRepository.findById(id).isEmpty()) {
             throw new NotFoundException("Medicamento no encontrado");
         }
         Medicamento m = fromDto(dto);
-        m.setNombre(nombre);
+        m.setId(id);
         return medicamentoRepository.save(m);
     }
 
-    public void deleteByNombreOrThrow(String nombre) {
-        if (medicamentoRepository.findById(nombre).isEmpty()) {
+    public void deleteByIdOrThrow(Long id) {
+        if (medicamentoRepository.findById(id).isEmpty()) {
             throw new NotFoundException("Medicamento no encontrado");
         }
-        medicamentoRepository.deleteById(nombre);
+        medicamentoRepository.deleteById(id);
     }
 
     // mapper DTO <-> entity
     public Medicamento fromDto(MedicamentoDTO dto) {
         Medicamento m = new Medicamento();
+        if (dto.getId() != null) {
+            m.setId(dto.getId());
+        }
         m.setNombre(dto.getNombre());
         m.setCantidadMg(dto.getCantidadMg());
+        m.setHoraInicio(dto.getHoraInicio());
         m.setFechaInicio(dto.getFechaInicio());
         m.setFechaFin(dto.getFechaFin());
         m.setColor(dto.getColor());
@@ -96,8 +94,10 @@ public class MedicamentoService {
 
     public MedicamentoDTO toDto(Medicamento m) {
         MedicamentoDTO dto = new MedicamentoDTO();
+        dto.setId(m.getId());
         dto.setNombre(m.getNombre());
         dto.setCantidadMg(m.getCantidadMg());
+        dto.setHoraInicio(m.getHoraInicio());
         dto.setFechaInicio(m.getFechaInicio());
         dto.setFechaFin(m.getFechaFin());
         dto.setColor(m.getColor());
@@ -109,7 +109,8 @@ public class MedicamentoService {
         return medicamentoRepository.save(medicamento);
     }
 
+    @Deprecated(since = "2.0", forRemoval = true)
     public void deleteByNombre(String nombre) {
-        medicamentoRepository.deleteById(nombre);
+        // Deprecated: use deleteByIdOrThrow(Long) instead
     }
 }

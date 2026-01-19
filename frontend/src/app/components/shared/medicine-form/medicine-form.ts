@@ -5,13 +5,12 @@ import { DataInputSelectorComponent, SelectorOption } from '../data-input-select
 import { ButtonComponent } from '../button/button';
 
 export interface MedicineFormData {
-  name: string;
-  dosage: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  quantity: number;
-  frequency: string;
+  nombre: string;
+  cantidadMg: number;
+  horaInicio: string;
+  fechaInicio: string;
+  fechaFin: string;
+  frecuencia: number;
   color?: string;
 }
 
@@ -46,6 +45,15 @@ export class MedicineFormComponent implements OnInit {
     { id: 12, label: 'Cada 12 horas' }
   ];
 
+  // Mapeo de colores variantes a hex
+  private colorMap: { [key: string]: string } = {
+    'variante-primera': '#00BCD4',   // Azul Cian
+    'variante-segunda': '#FFC107',   // Amarillo
+    'variante-tercera': '#E91E63',   // Rosa Magenta
+    'variante-cuarta': '#FF9800',    // Naranja
+    'variante-quinta': '#9C27B0'     // Magenta
+  };
+
   // Opciones de color
   colorOptions: SelectorOption[] = [
     { id: 'variante-primera', label: 'Azul Cian', color: 'var(--color-variante-primera)' },
@@ -60,26 +68,32 @@ export class MedicineFormComponent implements OnInit {
 
   constructor() {
     this.form = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      dosage: ['', Validators.required],
-      description: [''],
-      startDate: ['', Validators.required],
-      endDate: [''],
-      quantity: [0, [Validators.required, Validators.min(1)]],
-      frequency: ['', Validators.required]
+      nombre: ['', [Validators.required, Validators.minLength(3)]],
+      cantidadMg: ['', [Validators.required, Validators.min(1)]],
+      horaInicio: ['', Validators.required],
+      fechaInicio: ['', Validators.required],
+      fechaFin: ['', Validators.required],
+      frecuencia: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
     if (this.initialData) {
-      this.form.patchValue(this.initialData);
+      this.form.patchValue({
+        nombre: this.initialData.nombre,
+        cantidadMg: this.initialData.cantidadMg,
+        horaInicio: this.initialData.horaInicio,
+        fechaInicio: this.initialData.fechaInicio,
+        fechaFin: this.initialData.fechaFin,
+        frecuencia: this.initialData.frecuencia
+      });
       // Buscar la frecuencia seleccionada inicial
-      const freqOption = this.frequencyOptions.find(opt => opt.label === this.initialData?.frequency);
+      const freqOption = this.frequencyOptions.find(opt => opt.id === this.initialData?.frecuencia);
       if (freqOption) {
         this.selectedFrequency = freqOption;
       }
       // Buscar el color seleccionado inicial
-      const colorOption = this.colorOptions.find(opt => opt.id === this.initialData?.color);
+      const colorOption = this.colorOptions.find(opt => this.colorMap[opt.id as string] === this.initialData?.color);
       if (colorOption) {
         this.selectedColor = colorOption;
       }
@@ -91,7 +105,7 @@ export class MedicineFormComponent implements OnInit {
    */
   onFrequencySelected(option: SelectorOption): void {
     this.selectedFrequency = option;
-    this.form.patchValue({ frequency: option.label });
+    this.form.patchValue({ frecuencia: option.id });
   }
 
   /**
@@ -105,10 +119,11 @@ export class MedicineFormComponent implements OnInit {
    * Envía el formulario
    */
   onSubmit(): void {
-    if (this.form.valid) {
+    if (this.form.valid && this.selectedFrequency && this.selectedColor) {
       const formData: MedicineFormData = {
         ...this.form.value,
-        color: this.selectedColor?.id.toString()
+        frecuencia: this.selectedFrequency.id as number,
+        color: this.colorMap[this.selectedColor.id as string]
       };
       this.formSubmit.emit(formData);
     }

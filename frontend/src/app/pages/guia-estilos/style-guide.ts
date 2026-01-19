@@ -72,13 +72,13 @@ export class StyleGuidePage implements OnInit {
 
   // Datos iniciales para el formulario de ejemplo
   medicineFormData: MedicineFormData = {
-    name: 'Amoxicilina',
-    dosage: '500mg',
-    frequency: 'Cada 6 horas',
-    description: '08:00 AM',
-    startDate: '2026-01-15',
-    endDate: '2026-02-15',
-    quantity: 30
+    nombre: 'Amoxicilina',
+    cantidadMg: 500,
+    frecuencia: 4,
+    horaInicio: '08:00',
+    fechaInicio: '2026-01-15',
+    fechaFin: '2026-02-15',
+    color: '#FF6B6B'
   };
 
   // Estado demo modal
@@ -121,7 +121,7 @@ export class StyleGuidePage implements OnInit {
     console.log('Editar medicamento:', medicine);
   }
 
-  onDeleteMedicine(medicineId: string): void {
+  onDeleteMedicine(medicineId: number): void {
     console.log('Eliminar medicamento:', medicineId);
   }
 
@@ -130,7 +130,7 @@ export class StyleGuidePage implements OnInit {
    */
   onMedicineFormSubmit(formData: MedicineFormData): void {
     console.log('Formulario de medicina enviado:', formData);
-    alert(`Medicamento: ${formData.name}\nCantidad: ${formData.dosage}\nFecha de inicio: ${formData.startDate}`);
+    alert(`Medicamento: ${formData.nombre}\nCantidad: ${formData.cantidadMg}mg\nFecha de inicio: ${formData.fechaInicio}`);
   }
 
   /**

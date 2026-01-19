@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,9 +28,7 @@ public class JwtRequestFilterTest {
 
     @BeforeEach
     void setup() {
-        filter = new JwtRequestFilter();
-        // Inyectar el mock en el filtro
-        ReflectionTestUtils.setField(filter, "jwtUtil", jwtUtil);
+        filter = new JwtRequestFilter(jwtUtil);
         SecurityContextHolder.clearContext();
     }
 
@@ -41,6 +38,7 @@ public class JwtRequestFilterTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     void doFilter_setsAuthentication_whenTokenValid() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -62,6 +60,7 @@ public class JwtRequestFilterTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     void doFilter_noAuthentication_whenNoHeader() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();

@@ -169,3 +169,13 @@
   }
 }
 
+// ===== MENSAJE VACÍO =====
+.medicines__empty-message {
+  text-align: center;
+  font-family: $font-secondary;
+  font-size: 24px;
+  color: var(--color-texto_borde_cajas);
+  padding: $espaciado-32 $espaciado-20;
+  margin-bottom: $espaciado-48;
+}
+

@@ -37,13 +37,14 @@ public class UsuarioServiceTest {
     }
 
     @Test
+    @SuppressWarnings("null")
     void createUsuario_conflict() {
         Usuario u = new Usuario();
         u.setCorreo("dup@example.com");
         when(usuarioRepository.existsByCorreo(u.getCorreo())).thenReturn(true);
 
         assertThrows(ConflictException.class, () -> usuarioService.createUsuario(u));
-        verify(usuarioRepository, never()).save(any());
+        verify(usuarioRepository, never()).save(any(Usuario.class));
     }
 
     @Test

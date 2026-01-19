@@ -1,74 +1,55 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MedicineService } from '../../data/medicine.service';
-import { CreateMedicineDto, ApiError } from '../../data/models/medicine.model';
-import { PendingChangesComponent } from '../../core/services/guards';
+import { ApiError } from '../../data/models/medicine.model';
+import { MedicineFormComponent, MedicineFormData } from '../../components/shared/medicine-form/medicine-form';
 
 @Component({
   selector: 'app-create-medicine-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, MedicineFormComponent],
   templateUrl: './create-medicine.html',
   styleUrls: ['./create-medicine.scss']
 })
-export class CreateMedicinePage implements PendingChangesComponent {
+export class CreateMedicinePage implements OnInit {
   private medicineService = inject(MedicineService);
   private router = inject(Router);
-  private fb = inject(FormBuilder);
 
-  form: FormGroup;
   saving = false;
   error: ApiError | null = null;
 
-  frequencies = [
-    'Una vez al día',
-    '2 veces al día',
-    '3 veces al día',
-    'Cada 4-6 horas',
-    'Cada 6-8 horas',
-    'Cada 8 horas',
-    'Cada 12 horas',
-    'Según sea necesario'
-  ];
+  constructor() {}
 
-  constructor() {
-    this.form = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      dosage: ['', Validators.required],
-      frequency: ['', Validators.required],
-      description: [''],
-      startDate: ['', Validators.required],
-      endDate: [''],
-      quantity: [0, [Validators.required, Validators.min(1)]],
-      color: ['#D97BBF']
-    });
-  }
-
-  isFormValid(): boolean {
-    return this.form.valid;
+  /**
+   * Verifica que el usuario esté autenticado
+   */
+  ngOnInit(): void {
+    const authToken = localStorage.getItem('authToken');
+    if (!authToken) {
+      this.router.navigate(['/iniciar-sesion']);
+    }
   }
 
   /**
-   * Guarda el medicamento usando el servicio
+   * Maneja el envío del formulario
    */
-  saveMedicine(): void {
-    if (this.form.invalid) {
-      this.error = {
-        code: 'VALIDATION_ERROR',
-        message: 'Por favor completa todos los campos requeridos',
-        timestamp: new Date().toISOString()
-      };
-      return;
-    }
-
+  onFormSubmit(formData: MedicineFormData): void {
     this.saving = true;
     this.error = null;
 
-    const formData: CreateMedicineDto = this.form.value;
+    // Mapear correctamente los datos del formulario al DTO esperado por el backend
+    const medicineData = {
+      nombre: formData.nombre,
+      cantidadMg: formData.cantidadMg,
+      frecuencia: formData.frecuencia,
+      horaInicio: formData.horaInicio,
+      fechaInicio: this.formatDateForApi(formData.fechaInicio),
+      fechaFin: this.formatDateForApi(formData.fechaFin),
+      color: formData.color
+    };
 
-    this.medicineService.create(formData).subscribe({
+    this.medicineService.create(medicineData).subscribe({
       next: (medicine) => {
         console.log('Medicamento creado:', medicine);
         this.router.navigate(['/medicamentos']);
@@ -83,32 +64,34 @@ export class CreateMedicinePage implements PendingChangesComponent {
   }
 
   /**
-   * Cancela la creación y navega atrás
+   * Formatea la fecha al formato esperado por el backend (YYYY-MM-DD)
    */
-  cancelCreate(): void {
-    this.router.navigate(['/medicamentos']);
+  private formatDateForApi(date: string | Date): string {
+    if (!date) return '';
+    
+    let dateObj: Date;
+    if (typeof date === 'string') {
+      dateObj = new Date(date);
+    } else {
+      dateObj = date;
+    }
+    
+    // Asegurar que es una fecha válida
+    if (isNaN(dateObj.getTime())) {
+      return '';
+    }
+    
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
   }
 
   /**
-   * Obtiene el error de un control del formulario
-   * @param controlName Nombre del control
+   * Maneja la cancelación del formulario
    */
-  getFieldError(controlName: string): string | null {
-    const control = this.form.get(controlName);
-    if (!control || !control.errors || !control.touched) {
-      return null;
-    }
-
-    if (control.errors['required']) {
-      return `${controlName} es requerido`;
-    }
-    if (control.errors['minlength']) {
-      return `${controlName} debe tener al menos ${control.errors['minlength'].requiredLength} caracteres`;
-    }
-    if (control.errors['min']) {
-      return `${controlName} debe ser mayor que 0`;
-    }
-
-    return null;
+  onFormCancel(): void {
+    this.router.navigate(['/medicamentos']);
   }
 }

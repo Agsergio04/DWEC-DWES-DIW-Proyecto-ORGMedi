@@ -5,13 +5,16 @@ import proyecto.orgmedi.dto.auth.AuthRequest;
 import proyecto.orgmedi.dto.auth.AuthResponse;
 import proyecto.orgmedi.dto.auth.RegisterRequest;
 import proyecto.orgmedi.dominio.Usuario;
+import proyecto.orgmedi.dominio.GestorMedicamentos;
 import proyecto.orgmedi.repo.UsuarioRepository;
+import proyecto.orgmedi.repo.GestorMedicamentosRepository;
 import proyecto.orgmedi.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import proyecto.orgmedi.error.UnauthorizedException;
 
@@ -29,11 +32,14 @@ public class AuthController {
     @Autowired
     private UsuarioRepository usuarioRepository;
     @Autowired
+    private GestorMedicamentosRepository gestorMedicamentosRepository;
+    @Autowired
     private JwtUtil jwtUtil;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
+    @Transactional
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreo(request.getCorreo());
         if (usuarioOpt.isEmpty()) {
@@ -76,6 +82,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Transactional
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         // Verificar si el correo ya existe
         if (usuarioRepository.findByCorreo(request.getCorreo()).isPresent()) {
@@ -100,6 +107,17 @@ public class AuthController {
 
         // Guardar en la BD
         Usuario savedUsuario = usuarioRepository.save(usuario);
+        
+        // Crear gestor de medicamentos automáticamente para el nuevo usuario
+        GestorMedicamentos gestor = new GestorMedicamentos();
+        gestor.setUsuario(savedUsuario);
+        gestor.setMedicamentos(new java.util.ArrayList<>());
+        GestorMedicamentos savedGestor = gestorMedicamentosRepository.save(gestor);
+        
+        // Establecer la relación bidireccional
+        savedUsuario.setGestorMedicamentos(savedGestor);
+        usuarioRepository.save(savedUsuario);
+        
         logger.info("Register success for correo={}", request.getCorreo());
 
         // Generar token JWT

@@ -16,6 +16,9 @@ import java.time.LocalDate;
 @Table(name = "medicamentos")
 public class Medicamento {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @NotBlank(message = "El nombre es obligatorio")
     @Column(nullable = false, unique = true)
     private String nombre;
@@ -27,6 +30,10 @@ public class Medicamento {
     @NotNull(message = "La fecha de inicio es obligatoria")
     @Column(nullable = false)
     private LocalDate fechaInicio;
+
+    @NotBlank(message = "La hora de inicio es obligatoria")
+    @Column(nullable = false)
+    private String horaInicio;
 
     @NotNull(message = "La fecha de fin es obligatoria")
     @Column(nullable = false)
@@ -50,6 +57,12 @@ public class Medicamento {
     public void cambiarFechaInicio(LocalDate nuevaFecha) {
         if (nuevaFecha != null) {
             this.fechaInicio = nuevaFecha;
+        }
+    }
+
+    public void cambiarHoraInicio(String nuevaHora) {
+        if (nuevaHora != null && !nuevaHora.isBlank()) {
+            this.horaInicio = nuevaHora;
         }
     }
 

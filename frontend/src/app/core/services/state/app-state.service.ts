@@ -69,8 +69,8 @@ export class AppStateService {
     if (!query) return this.medicinesSignal() ?? [];
     
     return this.medicinesSignal()?.filter(m =>
-      m.name.toLowerCase().includes(query) ||
-      m.dosage.toLowerCase().includes(query)
+      m.nombre.toLowerCase().includes(query) ||
+      m.cantidadMg.toString().includes(query)
     ) ?? [];
   });
 
@@ -118,18 +118,18 @@ export class AppStateService {
   /**
    * Actualizar un medicamento localmente
    */
-  updateMedicineLocal(id: string, medicine: Partial<Medicine>) {
+  updateMedicineLocal(id: string | number, medicine: Partial<Medicine>) {
     this.medicinesSignal.update(medicines =>
-      medicines?.map(m => m.id === id ? { ...m, ...medicine } : m) ?? null
+      medicines?.map(m => Number(m.id) === Number(id) ? { ...m, ...medicine } : m) ?? null
     );
   }
 
   /**
    * Eliminar un medicamento localmente
    */
-  removeMedicineLocal(id: string) {
+  removeMedicineLocal(id: string | number) {
     this.medicinesSignal.update(medicines =>
-      medicines?.filter(m => m.id !== id) ?? null
+      medicines?.filter(m => Number(m.id) !== Number(id)) ?? null
     );
   }
 

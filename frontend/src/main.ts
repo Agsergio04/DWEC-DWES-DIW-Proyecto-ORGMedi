@@ -25,9 +25,12 @@ const __THEME_STORAGE_KEY = 'orgmedi-theme';
 
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { App } from './app/app';
 import { routes } from './app/app.routes';
+import { authInterceptor } from './app/core/interceptors/auth.interceptor';
+import { errorInterceptor } from './app/core/interceptors/error.interceptor';
+import { loggingInterceptor } from './app/core/interceptors/logging.interceptor';
 
 bootstrapApplication(App, {
   providers: [
@@ -35,6 +38,8 @@ bootstrapApplication(App, {
       routes,
       withPreloading(PreloadAllModules) // Precarga todos los componentes lazy en segundo plano
     ),
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([loggingInterceptor, authInterceptor, errorInterceptor])
+    ),
   ],
 }).catch((err) => console.error(err));

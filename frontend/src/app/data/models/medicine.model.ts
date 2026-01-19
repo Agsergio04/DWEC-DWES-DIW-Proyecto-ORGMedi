@@ -9,35 +9,40 @@
 /**
  * Modelo base de medicamento desde la API
  * Representa la respuesta del servidor en GET/POST/PUT
+ * Compatible con el backend que devuelve: id, nombre, cantidadMg, fechaInicio, fechaFin, color, frecuencia
  */
 export interface Medicine {
-  id: string;
-  name: string;
-  dosage: string;
-  frequency: string;
-  description?: string;
-  startDate: string;
-  endDate?: string;
-  quantity?: number;
+  // Campos principales (del backend)
+  id: number;
+  nombre: string;
+  cantidadMg: number;
+  horaInicio: string;
+  fechaInicio: string | Date;
+  fechaFin: string | Date;
+  color: string;
+  frecuencia: number;
+  
+  // Campos opcionales (para compatibilidad con frontend)
   remainingDays?: number;
-  color?: string;
   icon?: string;
-  createdAt: string;
-  updatedAt: string;
+  consumed?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 /**
  * DTO para crear un medicamento
- * No incluye id ni campos de timestamp (generados por servidor)
+ * No incluye id (generado por servidor)
+ * Compatible con: POST /api/medicamentos
  */
 export interface CreateMedicineDto {
-  name: string;
-  dosage: string;
-  frequency: string;
-  description?: string;
-  startDate: string;
-  endDate?: string;
-  quantity?: number;
+  nombre: string;
+  cantidadMg: number;
+  horaInicio: string;
+  fechaInicio: string;
+  fechaFin: string;
+  color: string;
+  frecuencia: number;
 }
 
 /**
@@ -45,13 +50,12 @@ export interface CreateMedicineDto {
  * Todos los campos son opcionales (para PATCH)
  */
 export interface UpdateMedicineDto {
-  name?: string;
-  dosage?: string;
-  frequency?: string;
-  description?: string;
-  startDate?: string;
-  endDate?: string;
-  quantity?: number;
+  nombre?: string;
+  cantidadMg?: number;
+  fechaInicio?: string;
+  fechaFin?: string;
+  color?: string;
+  frecuencia?: number;
 }
 
 /**

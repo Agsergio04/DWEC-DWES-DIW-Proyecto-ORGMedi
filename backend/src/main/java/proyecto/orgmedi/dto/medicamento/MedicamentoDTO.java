@@ -9,8 +9,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class MedicamentoDTO {
+    private Long id;
     private String nombre;
     private int cantidadMg;
+    private String horaInicio;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private String color;

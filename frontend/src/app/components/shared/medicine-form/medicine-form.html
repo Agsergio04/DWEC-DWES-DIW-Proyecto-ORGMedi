@@ -32,9 +32,10 @@
     <input
       type="time"
       class="form-input"
-      formControlName="description"
+      formControlName="horaInicio"
       placeholder="Hora de inicio(08:00 AM)"
       [disabled]="isSubmitting"
+      required
     />
   </div>
 
@@ -42,30 +43,13 @@
   <div class="form-group date-input-group">
     <label class="form-label">Introduce la fecha de inicio cuando la vas a tomar:</label>
     <div class="date-input-wrapper">
-      <svg class="calendar-icon" width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        
-        <path
-          d="M8 4H28C29.1046 4 30 4.89543 30 6V28C30 29.1046 29.1046 30 28 30H8C6.89543 30 6 29.1046 6 28V6C6 4.89543 6.89543 4 8 4Z"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M12 2V8M24 2V8M6 12H30"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
       <input
         type="date"
         class="form-input date-input"
         formControlName="startDate"
         [disabled]="isSubmitting"
         required
-      />
+      />Fecha Inici(dd/mm/yyyy)
     </div>
   </div>
 
@@ -73,29 +57,12 @@
   <div class="form-group date-input-group">
     <label class="form-label">Introduce la fecha de fin cuando la vas a acabar de tomar:</label>
     <div class="date-input-wrapper">
-      <svg class="calendar-icon" width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M8 4H28C29.1046 4 30 4.89543 30 6V28C30 29.1046 29.1046 30 28 30H8C6.89543 30 6 29.1046 6 28V6C6 4.89543 6.89543 4 8 4Z"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M12 2V8M24 2V8M6 12H30"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
       <input
         type="date"
         class="form-input date-input"
         formControlName="endDate"
         [disabled]="isSubmitting"
-      />
-      <span class="date-label">Fecha Fin(dd/mm/yyyy)</span>
+      />Fecha Inici(dd/mm/yyyy)
     </div>
   </div>
 
@@ -130,8 +97,8 @@
   <div class="form-actions">
     <app-button
       variant="secondary"
-      [width]="'18rem'"
-      [height]="'2.75rem'"
+      [width]="'20rem'"
+      [height]="'3rem'"
       [disabled]="isSubmitting"
       (clicked)="onCancel()"
     >
@@ -139,10 +106,9 @@
     </app-button>
 
     <app-button
-
       variant="primary"
-      [width]="'18rem'"
-      [height]="'2.75rem'"
+      [width]="'20rem'"
+      [height]="'3rem'"
       [disabled]="isSubmitting || !form.valid"
       (clicked)="onSubmit()"
     >

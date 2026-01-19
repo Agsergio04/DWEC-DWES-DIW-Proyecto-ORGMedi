@@ -4,10 +4,12 @@
 // ============================================
 // CALENDAR COMPONENT STYLES - HORIZONTAL
 // ============================================
-
+  
 .calendar {
   width: 100%;
   padding: $espaciado-24;
+  display: flex;
+  flex-direction: column;
   background: transparent;
   font-family: $font-primary;
 }
@@ -19,6 +21,7 @@
 .calendar__header {
   margin-bottom: $espaciado-24;
   text-align: right;
+  width: 100%;
 }
 
 .calendar__current-date {
@@ -37,13 +40,13 @@
 
 .calendar__week-container {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   gap: $espaciado-8;
 
   padding: $espaciado-20;
-  background: var(--color-primario-primary);
-  border: $border-medium solid var(--color-bordes_marco_botones);
+  background: transparent;
+  border: none;
   border-radius: $radius-lg;
 }
 
@@ -60,23 +63,24 @@
   align-items: center;
   justify-content: center;
 
-  background: $color-secundario-primary;
-  color: #fff;
-  border: none;
+  background: transparent;
+  color: var(--color-texto_borde_cajas);
+  border: 2px solid var(--color-texto_borde_cajas);
   border-radius: $radius-full;
 
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
   cursor: pointer;
+  align-self: center;
 
   transition: background-color $transition-normal,
   transform $transition-rapida,
   box-shadow $transition-normal;
 
   &:hover {
-    background: $color-secundario-hover;
+    background: rgba(var(--color-texto_borde_cajas-rgb), 0.1);
     transform: scale(1.08);
-    box-shadow: 0 4px 12px rgba($color-secundario-primary, 0.3);
+    box-shadow: 0 4px 12px rgba(var(--color-texto_borde_cajas-rgb), 0.2);
   }
 
   &:active {
@@ -108,6 +112,7 @@
   gap: $espaciado-8;
   flex-wrap: nowrap;
   align-items: center;
+  align-self: center;
 }
 
 // ============================================
@@ -145,7 +150,7 @@
   align-items: center;
   justify-content: center;
 
-  background: var(--color-secundario-primary);
+  background: var(--color-primario-primary);
   color: var(--color-texto_borde_cajas);
   border: $border-medium solid var(--color-bordes_marco_botones);
   border-radius: $radius-full;
@@ -157,12 +162,13 @@
   transition: all $transition-normal;
 
   &:hover:not(:disabled) {
-    background: var(--color-secundario-hover);
+    background: var(--color-primario-hover);
     transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(var(--color-secundario-primary), 0.3);
+    box-shadow: 0 4px 12px rgba(var(--color-primario-primary), 0.3);
   }
 
   &:active:not(:disabled) {
+    background: var(--color-primario-hover);
     transform: scale(0.95);
   }
 
@@ -196,14 +202,14 @@
 }
 
 .calendar__day--selected {
-  background: $color-secundario-primary;
+  background: var(--color-primario-primary);
   color: #fff;
-  border-color: $color-secundario-primary;
+  border-color: var(--color-primario-primary);
 
   &:hover {
-    background: $color-secundario-hover;
-    border-color: $color-secundario-hover;
-    box-shadow: 0 6px 16px rgba($color-secundario-primary, 0.4);
+    background: var(--color-primario-hover);
+    border-color: var(--color-primario-hover);
+    box-shadow: 0 6px 16px rgba(var(--color-primario-primary), 0.4);
   }
 }
 

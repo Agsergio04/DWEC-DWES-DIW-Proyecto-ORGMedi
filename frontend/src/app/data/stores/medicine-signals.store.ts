@@ -139,9 +139,9 @@ export class MedicineStoreSignals {
    * Elimina un medicamento de la lista
    * @param id ID del medicamento a eliminar
    */
-  remove(id: string): void {
+  remove(id: string | number): void {
     this._medicines.update(current =>
-      current.filter(m => m.id !== id)
+      current.filter(m => Number(m.id) !== Number(id))
     );
   }
 
@@ -159,9 +159,9 @@ export class MedicineStoreSignals {
    * @param id ID del medicamento
    * @returns Computed signal con el medicamento o undefined
    */
-  getById(id: string) {
+  getById(id: string | number) {
     return computed(() => 
-      this._medicines().find(m => m.id === id)
+      this._medicines().find(m => Number(m.id) === Number(id))
     );
   }
 
@@ -179,9 +179,9 @@ export class MedicineStoreSignals {
       }
 
       return this._medicines().filter(m =>
-        m.name.toLowerCase().includes(term) ||
-        m.dosage.toLowerCase().includes(term) ||
-        m.description?.toLowerCase().includes(term)
+        m.nombre.toLowerCase().includes(term) ||
+        m.cantidadMg.toString().includes(term) ||
+        m.displayName?.toLowerCase().includes(term)
       );
     });
   }
@@ -205,8 +205,8 @@ export class MedicineStoreSignals {
    * Verifica si un medicamento existe por ID
    * @param id ID del medicamento
    */
-  exists(id: string): boolean {
-    return this._medicines().some(m => m.id === id);
+  exists(id: string | number): boolean {
+    return this._medicines().some(m => Number(m.id) === Number(id));
   }
 
   /**
@@ -215,7 +215,7 @@ export class MedicineStoreSignals {
    */
   existsByName(name: string): boolean {
     const lowerName = name.toLowerCase();
-    return this._medicines().some(m => m.name.toLowerCase() === lowerName);
+    return this._medicines().some(m => m.nombre.toLowerCase() === lowerName);
   }
 
   /**
@@ -281,9 +281,9 @@ export class MedicineStoreSignals {
       }
 
       return this._medicines().filter(medicine =>
-        medicine.name.toLowerCase().includes(term) ||
-        medicine.dosage.toLowerCase().includes(term) ||
-        medicine.description?.toLowerCase().includes(term) ||
+        medicine.nombre.toLowerCase().includes(term) ||
+        medicine.cantidadMg.toString().includes(term) ||
+        medicine.color?.toLowerCase().includes(term) ||
         medicine.displayName?.toLowerCase().includes(term)
       );
     });
@@ -304,9 +304,9 @@ export class MedicineStoreSignals {
     }
 
     return this._medicines().filter(medicine =>
-      medicine.name.toLowerCase().includes(term) ||
-      medicine.dosage.toLowerCase().includes(term) ||
-      medicine.description?.toLowerCase().includes(term) ||
+      medicine.nombre.toLowerCase().includes(term) ||
+      medicine.cantidadMg.toString().includes(term) ||
+      medicine.color?.toLowerCase().includes(term) ||
       medicine.displayName?.toLowerCase().includes(term)
     );
   }

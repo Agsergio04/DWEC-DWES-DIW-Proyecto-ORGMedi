@@ -5,50 +5,28 @@
       <p class="calendar__description">Aquí podrás gestionar cuando has consumido los medicamentos</p>
     </div>
 
-    <div class="calendar__date-section">
-      <span class="calendar__date">{{ currentDate | date: 'd/MM/yyyy' }}</span>
-    </div>
+    <app-calendar></app-calendar>
 
-    <div class="calendar">
-      <div class="calendar__week-header">
-        <button class="calendar__nav-button" (click)="previousMonth()">‹</button>
-        
-        <div class="calendar__week-view">
-          <div class="calendar__weekdays-horizontal">
-            <div class="calendar__weekday">Lun</div>
-            <div class="calendar__weekday">Mar</div>
-            <div class="calendar__weekday">Mier</div>
-            <div class="calendar__weekday">Jue</div>
-            <div class="calendar__weekday">Vie</div>
-            <div class="calendar__weekday">Sab</div>
-            <div class="calendar__weekday">Dom</div>
-          </div>
-
-          <div class="calendar__week-buttons">
-            <app-calendar-button 
-              *ngFor="let day of getWeekDays()"
-              [day]="day"
-              [isToday]="isToday(day)"
-              [isSelected]="selectedDay === day"
-              (daySelected)="onDaySelected($event)">
-            </app-calendar-button>
-          </div>
-        </div>
-
-        <button class="calendar__nav-button" (click)="nextMonth()">›</button>
-      </div>
-    </div>
-
-    <div class="calendar__time-section">
-      <span class="calendar__time">{{ selectedDay ? '04:30' : '--:--' }}</span>
-    </div>
 
     <div class="calendar__medicines-list">
-      <app-medicine-card-calendar 
-        *ngFor="let medicine of medicines"
-        [medicine]="medicine"
-        (medicineSelected)="onMedicineSelected($event)">
-      </app-medicine-card-calendar>
+    
+      <!-- Lista de medicamentos o mensaje vacío -->
+      <div *ngIf="!loading && medicines.length > 0; else noMedicines" class="medicines__list">
+        <app-medicine-card-calendar 
+          *ngFor="let medicine of medicines"
+          [medicine]="medicine"
+          [isExpired]="isExpired(medicine)"
+          [isExpiring]="isExpiring(medicine)"
+          (medicineEdit)="editMedicine($event)"
+          (medicineDelete)="deleteMedicine($event)"
+          (medicineSelected)="onMedicineSelected($event)">
+        </app-medicine-card-calendar>
+      </div>
+
+      <!-- Sin medicamentos -->
+      <ng-template #noMedicines>
+        <p class="medicines__empty-message">No se han creado medicamentos todavia</p>
+      </ng-template>
     </div>
   </div>
 </section>

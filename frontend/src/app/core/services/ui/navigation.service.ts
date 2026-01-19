@@ -37,7 +37,7 @@ export class NavigationService {
 
   /** Ir a crear medicamento */
   goToCreateMedicine(): Promise<boolean> {
-    return this.router.navigate(['/medicamentos/crear']);
+    return this.router.navigate(['/medicamentos/crear-medicamento']);
   }
 
   /** Ir a crear medicamento desde foto */
@@ -69,11 +69,11 @@ export class NavigationService {
 
   /**
    * Editar medicamento
-   * Ruta: /medicamentos/:id/editar
+   * Ruta: /medicamento/:id/editar-medicamento
    * @param medicineId ID del medicamento a editar
    */
   goToEditMedicine(medicineId: string | number): Promise<boolean> {
-    return this.router.navigate(['/medicamentos', medicineId, 'editar']);
+    return this.router.navigate(['/medicamento', medicineId, 'editar-medicamento']);
   }
 
   // ============ NAVEGACIÓN CON QUERY PARAMS (busqueda, filtros, paginación) ============
@@ -171,7 +171,7 @@ export class NavigationService {
    * @param medicineTemplate Datos del medicamento como plantilla
    */
   goToCreateMedicineFromTemplate(medicineTemplate: any): Promise<boolean> {
-    return this.router.navigate(['/medicamentos/crear'], {
+    return this.router.navigate(['/medicamentos/crear-medicamento'], {
       state: { template: medicineTemplate }
     });
   }

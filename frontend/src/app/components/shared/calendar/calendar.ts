@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Medicine } from '../../../data/models/medicine.model';
+import { MedicineDose, calculateMedicineDoses, parseFrequencyToHours } from '../../../shared/utils/medicine-schedule.util';
 
 interface CalendarDay {
   date: Date;
@@ -7,12 +9,14 @@ interface CalendarDay {
   dayName: string;
   isToday: boolean;
   isCurrentMonth: boolean;
+  doses?: MedicineDose[];
 }
 
 /**
  * Componente de Calendario
  * Muestra una semana con navegación de semanas anteriores/siguientes
  * Permite seleccionar días y navegar por el calendario
+ * Muestra dosis de medicamentos si están disponibles
  */
 @Component({
   selector: 'app-calendar',
@@ -31,11 +35,49 @@ export class CalendarComponent implements OnInit {
   // Fecha seleccionada
   selectedDate: Date | null = null;
 
+  // Medicamentos (input opcional)
+  @Input() medicines: Medicine[] = [];
+
+  // Dosis calculadas
+  allDoses: MedicineDose[] = [];
+
   // Nombres de días de la semana
   dayNames: string[] = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sab'];
 
   ngOnInit() {
+    this.calculateDoses();
     this.loadWeek(this.currentDate);
+  }
+
+  /**
+   * Calcula todas las dosis de los medicamentos
+   */
+  calculateDoses() {
+    this.allDoses = [];
+    
+    if (!this.medicines || this.medicines.length === 0) {
+      return;
+    }
+
+    for (const medicine of this.medicines) {
+      // Extraer hora de inicio del campo horaInicio (ej: "04:33")
+      const startTime = medicine.horaInicio || '08:00';
+
+      // Parsear frecuencia
+      const frequencyHours = parseFrequencyToHours(medicine.frecuencia);
+
+      // Calcular dosis
+      const doses = calculateMedicineDoses(
+        medicine.nombre,
+        medicine.id,
+        medicine.fechaInicio,
+        medicine.fechaFin,
+        startTime,
+        frequencyHours
+      );
+
+      this.allDoses.push(...doses);
+    }
   }
 
   /**
@@ -56,14 +98,31 @@ export class CalendarComponent implements OnInit {
       const isToday = this.isToday(dayDate);
       const isCurrentMonth = dayDate.getMonth() === date.getMonth();
 
+      // Obtener dosis para este día
+      const dayDoses = this.getDosesForDate(dayDate);
+
       this.weekDays.push({
         date: dayDate,
         dayNumber: dayDate.getDate(),
         dayName: this.dayNames[dayDate.getDay()],
         isToday,
         isCurrentMonth,
+        doses: dayDoses,
       });
     }
+  }
+
+  /**
+   * Obtiene todas las dosis de un día específico
+   */
+  private getDosesForDate(date: Date): MedicineDose[] {
+    return this.allDoses.filter(dose => {
+      return (
+        dose.date.getFullYear() === date.getFullYear() &&
+        dose.date.getMonth() === date.getMonth() &&
+        dose.date.getDate() === date.getDate()
+      );
+    });
   }
 
   /**
@@ -111,6 +170,7 @@ export class CalendarComponent implements OnInit {
    */
   selectDay(day: CalendarDay) {
     this.selectedDate = day.date;
+    this.currentDate = day.date;
     console.log('Día seleccionado:', day.date.toLocaleDateString('es-ES'));
   }
 
@@ -118,13 +178,10 @@ export class CalendarComponent implements OnInit {
    * Obtiene la fecha actual formateada
    */
   getCurrentDateFormatted(): string {
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: 'short',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    };
-    return this.currentDate.toLocaleDateString('es-ES', options);
+    const day = String(this.currentDate.getDate()).padStart(2, '0');
+    const month = String(this.currentDate.getMonth() + 1).padStart(2, '0');
+    const year = this.currentDate.getFullYear();
+    return `${day}/${month}/${year}`;
   }
 
   /**

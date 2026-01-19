@@ -41,6 +41,14 @@ export class MedicinesPage implements OnInit {
    * Carga la lista de medicamentos desde el servicio
    */
   loadMedicines(): void {
+    // Verificar si hay token de autenticación
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.warn('[MedicinesPage] No token found, redirecting to login');
+      this.router.navigate(['/iniciar-sesion']);
+      return;
+    }
+
     this.isLoading = true;
     this.error = null;
 
@@ -77,8 +85,8 @@ export class MedicinesPage implements OnInit {
    * Verifica si un medicamento está por vencer (dentro de 7 días)
    */
   isExpiring(medicine: MedicineViewModel): boolean {
-    if (!medicine.endDate) return false;
-    const endDate = new Date(medicine.endDate);
+    if (!medicine.fechaFin) return false;
+    const endDate = new Date(medicine.fechaFin);
     const today = new Date();
     const daysUntilExpiry = (endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24);
     return daysUntilExpiry <= 7 && daysUntilExpiry > 0;
@@ -96,14 +104,14 @@ export class MedicinesPage implements OnInit {
    * Navega a la página de crear medicamento
    */
   navigateToCreate(): void {
-    this.router.navigate(['/crear-medicamento']);
+    this.router.navigate(['/medicamentos/crear-medicamento']);
   }
 
   /**
    * Navega a la página de crear medicamento desde foto
    */
   navigateToCreateFromPhoto(): void {
-    this.router.navigate(['/crear-medicamento-foto']);
+    this.router.navigate(['/medicamentos/crear-foto']);
   }
 
   /**
@@ -111,7 +119,7 @@ export class MedicinesPage implements OnInit {
    * @param medicineId ID del medicamento a editar
    */
   editMedicine(medicineId: string | number): void {
-    this.router.navigate(['/editar-medicamento', medicineId]);
+    this.router.navigate(['/medicamento', medicineId, 'editar-medicamento']);
   }
 
   /**
@@ -119,17 +127,17 @@ export class MedicinesPage implements OnInit {
    * @param medicineId ID del medicamento a eliminar
    */
   deleteMedicine(medicineId: string | number): void {
-    const medicine = this.medicines.find(m => String(m.id) === String(medicineId));
+    const medicine = this.medicines.find(m => m.id === medicineId);
     if (!medicine) return;
 
-    if (!confirm(`¿Está seguro de que desea eliminar "${medicine.name}"?`)) {
+    if (!confirm(`¿Está seguro de que desea eliminar "${medicine.nombre}"?`)) {
       return;
     }
 
     this.isLoading = true;
-    this.medicineService.delete(medicine.id).subscribe({
+    this.medicineService.delete(medicineId).subscribe({
       next: () => {
-        console.log('Medicamento eliminado:', medicine.name);
+        console.log('Medicamento eliminado:', medicine.nombre);
         // Recargar la lista
         this.loadMedicines();
       },

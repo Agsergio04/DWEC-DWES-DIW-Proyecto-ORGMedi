@@ -9,7 +9,7 @@
       
       <!-- Título del medicamento (con color dinámico) -->
       <h3 class="medicine-card__title" [style.--medicine-color]="medicine.color || '#D97BBF'">
-        {{ medicine.name }}
+        {{ medicine.nombre }}
       </h3>
       
       <!-- Botón de borrar -->
@@ -30,7 +30,7 @@
             <path d="M9 9V6a3 3 0 0 1 6 0v3"/>
           </svg>
           <span class="medicine-card__label">Cantidad :</span>
-          <span class="medicine-card__value">{{ medicine.dosage }}</span>
+          <span class="medicine-card__value">{{ getDosageLabel() }}</span>
         </div>
 
         <div class="medicine-card__info-item">
@@ -39,7 +39,7 @@
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
           <span class="medicine-card__label">Frecuencia :</span>
-          <span class="medicine-card__value">{{ medicine.frequency }}</span>
+          <span class="medicine-card__value">{{ getFrequencyLabel() }}</span>
         </div>
       </div>
 
@@ -51,7 +51,7 @@
             <path d="M16 2v4M8 2v4M3 10h18"/>
           </svg>
           <span class="medicine-card__label">Fecha Inicio :</span>
-          <span class="medicine-card__value">{{ medicine.startDate }}</span>
+          <span class="medicine-card__value">{{ medicine.fechaInicio }}</span>
         </div>
 
         <div class="medicine-card__info-item">
@@ -60,7 +60,7 @@
             <path d="M16 2v4M8 2v4M3 10h18"/>
           </svg>
           <span class="medicine-card__label">Fecha Fin :</span>
-          <span class="medicine-card__value">{{ medicine.endDate || '-' }}</span>
+          <span class="medicine-card__value">{{ medicine.fechaFin || '-' }}</span>
         </div>
       </div>
     </div>

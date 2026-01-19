@@ -117,9 +117,9 @@ export class MedicineStore {
    * Útil después de eliminar para actualizar la UI sin recargar
    * @param id ID del medicamento a eliminar
    */
-  remove(id: string): void {
+  remove(id: string | number): void {
     const current = this.medicinesSubject.value;
-    this.medicinesSubject.next(current.filter(m => m.id !== id));
+    this.medicinesSubject.next(current.filter(m => Number(m.id) !== Number(id)));
   }
 
   /**
@@ -128,9 +128,9 @@ export class MedicineStore {
    * @param id ID del medicamento
    * @returns Observable<MedicineViewModel | undefined>
    */
-  getById(id: string): Observable<MedicineViewModel | undefined> {
+  getById(id: string | number): Observable<MedicineViewModel | undefined> {
     return this.medicines$.pipe(
-      map(medicines => medicines.find(m => m.id === id))
+      map(medicines => medicines.find(m => Number(m.id) === Number(id)))
     );
   }
 
@@ -148,9 +148,9 @@ export class MedicineStore {
     return this.medicines$.pipe(
       map(medicines =>
         medicines.filter(m =>
-          m.name.toLowerCase().includes(term) ||
-          m.dosage.toLowerCase().includes(term) ||
-          m.description?.toLowerCase().includes(term) ||
+          m.nombre.toLowerCase().includes(term) ||
+          m.cantidadMg.toString().includes(term) ||
+          m.color?.toLowerCase().includes(term) ||
           m.displayName?.toLowerCase().includes(term)
         )
       )
@@ -200,8 +200,8 @@ export class MedicineStore {
    * Verifica si un medicamento existe por ID
    * @param id ID del medicamento
    */
-  exists(id: string): boolean {
-    return this.medicinesSubject.value.some(m => m.id === id);
+  exists(id: string | number): boolean {
+    return this.medicinesSubject.value.some(m => Number(m.id) === Number(id));
   }
 
   /**
@@ -210,6 +210,6 @@ export class MedicineStore {
    */
   existsByName(name: string): boolean {
     const lowerName = name.toLowerCase();
-    return this.medicinesSubject.value.some(m => m.name.toLowerCase() === lowerName);
+    return this.medicinesSubject.value.some(m => m.nombre.toLowerCase() === lowerName);
   }
 }
