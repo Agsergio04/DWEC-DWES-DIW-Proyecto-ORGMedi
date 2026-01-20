@@ -1,6 +1,7 @@
 package proyecto.orgmedi.dto.medicamento;
 
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 
 @Getter
@@ -11,10 +12,12 @@ import java.time.LocalDate;
 public class MedicamentoDTO {
     private Long id;
     private String nombre;
-    private int cantidadMg;
+    private Integer cantidadMg;
     private String horaInicio;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaInicio;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaFin;
     private String color;
-    private int frecuencia;
+    private Integer frecuencia;
 }

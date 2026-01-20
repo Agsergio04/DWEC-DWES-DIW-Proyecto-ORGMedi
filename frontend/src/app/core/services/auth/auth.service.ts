@@ -18,6 +18,12 @@ export interface AuthResponse {
   token: string;
 }
 
+export interface ChangePasswordRequest {
+  correoActual: string;
+  contrasenaActual: string;
+  contrasenanueva: string;
+}
+
 /**
  * Servicio de autenticación
  * Gestiona el estado de login/logout del usuario y comunica con la API
@@ -157,5 +163,67 @@ export class AuthService {
     if (typeof window === 'undefined') return null;
     const stored = localStorage.getItem('currentUser');
     return stored ? JSON.parse(stored) : null;
+  }
+
+  /**
+   * Actualizar nombre de usuario
+   * Envía el nuevo nombre de usuario al backend
+   */
+  updateUsername(newUsername: string): Observable<boolean> {
+    const currentUser = this.currentUser;
+    if (!currentUser) {
+      return throwError(() => new Error('No user logged in'));
+    }
+
+    const request = {
+      usuario: newUsername,
+      correo: currentUser.email
+    };
+
+    return this.http.patch<any>(`/api/usuarios/${currentUser.id}`, request).pipe(
+      tap((response) => {
+        // Actualizar usuario en localStorage
+        const updatedUser: AuthUser = {
+          ...currentUser,
+          name: newUsername
+        };
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        this.currentUserSubject.next(updatedUser);
+        console.log('[AuthService] Username updated successfully');
+      }),
+      map(() => true),
+      catchError(err => {
+        console.error('Error updating username:', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  /**
+   * Cambiar contraseña
+   * Valida la contraseña actual antes de permitir el cambio
+   */
+  changePassword(currentPassword: string, newPassword: string): Observable<boolean> {
+    const currentUser = this.currentUser;
+    if (!currentUser) {
+      return throwError(() => new Error('No user logged in'));
+    }
+
+    const request = {
+      correoActual: currentUser.email,
+      contrasenaActual: currentPassword,
+      contrasenanueva: newPassword
+    };
+
+    return this.http.post<any>(`${this.baseUrl}/change-password`, request).pipe(
+      tap((response) => {
+        console.log('[AuthService] Password changed successfully');
+      }),
+      map(() => true),
+      catchError(err => {
+        console.error('Error changing password:', err);
+        return throwError(() => err);
+      })
+    );
   }
 }

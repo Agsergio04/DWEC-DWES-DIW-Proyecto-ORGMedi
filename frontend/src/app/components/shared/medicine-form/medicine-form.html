@@ -1,4 +1,4 @@
-<form class="medicine-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+<form class="medicine-form" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="formInitialized && form">
 
   <!-- Nombre del Medicamento -->
   <div class="form-group">
@@ -6,7 +6,7 @@
     <input
       type="text"
       class="form-input"
-      formControlName="name"
+      formControlName="nombre"
       placeholder="Nombre del medicamento"
       [disabled]="isSubmitting"
       required
@@ -19,7 +19,7 @@
     <input
       type="text"
       class="form-input"
-      formControlName="dosage"
+      formControlName="cantidadMg"
       placeholder="Cantidad(En Mg)"
       [disabled]="isSubmitting"
       required
@@ -46,7 +46,7 @@
       <input
         type="date"
         class="form-input date-input"
-        formControlName="startDate"
+        formControlName="fechaInicio"
         [disabled]="isSubmitting"
         required
       />Fecha Inici(dd/mm/yyyy)
@@ -60,7 +60,7 @@
       <input
         type="date"
         class="form-input date-input"
-        formControlName="endDate"
+        formControlName="fechaFin"
         [disabled]="isSubmitting"
       />Fecha Inici(dd/mm/yyyy)
     </div>
@@ -109,7 +109,7 @@
       variant="primary"
       [width]="'20rem'"
       [height]="'3rem'"
-      [disabled]="isSubmitting || !form.valid"
+      [disabled]="isSubmitting || !form?.valid"
       (clicked)="onSubmit()"
     >
       {{ submitButtonText }}
@@ -117,3 +117,8 @@
   </div>
 
 </form>
+
+<!-- Cargar mensaje si formulario no está inicializado -->
+<div *ngIf="!formInitialized" class="loading-message">
+  Inicializando formulario...
+</div>

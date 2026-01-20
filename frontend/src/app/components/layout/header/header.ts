@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ThemeService } from '../../../core/services/ui';
+import { AuthService } from '../../../core/services/auth';
 import { ToastComponent } from '../../../shared/toast.component';
 
 @Component({
@@ -16,19 +17,29 @@ export class Header implements OnInit, OnDestroy {
   isDarkMode = false;
   isAuthRoute = false;
   isOpen = false; // Menú hamburguesa
+  isLoggedIn = false; // Estado de autenticación
 
   @ViewChild('menuButton') menuButton?: ElementRef<HTMLButtonElement>;
   @ViewChild('navMenu') navMenu?: ElementRef<HTMLElement>;
   private routerSub?: Subscription;
   private themeSub?: Subscription;
+  private authSub?: Subscription;
 
-  constructor(public router: Router, private elementRef: ElementRef, private themeService: ThemeService) {}
+  private themeService = inject(ThemeService);
+  private authService = inject(AuthService);
+
+  constructor(public router: Router, private elementRef: ElementRef) {}
 
   ngOnInit() {
     // Delegar lógica de tema al ThemeService
     // Suscribirse al observable para reflejar el estado actual
     this.themeSub = this.themeService.theme$.subscribe(theme => {
       this.isDarkMode = theme === 'dark';
+    });
+
+    // Suscribirse al estado de autenticación
+    this.authSub = this.authService.isLoggedIn$.subscribe(isLoggedIn => {
+      this.isLoggedIn = isLoggedIn;
     });
 
     this.checkAuthRoute(this.router.url);
@@ -43,6 +54,7 @@ export class Header implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.routerSub?.unsubscribe();
     this.themeSub?.unsubscribe();
+    this.authSub?.unsubscribe();
   }
 
   toggleTheme() {

@@ -124,6 +124,57 @@ public class MedicamentoController {
     }
 
     /**
+     * Actualiza parcialmente un medicamento (PATCH)
+     * Solo actualiza los campos que se envíen (no null)
+     */
+    @PatchMapping("/{id}")
+    public ResponseEntity<MedicamentoDTO> patchMedicamento(@PathVariable Long id, @RequestBody MedicamentoDTO dto) {
+        Usuario usuario = SecurityUtil.getCurrentUser(usuarioRepository);
+        GestorMedicamentos gestor = usuario.getGestorMedicamentos();
+        
+        if (gestor == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        // Buscar el medicamento en el gestor del usuario
+        Medicamento medicamento = gestor.getMedicamentos().stream()
+                .filter(m -> m.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+        
+        if (medicamento == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        // Actualizar solo los campos que se envíen (no null)
+        if (dto.getNombre() != null && !dto.getNombre().isBlank()) {
+            medicamento.setNombre(dto.getNombre());
+        }
+        if (dto.getCantidadMg() != null) {
+            medicamento.setCantidadMg(dto.getCantidadMg());
+        }
+        if (dto.getHoraInicio() != null && !dto.getHoraInicio().isBlank()) {
+            medicamento.setHoraInicio(dto.getHoraInicio());
+        }
+        if (dto.getFechaInicio() != null) {
+            medicamento.setFechaInicio(dto.getFechaInicio());
+        }
+        if (dto.getFechaFin() != null) {
+            medicamento.setFechaFin(dto.getFechaFin());
+        }
+        if (dto.getColor() != null && !dto.getColor().isBlank()) {
+            medicamento.setColor(dto.getColor());
+        }
+        if (dto.getFrecuencia() != null) {
+            medicamento.setFrecuencia(dto.getFrecuencia());
+        }
+        
+        gestorMedicamentosService.save(gestor);
+        
+        return ResponseEntity.ok(medicamentoService.toDto(medicamento));
+    }
+
+    /**
      * Elimina un medicamento del usuario autenticado
      */
     @DeleteMapping("/{id}")

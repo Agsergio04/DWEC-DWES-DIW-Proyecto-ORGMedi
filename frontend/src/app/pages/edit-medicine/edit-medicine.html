@@ -26,5 +26,10 @@
     <div *ngIf="error" class="error-message">
       {{ error.message }}
     </div>
+
+    <!-- Mensaje de información sobre cambios parciales -->
+    <div *ngIf="!loading && medicine" class="info-message">
+      💡 Solo se guardarán los cambios que realices en los campos
+    </div>
   </div>
 </section>

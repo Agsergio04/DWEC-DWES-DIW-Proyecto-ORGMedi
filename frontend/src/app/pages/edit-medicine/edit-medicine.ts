@@ -19,6 +19,7 @@ export class EditMedicinePage implements OnInit {
 
   medicineId: string | null = null;
   medicine: any = null;
+  originalMedicine: any = null; // Guardar los datos originales para detectar cambios
   saving = false;
   loading = false;
   error: ApiError | null = null;
@@ -54,6 +55,8 @@ export class EditMedicinePage implements OnInit {
     this.loading = false;
     this.error = null;
     this.medicine = medicine;
+    // Guardar una copia profunda de los datos originales para detectar cambios
+    this.originalMedicine = JSON.parse(JSON.stringify(medicine));
   }
 
   /**
@@ -78,6 +81,7 @@ export class EditMedicinePage implements OnInit {
 
   /**
    * Maneja el envío del formulario
+   * Detecta qué campos han cambiado y solo envía los que cambiaron (PATCH)
    */
   onFormSubmit(formData: MedicineFormData): void {
     if (!this.medicineId) {
@@ -92,8 +96,8 @@ export class EditMedicinePage implements OnInit {
     this.saving = true;
     this.error = null;
 
-    // Mapear correctamente los datos del formulario al DTO esperado por el backend
-    const medicineData = {
+    // Crear objeto con todos los datos formateados
+    const allMedicineData = {
       nombre: formData.nombre,
       cantidadMg: formData.cantidadMg,
       frecuencia: formData.frecuencia,
@@ -103,9 +107,25 @@ export class EditMedicinePage implements OnInit {
       color: formData.color
     };
 
-    this.medicineService.update(this.medicineId, medicineData).subscribe({
+    // Detectar qué campos han cambiado
+    const changedFields = this.detectChanges(allMedicineData);
+
+    console.log('[EditMedicinePage] Campos originales:', this.originalMedicine);
+    console.log('[EditMedicinePage] Campos nuevos:', allMedicineData);
+    console.log('[EditMedicinePage] Campos que cambiaron:', changedFields);
+
+    // Si no hay cambios, simplemente navegar sin guardar
+    if (Object.keys(changedFields).length === 0) {
+      console.log('[EditMedicinePage] Sin cambios, navegando...');
+      this.router.navigate(['/medicamentos']);
+      this.saving = false;
+      return;
+    }
+
+    // Usar PATCH para actualizar solo los campos que cambiaron
+    this.medicineService.patch(this.medicineId, changedFields).subscribe({
       next: (medicine) => {
-        console.log('Medicamento actualizado:', medicine);
+        console.log('Medicamento actualizado (parcial):', medicine);
         this.router.navigate(['/medicamentos']);
         this.saving = false;
       },
@@ -118,28 +138,62 @@ export class EditMedicinePage implements OnInit {
   }
 
   /**
-   * Formatea la fecha al formato esperado por el backend (YYYY-MM-DD)
+   * Detecta qué campos han cambiado comparando con los datos originales
    */
-  private formatDateForApi(date: string | Date): string {
+  private detectChanges(newData: any): any {
+    const changes: any = {};
+
+    // Comparar cada campo
+    for (const key in newData) {
+      if (newData.hasOwnProperty(key)) {
+        const originalValue = this.originalMedicine?.[key];
+        const newValue = newData[key];
+
+        // Comparar valores (teniendo en cuenta null/undefined)
+        if (JSON.stringify(originalValue) !== JSON.stringify(newValue)) {
+          changes[key] = newValue;
+          console.log(`[detectChanges] Campo "${key}" cambió: "${originalValue}" → "${newValue}"`);
+        }
+      }
+    }
+
+    return changes;
+  }
+
+  /**
+   * Formatea la fecha al formato esperado por el backend (YYYY-MM-DD)
+   * Maneja strings en formato ISO o Date objects
+   */
+  private formatDateForApi(date: string | Date | null | undefined): string {
     if (!date) return '';
     
     let dateObj: Date;
+    
     if (typeof date === 'string') {
+      // Si es string en formato YYYY-MM-DD, extraerlo directamente
+      if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        return date;
+      }
+      // Si es un string ISO o similar, crear Date
       dateObj = new Date(date);
     } else {
       dateObj = date;
     }
     
-    // Asegurar que es una fecha válida
+    // Validar que es una fecha válida
     if (isNaN(dateObj.getTime())) {
+      console.error('Fecha inválida:', date);
       return '';
     }
     
+    // Usar el timezone local para evitar problemas de offset
     const year = dateObj.getFullYear();
     const month = String(dateObj.getMonth() + 1).padStart(2, '0');
     const day = String(dateObj.getDate()).padStart(2, '0');
     
-    return `${year}-${month}-${day}`;
+    const formatted = `${year}-${month}-${day}`;
+    console.log(`[formatDateForApi] Entrada: ${date} → Salida: ${formatted}`);
+    return formatted;
   }
 
   /**

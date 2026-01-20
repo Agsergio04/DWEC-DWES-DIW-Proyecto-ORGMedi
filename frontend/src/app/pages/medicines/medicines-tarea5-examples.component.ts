@@ -246,19 +246,14 @@ export class MedicinesListTarea5Component implements OnInit {
     .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
   `]
 })
-export class CreateMedicineTarea5Component {
+export class CreateMedicineTarea5Component implements OnInit {
   private medicineService = inject(MedicineService);
   private toastService = inject(ToastService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
-  form: FormGroup = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(3)]],
-    dosage: ['', Validators.required],
-    frequency: ['', Validators.required],
-    startDate: ['', Validators.required],
-    description: ['']
-  });
+  // Temporary FormGroup to prevent null reference in constructor
+  form: FormGroup = this.fb.group({});
 
   saving = signal<ViewState<null>>({
     loading: false,
@@ -266,6 +261,17 @@ export class CreateMedicineTarea5Component {
     data: null,
     success: false
   });
+
+  ngOnInit() {
+    // Initialize form with validators in ngOnInit
+    this.form = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      dosage: ['', Validators.required],
+      frequency: ['', Validators.required],
+      startDate: ['', Validators.required],
+      description: ['']
+    });
+  }
 
   onSubmit() {
     if (this.form.invalid) {

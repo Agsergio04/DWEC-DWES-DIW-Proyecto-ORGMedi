@@ -65,27 +65,38 @@ export class CreateMedicinePage implements OnInit {
 
   /**
    * Formatea la fecha al formato esperado por el backend (YYYY-MM-DD)
+   * Maneja strings en formato ISO o Date objects
    */
-  private formatDateForApi(date: string | Date): string {
+  private formatDateForApi(date: string | Date | null | undefined): string {
     if (!date) return '';
     
     let dateObj: Date;
+    
     if (typeof date === 'string') {
+      // Si es string en formato YYYY-MM-DD, extraerlo directamente
+      if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        return date;
+      }
+      // Si es un string ISO o similar, crear Date
       dateObj = new Date(date);
     } else {
       dateObj = date;
     }
     
-    // Asegurar que es una fecha válida
+    // Validar que es una fecha válida
     if (isNaN(dateObj.getTime())) {
+      console.error('Fecha inválida:', date);
       return '';
     }
     
+    // Usar el timezone local para evitar problemas de offset
     const year = dateObj.getFullYear();
     const month = String(dateObj.getMonth() + 1).padStart(2, '0');
     const day = String(dateObj.getDate()).padStart(2, '0');
     
-    return `${year}-${month}-${day}`;
+    const formatted = `${year}-${month}-${day}`;
+    console.log(`[formatDateForApi] Entrada: ${date} → Salida: ${formatted}`);
+    return formatted;
   }
 
   /**

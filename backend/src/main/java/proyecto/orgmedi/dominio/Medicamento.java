@@ -3,6 +3,7 @@ package proyecto.orgmedi.dominio;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -29,14 +30,16 @@ public class Medicamento {
 
     @NotNull(message = "La fecha de inicio es obligatoria")
     @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaInicio;
 
-    @NotBlank(message = "La hora de inicio es obligatoria")
+    @NotNull(message = "La hora de inicio es obligatoria")
     @Column(nullable = false)
     private String horaInicio;
 
     @NotNull(message = "La fecha de fin es obligatoria")
     @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaFin;
 
     @NotBlank(message = "El color es obligatorio")

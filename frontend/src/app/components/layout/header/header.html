@@ -46,8 +46,9 @@
 
   <!-- DERECHA: Hamburguesa + Tema -->
   <div class="app-header__controls">
-    <!-- Botón hamburguesa -->
+    <!-- Botón hamburguesa (solo visible si está logueado) -->
     <button
+      *ngIf="isLoggedIn"
       #menuButton
       class="app-header__hamburger"
       [class.is-open]="isOpen"

@@ -34,6 +34,7 @@ export class MedicineFormComponent implements OnInit {
   @Output() formCancel = new EventEmitter<void>();
 
   form: FormGroup;
+  formInitialized = false;
 
   // Opciones de frecuencia
   frequencyOptions: SelectorOption[] = [
@@ -67,6 +68,19 @@ export class MedicineFormComponent implements OnInit {
   selectedColor: SelectorOption | null = null;
 
   constructor() {
+    // Inicializar form de forma temporal para evitar null reference
+    this.form = this.fb.group({
+      nombre: [''],
+      cantidadMg: [''],
+      horaInicio: [''],
+      fechaInicio: [''],
+      fechaFin: [''],
+      frecuencia: ['']
+    });
+  }
+
+  ngOnInit(): void {
+    // Reinicializar el formulario con validators en ngOnInit
     this.form = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       cantidadMg: ['', [Validators.required, Validators.min(1)]],
@@ -75,9 +89,8 @@ export class MedicineFormComponent implements OnInit {
       fechaFin: ['', Validators.required],
       frecuencia: ['', Validators.required]
     });
-  }
+    this.formInitialized = true;
 
-  ngOnInit(): void {
     if (this.initialData) {
       this.form.patchValue({
         nombre: this.initialData.nombre,

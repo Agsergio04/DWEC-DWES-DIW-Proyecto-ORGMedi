@@ -4,6 +4,7 @@ package proyecto.orgmedi.controller;
 import proyecto.orgmedi.dto.auth.AuthRequest;
 import proyecto.orgmedi.dto.auth.AuthResponse;
 import proyecto.orgmedi.dto.auth.RegisterRequest;
+import proyecto.orgmedi.dto.auth.ChangePasswordRequest;
 import proyecto.orgmedi.dominio.Usuario;
 import proyecto.orgmedi.dominio.GestorMedicamentos;
 import proyecto.orgmedi.repo.UsuarioRepository;
@@ -155,6 +156,44 @@ public class AuthController {
         usuario.setContrasena(hashed);
         usuarioRepository.save(usuario);
         logger.info("Rehash success for correo={}", request.getCorreo());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/change-password")
+    @Transactional
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        // Buscar usuario por correo
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreo(request.getCorreoActual());
+        if (usuarioOpt.isEmpty()) {
+            logger.warn("Change password failed: user not found for correo={}", request.getCorreoActual());
+            throw new UnauthorizedException("Usuario no encontrado");
+        }
+
+        Usuario usuario = usuarioOpt.get();
+        String stored = usuario.getContrasena();
+
+        // Validar contraseña actual
+        if (stored == null || request.getContrasenaActual() == null) {
+            logger.warn("Change password failed (null password) for correo={}", request.getCorreoActual());
+            throw new UnauthorizedException("Contraseña inválida");
+        }
+
+        boolean isBCrypt = stored.startsWith("$2a$") || stored.startsWith("$2b$") || stored.startsWith("$2y$");
+        boolean matches = isBCrypt ? 
+            passwordEncoder.matches(request.getContrasenaActual(), stored) : 
+            Objects.equals(stored, request.getContrasenaActual());
+
+        if (!matches) {
+            logger.warn("Change password failed (wrong password) for correo={}", request.getCorreoActual());
+            throw new UnauthorizedException("Contraseña actual incorrecta");
+        }
+
+        // Hash de la nueva contraseña
+        String hashedNewPassword = passwordEncoder.encode(request.getContrasenanueva());
+        usuario.setContrasena(hashedNewPassword);
+        usuarioRepository.save(usuario);
+
+        logger.info("Password changed successfully for correo={}", request.getCorreoActual());
         return ResponseEntity.ok().build();
     }
 }
