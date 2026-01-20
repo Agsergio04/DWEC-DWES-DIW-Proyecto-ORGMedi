@@ -26,22 +26,42 @@ export class ProfilePage implements OnInit {
   private router = inject(Router);
   private toastService = inject(ToastService);
 
-  form: FormGroup<ProfileFormModel> = this.fb.group({
-    username: ['', Validators.required],
-    currentPassword: ['', Validators.required],
-    newPassword: ['', Validators.required]
-  }) as FormGroup<ProfileFormModel>;
-
+  form!: FormGroup<ProfileFormModel>;
+  formInitialized = false;
   isLoading = false;
 
+  constructor() {
+    // El formulario se inicializa en ngOnInit, no aquí
+  }
+
   ngOnInit(): void {
-    // Cargar datos del usuario actual si existe
-    const currentUser = this.authService.currentUser;
-    if (currentUser) {
-      this.form.patchValue({
-        username: currentUser.name
-      });
-    }
+    // Inicializar el formulario PRIMERO antes de que el template se renderice
+    this.form = this.fb.group({
+      username: ['', { validators: [Validators.required], nonNullable: true }],
+      currentPassword: ['', { validators: [Validators.required], nonNullable: true }],
+      newPassword: ['', { validators: [Validators.required], nonNullable: true }]
+    }) as FormGroup<ProfileFormModel>;
+    
+    // Marcar como inicializado para que el template se renderice
+    this.formInitialized = true;
+
+    // Cargar datos del usuario actual del backend
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        // Usar el ID real obtenido del servidor
+        if (user && user.name) {
+          this.form.get('username')?.setValue(user.name);
+        }
+      },
+      error: (err) => {
+        console.error('Error cargando datos del usuario:', err);
+        // Si falla, intentar usar el usuario del localStorage
+        const currentUser = this.authService.currentUser;
+        if (currentUser && currentUser.name) {
+          this.form.get('username')?.setValue(currentUser.name);
+        }
+      }
+    });
   }
 
   changeUsername(): void {

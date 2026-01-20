@@ -134,7 +134,13 @@
   flex-direction: column;
   gap: $espaciado-12;
   align-items: stretch;
+}
 
+.form-error {
+  font-size: $font-size-sm;
+  color: #d32f2f;
+  margin-top: -$espaciado-8;
+  display: block;
 }
 
 // Form actions

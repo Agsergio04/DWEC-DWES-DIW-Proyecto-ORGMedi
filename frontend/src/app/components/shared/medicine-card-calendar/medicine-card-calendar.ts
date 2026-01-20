@@ -14,6 +14,7 @@ export class MedicineCardCalendarComponent {
   private medicineService = inject(MedicineService);
 
   @Input() medicine!: MedicineViewModel;
+  @Input() displayTime: string = '00:00'; // Nueva prop para mostrar la hora
   @Input() isExpired: boolean = false;
   @Input() isExpiring: boolean = false;
   
@@ -22,6 +23,30 @@ export class MedicineCardCalendarComponent {
   @Output() medicineSelected = new EventEmitter<number>();
 
   saving = false;
+
+  // Mapeo de variantes a colores hex
+  private colorMap: { [key: string]: string } = {
+    'variante-primera': '#00BCD4',   // Azul Cian
+    'variante-segunda': '#FFC107',   // Amarillo
+    'variante-tercera': '#E91E63',   // Rosa Magenta
+    'variante-cuarta': '#FF9800',    // Naranja
+    'variante-quinta': '#9C27B0'     // Magenta
+  };
+
+  /**
+   * Convierte una variante de color a su equivalente hex
+   */
+  getColorHex(color: string | undefined): string {
+    if (!color) return '#5dd3e0'; // Color por defecto
+    
+    // Si ya es un color hex, devolverlo directamente
+    if (color.startsWith('#')) {
+      return color;
+    }
+    
+    // Si es una variante, convertir a hex
+    return this.colorMap[color] || '#5dd3e0';
+  }
 
   onEdit(): void {
     this.medicineEdit.emit(this.medicine.id);

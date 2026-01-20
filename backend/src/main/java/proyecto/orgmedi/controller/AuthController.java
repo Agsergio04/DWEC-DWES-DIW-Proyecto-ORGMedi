@@ -5,6 +5,7 @@ import proyecto.orgmedi.dto.auth.AuthRequest;
 import proyecto.orgmedi.dto.auth.AuthResponse;
 import proyecto.orgmedi.dto.auth.RegisterRequest;
 import proyecto.orgmedi.dto.auth.ChangePasswordRequest;
+import proyecto.orgmedi.dto.auth.UserDTO;
 import proyecto.orgmedi.dominio.Usuario;
 import proyecto.orgmedi.dominio.GestorMedicamentos;
 import proyecto.orgmedi.repo.UsuarioRepository;
@@ -195,5 +196,37 @@ public class AuthController {
 
         logger.info("Password changed successfully for correo={}", request.getCorreoActual());
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            logger.warn("Get current user failed: missing or invalid Authorization header");
+            throw new UnauthorizedException("Token no proporcionado");
+        }
+
+        String token = authHeader.substring(7);
+        String correo = jwtUtil.extractCorreo(token);
+        
+        if (correo == null) {
+            logger.warn("Get current user failed: invalid token");
+            throw new UnauthorizedException("Token inválido");
+        }
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreo(correo);
+        if (usuarioOpt.isEmpty()) {
+            logger.warn("Get current user failed: user not found for correo={}", correo);
+            throw new UnauthorizedException("Usuario no encontrado");
+        }
+
+        Usuario usuario = usuarioOpt.get();
+        UserDTO userDTO = UserDTO.builder()
+            .id(usuario.getId())
+            .correo(usuario.getCorreo())
+            .usuario(usuario.getUsuario())
+            .build();
+
+        logger.info("Get current user success for correo={}", correo);
+        return ResponseEntity.ok(userDTO);
     }
 }

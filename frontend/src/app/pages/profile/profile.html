@@ -1,5 +1,5 @@
-<section class="page page--profile">
-  <div class="page__container">
+<section class="page page--profile" *ngIf="formInitialized && form">
+  <form class="page__container" [formGroup]="form">
     <!-- Encabezado -->
     <div class="profile__title-section">
       <h1>Perfil</h1>
@@ -75,6 +75,6 @@
     >
       Cerrar sesion
     </app-button>
-  </div>
+  </form>
 </section>
 

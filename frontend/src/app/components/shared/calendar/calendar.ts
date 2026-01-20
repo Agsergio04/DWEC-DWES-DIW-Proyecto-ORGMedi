@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Medicine } from '../../../data/models/medicine.model';
 import { MedicineDose, calculateMedicineDoses, parseFrequencyToHours } from '../../../shared/utils/medicine-schedule.util';
@@ -28,6 +28,9 @@ interface CalendarDay {
 export class CalendarComponent implements OnInit {
   // Semana actual
   weekDays: CalendarDay[] = [];
+
+  // Output para notificar cuando se selecciona un día
+  @Output() daySelected = new EventEmitter<Date>();
 
   // Fecha actual
   currentDate: Date = new Date();
@@ -172,6 +175,8 @@ export class CalendarComponent implements OnInit {
     this.selectedDate = day.date;
     this.currentDate = day.date;
     console.log('Día seleccionado:', day.date.toLocaleDateString('es-ES'));
+    // Emitir el evento para notificar a la página padre
+    this.daySelected.emit(day.date);
   }
 
   /**

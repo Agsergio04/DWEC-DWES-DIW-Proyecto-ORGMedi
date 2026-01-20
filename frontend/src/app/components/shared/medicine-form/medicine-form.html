@@ -71,25 +71,29 @@
     <div class="selector-group">
       <label class="form-label">Seleccione la frecuencia de consumo de la pastilla:</label>
       <app-data-input-selector
-        [options]="frequencyOptions"
+        formControlName="frecuencia"
         [selectedOption]="selectedFrequency"
+        [options]="frequencyOptions"
         [type]="'text'"
         [disabled]="isSubmitting"
         placeholder="Selecciona cada cuanto"
         (optionSelected)="onFrequencySelected($event)">
       </app-data-input-selector>
+      <span class="form-error" *ngIf="form?.get('frecuencia')?.hasError('required') && form?.get('frecuencia')?.touched">Selecciona una frecuencia</span>
     </div>
 
     <div class="selector-group">
       <label class="form-label">Selecciona el color de la pastilla :</label>
       <app-data-input-selector
-        [options]="colorOptions"
+        formControlName="color"
         [selectedOption]="selectedColor"
+        [options]="colorOptions"
         [type]="'color'"
         [disabled]="isSubmitting"
         placeholder="Selecciona un color"
         (optionSelected)="onColorSelected($event)">
       </app-data-input-selector>
+      <span class="form-error" *ngIf="form?.get('color')?.hasError('required') && form?.get('color')?.touched">Selecciona un color</span>
     </div>
   </div>
 
@@ -109,7 +113,7 @@
       variant="primary"
       [width]="'20rem'"
       [height]="'3rem'"
-      [disabled]="isSubmitting || !form?.valid"
+      [disabled]="isSubmitting || !form?.valid || !selectedFrequency || !selectedColor"
       (clicked)="onSubmit()"
     >
       {{ submitButtonText }}

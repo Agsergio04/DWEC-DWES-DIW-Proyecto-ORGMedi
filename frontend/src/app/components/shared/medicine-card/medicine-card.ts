@@ -17,6 +17,15 @@ export class MedicineCardComponent implements OnInit {
   isExpired = false;
   isExpiring = false;
 
+  // Mapeo de variantes a colores hex
+  private colorMap: { [key: string]: string } = {
+    'variante-primera': '#00BCD4',   // Azul Cian
+    'variante-segunda': '#FFC107',   // Amarillo
+    'variante-tercera': '#E91E63',   // Rosa Magenta
+    'variante-cuarta': '#FF9800',    // Naranja
+    'variante-quinta': '#9C27B0'     // Magenta
+  };
+
   ngOnInit() {
     this.checkExpiration();
   }
@@ -63,10 +72,23 @@ export class MedicineCardComponent implements OnInit {
   }
 
   getFrequencyLabel(): string {
-    return this.medicine?.frecuencia ? `Cada ${this.medicine.frecuencia} hora(s)` : 'No especificada';
+    return this.medicine?.frecuencia ? `cada ${this.medicine.frecuencia} horas` : 'No especificada';
   }
 
   getDosageLabel(): string {
-    return this.medicine?.cantidadMg ? `${this.medicine.cantidadMg}mg` : 'No especificada';
+    return this.medicine?.cantidadMg ? `${this.medicine.cantidadMg} Mg` : 'No especificada';
   }
+
+  /**
+   * Obtiene el color de la pastilla basado en el valor guardado en BD
+   * Convierte la variante a color hex
+   */
+  getPillColor(): string {
+    if (!this.medicine?.color) {
+      return '#5dd3e0'; // Color por defecto si no existe
+    }
+    return this.colorMap[this.medicine.color] || this.medicine.color || '#5dd3e0';
+  }
+
+
 }

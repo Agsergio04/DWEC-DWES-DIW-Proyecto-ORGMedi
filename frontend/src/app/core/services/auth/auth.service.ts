@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { tap, catchError, map } from 'rxjs/operators';
 
@@ -77,6 +77,9 @@ export class AuthService {
    * Envía email/contraseña y recibe JWT en la respuesta
    */
   login(email: string, password: string): Observable<boolean> {
+    // Limpiar cualquier sesión anterior
+    this.logout();
+    
     const request: AuthRequest = {
       correo: email,
       contrasena: password
@@ -108,6 +111,9 @@ export class AuthService {
    * Envía email/usuario/contraseña y recibe JWT en la respuesta
    */
   register(email: string, username: string, password: string): Observable<boolean> {
+    // Limpiar cualquier sesión anterior
+    this.logout();
+    
     const request = {
       correo: email,
       usuario: username,
@@ -166,6 +172,48 @@ export class AuthService {
   }
 
   /**
+   * Obtener el usuario actual del backend
+   * Devuelve los datos reales del usuario autenticado
+   */
+  getCurrentUser(): Observable<AuthUser> {
+    return this.http.get<AuthUser>(`${this.baseUrl}/me`).pipe(
+      tap((user) => {
+        // Manejar respuestas vacías del servidor
+        if (!user || !user.id) {
+          console.warn('[AuthService] Empty or invalid user response from /api/auth/me');
+          // Usar datos del localStorage si existen
+          const storedUser = this.getStoredUser();
+          if (storedUser) {
+            this.currentUserSubject.next(storedUser);
+            console.log('[AuthService] Using stored user data:', storedUser);
+          }
+          return;
+        }
+
+        // Actualizar localStorage con datos del servidor
+        const authUser: AuthUser = {
+          id: user.id,
+          name: user.name,
+          email: user.email
+        };
+        localStorage.setItem('currentUser', JSON.stringify(authUser));
+        this.currentUserSubject.next(authUser);
+        console.log('[AuthService] Current user fetched from server:', authUser);
+      }),
+      catchError(err => {
+        console.error('Error fetching current user:', err);
+        // En caso de error, intentar usar datos almacenados
+        const storedUser = this.getStoredUser();
+        if (storedUser) {
+          this.currentUserSubject.next(storedUser);
+          return of(storedUser);
+        }
+        return throwError(() => err);
+      })
+    );
+  }
+
+  /**
    * Actualizar nombre de usuario
    * Envía el nuevo nombre de usuario al backend
    */
@@ -177,10 +225,11 @@ export class AuthService {
 
     const request = {
       usuario: newUsername,
-      correo: currentUser.email
+      correo: currentUser.email,
+      contrasena: '' // Campo requerido por la API pero no se actualiza
     };
 
-    return this.http.patch<any>(`/api/usuarios/${currentUser.id}`, request).pipe(
+    return this.http.put<any>(`/api/usuarios/${currentUser.id}`, request).pipe(
       tap((response) => {
         // Actualizar usuario en localStorage
         const updatedUser: AuthUser = {

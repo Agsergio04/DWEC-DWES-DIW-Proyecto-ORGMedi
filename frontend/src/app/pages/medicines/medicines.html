@@ -8,15 +8,12 @@
 
     <!-- Lista de medicamentos o mensaje vacío -->
     <div *ngIf="medicines.length > 0; else noMedicines" class="medicines__list">
-      <app-medicine-card-calendar
+      <app-medicine-card
         *ngFor="let medicine of medicines"
         [medicine]="medicine"
-        [isExpired]="isExpired(medicine)"
-        [isExpiring]="isExpiring(medicine)"
-        (medicineEdit)="editMedicine($event)"
-        (medicineDelete)="deleteMedicine($event)"
-        (medicineSelected)="toggleConsumption($event)">
-      </app-medicine-card-calendar>
+        (edit)="editMedicine($event)"
+        (delete)="deleteMedicine($event)">
+      </app-medicine-card>
     </div>
 
     <!-- Sin medicamentos -->
@@ -31,7 +28,7 @@
         Crear un nuevo medicamento por foto
       </button>
       <button class="medicines__action-btn medicines__action-btn--manual" (click)="navigateToCreate()">
-        <img src="/Icono Manual.svg" alt="Icono manual" class="medicines__action-icon"> 
+        <img src="/Icono Medicamento.svg" alt="Icono manual" class="medicines__action-icon"> 
         Crear un nuevo medicamento manualmente
       </button>
     </div>

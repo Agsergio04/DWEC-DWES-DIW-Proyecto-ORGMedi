@@ -1,14 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MedicineCardCalendarComponent } from '../../components/shared/medicine-card-calendar/medicine-card-calendar';
+import { MedicineCardComponent } from '../../components/shared/medicine-card/medicine-card';
 import { MedicineService } from '../../data/medicine.service';
 import { MedicineViewModel, ApiError } from '../../data/models/medicine.model';
 
 @Component({
   selector: 'app-medicines-page',
   standalone: true,
-  imports: [CommonModule, MedicineCardCalendarComponent],
+  imports: [CommonModule, MedicineCardComponent],
   templateUrl: './medicines.html',
   styleUrls: ['./medicines.scss']
 })

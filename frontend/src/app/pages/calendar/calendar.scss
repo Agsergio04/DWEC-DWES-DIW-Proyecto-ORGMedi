@@ -179,3 +179,89 @@
   margin-bottom: $espaciado-48;
 }
 
+// ===== LISTA DE MEDICAMENTOS =====
+.medicines__list {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-24;
+  margin-top: $espaciado-24;
+}
+
+// ===== GRUPO DE MEDICAMENTOS POR HORA =====
+.medicines__time-group {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-12;
+}
+
+.medicines__time-header {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-primario-primary);
+  padding: $espaciado-8 0;
+  border-bottom: 2px solid var(--color-primario-primary);
+}
+
+.medicines__group-items {
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-12;
+}
+
+// ===== GRUPO DE MEDICAMENTOS CON LA MISMA HORA (legacy) =====
+.medicines__group {
+  position: relative;
+  margin-bottom: $espaciado-24;
+}
+
+.medicines__group-time {
+  position: absolute;
+  top: -24px;
+  left: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1;
+}
+
+.medicines__group-item {
+  margin: 0 !important;
+  
+  ::ng-deep .medicine-card-calendar {
+    padding: 8px 12px;
+    min-height: 48px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    box-shadow: none;
+    
+    .medicine-card-calendar__time {
+      display: none; // Ocultar la hora individual ya que está en el grupo
+    }
+
+    .medicine-card-calendar__content {
+      gap: 8px;
+    }
+
+    .medicine-card-calendar__title {
+      color: white !important;
+      font-size: 14px;
+    }
+
+    .medicine-card-calendar__icon {
+      width: 32px;
+      height: 32px;
+    }
+
+    .medicine-card-calendar__icon-svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .medicine-card-calendar__status-btn {
+      width: 36px;
+      height: 36px;
+      font-size: 16px;
+    }
+  }
+}
+

@@ -5,8 +5,7 @@
     [class.selected]="selectedOption !== null"
     [class.disabled]="disabled"
     (click)="toggleDropdown()"
-    (blur)="closeDropdown()"
-    tabindex="0">
+    [attr.tabindex]="disabled ? -1 : 0">
     
     <span class="selector-text">{{ getDisplayText() }}</span>
     
@@ -21,7 +20,7 @@
     </svg>
   </div>
 
-  <div class="options-container" *ngIf="isOpen">
+  <div class="options-container" *ngIf="isOpen" (click)="$event.stopPropagation()">
     <div class="options-list" [class.color-mode]="type === 'color'">
       <div 
         *ngFor="let option of options"

@@ -1,67 +1,90 @@
 <article class="medicine-card" [class.medicine-card--expired]="isExpired" [class.medicine-card--expiring]="isExpiring">
-  <div class="medicine-card__container">
-    <!-- ===== HEADER: Icono + Título + Botón Borrar ===== -->
-    <div class="medicine-card__header">
-      <!-- Icono de píldora (SVG) con color dinámico -->
-      <div class="medicine-card__icon" [style.--medicine-color]="medicine.color || '#D97BBF'">
-        <img src="/Icono Medicamento.svg" alt="Medicamento" class="medicine-card__icon-img">
-      </div>
-      
-      <!-- Título del medicamento (con color dinámico) -->
-      <h3 class="medicine-card__title" [style.--medicine-color]="medicine.color || '#D97BBF'">
-        {{ medicine.nombre }}
-      </h3>
-      
-      <!-- Botón de borrar -->
-      <button class="medicine-card__delete-btn" 
-              aria-label="Borrar medicamento"
-              (click)="onDelete()">
-        <img src="/Icono Editar.svg" alt="Editar" class="medicine-card__delete-icon">
+  <!-- HEADER Section con fondo rosa -->
+  <div class="medicine-card__header">
+    <!-- Icono de píldora -->
+    <div class="medicine-card__pill-icon">
+      <svg width="56" height="56" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6.19589 6.19589L11.8041 11.8041M7.79824 15.81L15.81 7.79824C16.1843 7.43136 16.4823 6.99391 16.6865 6.51117C16.8908 6.02844 16.9973 5.51 16.9999 4.98584C17.0026 4.46168 16.9013 3.94219 16.7019 3.45742C16.5026 2.97264 16.2091 2.5322 15.8384 2.16156C15.4678 1.79092 15.0274 1.49743 14.5426 1.29806C14.0578 1.09869 13.5383 0.997403 13.0142 1.00005C12.49 1.0027 11.9716 1.10923 11.4888 1.31348C11.0061 1.51774 10.5686 1.81566 10.2018 2.19003L2.19003 10.2018C1.81566 10.5686 1.51774 11.0061 1.31348 11.4888C1.10923 11.9716 1.0027 12.49 1.00005 13.0142C0.997403 13.5383 1.09869 14.0578 1.29806 14.5426C1.49743 15.0274 1.79092 15.4678 2.16156 15.8384C2.5322 16.2091 2.97264 16.5026 3.45742 16.7019C3.94219 16.9013 4.46168 17.0026 4.98584 16.9999C5.51 16.9973 6.02844 16.8908 6.51117 16.6865C6.99391 16.4823 7.43136 16.1843 7.79824 15.81Z" 
+          [attr.stroke]="getPillColor()" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    
+    <!-- Título del medicamento -->
+    <h1 class="medicine-card__title" [style.color]="getPillColor()">{{ medicine.nombre }}</h1>
+    
+    <!-- Botones de acción -->
+    <div class="medicine-card__actions">
+      <button class="medicine-card__btn" aria-label="Cerrar" (click)="onDelete()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <button class="medicine-card__btn" aria-label="Editar" (click)="onEdit()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
       </button>
     </div>
+  </div>
 
-    <!-- ===== INFORMACIÓN EN DOS FILAS ===== -->
+  <!-- CONTENT Section con fondo blanco -->
+  <div class="medicine-card__content">
+    <!-- Grid 2x2 de información -->
     <div class="medicine-card__info-grid">
-      <!-- Fila 1: Cantidad y Frecuencia -->
-      <div class="medicine-card__info-row">
-        <div class="medicine-card__info-item">
-          <svg class="medicine-card__info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <!-- Fila 1 -->
+      <div class="medicine-card__info-item">
+        <div class="medicine-card__icon-wrapper medicine-card__icon-wrapper--bordered">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="9" width="18" height="12" rx="2"/>
             <path d="M9 9V6a3 3 0 0 1 6 0v3"/>
           </svg>
+        </div>
+        <p class="medicine-card__text">
           <span class="medicine-card__label">Cantidad :</span>
           <span class="medicine-card__value">{{ getDosageLabel() }}</span>
-        </div>
+        </p>
+      </div>
 
-        <div class="medicine-card__info-item">
-          <svg class="medicine-card__info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="medicine-card__info-item">
+        <div class="medicine-card__icon-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
+        </div>
+        <p class="medicine-card__text">
           <span class="medicine-card__label">Frecuencia :</span>
           <span class="medicine-card__value">{{ getFrequencyLabel() }}</span>
-        </div>
+        </p>
       </div>
 
-      <!-- Fila 2: Fecha Inicio y Fecha Fin -->
-      <div class="medicine-card__info-row">
-        <div class="medicine-card__info-item">
-          <svg class="medicine-card__info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <!-- Fila 2 -->
+      <div class="medicine-card__info-item">
+        <div class="medicine-card__icon-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="4" width="18" height="18" rx="2"/>
             <path d="M16 2v4M8 2v4M3 10h18"/>
           </svg>
+        </div>
+        <p class="medicine-card__text">
           <span class="medicine-card__label">Fecha Inicio :</span>
           <span class="medicine-card__value">{{ medicine.fechaInicio }}</span>
-        </div>
+        </p>
+      </div>
 
-        <div class="medicine-card__info-item">
-          <svg class="medicine-card__info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="medicine-card__info-item">
+        <div class="medicine-card__icon-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="4" width="18" height="18" rx="2"/>
             <path d="M16 2v4M8 2v4M3 10h18"/>
           </svg>
+        </div>
+        <p class="medicine-card__text">
           <span class="medicine-card__label">Fecha Fin :</span>
           <span class="medicine-card__value">{{ medicine.fechaFin || '-' }}</span>
-        </div>
+        </p>
       </div>
     </div>
   </div>

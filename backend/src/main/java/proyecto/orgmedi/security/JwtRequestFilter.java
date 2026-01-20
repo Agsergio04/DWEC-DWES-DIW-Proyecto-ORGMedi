@@ -27,11 +27,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain)
             throws ServletException, IOException {
+        final String requestUri = request.getRequestURI();
+        
+        // Ignorar rutas de health y actuator
+        if (requestUri.startsWith("/actuator")) {
+            logger.debug("[JwtRequestFilter] Skipping JWT validation for actuator endpoint: " + requestUri);
+            chain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
         String correo = null;
         String jwt;
 
-        logger.debug("[JwtRequestFilter] Processing request to: " + request.getRequestURI());
+        logger.debug("[JwtRequestFilter] Processing request to: " + requestUri);
         logger.debug("[JwtRequestFilter] Authorization header: " + (authHeader != null ? "present" : "missing"));
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {

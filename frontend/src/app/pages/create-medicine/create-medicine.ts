@@ -19,6 +19,15 @@ export class CreateMedicinePage implements OnInit {
   saving = false;
   error: ApiError | null = null;
 
+  // Mapeo de variantes a colores hex
+  private colorMap: { [key: string]: string } = {
+    'variante-primera': '#00BCD4',   // Azul Cian
+    'variante-segunda': '#FFC107',   // Amarillo
+    'variante-tercera': '#E91E63',   // Rosa Magenta
+    'variante-cuarta': '#FF9800',    // Naranja
+    'variante-quinta': '#9C27B0'     // Magenta
+  };
+
   constructor() {}
 
   /**
@@ -35,6 +44,7 @@ export class CreateMedicinePage implements OnInit {
    * Maneja el envío del formulario
    */
   onFormSubmit(formData: MedicineFormData): void {
+    console.log('[CreateMedicinePage] onFormSubmit called with:', formData);
     this.saving = true;
     this.error = null;
 
@@ -46,21 +56,39 @@ export class CreateMedicinePage implements OnInit {
       horaInicio: formData.horaInicio,
       fechaInicio: this.formatDateForApi(formData.fechaInicio),
       fechaFin: this.formatDateForApi(formData.fechaFin),
-      color: formData.color
+      color: this.getColorHex(formData.color)  // Convertir variante a hex
     };
 
+    console.log('[CreateMedicinePage] Mapped medicine data:', medicineData);
     this.medicineService.create(medicineData).subscribe({
       next: (medicine) => {
-        console.log('Medicamento creado:', medicine);
+        console.log('[CreateMedicinePage] Medicamento creado:', medicine);
         this.router.navigate(['/medicamentos']);
         this.saving = false;
       },
       error: (err: ApiError) => {
-        console.error('Error al crear medicamento:', err);
+        console.error('[CreateMedicinePage] Error al crear medicamento:', err);
         this.error = err;
         this.saving = false;
       }
     });
+  }
+
+  /**
+   * Convierte una variante de color a su equivalente hex
+   * @param color Variante de color o hex directo
+   * @returns Color en formato hex
+   */
+  private getColorHex(color: string | undefined): string {
+    if (!color) return '#5dd3e0'; // Color por defecto
+    
+    // Si ya es un color hex, devolverlo directamente
+    if (color.startsWith('#')) {
+      return color;
+    }
+    
+    // Si es una variante, convertir a hex
+    return this.colorMap[color] || '#5dd3e0';
   }
 
   /**
