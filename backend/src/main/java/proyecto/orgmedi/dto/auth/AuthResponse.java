@@ -1,6 +1,7 @@
 package proyecto.orgmedi.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class AuthResponse {
     @JsonProperty("token")
@@ -10,7 +11,8 @@ public class AuthResponse {
     public AuthResponse() {
     }
 
-    public AuthResponse(String token) {
+    @JsonCreator
+    public AuthResponse(@JsonProperty("token") String token) {
         this.token = token;
     }
 
