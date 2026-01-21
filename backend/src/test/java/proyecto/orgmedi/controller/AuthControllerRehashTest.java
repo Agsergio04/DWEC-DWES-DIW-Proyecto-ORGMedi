@@ -50,10 +50,10 @@ public class AuthControllerRehashTest {
     @SuppressWarnings("null")
     void rehashPassword_whenValidRequest_returnsOk() throws Exception {
         AuthRequest request = new AuthRequest();
-        request.setCorreo("test@mail.com");
+        request.setUsuario("testuser");
         request.setContrasena("oldpass");
-        Usuario usuario = Usuario.builder().correo("test@mail.com").contrasena("oldpass").build();
-        when(usuarioRepository.findByCorreo("test@mail.com")).thenReturn(Optional.of(usuario));
+        Usuario usuario = Usuario.builder().usuario("testuser").correo("test@mail.com").contrasena("oldpass").build();
+        when(usuarioRepository.findByUsuario("testuser")).thenReturn(Optional.of(usuario));
         when(passwordEncoder.encode("oldpass")).thenReturn("hashedoldpass");
         Usuario usuarioHasheado = Usuario.builder().correo("test@mail.com").contrasena("hashedoldpass").build();
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioHasheado);
