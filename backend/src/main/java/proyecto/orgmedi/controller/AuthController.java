@@ -83,7 +83,7 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
-    @PostMapping(value = "/register", produces = "application/json")
+    @PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
     @Transactional
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         // Verificar si el correo ya existe
@@ -124,9 +124,7 @@ public class AuthController {
 
         // Generar token JWT
         String token = jwtUtil.generateToken(request.getCorreo());
-        AuthResponse response = new AuthResponse(token);
-        logger.info("Register response token: {}", token);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).contentType(org.springframework.http.MediaType.APPLICATION_JSON).body(new AuthResponse(token));
     }
 
     @PostMapping("/rehash")
