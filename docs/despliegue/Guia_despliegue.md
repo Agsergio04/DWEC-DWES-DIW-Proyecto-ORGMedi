@@ -136,7 +136,7 @@ Services:
 1. **Crear Web Service**
    - Ir a Dashboard → **"New Web Service"**
    - Conectar repositorio GitHub
-   - Seleccionar rama: `main`
+   - Seleccionar rama: `master`
    - **Build Command**: `./mvnw clean package -DskipTests`
    - **Start Command**: `java -jar target/*.jar`
 
@@ -425,6 +425,61 @@ CORS_ALLOWED_ORIGINS=https://orgmedi-frontend-xxxx.onrender.com
 
 ---
 
+## Health Check Automático en Render
+
+### ✅ Opción 1: Usar Script de Health Check (Recomendado)
+
+**Para mantener el backend activo sin pagar extra**, crea un servicio health-check en Render.
+
+#### A. Crear el Servicio Health Check en Render Dashboard
+
+1. Ir a **Dashboard → "New Web Service"**
+2. Conectar repositorio: `Agsergio04/DWEC-DWES-DIW-Proyecto-ORGMedi`
+3. Configurar:
+
+| Campo | Valor |
+|-------|-------|
+| **Name** | `orgmedi-health-check` |
+| **Language** | `Docker` |
+| **Branch** | `master` |
+| **Root Directory** | `health-check/` |
+| **Build Context** | `health-check/` |
+| **Dockerfile Path** | `health-check/Dockerfile` |
+
+4. **Variables de Entorno:**
+```
+BACKEND_URL = https://orgmedi-backend-xxxx.onrender.com/actuator/health
+CHECK_INTERVAL = 600
+```
+
+5. **Seleccionar Instance Type: Free** ✅ (no cuesta extra)
+6. Hacer clic en **"Deploy"**
+
+#### B. Verificar que Funciona
+
+```bash
+# Ver logs del health check
+En Dashboard → orgmedi-health-check → Logs
+```
+
+Deberías ver cada 10 minutos:
+```
+✅ Check #1 - Status: 200 - Backend activo
+```
+
+---
+
+### ❌ Opción 2: Usar el Health Check de Render (Limited)
+
+Render tiene un health check nativo, pero **solo previene que el servicio se reinicie**, no lo mantiene activo si está en Free tier.
+
+En tu Web Service del backend:
+```
+Health Check Path: /actuator/health
+```
+
+---
+
 ## Monitoreo y Logs
 
 ### Ver Logs en Render
@@ -438,15 +493,20 @@ CORS_ALLOWED_ORIGINS=https://orgmedi-frontend-xxxx.onrender.com
    - Errores
 
 #### Frontend
-1. Dashboard → `orgmedi-frontend`
+1. Dashboard → `DWEC-DWES-DIW-Proyecto-ORGMedi` (Static Site)
 2. **"Logs"** tab muestra:
    - Build Angular
-   - Servidor Express
-   - Requests HTTP
+   - Despliegue de assets estáticos
+
+#### Health Check
+1. Dashboard → `orgmedi-health-check`
+2. **"Logs"** tab muestra:
+   - Health checks cada 10 minutos
+   - Status del backend
 
 ### Monitorear Salud (Health Checks)
 
-Backend expone `/actuator/health` para que Render verifique que está vivo:
+Backend expone `/actuator/health` para verificación:
 
 ```bash
 curl https://orgmedi-backend-xxxx.onrender.com/actuator/health
@@ -567,17 +627,35 @@ Después del despliegue exitoso, tendrás:
 
 ## Checklist de Despliegue
 
-- [ ] Repositorio GitHub público con código actualizado
-- [ ] `render.yaml` en raíz del proyecto
+### Frontend
+- [x] Static Site desplegado en Render: `https://dwec-dwes-diw-proyecto-orgmedi.onrender.com`
+- [x] Root Directory: `frontend`
+- [x] Build Command: `npm install && npm run build`
+- [x] Publish Directory: `frontend/dist/Proyecto/browser`
+
+### Backend
+- [ ] Repositorio GitHub con rama `master` actualizada
 - [ ] `backend/application-prod.properties` creado
-- [ ] `frontend/server.js` creado
-- [ ] `pom.xml` con dependencias PostgreSQL
-- [ ] `package.json` con scripts `build` y `start`
-- [ ] Variables de entorno configuradas en Render
-- [ ] Base de datos PostgreSQL creada en Render
-- [ ] Health check funciona: `/actuator/health`
-- [ ] Frontend conecta con backend exitosamente
-- [ ] CORS configurado correctamente
+- [ ] Web Service desplegado en Render con Dockerfile
+- [ ] Instance Type: Starter ($7/mes) o superior
+- [ ] Build Command: `./mvnw clean package -DskipTests`
+- [ ] Start Command: `java -jar target/*.jar`
+- [ ] Variables de entorno configuradas:
+  - [ ] `SPRING_PROFILES_ACTIVE` = `prod`
+  - [ ] `SPRING_JPA_HIBERNATE_DDL_AUTO` = `update`
+
+### Health Check
+- [ ] Carpeta `health-check/` con Dockerfile y script creada
+- [ ] Web Service Health Check desplegado en Render
+- [ ] Instance Type: Free ✅
+- [ ] Variable `BACKEND_URL` configurada con URL real del backend
+- [ ] Variable `CHECK_INTERVAL` = `600` (10 minutos)
+- [ ] Logs muestran checks cada 10 minutos
+
+### Integración
+- [ ] CORS configurado en backend para aceptar frontend
+- [ ] Frontend conecta exitosamente con backend
+- [ ] Health check mantiene backend activo
 - [ ] Logs no muestran errores críticos
 
 ---

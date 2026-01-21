@@ -44,6 +44,20 @@ services:
       - NGINX_HOST=localhost
       - NGINX_PORT=80
 
+  health-check:
+    build:
+      context: ./health-check
+      dockerfile: Dockerfile
+    container_name: orgmedi-health-check
+    depends_on:
+      - backend
+    networks:
+      - orgmedi-network
+    environment:
+      BACKEND_URL: "http://orgmedi-backend:8080/actuator/health"
+      CHECK_INTERVAL: "600"  # 10 minutos
+    restart: unless-stopped
+
 networks:
   orgmedi-network:
     driver: bridge

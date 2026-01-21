@@ -22,15 +22,35 @@ Asegurar que existen estos archivos en la raíz del proyecto:
 - [ ] `frontend/package.json` con scripts correctos ✅ (ya actualizado)
 - [ ] `.gitignore` ✅ (ya creado)
 
-## Paso 3: Agregar Dependencia PostgreSQL en Backend
+## Paso 3: Base de Datos - H2 (Sin configuración necesaria) ✅
 
-✅ NECESARIO: Agregar controlador PostgreSQL a `backend/pom.xml`
+✅ **LA BASE DE DATOS YA ESTÁ CONFIGURADA CON H2**
+
+No necesitas hacer nada adicional. El archivo `application-prod.properties` ya está configurado para usar H2:
+
+```properties
+spring.datasource.url=jdbc:h2:file:/data/orgmedi;MODE=MySQL;AUTO_SERVER=TRUE
+spring.datasource.driverClassName=org.h2.Driver
+```
+
+✅ El disco persistente en Render (`/data`) guardará la BD automáticamente.
+
+**Si prefieres PostgreSQL en lugar de H2:**
+- Ver sección "Alternativa: PostgreSQL" más abajo
+
+---
+
+## Paso 3B (Opcional): Alternativa - PostgreSQL
+
+Si quieres cambiar a PostgreSQL:
+
+### A. Agregar Dependencia PostgreSQL en Backend
 
 **Localizar en `backend/pom.xml`:**
 ```xml
 <dependencies>
     ...
-    <!-- Agregar esto si no existe -->
+    <!-- Agregar esto -->
     <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
@@ -40,26 +60,48 @@ Asegurar que existen estos archivos en la raíz del proyecto:
 </dependencies>
 ```
 
-**Comando para verificar:**
-```bash
-cd backend
-./mvnw dependency:tree | grep postgresql
+### B. Actualizar `application-prod.properties`
+
+Cambiar sección "Base de Datos" a:
+```properties
+spring.datasource.url=jdbc:postgresql://host:5432/database
+spring.datasource.driverClassName=org.postgresql.Driver
+spring.datasource.username=postgres
+spring.datasource.password=password
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 ```
 
-Si no aparece, agregar manualmente.
+### C. Crear BD PostgreSQL en Render
+
+1. Dashboard → **"New +"** → **"PostgreSQL"**
+2. Nombre: `orgmedi-db`
+3. Copiar credenciales
+
+### D. Agregar Variables en Backend
+
+En Render Dashboard → `orgmedi-backend` → Settings → Environment:
+```
+SPRING_DATASOURCE_URL = (copiar de BD)
+SPRING_DATASOURCE_USERNAME = postgres
+SPRING_DATASOURCE_PASSWORD = (copiar de BD)
+```
+
+**Pero para este proyecto, H2 es suficiente y más simple.**
 
 ## Paso 4: Commit y Push a GitHub
 
 ```bash
 # Desde raíz del proyecto
 git add .
-git commit -m "✨ Configuración para despliegue en Render
+git commit -m "✨ Configuración para despliegue en Render con H2
 
-- Agregar render.yaml con configuración de servicios
-- Crear application-prod.properties para Spring Boot
+- Agregar render.yaml con configuración de 2 servicios (backend + frontend)
+- NO incluir PostgreSQL (usar H2 existente)
+- Crear application-prod.properties con H2
 - Crear server.js para servir frontend en producción
 - Actualizar package.json con dependencias Express y Compression
-- Actualizar .gitignore para producción"
+- Actualizar .gitignore para producción
+- Documentación de despliegue con H2"
 
 git push origin main
 ```
@@ -84,29 +126,18 @@ git push origin main
 5. Revisar servicios:
    - `orgmedi-backend` (Web Service)
    - `orgmedi-frontend` (Web Service)
-   - `orgmedi-db` (PostgreSQL Database)
+   - ❌ NO hay PostgreSQL (usaremos H2)
 6. Hacer clic en **"Deploy Blueprint"**
 
-✅ Render desplegará los 3 servicios automáticamente.
+✅ Render desplegará los 2 servicios automáticamente.
 
 ---
 
 ### Opción B: Despliegue Manual
 
-#### Paso 6A: Crear Base de Datos PostgreSQL
+#### Paso 6A: ~~Crear Base de Datos PostgreSQL~~ (No necesario - usamos H2)
 
-1. Dashboard → **"New +"** → **"PostgreSQL"**
-2. **Nombre**: `orgmedi-db`
-3. **Region**: Seleccionar más cercana a usuarios
-4. **Plan**: Free (o pagado)
-5. Hacer clic en **"Create Database"**
-
-⏳ Esperar 2-3 minutos mientras se crea
-
-**Una vez creada:**
-- Copiar **Internal Database URL** (formato: `postgres://user:pass@host/db`)
-- Guardar **Username** (normalmente `postgres`)
-- Copiar **Password**
+✅ Saltamos este paso, ya que H2 está configurado.
 
 #### Paso 6B: Desplegar Backend
 
@@ -116,20 +147,12 @@ git push origin main
 4. **Root Directory**: `backend`
 5. **Build Command**: `./mvnw clean package -DskipTests`
 6. **Start Command**: `java -jar target/*.jar`
-7. **Environment**: Agregar variables:
-
-| Key | Value |
-|-----|-------|
-| `SPRING_PROFILES_ACTIVE` | `prod` |
-| `SPRING_DATASOURCE_URL` | (Copiar de BD creada arriba) |
-| `SPRING_DATASOURCE_USERNAME` | `postgres` |
-| `SPRING_DATASOURCE_PASSWORD` | (Copiar de BD) |
-| `SPRING_JPA_HIBERNATE_DDL_AUTO` | `update` |
-| `CORS_ALLOWED_ORIGINS` | (Actualizar después, ver abajo) |
+7. **Environment**: (Sin variables adicionales necesarias)
 
 8. **Disk**: 
    - Mount Path: `/data`
    - Size: 1 GB
+   - ✅ Esto preservará la BD H2 entre redesplegues
 
 9. Hacer clic en **"Create Web Service"**
 
@@ -161,19 +184,9 @@ git push origin main
 
 ---
 
-## Paso 7: Actualizar Variables de Entorno del Backend
+## Paso 7: Verificar Despliegues (Sin variables de entorno adicionales) ✅
 
-1. Dashboard → **`orgmedi-backend`**
-2. **"Settings"** → **"Environment"**
-3. Editar `CORS_ALLOWED_ORIGINS`:
-   - Cambiar valor a: `https://orgmedi-frontend-xxxx.onrender.com`
-   - Reemplazar `xxxx` con tu ID de Render
-
-4. Hacer clic en **"Save"** (redesplegará automáticamente)
-
----
-
-## Paso 8: Verificar Despliegues
+Sin PostgreSQL, no necesitas actualizar variables de entorno.
 
 ### ✅ Verificar Backend
 
@@ -207,7 +220,7 @@ Respuesta esperada:
 
 ---
 
-## Paso 9: (Opcional) Agregar Dominio Personalizado
+## Paso 8: (Opcional) Agregar Dominio Personalizado
 
 ### Para Backend
 
@@ -231,7 +244,7 @@ Respuesta esperada:
 
 ---
 
-## Paso 10: Monitorear Logs
+## Paso 9: Monitorear Logs
 
 ### Ver Logs en Vivo
 
@@ -309,7 +322,8 @@ Una vez completado el despliegue:
 |----------|-----|
 | **Frontend** | `https://orgmedi-frontend-xxxx.onrender.com` |
 | **Backend API** | `https://orgmedi-backend-xxxx.onrender.com` |
-| **BD PostgreSQL** | Administrada por Render (no acceso directo) |
+| **BD H2** | Almacenada en disco persistente `/data/orgmedi.h2.db` |
+| **H2 Console** (debug) | `https://orgmedi-backend-xxxx.onrender.com/h2-console` |
 
 ---
 
@@ -320,14 +334,23 @@ Una vez completado el despliegue:
 │        FLUJO DE DESPLIEGUE RENDER       │
 ├─────────────────────────────────────────┤
 │ 1. GitHub → Render                      │
-│ 2. Render crea 3 servicios             │
+│ 2. Render crea 2 servicios             │
 │    • Backend (Java/Maven)               │
 │    • Frontend (Node/Express)            │
-│    • Database (PostgreSQL)              │
-│ 3. Backend ↔ Database                   │
+│ 3. Backend ↔ BD H2 (archivo)            │
 │ 4. Frontend ↔ Backend (API)            │
 │ 5. Usuario → Frontend (Navegador)      │
 └─────────────────────────────────────────┘
+
+✅ SIN necesidad de:
+- PostgreSQL externo
+- Variables de BD en Render
+- Disco PostgreSQL en Render
+
+✅ CON:
+- H2 en archivo persistente
+- Mismo código que desarrollo
+- Máxima compatibilidad
 ```
 
 ---
@@ -335,17 +358,18 @@ Una vez completado el despliegue:
 ## Checklist Final
 
 - [ ] Código en GitHub actualizado
-- [ ] render.yaml verificado
-- [ ] Dependencies PostgreSQL en pom.xml
-- [ ] application-prod.properties configurado
-- [ ] server.js en frontend
-- [ ] package.json actualizado
-- [ ] Servicios creados en Render
-- [ ] Variables de entorno configuradas
+- [ ] render.yaml verificado (2 servicios, sin PostgreSQL)
+- [ ] ~~Dependencies PostgreSQL en pom.xml~~ (No necesario)
+- [ ] application-prod.properties configurado con H2 ✅
+- [ ] server.js en frontend ✅
+- [ ] package.json actualizado ✅
+- [ ] Servicios creados en Render (backend + frontend)
+- [ ] ~~Variables de BD en Render~~ (No necesario)
 - [ ] Backend retorna /actuator/health UP
 - [ ] Frontend carga en navegador
 - [ ] API requests funcionan (Network tab)
 - [ ] No hay errores 500 ni 504
+- [ ] Disco persistente en backend montado en `/data`
 
 ---
 

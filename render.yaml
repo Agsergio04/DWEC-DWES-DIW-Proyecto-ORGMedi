@@ -1,43 +1,49 @@
 services:
+  # Backend API - Spring Boot
   - type: web
     name: orgmedi-backend
-    runtime: java
-    buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/*.jar
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend/
+    region: frankfurt
+    plan: starter
+    healthCheckPath: /actuator/health
     envVars:
-      - key: PORT
-        value: 8080
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: orgmedi-db
-          property: connectionString
+        value: jdbc:h2:file:/data/orgmedi;MODE=MySQL;AUTO_SERVER=TRUE
+      - key: SPRING_DATASOURCE_DRIVERNAME
+        value: org.h2.Driver
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: orgmedi-db
-          property: user
-      - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: orgmedi-db
-          property: password
+        value: sa
+      - key: SPRING_H2_CONSOLE_ENABLED
+        value: "true"
+      - key: SPRING_JPA_DATABASE_PLATFORM
+        value: org.hibernate.dialect.H2Dialect
     disk:
-      name: orgmedi-data
+      name: backend-data
       mountPath: /data
       sizeGB: 1
 
-  - type: web
-    name: orgmedi-frontend
-    runtime: node
-    buildCommand: npm install && npm run build
-    startCommand: npm run start
-    staticPublishPath: dist/Proyecto/browser
-    envVars:
-      - key: NODE_ENV
-        value: production
+  # Frontend - Static Site (ya desplegado)
+  # Nombre en Render: DWEC-DWES-DIW-Proyecto-ORGMedi
+  # URL: https://dwec-dwes-diw-proyecto-orgmedi.onrender.com
+  # Build Command: npm install && npm run build
+  # Publish Directory: frontend/dist/Proyecto/browser
 
-  - type: postgresql
-    name: orgmedi-db
-    ipWhitelist: []
+  # Health Check - Mantiene el backend activo
+  - type: web
+    name: orgmedi-health-check
+    runtime: docker
+    dockerfilePath: ./health-check/Dockerfile
+    dockerContext: ./health-check/
+    region: frankfurt
+    plan: free
+    envVars:
+      - key: BACKEND_URL
+        value: https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com/actuator/health
+      - key: CHECK_INTERVAL
+        value: "600"  # 10 minutos
