@@ -1,16 +1,16 @@
 <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
-	<app-loading-spinner [isVisible]="isLoading" message="Iniciando sesión..."></app-loading-spinner>
+	<app-loading-spinner [isVisible]="isLoading" message="Iniciando sesión..." [fullScreen]="false"></app-loading-spinner>
 
 	<fieldset class="login-form__fieldset">
 		<div class="login-form__field-group">
 			<label class="login-form__label">Introduce el nombre de usuario :</label>
 			<app-data-input
-				formControlName="email"
+				formControlName="usuario"
 				placeholder="Usuario123"
 				icon="/Icono Usuario.svg"
 				type="text"
 			></app-data-input>
-			<div class="form-error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">{{ getErrorMessage('email') }}</div>
+			<div class="form-error" *ngIf="loginForm.get('usuario')?.touched && loginForm.get('usuario')?.invalid">{{ getErrorMessage('usuario') }}</div>
 		</div>
 
 		<div class="login-form__field-group">

@@ -7,6 +7,7 @@
   display: flex;
   flex-direction: column;
   gap: $espaciado-20;
+  position: relative; /* Para que el spinner relativo funcione correctamente */
 }
 
 .register-form__fieldset {

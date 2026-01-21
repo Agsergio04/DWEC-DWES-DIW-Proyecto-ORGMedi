@@ -12,4 +12,5 @@ export class LoadingSpinnerComponent {
   @Input() isVisible = false;
   @Input() size: 'small' | 'medium' | 'large' = 'medium';
   @Input() message: string = 'Cargando...';
+  @Input() fullScreen = true; // Controla si ocupa toda la pantalla o solo el contenedor
 }

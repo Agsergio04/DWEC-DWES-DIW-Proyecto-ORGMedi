@@ -1,4 +1,4 @@
-<div class="loading-spinner" *ngIf="isVisible" [class]="'loading-spinner--' + size">
+<div class="loading-spinner" *ngIf="isVisible" [class]="'loading-spinner--' + size" [class.loading-spinner--relative]="!fullScreen">
   <div class="loading-spinner__wrapper">
     <div class="loading-spinner__circle"></div>
     <p class="loading-spinner__text">{{ message }}</p>

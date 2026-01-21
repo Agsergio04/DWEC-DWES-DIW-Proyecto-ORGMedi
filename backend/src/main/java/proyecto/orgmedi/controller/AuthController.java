@@ -40,12 +40,12 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", produces = "application/json")
     @Transactional
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreo(request.getCorreo());
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByUsuario(request.getUsuario());
         if (usuarioOpt.isEmpty()) {
-            logger.warn("Login failed for correo={}", request.getCorreo());
+            logger.warn("Login failed for usuario={}", request.getUsuario());
             throw new UnauthorizedException("Credenciales inválidas");
         }
 
@@ -54,7 +54,7 @@ public class AuthController {
 
         // Si stored es null o request contrasena es null -> no autorizado
         if (stored == null || request.getContrasena() == null) {
-            logger.warn("Login failed (null password) for correo={}", request.getCorreo());
+            logger.warn("Login failed (null password) for usuario={}", request.getUsuario());
             throw new UnauthorizedException("Credenciales inválidas");
         }
 
@@ -74,16 +74,16 @@ public class AuthController {
         }
 
         if (!matches) {
-            logger.warn("Login failed for correo={} (bad credentials)", request.getCorreo());
+            logger.warn("Login failed for usuario={} (bad credentials)", request.getUsuario());
             throw new UnauthorizedException("Credenciales inválidas");
         }
 
-        String token = jwtUtil.generateToken(request.getCorreo());
-        logger.info("Login success for correo={}", request.getCorreo());
+        String token = jwtUtil.generateToken(usuario.getCorreo());
+        logger.info("Login success for usuario={}", request.getUsuario());
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", produces = "application/json")
     @Transactional
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         // Verificar si el correo ya existe
@@ -129,34 +129,34 @@ public class AuthController {
 
     @PostMapping("/rehash")
     public ResponseEntity<?> rehashPassword(@Valid @RequestBody AuthRequest request) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreo(request.getCorreo());
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByUsuario(request.getUsuario());
         if (usuarioOpt.isEmpty()) {
-            logger.warn("Rehash failed for correo={}", request.getCorreo());
+            logger.warn("Rehash failed for usuario={}", request.getUsuario());
             throw new UnauthorizedException("Credenciales inválidas");
         }
         Usuario usuario = usuarioOpt.get();
         String stored = usuario.getContrasena();
         String raw = request.getContrasena();
         if (stored == null || raw == null) {
-            logger.warn("Rehash failed (null password) for correo={}", request.getCorreo());
+            logger.warn("Rehash failed (null password) for usuario={}", request.getUsuario());
             throw new UnauthorizedException("Credenciales inválidas");
         }
         boolean isBCrypt = stored.startsWith("$2a$") || stored.startsWith("$2b$") || stored.startsWith("$2y$");
         boolean matches = isBCrypt ? passwordEncoder.matches(raw, stored) : Objects.equals(stored, raw);
         if (!matches) {
-            logger.warn("Rehash failed for correo={} (bad credentials)", request.getCorreo());
+            logger.warn("Rehash failed for usuario={} (bad credentials)", request.getUsuario());
             throw new UnauthorizedException("Credenciales inválidas");
         }
         // Si la contraseña ya está hasheada, simplemente responde OK
         if (isBCrypt) {
-            logger.info("Rehash skipped (already hashed) for correo={}", request.getCorreo());
+            logger.info("Rehash skipped (already hashed) for usuario={}", request.getUsuario());
             return ResponseEntity.ok().build();
         }
         // Si no está hasheada, la hasheamos y guardamos
         String hashed = passwordEncoder.encode(raw);
         usuario.setContrasena(hashed);
         usuarioRepository.save(usuario);
-        logger.info("Rehash success for correo={}", request.getCorreo());
+        logger.info("Rehash success for usuario={}", request.getUsuario());
         return ResponseEntity.ok().build();
     }
 

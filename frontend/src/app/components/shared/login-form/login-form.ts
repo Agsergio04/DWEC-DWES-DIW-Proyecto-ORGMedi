@@ -8,7 +8,7 @@ import { ButtonComponent } from '../button/button';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner';
 
 interface LoginFormModel {
-  email: FormControl<string>;
+  usuario: FormControl<string>;
   password: FormControl<string>;
 }
 
@@ -31,8 +31,8 @@ export class LoginFormComponent {
 
   constructor() {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+      usuario: ['', [Validators.required, Validators.minLength(2)]],
+      password: ['', [Validators.required]]
     }) as FormGroup<LoginFormModel>;
   }
 
@@ -48,10 +48,10 @@ export class LoginFormComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    const { email, password } = this.loginForm.value;
+    const { usuario, password } = this.loginForm.value;
 
-    // Llamar a authService.login() con email
-    this.authService.login(email, password).subscribe({
+    // Llamar a authService.login() con usuario
+    this.authService.login(usuario, password).subscribe({
       next: (success) => {
         if (success) {
           // Navegar al calendario después de login exitoso

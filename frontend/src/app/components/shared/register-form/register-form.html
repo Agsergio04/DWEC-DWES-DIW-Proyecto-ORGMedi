@@ -1,5 +1,5 @@
 <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
-	<app-loading-spinner [isVisible]="isLoading" message="Creando cuenta..."></app-loading-spinner>
+	<app-loading-spinner [isVisible]="isLoading" message="Creando cuenta..." [fullScreen]="false"></app-loading-spinner>
 
 	<fieldset class="register-form__fieldset">
 		<div class="register-form__field-group">

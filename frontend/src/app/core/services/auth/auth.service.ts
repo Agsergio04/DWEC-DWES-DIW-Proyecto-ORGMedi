@@ -10,7 +10,7 @@ export interface AuthUser {
 }
 
 export interface AuthRequest {
-  correo: string;
+  usuario: string;
   contrasena: string;
 }
 
@@ -74,24 +74,29 @@ export class AuthService {
 
   /**
    * Realizar login en el backend
-   * Envía email/contraseña y recibe JWT en la respuesta
+   * Envía usuario/contraseña y recibe JWT en la respuesta
    */
-  login(email: string, password: string): Observable<boolean> {
+  login(username: string, password: string): Observable<boolean> {
     // Limpiar cualquier sesión anterior
     this.logout();
     
     const request: AuthRequest = {
-      correo: email,
+      usuario: username,
       contrasena: password
     };
 
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, request).pipe(
       tap((response) => {
+        console.log('[AuthService] Login response:', response);
+        if (!response || !response.token) {
+          throw new Error('Invalid login response: missing token');
+        }
+        console.log('[AuthService] Login successful, token:', response.token.substring(0, 20) + '...');
         this.setToken(response.token);
         const user: AuthUser = {
           id: 1,
-          name: email,
-          email: email
+          name: username,
+          email: username
         };
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('currentUser', JSON.stringify(user));
@@ -122,6 +127,10 @@ export class AuthService {
 
     return this.http.post<AuthResponse>(`${this.baseUrl}/register`, request).pipe(
       tap((response) => {
+        console.log('[AuthService] Register response:', response);
+        if (!response || !response.token) {
+          throw new Error('Invalid register response: missing token');
+        }
         console.log('[AuthService] Register successful, token:', response.token.substring(0, 20) + '...');
         this.setToken(response.token);
         const user: AuthUser = {
