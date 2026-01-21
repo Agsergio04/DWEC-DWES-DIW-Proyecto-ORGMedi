@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build outputs
+dist/
+build/
+target/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage/
+.nyc_output/
+
+# Java/Maven
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+.m2/
+.classpath
+.project
+.settings/
+
+# Angular
+.angular/
+.cache/
+.parcel-cache
+
+# Spring Boot
+application-dev.properties
+application-local.properties
+
+# Database
+*.db
+*.sqlite
+data/
+
+# OS
+Thumbs.db
+.DS_Store

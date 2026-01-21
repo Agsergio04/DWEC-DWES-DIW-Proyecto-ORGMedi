@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of, throwError, timer } from 'rxjs';
 import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { 
   catchError, 
@@ -8,7 +8,8 @@ import {
   retryWhen, 
   delay, 
   scan,
-  timeout
+  timeout,
+  switchMap
 } from 'rxjs/operators';
 import { ApiService } from '../core/services/data';
 import {
@@ -33,6 +34,7 @@ export class MedicineService {
   /**
    * Obtiene la lista completa de medicamentos
    * GET /medicamentos
+   * Con fallback selectivo según tipo de error
    * @returns Observable<MedicineViewModel[]>
    */
   getAll(): Observable<MedicineViewModel[]> {
@@ -51,8 +53,38 @@ export class MedicineService {
       ),
       // Transformar respuesta a ViewModel
       map(items => this.transformMedicinesToViewModel(items || [])),
-      // Manejo de errores
-      catchError(err => this.handleError(err, 'al cargar medicamentos'))
+      // ========== FALLBACK SELECTIVO ==========
+      catchError((error, caught) => {
+        console.error('❌ Error al cargar medicamentos:', error);
+
+        // 1️⃣ SIN INTERNET → Usar datos mock/caché
+        if (!navigator.onLine) {
+          console.warn('📵 Sin conexión → Usando datos en caché');
+          return of(this.getMockMedicines());
+        }
+
+        // 2️⃣ SERVIDOR NO DISPONIBLE (503) → Reintentar
+        if (error.status === 503) {
+          console.warn('🔄 Servidor no disponible → Reintentando en 3 segundos');
+          return timer(3000).pipe(switchMap(() => caught));
+        }
+
+        // 3️⃣ TIMEOUT → Usar datos mock
+        if (error.name === 'TimeoutError') {
+          console.warn('⏱️ Timeout → Usando datos de demostración');
+          return of(this.getMockMedicines());
+        }
+
+        // 4️⃣ NO AUTORIZADO (401) → Propagar error
+        if (error.status === 401) {
+          console.error('🔐 No autorizado');
+          return throwError(() => error);
+        }
+
+        // 5️⃣ OTROS ERRORES → Devolver lista vacía para no romper UI
+        console.error('⚠️ Error inesperado:', error.status);
+        return of([]);
+      })
     );
   }
 
@@ -501,5 +533,74 @@ export class MedicineService {
         return of([]);
       })
     );
+  }
+
+  /**
+   * Medicamentos de demostración para fallback
+   * Se usan cuando el servidor no está disponible
+   */
+  private getMockMedicines(): MedicineViewModel[] {
+    return [
+      {
+        id: 1,
+        nombre: 'Paracetamol',
+        cantidadMg: 500,
+        horaInicio: '08:00',
+        fechaInicio: new Date(),
+        fechaFin: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000),
+        color: '#3b82f6',
+        frecuencia: 6,
+        displayName: 'Paracetamol 500mg',
+        isActive: true,
+        isExpired: false,
+        daysUntilExpiration: 180,
+        expirationStatus: 'active'
+      },
+      {
+        id: 2,
+        nombre: 'Ibuprofeno',
+        cantidadMg: 400,
+        horaInicio: '08:00',
+        fechaInicio: new Date(),
+        fechaFin: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+        color: '#ef4444',
+        frecuencia: 8,
+        displayName: 'Ibuprofeno 400mg',
+        isActive: true,
+        isExpired: false,
+        daysUntilExpiration: 365,
+        expirationStatus: 'active'
+      },
+      {
+        id: 3,
+        nombre: 'Amoxicilina',
+        cantidadMg: 500,
+        horaInicio: '08:00',
+        fechaInicio: new Date(),
+        fechaFin: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        color: '#f59e0b',
+        frecuencia: 8,
+        displayName: 'Amoxicilina 500mg',
+        isActive: true,
+        isExpired: false,
+        daysUntilExpiration: 90,
+        expirationStatus: 'expiring-soon'
+      },
+      {
+        id: 4,
+        nombre: 'Vitamina C',
+        cantidadMg: 1000,
+        horaInicio: '08:00',
+        fechaInicio: new Date(),
+        fechaFin: new Date(Date.now() + 540 * 24 * 60 * 60 * 1000),
+        color: '#10b981',
+        frecuencia: 24,
+        displayName: 'Vitamina C 1000mg',
+        isActive: true,
+        isExpired: false,
+        daysUntilExpiration: 540,
+        expirationStatus: 'active'
+      }
+    ];
   }
 }

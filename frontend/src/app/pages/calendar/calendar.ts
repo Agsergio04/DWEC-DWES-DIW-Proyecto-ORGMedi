@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CalendarComponent } from '../../components/shared/calendar/calendar';
@@ -49,6 +49,14 @@ export class CalendarPage implements OnInit {
     // Actualizar vista cuando cambian los medicamentos en el store
     // Usar effect para reactividad con signals
     this.updateMedicinesToShowInitial();
+    
+    // Effect: Reaccionar a cambios en el store de medicamentos
+    effect(() => {
+      const medicines = this.medicineStore.medicines();
+      console.log('[CalendarPage Effect] Medicamentos actualizados en el store:', medicines.length);
+      // Actualizar vista cuando cambia el store
+      this.updateMedicinesToShow();
+    });
   }
 
   private updateMedicinesToShowInitial(): void {
