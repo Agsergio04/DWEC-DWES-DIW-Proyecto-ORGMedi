@@ -33,6 +33,13 @@ export class TabsComponent {
     return this.activeTabId === tabId;
   }
 
+  /**
+   * TrackBy para optimizar *ngFor de tabs
+   */
+  trackById(index: number, tab: Tab): string {
+    return tab.id;
+  }
+
   onKeyDown(event: KeyboardEvent, index: number) {
     const buttonsArray = this.tabButtons.toArray();
     const enabledTabs = this.tabs

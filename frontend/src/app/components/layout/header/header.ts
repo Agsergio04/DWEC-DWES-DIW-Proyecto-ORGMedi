@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ThemeService } from '../../../core/services/ui';
 import { AuthService } from '../../../core/services/auth';
+import { NotificationsService } from '../../../core/services/ui/notifications.service';
 import { ToastComponent } from '../../../shared/toast.component';
 
 @Component({
@@ -11,22 +12,26 @@ import { ToastComponent } from '../../../shared/toast.component';
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive, ToastComponent],
   templateUrl: './header.html',
-  styleUrls: ['./header.scss']
+  styleUrls: ['./header.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Header implements OnInit, OnDestroy {
   isDarkMode = false;
   isAuthRoute = false;
   isOpen = false; // Menú hamburguesa
   isLoggedIn = false; // Estado de autenticación
+  showNotificationsPanel = signal(false); // Panel de notificaciones
 
   @ViewChild('menuButton') menuButton?: ElementRef<HTMLButtonElement>;
   @ViewChild('navMenu') navMenu?: ElementRef<HTMLElement>;
   private routerSub?: Subscription;
   private themeSub?: Subscription;
   private authSub?: Subscription;
+  private notificationsSub?: Subscription;
 
   private themeService = inject(ThemeService);
   private authService = inject(AuthService);
+  private notificationsService = inject(NotificationsService);
 
   constructor(public router: Router, private elementRef: ElementRef) {}
 
@@ -40,6 +45,15 @@ export class Header implements OnInit, OnDestroy {
     // Suscribirse al estado de autenticación
     this.authSub = this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
+      // Auto-start polling cuando el usuario inicia sesión
+      if (isLoggedIn) {
+        this.notificationsService.startPolling();
+        this.notificationsSub = this.notificationsService.pollNotifications(30000).subscribe();
+      } else {
+        // Auto-stop polling cuando el usuario cierra sesión
+        this.notificationsService.stopPolling();
+        this.notificationsSub?.unsubscribe();
+      }
     });
 
     this.checkAuthRoute(this.router.url);
@@ -55,6 +69,8 @@ export class Header implements OnInit, OnDestroy {
     this.routerSub?.unsubscribe();
     this.themeSub?.unsubscribe();
     this.authSub?.unsubscribe();
+    this.notificationsSub?.unsubscribe();
+    this.notificationsService.stopPolling();
   }
 
   toggleTheme() {
@@ -76,6 +92,24 @@ export class Header implements OnInit, OnDestroy {
     if (this.menuButton) {
       this.menuButton.nativeElement.focus();
     }
+  }
+
+  toggleNotificationsPanel() {
+    this.showNotificationsPanel.set(!this.showNotificationsPanel());
+  }
+
+  closeNotificationsPanel() {
+    this.showNotificationsPanel.set(false);
+  }
+
+  markNotificationAsRead(id: number, event: Event) {
+    event.stopPropagation();
+    this.notificationsService.markAsRead(id).subscribe();
+  }
+
+  deleteNotification(id: number, event: Event) {
+    event.stopPropagation();
+    this.notificationsService.deleteNotification(id).subscribe();
   }
 
   @HostListener('document:click', ['$event'])
@@ -106,5 +140,14 @@ export class Header implements OnInit, OnDestroy {
       const path = (url || '').split('?')[0].split('#')[0].split('/')[1] || '';
       this.isAuthRoute = path.startsWith('iniciar-sesion') || path.startsWith('registrarse');
     }
+  }
+
+  // Getters para acceder a los signals del NotificationsService
+  get unreadCount() {
+    return this.notificationsService.unreadCount;
+  }
+
+  get notificationsList() {
+    return this.notificationsService.notifications;
   }
 }

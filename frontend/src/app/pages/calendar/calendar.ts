@@ -1,9 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CalendarComponent } from '../../components/shared/calendar/calendar';
 import { MedicineCardCalendarComponent } from '../../components/shared/medicine-card-calendar/medicine-card-calendar';
-import { MedicineService } from '../../data/medicine.service';
+import { MedicineStoreSignals } from '../../data/stores/medicine-signals.store';
 import { MedicineViewModel } from '../../data/models/medicine.model';
 
 export interface MedicineWithTime extends MedicineViewModel {
@@ -20,32 +20,24 @@ export interface MedicineTimeGroup {
   standalone: true,
   imports: [CommonModule, CalendarComponent, MedicineCardCalendarComponent],
   templateUrl: './calendar.html',
-  styleUrls: ['./calendar.scss']
+  styleUrls: ['./calendar.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarPage implements OnInit {
-  private medicineService = inject(MedicineService);
+  private medicineStore = inject(MedicineStoreSignals);
   private router = inject(Router);
+
+  // Signals del store (readonly)
+  loading = this.medicineStore.loading;
+  error = this.medicineStore.error;
+  stats = this.medicineStore.stats;
 
   currentDate = new Date();
   selectedDay: number | null = null;
-  medicines: MedicineViewModel[] = [];
   medicinesToShow: MedicineWithTime[] = []; // Medicamentos expandidos con horas
   medicineGroups: MedicineTimeGroup[] = []; // Grupos de medicamentos por hora
-  loading = false;
-  error: any = null;
 
   ngOnInit(): void {
-    // Delay para asegurar que localStorage esté actualizado después del registro
-    // y que el interceptor pueda leer el token correctamente
-    setTimeout(() => {
-      this.loadMedicines();
-    }, 300);
-  }
-
-  /**
-   * Carga los medicamentos desde el servicio
-   */
-  private loadMedicines(): void {
     // Verificar si hay token de autenticación
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -54,27 +46,30 @@ export class CalendarPage implements OnInit {
       return;
     }
 
-    console.log('[CalendarPage] Loading medicines, token in storage:', !!token);
-    this.loading = true;
-    this.error = null;
+    // Actualizar vista cuando cambian los medicamentos en el store
+    // Usar effect para reactividad con signals
+    this.updateMedicinesToShowInitial();
+  }
 
-    this.medicineService.getAll().subscribe({
-      next: (medicines) => {
-        console.log('[CalendarPage] Medicines loaded successfully:', medicines.length);
-        this.medicines = medicines;
-        // Seleccionar el día actual por defecto
-        const today = new Date();
-        this.selectedDay = today.getDate();
-        console.log('[CalendarPage] Selected day:', this.selectedDay);
-        this.updateMedicinesToShow();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar medicamentos:', err);
-        this.error = err;
-        this.loading = false;
-      }
-    });
+  private updateMedicinesToShowInitial(): void {
+    // Seleccionar el día actual por defecto
+    const today = new Date();
+    this.selectedDay = today.getDate();
+    this.updateMedicinesToShow();
+  }
+
+  /**
+   * TrackBy para optimizar *ngFor de grupos de medicamentos
+   */
+  trackByTime(index: number, group: MedicineTimeGroup): string {
+    return group.time;
+  }
+
+  /**
+   * TrackBy para optimizar *ngFor de medicamentos individuales
+   */
+  trackById(index: number, medicine: MedicineWithTime): string | number {
+    return medicine.id + medicine.displayTime; // Única combinación de id + hora
   }
 
   /**
@@ -155,13 +150,15 @@ export class CalendarPage implements OnInit {
       : new Date();
 
     console.log('[updateMedicinesToShow] Display date:', displayDate);
-    console.log('[updateMedicinesToShow] Medicines to process:', this.medicines.length);
+    
+    const medicines = this.medicineStore.medicines();
+    console.log('[updateMedicinesToShow] Medicines to process:', medicines.length);
 
     this.medicinesToShow = [];
     const timeMap = new Map<string, MedicineWithTime[]>();
 
     // Para cada medicamento, calcular sus horas de aparición en la fecha seleccionada
-    for (const medicine of this.medicines) {
+    for (const medicine of medicines) {
       const isValid = this.isMedicineValidForDate(medicine, displayDate);
       console.log(`[updateMedicinesToShow] Medicine "${medicine.nombre}": valid=${isValid}, horaInicio=${medicine.horaInicio}, frecuencia=${medicine.frecuencia}`);
       
@@ -240,15 +237,8 @@ export class CalendarPage implements OnInit {
    */
   deleteMedicine(id: number): void {
     if (confirm('¿Estás seguro de que deseas eliminar este medicamento?')) {
-      this.medicineService.delete(id).subscribe({
-        next: () => {
-          this.medicines = this.medicines.filter(m => m.id !== id);
-        },
-        error: (err) => {
-          console.error('Error al eliminar medicamento:', err);
-          this.error = err;
-        }
-      });
+      this.medicineStore.remove(id);
+      this.updateMedicinesToShow();
     }
   }
 

@@ -1,6 +1,6 @@
 <label class="form-select__label">{{ label }}
   <select class="form-select__field" [(ngModel)]="value">
-    <option *ngFor="let o of options" [value]="o.value">{{ o.label }}</option>
+    <option *ngFor="let o of options; trackBy: trackByValue" [value]="o.value">{{ o.label }}</option>
   </select>
 </label>
 

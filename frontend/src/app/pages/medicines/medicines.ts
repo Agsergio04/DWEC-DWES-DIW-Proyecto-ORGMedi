@@ -1,46 +1,74 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MedicineCardComponent } from '../../components/shared/medicine-card/medicine-card';
+import { MedicineStoreSignals } from '../../data/stores/medicine-signals.store';
+import { MedicineViewModel, PaginatedResponse } from '../../data/models/medicine.model';
 import { MedicineService } from '../../data/medicine.service';
-import { MedicineViewModel, ApiError } from '../../data/models/medicine.model';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-medicines-page',
   standalone: true,
-  imports: [CommonModule, MedicineCardComponent],
+  imports: [CommonModule, MedicineCardComponent, ReactiveFormsModule],
   templateUrl: './medicines.html',
-  styleUrls: ['./medicines.scss']
+  styleUrls: ['./medicines.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MedicinesPage implements OnInit {
+export class MedicinesPage implements OnInit, OnDestroy {
+  private medicineStore = inject(MedicineStoreSignals);
   private medicineService = inject(MedicineService);
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
 
-  medicines: MedicineViewModel[] = [];
-  medicines$ = this.medicineService.getAll();
-  isLoading = false;
-  error: ApiError | null = null;
+  // Signals del store (readonly)
+  medicines = this.medicineStore.medicines;
+  loading = this.medicineStore.loading;
+  error = this.medicineStore.error;
+  stats = this.medicineStore.stats;
+
+  // ✅ Signals para paginación (Tarea 4)
+  currentPage = signal(1);
+  pageSize = signal(10);
+  
+  // ✅ State de paginación
+  paginationState = signal<{
+    loading: boolean;
+    items: MedicineViewModel[];
+    total: number;
+    totalPages: number;
+    hasMore: boolean;
+  }>({
+    loading: false,
+    items: [],
+    total: 0,
+    totalPages: 0,
+    hasMore: false
+  });
+
+  // ✅ Computed para saber si puede navegar
+  canGoPrevious = computed(() => this.currentPage() > 1);
+  canGoNext = computed(() => this.paginationState().hasMore);
+
+  // ✅ NUEVO (Tarea 5): Control de búsqueda
+  searchControl = new FormControl('');
+  
+  // ✅ NUEVO (Tarea 5): Estado de búsqueda
+  searchState = signal<{
+    term: string;
+    loading: boolean;
+    results: MedicineViewModel[];
+  }>({
+    term: '',
+    loading: false,
+    results: []
+  });
+
+  // ✅ NUEVO (Tarea 5): Para limpiar observables en ngOnDestroy
+  private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    // Intentar leer datos del resolver primero (precargas)
-    this.route.data.subscribe((data) => {
-      const resolvedMedicines = data['medicines'];
-      if (resolvedMedicines && resolvedMedicines.length > 0) {
-        this.medicines = resolvedMedicines;
-        this.isLoading = false;
-        this.error = null;
-      } else {
-        // Si no hay data resuelta o está vacía, cargar desde el servicio
-        this.loadMedicines();
-      }
-    });
-  }
-
-  /**
-   * Carga la lista de medicamentos desde el servicio
-   */
-  loadMedicines(): void {
     // Verificar si hay token de autenticación
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -49,29 +77,159 @@ export class MedicinesPage implements OnInit {
       return;
     }
 
-    this.isLoading = true;
-    this.error = null;
+    // ✅ NUEVO (Tarea 5): Conectar búsqueda con debounce
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(term => this.searchLocal(term));
 
-    this.medicineService.getAll().subscribe({
-      next: (data) => {
-        this.medicines = data;
-        this.isLoading = false;
+    // ✅ Cargar primera página de medicamentos (Tarea 4)
+    this.loadPage(1);
+  }
+
+  /**
+   * Limpiar observables en destroy
+   * ✅ Tarea 5: Prevenir memory leaks
+   */
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * Carga una página específica de medicamentos
+   * ✅ Tarea 4: Paginación
+   */
+  loadPage(page: number): void {
+    this.currentPage.set(page);
+    this.paginationState.update(s => ({ ...s, loading: true }));
+
+    this.medicineService.getPage(page, this.pageSize()).subscribe({
+      next: (response: PaginatedResponse<MedicineViewModel>) => {
+        this.paginationState.set({
+          loading: false,
+          items: response.items,
+          total: response.total,
+          totalPages: response.totalPages,
+          hasMore: response.hasMore
+        });
       },
-      error: (err: ApiError) => {
-        console.error('Error al cargar medicamentos:', err);
-        this.error = err;
-        this.isLoading = false;
+      error: (error) => {
+        console.error('Error loading page:', error);
+        this.paginationState.update(s => ({ ...s, loading: false }));
       }
     });
   }
 
-
-  get activeMedicines(): MedicineViewModel[] {
-    return this.medicines.filter(m => m.isActive);
+  /**
+   * Navega a la página anterior
+   * ✅ Tarea 4: Paginación
+   */
+  previousPage(): void {
+    if (this.canGoPrevious()) {
+      this.loadPage(this.currentPage() - 1);
+    }
   }
 
+  /**
+   * Navega a la página siguiente
+   * ✅ Tarea 4: Paginación
+   */
+  nextPage(): void {
+    if (this.canGoNext()) {
+      this.loadPage(this.currentPage() + 1);
+    }
+  }
+
+  /**
+   * Navega a una página específica
+   * ✅ Tarea 4: Paginación
+   * @param page Número de página a cargar
+   */
+  goToPage(page: number): void {
+    if (page > 0 && page <= this.paginationState().totalPages) {
+      this.loadPage(page);
+    }
+  }
+
+  /**
+   * Búsqueda local en medicamentos con debounce
+   * ✅ Tarea 5: Búsqueda y Filtrado
+   * @param term Término de búsqueda
+   */
+  searchLocal(term: string): void {
+    this.searchState.update(s => ({ ...s, term, loading: true }));
+
+    // Si hay término de búsqueda
+    if (term.trim().length > 0) {
+      this.medicineService.searchRemote(term).subscribe({
+        next: (results) => {
+          this.searchState.set({
+            term,
+            loading: false,
+            results
+          });
+        },
+        error: (error) => {
+          console.error('Error en búsqueda:', error);
+          this.searchState.update(s => ({ ...s, loading: false, results: [] }));
+        }
+      });
+    } else {
+      // Sin término, mostrar lista paginada
+      this.searchState.set({ term: '', loading: false, results: [] });
+      // Recargar página actual para mostrar paginación
+      this.loadPage(this.currentPage());
+    }
+  }
+
+  /**
+   * Limpia el campo de búsqueda
+   * ✅ Tarea 5: Búsqueda y Filtrado
+   */
+  clearSearch(): void {
+    this.searchControl.reset();
+    this.searchLocal('');
+  }
+
+  /**
+   * Obtiene los items a mostrar: resultados o paginación
+   * ✅ Tarea 5: Búsqueda y Filtrado
+   */
+  get itemsToDisplay(): MedicineViewModel[] {
+    const { term, results } = this.searchState();
+    
+    // Si hay búsqueda activa, mostrar resultados
+    if (term.trim().length > 0) {
+      return results;
+    }
+    
+    // Si no, mostrar items de página actual
+    return this.paginationState().items;
+  }
+
+  /**
+   * TrackBy para optimizar *ngFor y prevenir re-renders innecesarios
+   */
+  trackById(index: number, medicine: MedicineViewModel): string | number {
+    return medicine.id;
+  }
+
+  /**
+   * Obtiene medicamentos activos desde el store
+   */
+  get activeMedicines(): MedicineViewModel[] {
+    return this.medicineStore.activeMedicines();
+  }
+
+  /**
+   * Obtiene medicamentos expirados desde el store
+   */
   get expiredMedicines(): MedicineViewModel[] {
-    return this.medicines.filter(m => m.isExpired);
+    return this.medicineStore.expiredMedicines();
   }
 
   /**
@@ -127,26 +285,16 @@ export class MedicinesPage implements OnInit {
    * @param medicineId ID del medicamento a eliminar
    */
   deleteMedicine(medicineId: string | number): void {
-    const medicine = this.medicines.find(m => m.id === medicineId);
+    const currentMedicines = this.medicines();
+    const medicine = currentMedicines.find(m => m.id === medicineId);
     if (!medicine) return;
 
     if (!confirm(`¿Está seguro de que desea eliminar "${medicine.nombre}"?`)) {
       return;
     }
 
-    this.isLoading = true;
-    this.medicineService.delete(medicineId).subscribe({
-      next: () => {
-        console.log('Medicamento eliminado:', medicine.nombre);
-        // Recargar la lista
-        this.loadMedicines();
-      },
-      error: (err: ApiError) => {
-        console.error('Error al eliminar medicamento:', err);
-        this.error = err;
-        this.isLoading = false;
-      }
-    });
+    this.medicineStore.remove(medicineId);
+    console.log('Medicamento eliminado:', medicine.nombre);
   }
 }
 

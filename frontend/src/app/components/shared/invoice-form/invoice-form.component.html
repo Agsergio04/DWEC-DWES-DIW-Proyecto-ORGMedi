@@ -9,7 +9,7 @@
   <!-- Teléfonos -->
   <h3>Teléfonos</h3>
   <div formArrayName="phones">
-    <div *ngFor="let phoneGroup of phones.controls; let i = index" [formGroupName]="i">
+    <div *ngFor="let phoneGroup of phones.controls; trackBy: trackByIndex; let i = index" [formGroupName]="i">
       <input formControlName="phone" placeholder="Teléfono (6xxxxxxxx)">
       <button type="button" (click)="removePhone(i)" *ngIf="phones.length > 1">Eliminar</button>
       <div *ngIf="isPhoneInvalid(i)" class="error">
@@ -22,7 +22,7 @@
   <!-- Direcciones -->
   <h3>Direcciones</h3>
   <div formArrayName="addresses">
-    <div *ngFor="let addressGroup of addresses.controls; let i = index" [formGroupName]="i" class="address">
+    <div *ngFor="let addressGroup of addresses.controls; trackBy: trackByIndex; let i = index" [formGroupName]="i" class="address">
       <input formControlName="street" placeholder="Calle">
       <input formControlName="city" placeholder="Ciudad">
       <input formControlName="zip" placeholder="CP">
@@ -38,7 +38,7 @@
   <!-- Items de factura -->
   <h3>Items de factura</h3>
   <div formArrayName="items">
-    <div *ngFor="let itemGroup of items.controls; let i = index" [formGroupName]="i" class="item-row">
+    <div *ngFor="let itemGroup of items.controls; trackBy: trackByIndex; let i = index" [formGroupName]="i" class="item-row">
       <input formControlName="description" placeholder="Descripción">
       <input formControlName="quantity" type="number" min="1">
       <input formControlName="price" type="number" min="0" step="0.01">

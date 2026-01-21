@@ -1,5 +1,5 @@
 <div class="accordion" role="region" aria-label="Accordion">
-  <div *ngFor="let item of items; let i = index" class="accordion__item" [class.accordion__item--expanded]="isExpanded(item.id)">
+  <div *ngFor="let item of items; trackBy: trackById; let i = index" class="accordion__item" [class.accordion__item--expanded]="isExpanded(item.id)">
     <button
       #accordionButton
       class="accordion__header"

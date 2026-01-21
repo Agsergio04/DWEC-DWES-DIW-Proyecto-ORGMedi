@@ -113,4 +113,11 @@ export class InvoiceFormComponent {
     }
     console.log(this.form.value);
   }
+
+  /**
+   * TrackBy para optimizar *ngFor de FormArray (teléfonos, direcciones, items)
+   */
+  trackByIndex(index: number): number {
+    return index;
+  }
 }

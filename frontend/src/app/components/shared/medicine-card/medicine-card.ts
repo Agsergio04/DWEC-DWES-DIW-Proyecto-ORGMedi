@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MedicineViewModel } from '../../../data/models/medicine.model';
 
@@ -7,7 +7,8 @@ import { MedicineViewModel } from '../../../data/models/medicine.model';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './medicine-card.html',
-  styleUrls: ['./medicine-card.scss']
+  styleUrls: ['./medicine-card.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MedicineCardComponent implements OnInit {
   @Input() medicine!: MedicineViewModel;

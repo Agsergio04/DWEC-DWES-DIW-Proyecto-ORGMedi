@@ -77,6 +77,141 @@
       </svg>
     </button>
 
+    <!-- Botón de notificaciones -->
+    <button
+      class="app-header__notifications-btn"
+      (click)="toggleNotificationsPanel()"
+      aria-label="Ver notificaciones"
+      [attr.aria-pressed]="showNotificationsPanel()"
+      *ngIf="isLoggedIn"
+    >
+      <span class="app-header__notifications-icon" aria-hidden="true">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          focusable="false"
+        >
+          <path
+            d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M13.73 21a2 2 0 0 1-3.46 0"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+      <!-- Badge de notificaciones no leídas -->
+      <span
+        class="app-header__notifications-badge"
+        *ngIf="unreadCount() > 0"
+        [attr.aria-label]="unreadCount() + ' notificaciones sin leer'"
+      >
+        {{ unreadCount() > 99 ? '99+' : unreadCount() }}
+      </span>
+    </button>
+
+    <!-- Panel de notificaciones -->
+    <div
+      class="app-header__notifications-panel"
+      [class.is-open]="showNotificationsPanel()"
+      *ngIf="isLoggedIn"
+      role="dialog"
+      aria-label="Panel de notificaciones"
+    >
+      <div class="app-header__notifications-header">
+        <h3 class="app-header__notifications-title">Notificaciones</h3>
+        <button
+          class="app-header__notifications-close"
+          (click)="closeNotificationsPanel()"
+          aria-label="Cerrar panel de notificaciones"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="app-header__notifications-list">
+        <ng-container *ngIf="notificationsList() && notificationsList().length > 0; else noNotifications">
+          <div
+            class="app-header__notification-item"
+            *ngFor="let notification of notificationsList()"
+            [class.is-unread]="!notification.read"
+          >
+            <div class="app-header__notification-content">
+              <p class="app-header__notification-message">{{ notification.message }}</p>
+              <span class="app-header__notification-time">
+                {{ notification.createdAt | date: 'short' }}
+              </span>
+            </div>
+            <div class="app-header__notification-actions">
+              <button
+                class="app-header__notification-action"
+                (click)="markNotificationAsRead(notification.id, $event)"
+                [title]="notification.read ? 'Marcar como no leído' : 'Marcar como leído'"
+                aria-label="Marcar notificación"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  focusable="false"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M20 6L9 17l-5-5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <button
+                class="app-header__notification-action app-header__notification-delete"
+                (click)="deleteNotification(notification.id, $event)"
+                aria-label="Eliminar notificación"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  focusable="false"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M18 6L6 18M6 6l12 12"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #noNotifications>
+          <div class="app-header__notifications-empty">
+            <p>No hay notificaciones</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
     <!-- Botón de tema -->
     <button
       class="app-header__theme-toggle"

@@ -30,6 +30,9 @@
 
 5. [Fase 5 — Servicios y Comunicación HTTP](#fase-5--servicios-y-comunicación-http)
   - [Tarea 1: Documentación](#tarea-1--documentación)
+
+6. [Fase 6 — Optimización y Rendimiento](#fase-6--optimización-y-rendimiento)
+  - [Tarea 7: Documentación (Patrón de estado con Signals)](#tarea-7-documentación-patrón-de-estado-con-signals)
 ---
 ## Fase 1 — Arquitectura de eventos
 
@@ -455,7 +458,7 @@ this.form = this.fb.group({
 
 | Ruta | Descripción | Lazy | Guards | Resolver |
 |------|-------------|------|--------|----------|
-| `/` | Página de inicio | ❌ | - | - |
+| `/` | Página de inicio | ✅  | - | - |
 | `/iniciar-sesion` | Autenticación del usuario | ✅ | - | - |
 | `/registrarse` | Registro de nuevo usuario | ✅ | - | - |
 | `/medicamentos` | Listado de medicamentos | ✅ | `authGuard` | `medicinesResolver` |
@@ -477,27 +480,9 @@ Reducir el tamaño del bundle inicial dividiendo la aplicación en chunks indepe
 
 #### Implementación
 
-Todas las rutas exceptuando `/` utilizan lazy loading con `loadComponent()`:
+Todas las rutas exceptuando `/` utilizan lazy loading con `loadComponent()`.
 
-```typescript
-// app.routes.ts (ejemplo)
-const MEDICINES_ROUTES: Routes = [
-  {
-    path: 'medicamentos',
-    loadComponent: () =>
-      import('./pages/medicines/medicines').then(m => m.MedicinesPage),
-    data: { 
-      chunkName: 'medicamentos',
-      breadcrumb: 'Medicamentos'
-    },
-    canActivate: [authGuard],
-    resolve: {
-      medicines: medicinesResolver
-    }
-  },
-  // ... más rutas
-];
-```
+
 
 #### Precargar Módulos
 
@@ -511,12 +496,6 @@ export const appConfig: ApplicationConfig = {
   ]
 };
 ```
-
-#### Beneficios
-- ✅ Bundle inicial: 306.83 kB → 83.27 kB (gzipped)
-- ✅ 14 chunks lazy generados
-- ✅ PreloadAllModules precarga chunks visibles
-- ✅ Navegación más rápida después del primer load
 
 #### Métricas de Bundle
 
@@ -829,13 +808,6 @@ export const APP_ROUTES: Routes = [
 ];
 ```
 
-#### Características
-- ✅ Usa `BehaviorSubject` para estado reactivo
-- ✅ Se suscribe a `NavigationEnd` events
-- ✅ Algoritmo recursivo para construir árbol
-- ✅ Accesibilidad WCAG 2.1 AA
-- ✅ Responsividad y dark mode
-
 ---
 
 ### Flujos de Navegación Principales
@@ -888,42 +860,18 @@ BreadcrumbComponent muestra: Inicio › Perfil
 
 ---
 
-### Resumen de Implementación
-
-#### Archivos Creados
-- `core/services/medicines.resolver.ts` - Resolvers para medicamentos
-- `core/services/profile.resolver.ts` - Resolver para perfil
-- `core/services/breadcrumb.service.ts` - Servicio de breadcrumbs
-- `components/shared/breadcrumb/breadcrumb.component.ts` - Componente
-- `components/shared/breadcrumb/breadcrumb.component.html` - Template
-- `components/shared/breadcrumb/breadcrumb.component.scss` - Estilos
-
-#### Archivos Modificados
-- `app/app.routes.ts` - Integración de resolvers y metadatos
-- `components/layout/header/header.ts` - Import BreadcrumbComponent
-- `components/layout/header/header.html` - Inclusión de breadcrumb
-- `pages/medicines/medicines.ts` - Consumo de medicinesResolver
-- `pages/edit-medicine/edit-medicine.ts` - Reactive forms + resolver
-- `pages/edit-medicine/edit-medicine.html` - Cambio a formControlName
-- `pages/profile/profile.ts` - Consumo de profileResolver
 
 #### Métricas de Build
 - Bundle inicial: 306.83 kB (83.27 kB gzipped)
 - Chunks lazy: 14
 - Tiempo de build: 3.494 segundos
-- Errores TypeScript: 0 ✅
+- Errores TypeScript: 0 
 
 ---
 
 ## Fase 4 — Sistema de Rutas y Navegación
 
 ### Tarea 7: Documentación
-
-Para la documentación de tu proyecto Angular, esta podría ser la sección de rutas y navegación para el README/mkdocs.
-
-#### Mapa completo de rutas
-
-Incluye un mapa resumido de todas las rutas con su propósito, guardas y resolvers.
 
 ##### Mapa de rutas de la aplicación
 
@@ -941,85 +889,18 @@ Incluye un mapa resumido de todas las rutas con su propósito, guardas y resolve
 | `/guia-estilos`              | Guía de estilos de la app       | ✅   | -                       | -                  |
 | `**`                         | Página 404                      | ✅   | -                       | -                  |
 
-#### Estrategia de lazy loading explicada
-
-Describe cómo se dividen las features y cómo se precargan.
-
 ##### Estrategia de lazy loading
 
 - Todas las rutas utilizan lazy loading para optimizar el bundle inicial.
 - Cada página se carga bajo demanda cuando el usuario navega a ella.
 
-```typescript
-// app.routes.ts (resumen)
-export const routes: Routes = [
-  {
-    path: '',
-    loadComponent: () => import('./pages/home/home').then(m => m.HomePage),
-    resolve: { homeData: homeResolver }
-  },
-  {
-    path: 'iniciar-sesion',
-    loadComponent: () => import('./pages/iniciar-sesion/login').then(m => m.LoginPage)
-  },
-  {
-    path: 'registrarse',
-    loadComponent: () => import('./pages/registrarse/register').then(m => m.RegisterPage)
-  },
-  {
-    path: 'medicamentos',
-    loadComponent: () => import('./pages/medicines/medicines').then(m => m.MedicinesPage),
-    canActivate: [authGuard],
-    resolve: { medicines: medicinesResolver }
-  },
-  {
-    path: 'medicamentos/crear',
-    loadComponent: () => import('./pages/create-medicine/create-medicine').then(m => m.CreateMedicinePage),
-    canActivate: [authGuard],
-    canDeactivate: [pendingChangesGuard]
-  },
-  {
-    path: 'medicamentos/:id/editar',
-    loadComponent: () => import('./pages/edit-medicine/edit-medicine').then(m => m.EditMedicinePage),
-    canActivate: [authGuard],
-    canDeactivate: [pendingChangesGuard],
-    resolve: { medicine: medicineDetailResolver }
-  },
-  {
-    path: 'calendario',
-    loadComponent: () => import('./pages/calendar/calendar').then(m => m.CalendarPage)
-  },
-  {
-    path: 'perfil',
-    loadComponent: () => import('./pages/profile/profile').then(m => m.ProfilePage),
-    canActivate: [authGuard],
-    resolve: { profile: profileResolver }
-  },
-  {
-    path: '**',
-    loadComponent: () => import('./pages/not-found/not-found').then(m => m.NotFoundPage)
-  }
-];
-```
+
 
 - Se usa `PreloadAllModules` para precargar en segundo plano todos los módulos lazy una vez cargada la app:
 
-```typescript
-// app.config.ts
-import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideRouter(routes, withPreloading(PreloadAllModules))
-  ]
-};
-```
 
 - En el build de producción (`ng build --configuration production`) se verifican los **chunks** generados: cada página lazy produce su propio `.js` separado, reduciendo el tamaño de `main`.
 
-#### Guards y resolvers documentados
-
-Explica para qué sirve cada guard/resolver y en qué rutas se aplica.
 
 ##### Guards implementados
 
@@ -1028,32 +909,11 @@ Explica para qué sirve cada guard/resolver y en qué rutas se aplica.
 - Comportamiento: si no hay sesión, redirige a `/iniciar-sesion` pasando `returnUrl` en `queryParams`.
 - Rutas: `/medicamentos`, `/medicamentos/**`, `/perfil`.
 
-```typescript
-export const authGuard: CanActivateFn = (route, state) => {
-  const auth = inject(AuthService);
-  const router = inject(Router);
-
-  return auth.isAuthenticated()
-    ? true
-    : router.createUrlTree(['/iniciar-sesion'], { queryParams: { returnUrl: state.url } });
-};
-```
-
 **pendingChangesGuard** (`CanDeactivateFn`)
 - Objetivo: evitar perder cambios en formularios reactivos.
 - Comportamiento: si form.dirty muestra un confirm() antes de salir.
 - Rutas: `/medicamentos/crear`, `/medicamentos/crear-foto`, `/medicamentos/:id/editar`, `/perfil`.
 
-```typescript
-export interface FormComponent {
-  form: FormGroup;
-}
-
-export const pendingChangesGuard: CanDeactivateFn<FormComponent> =
-  (component) => component.form?.dirty
-    ? confirm('Hay cambios sin guardar. ¿Salir igualmente?')
-    : true;
-```
 
 ##### Resolvers implementados
 
@@ -1068,24 +928,6 @@ export const pendingChangesGuard: CanDeactivateFn<FormComponent> =
 
 **profileResolver**
 - Carga los datos del perfil antes de activar `/perfil`.
-
-```typescript
-export const medicineDetailResolver: ResolveFn<Medicine> = (route) => {
-  const service = inject(MedicineService);
-  const id = route.paramMap.get('id')!;
-  return service.getMedicineById(id);
-};
-
-export const routes: Routes = [
-  {
-    path: 'medicamentos/:id/editar',
-    loadComponent: () => import('./pages/edit-medicine/edit-medicine').then(m => m.EditMedicinePage),
-    resolve: { medicine: medicineDetailResolver },
-    canActivate: [authGuard],
-    canDeactivate: [pendingChangesGuard]
-  }
-];
-```
 
 **Errores en resolvers:**
 - En caso de error se redirige a `/medicamentos` con mensaje en state, o se devuelve un objeto `{ error, data: null }` que el componente interpreta para mostrar un mensaje de fallo.
@@ -1117,72 +959,6 @@ Incluye una tabla con todos los endpoints que usa la SPA, el método, descripci�
 | POST   | `/api/auth/register`       | Registro de nuevo usuario         | `AuthService.register(dto)`         |
 | POST   | `/api/upload`              | Subida de ficheros (FormData)     | `UploadService.upload(file)`        |
 
-#### Estructura de datos (interfaces)
-
-Documenta las interfaces TypeScript que tipan las respuestas y cuerpos de petición.
-
-##### Interfaces de dominio
-
-```typescript
-// Medicamento
-export interface Medicine {
-  id: string;
-  name: string;
-  description: string;
-  dosage?: string;
-  sideEffects?: string;
-  imageUrl?: string;
-  createdAt: string;
-  updatedAt?: string;
-}
-
-// Usuario autenticado
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'user';
-}
-
-// Respuesta genérica paginada
-export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-}
-
-// DTOs de entrada
-export interface CreateMedicineDto {
-  name: string;
-  description: string;
-  dosage?: string;
-  sideEffects?: string;
-}
-
-export interface UpdateMedicineDto extends Partial<CreateMedicineDto> {}
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  token: string;
-  user: User;
-}
-
-export interface RegisterRequest {
-  name: string;
-  email: string;
-  password: string;
-}
-```
-
-#### Estrategia de manejo de errores
-
-Explica el flujo global de errores: interceptor + servicios + feedback en UI.
-
 ##### Manejo de errores HTTP
 
 **1. Interceptor global (`errorInterceptor`)**
@@ -1195,358 +971,106 @@ Explica el flujo global de errores: interceptor + servicios + feedback en UI.
      - `404` → "Recurso no encontrado."
      - `5xx` → "Ha ocurrido un error en el servidor."
    - Lanza el error con `throwError` para que el servicio/componente pueda reaccionar.
+---
 
-```typescript
-export const errorInterceptor: HttpInterceptorFn = (req, next) => 
-  next(req).pipe(
-    catchError((error: HttpErrorResponse) => {
-      const message = mapStatusToMessage(error.status);
-      toastService.error(message); // servicio de notificaciones
-      return throwError(() => error);
-    })
-  );
+## Fase 6 — Optimización y Rendimiento
 
-function mapStatusToMessage(status: number): string {
-  const errorMap: { [key: number]: string } = {
-    0: 'No hay conexión con el servidor',
-    401: 'Sesión caducada, inicia sesión nuevamente',
-    403: 'No tienes permisos para esta acción',
-    404: 'Recurso no encontrado',
-    500: 'Error en el servidor',
-    503: 'Servicio no disponible'
-  };
-  return errorMap[status] || 'Error desconocido';
-}
-```
+### Tarea 7: Documentación (Patrón de estado con Signals)
 
-**2. Servicios de dominio**
-   
-   - Pueden aplicar `catchError` adicional solo para casos de negocio.
-   - Ejemplo: transformar un `409` (conflicto) en mensaje específico.
-   - Devuelven observables tipados: `Observable<Medicine[]>`, `Observable<User>`, etc.
+Esta sección documenta el patrón de gestión de estado elegido para la aplicación, las decisiones de optimización aplicadas, y las alternativas evaluadas.
 
-```typescript
-export class MedicineService {
-  private api = inject(HttpClient);
+---
 
-  getAll(): Observable<Medicine[]> {
-    return this.api.get<PaginatedResponse<Medicine>>('/api/medicines').pipe(
-      map(response => response.items),
-      catchError(error => {
-        console.error('Error al cargar medicamentos:', error);
-        return throwError(() => error);
-      })
-    );
-  }
+#### Patrón de estado elegido y justificación
 
-  getById(id: string): Observable<Medicine> {
-    return this.api.get<Medicine>(`/api/medicines/${id}`).pipe(
-      catchError(error => {
-        if (error.status === 404) {
-          return throwError(() => new Error('Medicamento no encontrado'));
-        }
-        return throwError(() => error);
-      })
-    );
-  }
+**Patrón elegido:** Servicios de dominio (store por feature) que exponen estado mediante **signals, computed y métodos para mutarlo** (set, update).
 
-  create(dto: CreateMedicineDto): Observable<Medicine> {
-    return this.api.post<Medicine>('/api/medicines', dto).pipe(
-      catchError(error => {
-        if (error.status === 409) {
-          return throwError(() => new Error('El medicamento ya existe'));
-        }
-        return throwError(() => error);
-      })
-    );
-  }
+##### Justificación:
 
-  update(id: string, dto: UpdateMedicineDto): Observable<Medicine> {
-    return this.api.put<Medicine>(`/api/medicines/${id}`, dto);
-  }
+1. **Integración nativa con el nuevo modelo de Angular** 
+   - Las Signals son una primitiva de Angular 17+, diseñadas para detección de cambios más eficiente que BehaviorSubject puro.
+   - Código más simple y declarativo comparado con Subjects.
+   - Compatible con \`ChangeDetectionStrategy.OnPush\` de forma nativa sin necesidad de \`async\` pipe.
 
-  delete(id: string): Observable<void> {
-    return this.api.delete<void>(`/api/medicines/${id}`);
-  }
-}
-```
+2. **Curva de aprendizaje adecuada para un proyecto docente**
+   - Más simple que NgRx (sin actions, effects, selectors complejos).
+   - Mantiene un flujo de datos unidireccional claro sin la complejidad de un store global.
+   - Ideal para enseñanza: estudiantes pueden entender el estado sin sumergirse en patrones avanzados.
 
-**3. Componentes**
-   
-   - Gestionan estados `loading`, `error`, `empty`, `success` a nivel de UI.
-   - No conocen detalles de HTTP, solo mensajes de alto nivel.
-   - Usan signals para reactividad.
+3. **Facilita el encapsulamiento de lógica de negocio**
+   - Los servicios (stores) contienen:
+     - Estado privado (signals mutables: \`_products\`, \`_loading\`, \`_error\`).
+     - Acceso público solo-lectura (signals públicas: \`products\`, \`loading\`, \`error\` con \`.asReadonly()\`).
+     - Métodos para mutar estado de forma controlada (\`load()\`, \`add()\`, \`update()\`, \`delete()\`).
+   - Los componentes son presentacionales y no acceden directamente a estado privado.
 
-```typescript
-export class MedicinesPage {
-  private medicineService = inject(MedicineService);
-  private toastService = inject(ToastService);
+#### Estrategias de optimización aplicadas
 
-  state = signal<{
-    loading: boolean;
-    error: string | null;
-    medicines: Medicine[];
-  }>({
-    loading: false,
-    error: null,
-    medicines: []
-  });
+En la documentación se detallan las siguientes decisiones de rendimiento:
 
-  loadMedicines() {
-    this.state.update(s => ({ ...s, loading: true, error: null }));
-    
-    this.medicineService.getAll().subscribe({
-      next: (medicines) => {
-        this.state.update(s => ({
-          ...s,
-          loading: false,
-          medicines
-        }));
-      },
-      error: (error) => {
-        const message = error.message || 'No se pudieron cargar los medicamentos';
-        this.state.update(s => ({
-          ...s,
-          loading: false,
-          error: message
-        }));
-        this.toastService.error(message);
-      }
-    });
-  }
-}
-```
+##### 1. ChangeDetectionStrategy.OnPush en componentes de listas y vistas de solo lectura
 
-##### Resumen del flujo de errores
+- Reduce ciclos innecesarios de detección de cambios.
+- Aprovecha las actualizaciones inmutables de signals.
+- Angular solo revisa el componente cuando sus inputs cambian o se ejecuta un evento.
+- Aplicado en: \`MedicineCardComponent\`, \`MedicinesPage\`, \`CalendarPage\`, etc.
 
-```
-Error HTTP (servidor)
-    ↓
-errorInterceptor captura y mapea código
-    ↓
-Toast de notificación global
-    ↓
-throwError pasa a servicio
-    ↓
-Servicio aplica lógica de negocio (si aplica)
-    ↓
-Componente captura en bloque error
-    ↓
-Actualiza signal de estado
-    ↓
-Template muestra mensaje al usuario
-```
+##### 2. Uso sistemático de trackBy en *ngFor en listados grandes
 
-#### Operaciones CRUD completas
+- Evita recrear nodos DOM al refrescar datos (CRUD, filtros, paginación).
+- Sin \`trackBy\`: cambios menores pueden recrear 100+ nodos DOM.
+- Con \`trackBy\`: solo se recrean los elementos que realmente cambiaron.
 
-**GET - Obtener listados y elementos individuales**
+\`\`\`typescript
+trackByMedicineId = (index: number, medicine: Medicine) => medicine.id;
 
-```typescript
-// Obtener listado completo
-medicines$ = this.medicineService.getAll();
-
-// Obtener por ID (resuelto antes de cargar ruta)
-constructor(private route: ActivatedRoute) {
-  this.medicine = this.route.snapshot.data['medicine'];
-}
-```
-
-**POST - Crear nuevos recursos**
-
-```typescript
-createMedicine(dto: CreateMedicineDto) {
-  this.medicineService.create(dto).subscribe({
-    next: (newMedicine) => {
-      this.medicines.push(newMedicine);
-      this.toastService.success('Medicamento creado');
-      this.router.navigate(['/medicamentos']);
-    },
-    error: (err) => this.toastService.error(err.message)
-  });
-}
-```
-
-**PUT - Actualizar recursos**
-
-```typescript
-updateMedicine(id: string, dto: UpdateMedicineDto) {
-  this.medicineService.update(id, dto).subscribe({
-    next: (updated) => {
-      this.toastService.success('Medicamento actualizado');
-      this.router.navigate(['/medicamentos', id]);
-    },
-    error: (err) => this.toastService.error(err.message)
-  });
-}
-```
-
-**DELETE - Eliminar recursos**
-
-```typescript
-deleteMedicine(id: string) {
-  if (confirm('¿Estás seguro de que deseas eliminar este medicamento?')) {
-    this.medicineService.delete(id).subscribe({
-      next: () => {
-        this.medicines = this.medicines.filter(m => m.id !== id);
-        this.toastService.success('Medicamento eliminado');
-      },
-      error: (err) => this.toastService.error(err.message)
-    });
-  }
-}
-```
-
-#### Interceptores HTTP
-
-**Interceptor de autenticación**
-
-```typescript
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const token = authService.getToken();
-
-  if (token) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-  }
-
-  return next(req);
-};
-```
-
-**Interceptor de manejo de errores (ya documentado arriba)**
-
-```typescript
-export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-  return next(req).pipe(
-    catchError((error: HttpErrorResponse) => {
-      const toastService = inject(ToastService);
-      const message = mapStatusToMessage(error.status);
-      toastService.error(message);
-      return throwError(() => error);
-    })
-  );
-};
-```
-
-**Configuración de HttpClient con interceptores**
-
-```typescript
-// app.config.ts
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideHttpClient(
-      withInterceptors([authInterceptor, errorInterceptor])
-    ),
-    // ... resto de providers
-  ]
-};
-```
-
-#### Estados de carga y error
-
-**Loading state durante peticiones**
-
-```typescript
-isLoading = signal(false);
-
-loadMedicines() {
-  this.isLoading.set(true);
-  this.medicineService.getAll().subscribe({
-    next: (medicines) => {
-      this.medicines.set(medicines);
-      this.isLoading.set(false);
-    },
-    error: () => this.isLoading.set(false)
-  });
-}
-```
-
-**Error state con mensajes**
-
-```typescript
-error = signal<string | null>(null);
-
-loadMedicines() {
-  this.medicineService.getAll().subscribe({
-    error: (err) => {
-      this.error.set(err.message || 'Error al cargar medicamentos');
-    }
-  });
-}
-```
-
-**Empty state cuando no hay datos**
-
-```html
-<div *ngIf="!isLoading() && medicines().length === 0">
-  <p>No hay medicamentos registrados</p>
-  <a routerLink="/medicamentos/crear">Crear el primero</a>
+// En template
+<div *ngFor=\"let medicine of medicines(); trackBy: trackByMedicineId\">
+  {{ medicine.name }}
 </div>
-```
+\`\`\`
 
-**Success feedback después de operaciones**
+##### 3. Preferencia por async pipe y signals frente a subscribe manual
 
-```typescript
-saveMedicine(dto: CreateMedicineDto) {
-  this.medicineService.create(dto).subscribe({
-    next: () => {
-      this.toastService.success('Medicamento creado exitosamente');
-      this.router.navigate(['/medicamentos']);
-    }
-  });
-}
-```
+- Previene memory leaks: el framework gestiona automáticamente suscripciones.
+- Simplifica la gestión del ciclo de vida de observables.
+- No requiere \`takeUntil(destroy\$)\` manual.
 
-#### Formatos de datos
+##### 4. Servicios de loading y toasts centralizados
 
-**JSON (principal)**
+- Manejan estados de carga y error de forma coherente.
+- Evita lógica repetida por componente.
+- Interfaz consistente para feedback al usuario.
 
-```typescript
-// GET /api/medicines
-{ 
-  items: [...],
-  total: 10,
-  page: 1,
-  pageSize: 10
-}
-```
 
-**FormData para upload de archivos**
+##### 5. Paginación o infinite scroll en vez de cargar grandes volúmenes de datos
 
-```typescript
-uploadImage(file: File): Observable<{ url: string }> {
-  const formData = new FormData();
-  formData.append('file', file);
+- Carga bajo demanda en lugar de todo de golpe.
+- Combinado con \`debounceTime\` (300ms) en búsquedas para reducir llamadas al servidor.
+- Mejor UX: tiempos de carga más rápidos, menor consumo de ancho de banda.
 
-  return this.http.post<{ url: string }>('/api/upload', formData);
-}
-```
+---
 
-**Query params para filtros y paginación**
+#### Comparativa de opciones de gestión de estado evaluadas
 
-```typescript
-searchMedicines(query: string, page: number = 1): Observable<PaginatedResponse<Medicine>> {
-  const params = new HttpParams()
-    .set('q', query)
-    .set('page', page.toString());
+En la sección de arquitectura se incluye una tabla que explica las alternativas de gestión de estado y por qué se eligió signals:
 
-  return this.http.get<PaginatedResponse<Medicine>>('/api/medicines', { params });
-}
-```
+| Opción | Complejidad | Ventajas principales | Inconvenientes / Motivo de descarte |
+|---|---|---|---|
+| **Servicios + BehaviorSubject** | Baja | Patrón conocido, bueno para comunicación entre componentes | Más RxJS "plumbing", riesgo de leaks si mal usado, más verboso que signals |
+| **Servicios + Signals (elegida)** | Media | Integración nativa Angular, sintaxis simple, OnPush compatible, cambios detectados automáticamente | Requiere Angular 17+, menos material legacy disponible |
+| **NgRx (store global, actions, etc.)** | Alta | Escalable, tooling avanzado, time-travel debugging | Sobredimensionado para este proyecto, curva de aprendizaje empinada, mucho boilerplate |
+| **MobX / Zustand** | Baja-Media | Reactividad simplificada | Dependencia externa, no es estándar Angular, riesgo de mantenimiento |
+| **Componente state (sin store)** | Baja | Código simple para apps pequeñas | No escala, lift-state-up problem, difícil mantener sincronización |
 
-**Headers personalizados cuando necesario**
+**Conclusión:** El patrón de **Servicios + Signals** ofrece el mejor equilibrio entre **simplicidad, rendimiento y escalabilidad** para un proyecto educativo de mediano tamaño.
 
-```typescript
-downloadReport(): Observable<Blob> {
-  return this.http.get('/api/report', {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/pdf'
-    }),
-    responseType: 'blob'
-  });
-}
-```
+---
+
+#### Recomendaciones para mantener y extender el patrón
+
+1. **Mantener servicios por feature:** Cada feature (medicines, calendar, users) tiene su propio store.
+2. **Evitar estado global innecesario:** Solo compartir estado si múltiples features lo necesitan.
+3. **Usar computed para valores derivados:** No duplicar datos en múltiples signals.
+4. **Testing:** Los servicios con signals son fáciles de testear.
+5. **Documentación:** Cada store debe documentar su estado público y métodos disponibles.

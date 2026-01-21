@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 
@@ -7,7 +7,8 @@ import { Router, RouterLink } from '@angular/router';
   imports: [CommonModule, RouterLink],
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
-  standalone: true
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Footer {
   private router = inject(Router);

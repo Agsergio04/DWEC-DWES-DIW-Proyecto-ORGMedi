@@ -101,5 +101,12 @@ export class CreateMedicinePhotoPage implements PendingChangesComponent {
   isFormValid(): boolean {
     return this.form.valid && this.photoFile !== null;
   }
+
+  /**
+   * TrackBy para optimizar *ngFor de frecuencias
+   */
+  trackByFrequency(index: number, frequency: string): string {
+    return frequency;
+  }
 }
 

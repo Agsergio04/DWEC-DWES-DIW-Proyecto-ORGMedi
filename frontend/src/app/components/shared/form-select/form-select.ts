@@ -13,5 +13,12 @@ export class FormSelectComponent {
   @Input() label = '';
   @Input() options: { value: any, label: string }[] = [];
   value: any;
+
+  /**
+   * TrackBy para optimizar *ngFor de opciones
+   */
+  trackByValue(index: number, option: { value: any, label: string }): any {
+    return option.value;
+  }
 }
 

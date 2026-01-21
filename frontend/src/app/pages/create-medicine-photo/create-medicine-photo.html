@@ -88,7 +88,7 @@
           required
         >
           <option value="">Selecciona una frecuencia</option>
-          <option *ngFor="let freq of frequencies" [value]="freq">{{ freq }}</option>
+          <option *ngFor="let freq of frequencies; trackBy: trackByFrequency" [value]="freq">{{ freq }}</option>
         </select>
       </div>
 

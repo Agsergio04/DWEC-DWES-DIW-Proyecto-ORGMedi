@@ -20,7 +20,7 @@
     <!-- Contenedor HORIZONTAL de días -->
     <div class="calendar__week">
       <div
-        *ngFor="let day of weekDays"
+        *ngFor="let day of weekDays; trackBy: trackByDate"
         class="calendar__day-item"
       >
         <!-- Nombre del día -->

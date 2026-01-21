@@ -10,16 +10,16 @@
 
     <div class="calendar__medicines-list">
       <!-- Lista de medicamentos o mensaje vacío -->
-      <div *ngIf="!loading && medicineGroups.length > 0; else noMedicines" class="medicines__list">
+      <div *ngIf="!loading() && medicineGroups.length > 0; else noMedicines" class="medicines__list">
         <!-- Mostrar grupos de medicamentos por hora -->
-        <div *ngFor="let group of medicineGroups" class="medicines__time-group">
+        <div *ngFor="let group of medicineGroups; trackBy: trackByTime" class="medicines__time-group">
           <!-- Hora como encabezado -->
           <div class="medicines__time-header">{{ group.time }}</div>
           
           <!-- Medicamentos en esta hora -->
           <div class="medicines__group-items">
             <app-medicine-card-calendar 
-              *ngFor="let medicine of group.medicines"
+              *ngFor="let medicine of group.medicines; trackBy: trackById"
               [medicine]="medicine"
               [displayTime]="''"
               [isExpired]="isExpired(medicine)"

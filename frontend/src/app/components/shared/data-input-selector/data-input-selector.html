@@ -23,7 +23,7 @@
   <div class="options-container" *ngIf="isOpen" (click)="$event.stopPropagation()">
     <div class="options-list" [class.color-mode]="type === 'color'">
       <div 
-        *ngFor="let option of options"
+        *ngFor="let option of options; trackBy: trackById"
         class="option-item"
         [class.color-option]="type === 'color'"
         [class.selected]="selectedOption?.id === option.id"

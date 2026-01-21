@@ -43,6 +43,13 @@ export class AccordionComponent {
   }
 
   /**
+   * TrackBy para optimizar *ngFor de items del accordion
+   */
+  trackById(index: number, item: AccordionItem): string {
+    return item.id;
+  }
+
+  /**
    * Maneja la navegación por teclado entre items del accordion
    */
   onKeyDown(event: KeyboardEvent, index: number) {

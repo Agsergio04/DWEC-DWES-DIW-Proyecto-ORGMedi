@@ -86,6 +86,13 @@ export class DataInputSelectorComponent implements ControlValueAccessor, OnInit,
     return this.selectedOption?.label || this.placeholder;
   }
 
+  /**
+   * TrackBy para optimizar *ngFor de opciones
+   */
+  trackById(index: number, option: SelectorOption): string | number {
+    return option.id;
+  }
+
   // ControlValueAccessor implementation
   writeValue(value: any): void {
     console.log('[DataInputSelector] writeValue called with:', value);

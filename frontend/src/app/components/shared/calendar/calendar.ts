@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Medicine } from '../../../data/models/medicine.model';
 import { MedicineDose, calculateMedicineDoses, parseFrequencyToHours } from '../../../shared/utils/medicine-schedule.util';
@@ -24,6 +24,7 @@ interface CalendarDay {
   imports: [CommonModule],
   templateUrl: './calendar.html',
   styleUrls: ['./calendar.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarComponent implements OnInit {
   // Semana actual
@@ -50,6 +51,13 @@ export class CalendarComponent implements OnInit {
   ngOnInit() {
     this.calculateDoses();
     this.loadWeek(this.currentDate);
+  }
+
+  /**
+   * TrackBy para optimizar *ngFor de días
+   */
+  trackByDate(index: number, day: CalendarDay): number {
+    return day.date.getTime();
   }
 
   /**

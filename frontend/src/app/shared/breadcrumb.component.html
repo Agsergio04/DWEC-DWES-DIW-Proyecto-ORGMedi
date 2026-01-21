@@ -30,7 +30,7 @@
 
     <!-- ITEMS: Dinámicos generados desde BreadcrumbService -->
     <li
-      *ngFor="let crumb of breadcrumbs; let last = last"
+      *ngFor="let crumb of breadcrumbs; trackBy: trackByUrl; let last = last"
       class="breadcrumb-item"
       [class.active]="last"
       [attr.aria-current]="last ? 'page' : null"

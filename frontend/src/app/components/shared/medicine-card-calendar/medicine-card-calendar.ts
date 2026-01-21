@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MedicineViewModel } from '../../../data/models/medicine.model';
 import { MedicineService } from '../../../data/medicine.service';
@@ -8,7 +8,8 @@ import { MedicineService } from '../../../data/medicine.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './medicine-card-calendar.html',
-  styleUrl: './medicine-card-calendar.css'
+  styleUrl: './medicine-card-calendar.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MedicineCardCalendarComponent {
   private medicineService = inject(MedicineService);

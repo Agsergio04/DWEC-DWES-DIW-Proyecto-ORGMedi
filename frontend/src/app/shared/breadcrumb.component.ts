@@ -102,4 +102,11 @@ export class BreadcrumbComponent {
   constructor(private breadcrumbService: BreadcrumbService) {
     this.breadcrumbs$ = this.breadcrumbService.breadcrumbs$;
   }
+
+  /**
+   * TrackBy para optimizar *ngFor de breadcrumbs
+   */
+  trackByUrl(index: number, crumb: Breadcrumb): string {
+    return crumb.url;
+  }
 }
