@@ -3,13 +3,16 @@ FROM maven:3.9.6-eclipse-temurin-21 AS builder
 
 WORKDIR /app
 
-# Copiar archivos de configuración de Maven
+# Copiar solo pom.xml para descargar dependencias (cacheable layer)
 COPY pom.xml .
 COPY mvnw .
 COPY mvnw.cmd .
 COPY .mvn .mvn
 
-# Copiar código fuente
+# Descargar dependencias (este paso se cachea)
+RUN mvn dependency:resolve -DskipTests
+
+# Copiar código fuente (después de descargar dependencias)
 COPY src src
 
 # Compilar la aplicación
@@ -20,8 +23,9 @@ FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
-# Instalar Tesseract OCR y dependencias
-RUN apt-get update && apt-get install -y \
+# Instalar Tesseract OCR y dependencias en una sola capa
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     curl \
     tesseract-ocr \
     tesseract-ocr-spa \

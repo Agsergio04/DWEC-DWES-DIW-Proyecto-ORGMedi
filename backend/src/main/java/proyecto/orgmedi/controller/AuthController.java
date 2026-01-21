@@ -124,7 +124,9 @@ public class AuthController {
 
         // Generar token JWT
         String token = jwtUtil.generateToken(request.getCorreo());
-        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(token));
+        AuthResponse response = new AuthResponse(token);
+        logger.info("Register response token: {}", token);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/rehash")
