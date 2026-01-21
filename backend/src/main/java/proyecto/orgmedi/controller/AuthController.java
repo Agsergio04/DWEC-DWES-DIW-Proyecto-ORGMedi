@@ -124,7 +124,9 @@ public class AuthController {
 
         // Generar token JWT
         String token = jwtUtil.generateToken(request.getCorreo());
-        return ResponseEntity.status(HttpStatus.CREATED).contentType(org.springframework.http.MediaType.APPLICATION_JSON).body(new AuthResponse(token));
+        logger.info("✓ TOKEN GENERADO EN REGISTER: {}", token.substring(0, Math.min(20, token.length())));
+        AuthResponse response = new AuthResponse(token);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/rehash")
