@@ -34,7 +34,16 @@ import { catchError } from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private http = inject(HttpClient);
-  private readonly baseUrl = '/api';
+  private readonly baseUrl = this.getApiUrl();
+
+  private getApiUrl(): string {
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+      // Producción en Render
+      return 'https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com/api';
+    }
+    // Desarrollo local
+    return '/api';
+  }
 
   /**
    * GET genérico

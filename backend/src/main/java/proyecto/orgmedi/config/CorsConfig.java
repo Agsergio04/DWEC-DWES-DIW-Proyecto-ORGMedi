@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Configuración de CORS (Cross-Origin Resource Sharing)
- * Permite que el frontend en localhost:4200 acceda a los endpoints del backend
+ * Permite que el frontend acceda a los endpoints del backend
  */
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
@@ -16,22 +16,26 @@ public class CorsConfig implements WebMvcConfigurer {
         if (registry == null) {
             return;
         }
+        
+        // Obtener origen permitido de variable de entorno o usar valores por defecto
+        String[] allowedOrigins = {
+            // Desarrollo
+            "http://localhost",
+            "http://localhost:80",
+            "http://localhost:4200",
+            "http://localhost:3000",
+            "http://127.0.0.1",
+            "http://127.0.0.1:4200",
+            "http://127.0.0.1:3000",
+            // Producción en Render
+            "https://dwec-dwes-diw-proyecto-orgmedi.onrender.com"
+        };
+        
         registry.addMapping("/api/**")
-                // Orígenes permitidos
-                .allowedOrigins(
-                        "http://localhost",
-                        "http://localhost:80",
-                        "http://localhost:4200",
-                        "http://127.0.0.1",
-                        "http://127.0.0.1:4200"
-                )
-                // Métodos HTTP permitidos
+                .allowedOrigins(allowedOrigins)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                // Headers permitidos
                 .allowedHeaders("*")
-                // Permitir credenciales (cookies, JWT)
                 .allowCredentials(true)
-                // Tiempo de cache de preflight (segundos)
                 .maxAge(3600);
     }
 }
