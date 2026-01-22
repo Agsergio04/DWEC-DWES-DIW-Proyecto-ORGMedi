@@ -1,5 +1,5 @@
 // Production environment
 export const environment = {
   production: true,
-  apiUrl: 'https://orgmedi-backend.onrender.com'
+  apiUrl: 'https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com'
 };

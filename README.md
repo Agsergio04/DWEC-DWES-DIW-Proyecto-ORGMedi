@@ -111,10 +111,10 @@ docker-compose up -d
 
 ## URL de Producción
 
- **Aplicación en vivo:** https://orgmedi-frontend.onrender.com
+🚀 **Aplicación en vivo:** https://dwec-dwes-diw-proyecto-orgmedi.onrender.com
 
-- Frontend: https://orgmedi-frontend.onrender.com
-- API Backend: https://orgmedi-backend.onrender.com/api
+- Frontend: https://dwec-dwes-diw-proyecto-orgmedi.onrender.com
+- API Backend: https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com/api
 
 ### Herramientas de Desarrollo y Monitoreo
 
@@ -122,13 +122,13 @@ docker-compose up -d
 Interfaz interactiva para explorar y probar todos los endpoints de la API.
 
 - **Desarrollo**: http://localhost:8080/api/swagger-ui.html
-- **Producción**: https://orgmedi-backend.onrender.com/api/swagger-ui.html
+- **Producción**: https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com/api/swagger-ui.html
 
 #### OpenAPI JSON Spec
 Especificación OpenAPI 3.0 en formato JSON para integración con herramientas third-party.
 
 - **Desarrollo**: http://localhost:8080/api/docs
-- **Producción**: https://orgmedi-backend.onrender.com/api/docs
+- **Producción**: https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com/api/docs
 
 #### Spring Boot Actuator
 Endpoints de monitoreo y salud de la aplicación.

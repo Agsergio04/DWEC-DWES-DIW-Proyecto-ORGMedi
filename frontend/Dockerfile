@@ -22,25 +22,24 @@ FROM nginx:alpine
 # Copiar configuración optimizada
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copiar archivos compilados
+# Copiar archivos compilados del build
 COPY --from=builder /app/dist/Proyecto/browser /usr/share/nginx/html
 
-# Copiar recursos estáticos
-COPY public /usr/share/nginx/html/public
+# Copiar archivos estáticos públicos (assets, redirects, etc.)
+COPY --chown=nginx:nginx public /usr/share/nginx/html/public
 
-# Limpiar archivos innecesarios
+# Limpiar archivos innecesarios (.map, .md)
 RUN find /usr/share/nginx/html -type f \( -name "*.map" -o -name "*.md" \) -delete
 
-# Exponer puerto
+# Crear directorio de logs si no existe
+RUN mkdir -p /var/log/nginx
+
+# Exponer puerto HTTP
 EXPOSE 80
 
-# Health check
+# Health check - verifica que Nginx está respondiendo
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=2 \
-    CMD wget -q -O- http://localhost/actuator/health || exit 1
+    CMD wget -q -O- http://localhost/ || exit 1
 
-# Ejecutar Nginx
-CMD ["nginx", "-g", "daemon off;"]
-EXPOSE 80
-
-# Comando para ejecutar Nginx
+# Ejecutar Nginx en foreground
 CMD ["nginx", "-g", "daemon off;"]
