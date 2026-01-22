@@ -146,7 +146,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--color-primario-disabled), var(--color-primario-hover));
 
     @include md {
       width: 80px;

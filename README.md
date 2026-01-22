@@ -52,17 +52,21 @@ DWEC-DWES-DIW-Proyecto-ORGMedi/
 - **Bundler & CLI**: Angular CLI
 
 ### Backend
-- **Framework**: Spring Boot 3.5.6
+- **Framework**: Spring Boot 3.2.5
 - **Lenguaje**: Java 21
 - **Base de Datos**: H2 Database
 - **Autenticación**: JWT + Spring Security
 - **ORM**: JPA/Hibernate
 - **Build**: Maven
 - **Testing**: JUnit 5, MockMvc
+- **OCR**: Tesseract para lectura de recetas
 
-
-### DevOps
- - **Todavia en desarrollo**
+### DevOps & Deployment
+- **Containerización**: Docker (backend y frontend optimizados)
+- **Orquestación**: Docker Compose para desarrollo
+- **CI/CD**: GitHub webhooks → Render
+- **Hosting**: Render (free tier)
+- **Optimizaciones**: Alpine images, JVM tuning, Nginx optimizado
 
 ---
 
@@ -72,17 +76,48 @@ DWEC-DWES-DIW-Proyecto-ORGMedi/
 - Node.js 18+
 - Angular CLI (`npm i -g @angular/cli`)
 - Git
+- Docker & Docker Compose (opcional, para desarrollo)
+- Java 21 + Maven (para backend local)
 
-### Instalación Frontend
+### Instalación Local
+
+#### Frontend
 ```bash
 git clone https://github.com/Agsergio04/DWEC-DWES-DIW-Proyecto-ORGMedi.git
 cd DWEC-DWES-DIW-Proyecto-ORGMedi/frontend
 npm install
 npm start
+# Accesible en http://localhost:80
 ```
 
+#### Backend
+```bash
+cd backend
+mvn clean install
+mvn spring-boot:run
+# Accesible en http://localhost:8080/api
+```
+
+#### Con Docker Compose
+```bash
+docker-compose up -d
+# Frontend: http://localhost
+# Backend: http://localhost:8080/api
+```
+
+---
+
+## URL de Producción
+
+ **Aplicación en vivo:** https://orgmedi-frontend.onrender.com
+
+- Frontend: https://orgmedi-frontend.onrender.com
+- API Backend: https://orgmedi-backend.onrender.com/api
+
+---
+
 ## Documentacion 
-- [Documentacion del backend](https://github.com/Agsergio04/DWEC-DWES-DIW-Proyecto-ORGMedi/blob/master/docs/servidor/Proyecto_API_REST.md)
-- [Documentacion del Diseño](https://github.com/Agsergio04/DWEC-DWES-DIW-Proyecto-ORGMedi/blob/master/docs/design/DOCUMENTACION_DISE%C3%91O.md)
-- [Documentacion del Cliente](https://github.com/Agsergio04/DWEC-DWES-DIW-Proyecto-ORGMedi/blob/master/docs/cliente/Documentacion_cliente.md)
+- [Documentacion del Backend/API](docs/servidor/Proyecto_API_REST.md)
+- [Documentacion del Diseño UI/UX](docs/design/DOCUMENTACION_DISEÑO.md)
+- [Documentacion del Cliente](docs/cliente/Documentacion_cliente.md)
 
