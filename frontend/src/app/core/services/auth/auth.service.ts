@@ -125,14 +125,31 @@ export class AuthService {
       contrasena: password
     };
 
-    return this.http.post<AuthResponse>(`${this.baseUrl}/register`, request).pipe(
+    return this.http.post<any>(`${this.baseUrl}/register`, request, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
       tap((response) => {
-        console.log('[AuthService] Register response:', response);
-        if (!response || !response.token) {
-          throw new Error('Invalid register response: missing token');
+        console.log('[AuthService] Register response completo:', response);
+        console.log('[AuthService] Type de response:', typeof response);
+        console.log('[AuthService] Keys de response:', response ? Object.keys(response) : 'null');
+        
+        // Manejar respuesta null o vacía
+        if (!response) {
+          console.error('[AuthService] Response es null, intentando extraer token del header');
+          throw new Error('Invalid register response: empty response');
         }
-        console.log('[AuthService] Register successful, token:', response.token.substring(0, 20) + '...');
-        this.setToken(response.token);
+        
+        // Extraer token - puede venir como response.token o directamente como token
+        const token = response?.token || response?.['token'];
+        
+        if (!token) {
+          console.error('[AuthService] No token found in response:', response);
+          throw new Error('Invalid register response: missing token. Response: ' + JSON.stringify(response));
+        }
+        
+        console.log('[AuthService] ✓ Token extraído exitosamente:', token.substring(0, 20) + '...');
+        this.setToken(token);
+        
         const user: AuthUser = {
           id: 1,
           name: username,
@@ -142,7 +159,7 @@ export class AuthService {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.isLoggedInSubject.next(true);
         this.currentUserSubject.next(user);
-        console.log('[AuthService] Token saved to localStorage:', localStorage.getItem('authToken')?.substring(0, 20) + '...');
+        console.log('[AuthService] ✓ Token guardado en localStorage');
       }),
       map(() => true),
       catchError(err => {

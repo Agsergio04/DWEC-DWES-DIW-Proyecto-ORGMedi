@@ -81,7 +81,16 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(usuario.getCorreo());
         logger.info("Login success for usuario={}", request.getUsuario());
-        return ResponseEntity.ok(new AuthResponse(token));
+        
+        // Crear respuesta con token explícitamente
+        AuthResponse response = new AuthResponse();
+        response.setToken(token);
+        
+        logger.info("✓ ENVIANDO RESPUESTA LOGIN: {}", token.substring(0, Math.min(20, token.length())));
+        
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body(response);
     }
 
     @PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
@@ -126,8 +135,17 @@ public class AuthController {
         // Generar token JWT
         String token = jwtUtil.generateToken(request.getCorreo());
         logger.info("✓ TOKEN GENERADO EN REGISTER: {}", token.substring(0, Math.min(20, token.length())));
-        AuthResponse response = new AuthResponse(token);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        
+        // Crear respuesta con token
+        AuthResponse response = new AuthResponse();
+        response.setToken(token);
+        
+        logger.info("✓ ENVIANDO RESPUESTA REGISTER: {}", response.getToken().substring(0, Math.min(20, response.getToken().length())));
+        
+        // Retornar 201 CREATED con el token en el body
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header("Content-Type", "application/json")
+                .body(response);
     }
 
     @PostMapping("/rehash")
