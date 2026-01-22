@@ -1,3 +1,6 @@
+@use '../../styles/00-settings/variables' as *;
+@use '../../styles/01-tools/responsive' as *;
+
 /**
  * BREADCRUMB COMPONENT STYLES
  * ===========================
@@ -89,7 +92,7 @@
 /**
  * RESPONSIVO: Tablet
  */
-@media (max-width: 768px) {
+@include max-tablet {
   .breadcrumb {
     font-size: 0.875rem;
     padding: 0.6rem 1rem;
@@ -104,7 +107,7 @@
 /**
  * RESPONSIVO: Mobile
  */
-@media (max-width: 576px) {
+@include max-mobile {
   .breadcrumb {
     font-size: 0.8125rem;
     padding: 0.5rem 0.875rem;

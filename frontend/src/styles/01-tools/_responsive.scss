@@ -1,0 +1,497 @@
+/**
+ * RESPONSIVE DESIGN UTILITIES - ESTRATEGIA MOBILE-FIRST
+ * ====================================================
+ * 
+ * Esta archivo contiene:
+ * - Media Query Mixins para breakpoints consistentes
+ * - Container Query Utilities
+ * - Responsive Helpers
+ * 
+ * FILOSOFÍA: Mobile-First
+ * Los estilos base se definen para mobile (320px)
+ * Se expanden progresivamente para pantallas más grandes usando @include
+ * 
+ * EJEMPLO:
+ *   .component {
+ *     width: 100%;          // Mobile: 100%
+ *     
+ *     @include tablet {
+ *       width: 90%;         // Tablet: 90%
+ *     }
+ *     
+ *     @include desktop {
+ *       width: 80%;         // Desktop: 80%
+ *     }
+ *   }
+ */
+
+@use '../00-settings/variables' as *;
+
+/* ========================================
+   1. MEDIA QUERY MIXINS - MOBILE FIRST
+   ======================================== */
+
+/**
+ * Para tablet (640px+)
+ * Ideal para: Mejoras de spacing, cambios de dirección flex
+ */
+@mixin sm {
+  @media (min-width: $tablet-small) {
+    @content;
+  }
+}
+
+/**
+ * Para tablet estándar (768px+)
+ * Ideal para: Cambios de layout principales
+ */
+@mixin md {
+  @media (min-width: $tablet) {
+    @content;
+  }
+}
+
+/**
+ * Para desktop pequeño (1024px+)
+ * Ideal para: Multi-columnas, cambios de estructura
+ */
+@mixin lg {
+  @media (min-width: $desktop-small) {
+    @content;
+  }
+}
+
+/**
+ * Para desktop estándar (1280px+)
+ * Ideal para: Ajustes finales, max-widths
+ */
+@mixin xl {
+  @media (min-width: $desktop) {
+    @content;
+  }
+}
+
+/**
+ * Para desktop grande (1440px+)
+ * Ideal para: Ultra-wide layouts
+ */
+@mixin xxl {
+  @media (min-width: $desktop-large) {
+    @content;
+  }
+}
+
+/* Aliases tradicionales para compatibilidad */
+@mixin tablet-small {
+  @include sm {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @include md {
+    @content;
+  }
+}
+
+@mixin desktop-small {
+  @include lg {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @include xl {
+    @content;
+  }
+}
+
+@mixin desktop-large {
+  @include xxl {
+    @content;
+  }
+}
+
+/* ========================================
+   2. MEDIA QUERY MÁXIMAS (Desktop-first)
+   ======================================== */
+
+/**
+ * Solo en pantallas menores a tablet
+ */
+@mixin max-sm {
+  @media (max-width: #{$tablet-small - 1px}) {
+    @content;
+  }
+}
+
+/**
+ * Solo en pantallas menores a tablet estándar
+ */
+@mixin max-md {
+  @media (max-width: #{$tablet - 1px}) {
+    @content;
+  }
+}
+
+/**
+ * Solo en pantallas menores a desktop
+ */
+@mixin max-lg {
+  @media (max-width: #{$desktop-small - 1px}) {
+    @content;
+  }
+}
+
+/**
+ * Solo en pantallas menores a desktop estándar
+ */
+@mixin max-xl {
+  @media (max-width: #{$desktop - 1px}) {
+    @content;
+  }
+}
+
+/* Aliases para claridad: max-tablet, max-mobile, etc. */
+@mixin max-mobile {
+  @media (max-width: #{$tablet-small - 1px}) {
+    @content;
+  }
+}
+
+@mixin max-tablet {
+  @media (max-width: #{$tablet - 1px}) {
+    @content;
+  }
+}
+
+@mixin max-desktop-small {
+  @media (max-width: #{$desktop-small - 1px}) {
+    @content;
+  }
+}
+
+/* ========================================
+   3. RANGOS DE MEDIA QUERIES
+   ======================================== */
+
+/**
+ * Entre dos breakpoints
+ * Uso: @include between($tablet-small, $tablet) { ... }
+ */
+@mixin between($min, $max) {
+  @media (min-width: $min) and (max-width: #{$max - 1px}) {
+    @content;
+  }
+}
+
+/* ========================================
+   4. ORIENTACIÓN
+   ======================================== */
+
+@mixin landscape {
+  @media (orientation: landscape) {
+    @content;
+  }
+}
+
+@mixin portrait {
+  @media (orientation: portrait) {
+    @content;
+  }
+}
+
+/* ========================================
+   5. CONTAINER QUERIES
+   ======================================== */
+
+/**
+ * Container Queries - Componentes responsivos independientes del viewport
+ * 
+ * EJEMPLO:
+ *   .component {
+ *     container-type: inline-size;
+ *     
+ *     @include container-min(20rem) {
+ *       flex-direction: row;
+ *     }
+ *   }
+ */
+
+/**
+ * Contenedor responsive por tamaño
+ * Envuelve elementos cuyo tamaño debe ser responsive
+ */
+@mixin container-type($type: inline-size) {
+  container-type: $type;
+}
+
+/**
+ * Mixin para query de tamaño de contenedor mínimo
+ */
+@mixin container-min($width) {
+  @container (min-width: $width) {
+    @content;
+  }
+}
+
+/**
+ * Mixin para query de tamaño de contenedor máximo
+ */
+@mixin container-max($width) {
+  @container (max-width: #{$width - 1px}) {
+    @content;
+  }
+}
+
+/**
+ * Mixin para rango de tamaño de contenedor
+ */
+@mixin container-between($min, $max) {
+  @container (min-width: $min) and (max-width: #{$max - 1px}) {
+    @content;
+  }
+}
+
+/* ========================================
+   6. RESPONSIVE HELPERS
+   ======================================== */
+
+/**
+ * Ocultar en mobile
+ */
+@mixin hide-mobile {
+  @include max-md {
+    display: none;
+  }
+}
+
+/**
+ * Ocultar en tablet y superior
+ */
+@mixin hide-tablet {
+  @include md {
+    display: none;
+  }
+}
+
+/**
+ * Ocultar en desktop y superior
+ */
+@mixin hide-desktop {
+  @include lg {
+    display: none;
+  }
+}
+
+/**
+ * Mostrar solo en mobile
+ */
+@mixin show-mobile-only {
+  display: none;
+  
+  @include max-md {
+    display: block;
+  }
+}
+
+/**
+ * Mostrar solo en tablet
+ */
+@mixin show-tablet-only {
+  display: none;
+  
+  @include between($tablet, $desktop-small) {
+    display: block;
+  }
+}
+
+/**
+ * Mostrar solo en desktop
+ */
+@mixin show-desktop-only {
+  display: none;
+  
+  @include lg {
+    display: block;
+  }
+}
+
+/* ========================================
+   7. RESPONSIVE SCALES
+   ======================================== */
+
+/**
+ * Escala responsive de propiedad entre breakpoints
+ * 
+ * EJEMPLO:
+ *   @include responsive-scale(font-size, 1rem, 1.5rem, 2rem)
+ */
+@mixin responsive-scale($property, $mobile, $tablet: null, $desktop: null) {
+  #{$property}: $mobile;
+  
+  @if $tablet {
+    @include md {
+      #{$property}: $tablet;
+    }
+  }
+  
+  @if $desktop {
+    @include lg {
+      #{$property}: $desktop;
+    }
+  }
+}
+
+/**
+ * Responsive text scaling
+ */
+@mixin responsive-text($mobile, $tablet: null, $desktop: null) {
+  @include responsive-scale(font-size, $mobile, $tablet, $desktop);
+}
+
+/**
+ * Responsive padding
+ */
+@mixin responsive-padding($mobile, $tablet: null, $desktop: null) {
+  @include responsive-scale(padding, $mobile, $tablet, $desktop);
+}
+
+/**
+ * Responsive margin
+ */
+@mixin responsive-margin($mobile, $tablet: null, $desktop: null) {
+  @include responsive-scale(margin, $mobile, $tablet, $desktop);
+}
+
+/**
+ * Responsive gap (para flex/grid)
+ */
+@mixin responsive-gap($mobile, $tablet: null, $desktop: null) {
+  @include responsive-scale(gap, $mobile, $tablet, $desktop);
+}
+
+/* ========================================
+   8. RESPONSIVE LAYOUT PATTERNS
+   ======================================== */
+
+/**
+ * Grid que cambia de columnas responsivamente
+ * 
+ * EJEMPLO:
+ *   @include responsive-grid(1, 2, 3)
+ *   // Mobile: 1 columna
+ *   // Tablet: 2 columnas
+ *   // Desktop: 3 columnas
+ */
+@mixin responsive-grid($mobile-cols, $tablet-cols: null, $desktop-cols: null, $gap: $espaciado-16) {
+  display: grid;
+  grid-template-columns: repeat($mobile-cols, 1fr);
+  gap: $gap;
+  
+  @if $tablet-cols {
+    @include md {
+      grid-template-columns: repeat($tablet-cols, 1fr);
+    }
+  }
+  
+  @if $desktop-cols {
+    @include lg {
+      grid-template-columns: repeat($desktop-cols, 1fr);
+    }
+  }
+}
+
+/**
+ * Flex que cambia de dirección responsivamente
+ */
+@mixin responsive-flex(
+  $mobile-direction: column,
+  $tablet-direction: null,
+  $desktop-direction: null,
+  $gap: $espaciado-16
+) {
+  display: flex;
+  flex-direction: $mobile-direction;
+  gap: $gap;
+  
+  @if $tablet-direction {
+    @include md {
+      flex-direction: $tablet-direction;
+    }
+  }
+  
+  @if $desktop-direction {
+    @include lg {
+      flex-direction: $desktop-direction;
+    }
+  }
+}
+
+/**
+ * Container con max-width responsivo
+ */
+@mixin responsive-container($mobile: 100%, $tablet: 100%, $desktop: 100%, $desktop-lg: 100%) {
+  width: $mobile;
+  margin-left: auto;
+  margin-right: auto;
+  
+  @include md {
+    max-width: $tablet;
+  }
+  
+  @include lg {
+    max-width: $desktop;
+  }
+  
+  @include xl {
+    max-width: $desktop-lg;
+  }
+}
+
+/* ========================================
+   9. ASPECT RATIO HELPERS
+   ======================================== */
+
+/**
+ * Mantener aspecto 16:9
+ */
+@mixin aspect-16-9 {
+  aspect-ratio: 16 / 9;
+}
+
+/**
+ * Mantener aspecto 4:3
+ */
+@mixin aspect-4-3 {
+  aspect-ratio: 4 / 3;
+}
+
+/**
+ * Mantener aspecto 1:1
+ */
+@mixin aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+/* ========================================
+   10. PRINT STYLES
+   ======================================== */
+
+/**
+ * Estilos específicos para impresión
+ */
+@mixin print-only {
+  @media print {
+    @content;
+  }
+}
+
+/**
+ * Ocultar en impresión
+ */
+@mixin hide-print {
+  @media print {
+    display: none;
+  }
+}

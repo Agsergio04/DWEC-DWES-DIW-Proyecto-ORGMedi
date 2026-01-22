@@ -1,0 +1,620 @@
+/**
+ * animations.scss - Sistema de Animaciones CSS para ORGMedi
+ * 
+ * Contiene:
+ * - Keyframes de animaciones reutilizables
+ * - Clases de utilidad para animaciones
+ * - Micro-interacciones (hover, focus, bounce, slide-in, fade-in)
+ * - Loading spinner optimizado
+ * 
+ * Diseño: Rendimiento optimizado usando transform y opacity (GPU accelerated)
+ * Duración: Variables configurables para consistencia global
+ */
+
+// Importar variables necesarias
+@use '00-settings/variables' as *;
+
+/* ============================================
+   1. VARIABLES DE DURACIÓN Y EASING
+   ============================================ */
+
+$animation-duration-fast: 150ms;
+$animation-duration-normal: 300ms;
+$animation-duration-slow: 500ms;
+
+$animation-easing-ease-in: cubic-bezier(0.4, 0, 1, 1);
+$animation-easing-ease-out: cubic-bezier(0, 0, 0.2, 1);
+$animation-easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+$animation-easing-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+$animation-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+/* ============================================
+   2. ANIMACIÓN: FADE-IN (Aparición gradual)
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn $animation-duration-normal $animation-easing-ease-out;
+}
+
+.animate-fade-out {
+  animation: fadeOut $animation-duration-normal $animation-easing-ease-in;
+}
+
+/* ============================================
+   3. ANIMACIÓN: SLIDE-IN (Entrada deslizante)
+   ============================================ */
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-up {
+  animation: slideInUp $animation-duration-normal $animation-easing-ease-out;
+}
+
+.animate-slide-in-down {
+  animation: slideInDown $animation-duration-normal $animation-easing-ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft $animation-duration-normal $animation-easing-ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight $animation-duration-normal $animation-easing-ease-out;
+}
+
+/* ============================================
+   4. ANIMACIÓN: BOUNCE (Rebote elástico)
+   ============================================ */
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-bounce {
+  animation: bounce $animation-duration-normal infinite;
+}
+
+.animate-bounce-in {
+  animation: bounceIn $animation-duration-normal $animation-easing-bounce;
+}
+
+/* ============================================
+   5. ANIMACIÓN: PULSE (Pulsación suave)
+   ============================================ */
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes pulse-scale {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse {
+  animation: pulse $animation-duration-slow infinite;
+}
+
+.animate-pulse-scale {
+  animation: pulse-scale $animation-duration-slow infinite;
+}
+
+/* ============================================
+   6. ANIMACIÓN: SHAKE (Temblor/sacudida)
+   ============================================ */
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+}
+
+.animate-shake {
+  animation: shake $animation-duration-fast;
+}
+
+/* ============================================
+   7. ANIMACIÓN: SPIN/ROTATE (Rotación - LOADING SPINNER)
+   ============================================ */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-spin {
+  animation: spin $animation-duration-slow linear infinite;
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse $animation-duration-slow linear infinite;
+}
+
+/* ============================================
+   8. ANIMACIÓN: GRADIENT SHIFT (Cambio de gradiente)
+   ============================================ */
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradientShift $animation-duration-slow ease-in-out infinite;
+}
+
+/* ============================================
+   9. ANIMACIÓN: SCALE (Escala suave)
+   ============================================ */
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn $animation-duration-normal $animation-easing-elastic;
+}
+
+.animate-scale-out {
+  animation: scaleOut $animation-duration-normal $animation-easing-ease-in;
+}
+
+/* ============================================
+   10. ANIMACIÓN: FLIP (Volteo 3D)
+   ============================================ */
+
+@keyframes flip {
+  0% {
+    transform: perspective(400px) rotateY(0);
+  }
+  100% {
+    transform: perspective(400px) rotateY(360deg);
+  }
+}
+
+.animate-flip {
+  animation: flip $animation-duration-slow linear infinite;
+}
+
+/* ============================================
+   11. TRANSICIONES: HOVER/FOCUS OPTIMIZATION
+   ============================================ */
+
+/* Botones: Color suave + elevación */
+.button,
+button {
+  transition: 
+    background-color $animation-duration-fast $animation-easing-ease-in-out,
+    color $animation-duration-fast $animation-easing-ease-in-out,
+    transform $animation-duration-fast $animation-easing-ease-out,
+    box-shadow $animation-duration-fast $animation-easing-ease-out;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Enlaces: Underline suave */
+a {
+  transition: color $animation-duration-fast $animation-easing-ease-in-out;
+
+  &:hover {
+    color: $color-primario-hover;
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 2px solid $color-primario-primary;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+/* Inputs: Borde y sombra en focus */
+input,
+textarea,
+select {
+  transition: 
+    border-color $animation-duration-fast $animation-easing-ease-in-out,
+    box-shadow $animation-duration-fast $animation-easing-ease-in-out,
+    background-color $animation-duration-fast $animation-easing-ease-in-out;
+
+  &:focus {
+    border-color: $color-primario-primary;
+    box-shadow: 0 0 0 3px rgba(225, 119, 181, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/* Tarjetas: Elevación en hover */
+.app-card,
+.card {
+  transition: 
+    transform $animation-duration-normal $animation-easing-ease-out,
+    box-shadow $animation-duration-normal $animation-easing-ease-out;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Badges: Color dinámico */
+.badge {
+  transition: 
+    background-color $animation-duration-fast $animation-easing-ease-in-out,
+    color $animation-duration-fast $animation-easing-ease-in-out;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+}
+
+/* ============================================
+   12. LOADING SPINNER - DISEÑO OPTIMIZADO
+   ============================================ */
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(225, 119, 181, 0.1); // Rosa suave
+  border-top-color: $color-primario-primary; // Rosa primario
+  border-radius: 50%;
+  animation: spin $animation-duration-slow linear infinite;
+
+  /* Variantes de tamaño */
+  &--sm {
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
+  }
+
+  &--lg {
+    width: 56px;
+    height: 56px;
+    border-width: 5px;
+  }
+
+  &--xl {
+    width: 72px;
+    height: 72px;
+    border-width: 6px;
+  }
+
+  /* Variante: Doble ring (dos anillos concéntricos) */
+  &--double {
+    border: 3px solid rgba(225, 119, 181, 0.1);
+    border-top-color: $color-primario-primary;
+    border-right-color: $color-primario-primary;
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(185, 225, 119, 0.1);
+      border-top-color: $color-secundario-primary;
+      border-left-color: $color-secundario-primary;
+      border-radius: 50%;
+      top: 5px;
+      left: 5px;
+      animation: spin-reverse $animation-duration-slow linear infinite;
+    }
+  }
+
+  /* Variante: Pulsante (breathing) */
+  &--breathing {
+    border-color: rgba(225, 119, 181, 0.2);
+    border-top-color: $color-primario-primary;
+    animation: 
+      spin $animation-duration-slow linear infinite,
+      pulse-scale $animation-duration-slow ease-in-out infinite;
+  }
+
+  /* Variante: Multicolor gradient */
+  &--gradient {
+    border-top-color: #E177B5;
+    border-right-color: #B5E177;
+    border-bottom-color: #E177B5;
+    border-left-color: #B5E177;
+    filter: drop-shadow(0 0 2px rgba(225, 119, 181, 0.3));
+  }
+}
+
+/* Contenedor centrado para spinner */
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+
+  /* Con texto debajo */
+  &--with-text {
+    flex-direction: column;
+    gap: 1rem;
+
+    .spinner-text {
+      font-size: 0.875rem;
+      color: $color-texto_borde_cajas;
+      animation: fadeIn $animation-duration-normal;
+    }
+  }
+
+  /* Pantalla completa (overlay) */
+  &--fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 9999;
+    backdrop-filter: blur(2px);
+
+    body.dark-mode & {
+      background: rgba(30, 30, 30, 0.95);
+    }
+  }
+}
+
+/* ============================================
+   13. MICRO-INTERACCIONES: FEEDBACK VISUAL
+   ============================================ */
+
+/* Success pulse (confirmación) */
+.feedback-success {
+  animation: scaleIn $animation-duration-normal $animation-easing-elastic;
+
+  &::before {
+    content: '✓';
+    display: inline-block;
+    margin-right: 0.5rem;
+    animation: bounce-in $animation-duration-normal;
+  }
+}
+
+/* Error shake (error) */
+.feedback-error {
+  animation: shake $animation-duration-fast;
+  color: $color-negacion-primary;
+}
+
+/* Warning pulse (advertencia) */
+.feedback-warning {
+  animation: pulse $animation-duration-slow infinite;
+  color: #FFAA00; // Naranja
+}
+
+/* Info slide-in (información) */
+.feedback-info {
+  animation: slideInRight $animation-duration-normal $animation-easing-ease-out;
+}
+
+/* ============================================
+   14. ANIMACIONES PARA ESTADOS DE TRANSICIÓN
+   ============================================ */
+
+/* Desaparición suave de elemento (para remover) */
+.animate-remove {
+  animation: fadeOut $animation-duration-normal $animation-easing-ease-in forwards;
+}
+
+/* Aparición suave al agregar */
+.animate-add {
+  animation: slideInUp $animation-duration-normal $animation-easing-ease-out forwards;
+}
+
+/* Entrada de modal */
+.modal-enter {
+  animation: 
+    fadeIn $animation-duration-fast,
+    scaleIn $animation-duration-normal $animation-easing-elastic;
+}
+
+.modal-exit {
+  animation: 
+    fadeOut $animation-duration-fast,
+    scaleOut $animation-duration-normal $animation-easing-ease-in;
+}
+
+/* ============================================
+   15. ACCESIBILIDAD: Respetar preferencias de usuario
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   16. OPTIMIZACIONES DE PERFORMANCE
+   ============================================ */
+
+/* Will-change hints para animaciones comunes */
+.button:hover,
+button:hover {
+  will-change: transform, box-shadow;
+}
+
+.spinner {
+  will-change: transform;
+}
+
+.animate-slide-in-up,
+.animate-slide-in-down,
+.animate-slide-in-left,
+.animate-slide-in-right {
+  will-change: transform, opacity;
+}
+
+.animate-fade-in,
+.animate-fade-out {
+  will-change: opacity;
+}

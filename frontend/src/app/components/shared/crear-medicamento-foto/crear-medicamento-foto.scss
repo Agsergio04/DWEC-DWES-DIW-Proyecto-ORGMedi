@@ -1,3 +1,6 @@
+@use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/responsive' as *;
+
 .crear-medicamento-foto {
   display: flex;
   flex-direction: column;
@@ -216,7 +219,7 @@
   }
 
   // RESPONSIVE
-  @media (max-width: 768px) {
+  @include max-tablet {
     padding: 16px;
     gap: 16px;
 

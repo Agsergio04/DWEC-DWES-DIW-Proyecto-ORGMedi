@@ -4,8 +4,9 @@
 
 /* Mixins y funciones reutilizables de Sass */
 @use '01-tools/mixins';
+@use '01-tools/responsive';
 
- /* Estilos genéricos y resets (normalize, helpers) */
+/* Estilos genéricos y resets (normalize, helpers) */
 @use '02-generic/reset';
 
 /* Estilos para elementos HTML puros (body, h1, a, etc.) */
@@ -13,3 +14,6 @@
 
 /* Estructuras de layout: grids, contenedores, etc. */
 @use '04-layout/layout';
+
+/* Animaciones CSS optimizadas (nuevo) */
+@use 'animations';

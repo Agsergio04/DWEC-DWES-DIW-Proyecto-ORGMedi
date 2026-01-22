@@ -1,0 +1,299 @@
+<main class="page--contact">
+  <div class="page__container">
+    <!-- Encabezado de la página -->
+    <header class="page__header">
+      <h1 class="page__title">Contacto</h1>
+      <p class="page__subtitle">
+        ¿Tienes preguntas? Nos encantaría escucharte. Envíanos un mensaje y te responderemos pronto.
+      </p>
+    </header>
+
+    <!-- Contenido principal -->
+    <article class="contact__content">
+      <!-- Imagen responsive con picture para art direction -->
+      <figure class="contact__image-container">
+        <picture>
+          <!-- Mobile: imagen diferente (portrait) -->
+          <source 
+            media="(max-width: 767px)"
+            srcset="
+              imgs/contact/contact-mobile-sm.webp 375w,
+              imgs/contact/contact-mobile.webp 768w
+            "
+            sizes="(max-width: 767px) 100vw, 600px"
+            type="image/webp"
+          />
+          <source 
+            media="(max-width: 767px)"
+            srcset="
+              imgs/contact/contact-mobile-sm.png 375w,
+              imgs/contact/contact-mobile.png 768w
+            "
+            sizes="(max-width: 767px) 100vw, 600px"
+          />
+          
+          <!-- Tablet y Desktop: imagen landscape -->
+          <source 
+            srcset="
+              imgs/contact/contact-desktop-sm.webp 768w,
+              imgs/contact/contact-desktop.webp 1200w,
+              imgs/contact/contact-desktop-lg.webp 1600w
+            "
+            sizes="(max-width: 1023px) 90vw, (max-width: 1280px) 600px, 800px"
+            type="image/webp"
+          />
+          
+          <!-- Fallback PNG -->
+          <img 
+            src="imgs/contact/contact-desktop.png" 
+            alt="Equipo de soporte listo para ayudarte - Personas colaborando"
+            class="contact__image"
+            loading="lazy"
+            width="800"
+            height="450"
+          />
+        </picture>
+        <figcaption class="contact__image-caption">
+          Nuestro equipo está disponible para responder todas tus preguntas
+        </figcaption>
+      </figure>
+
+      <!-- Información de contacto -->
+      <section class="contact__info-section">
+        <h2 class="contact__section-title">Otras formas de contactarnos</h2>
+        
+        <div class="contact__info-grid">
+          <!-- Email -->
+          <div class="contact__info-card">
+            <h3 class="contact__info-title">
+              <span class="contact__info-icon" aria-hidden="true">✉️</span>
+              Correo electrónico
+            </h3>
+            <p class="contact__info-text">
+              <a href="mailto:info@orgmedi.com" class="contact__link">
+                info@orgmedi.com
+              </a>
+            </p>
+            <p class="contact__info-description">
+              Respuesta en 24-48 horas
+            </p>
+          </div>
+
+          <!-- Teléfono -->
+          <div class="contact__info-card">
+            <h3 class="contact__info-title">
+              <span class="contact__info-icon" aria-hidden="true">📞</span>
+              Teléfono
+            </h3>
+            <p class="contact__info-text">
+              <a href="tel:+34123456789" class="contact__link">
+                +34 123 456 789
+              </a>
+            </p>
+            <p class="contact__info-description">
+              Lunes a viernes, 9:00 - 18:00 CET
+            </p>
+          </div>
+
+          <!-- Ubicación -->
+          <div class="contact__info-card">
+            <h3 class="contact__info-title">
+              <span class="contact__info-icon" aria-hidden="true">📍</span>
+              Ubicación
+            </h3>
+            <p class="contact__info-text">
+              Madrid, España
+            </p>
+            <p class="contact__info-description">
+              Oficina disponible con cita previa
+            </p>
+          </div>
+
+          <!-- Redes sociales -->
+          <div class="contact__info-card">
+            <h3 class="contact__info-title">
+              <span class="contact__info-icon" aria-hidden="true">🌐</span>
+              Redes sociales
+            </h3>
+            <ul class="contact__social-list">
+              <li>
+                <a href="https://facebook.com" class="contact__social-link" 
+                   aria-label="Síguenos en Facebook">
+                  Facebook
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com" class="contact__social-link" 
+                   aria-label="Síguenos en Twitter">
+                  Twitter
+                </a>
+              </li>
+              <li>
+                <a href="https://instagram.com" class="contact__social-link" 
+                   aria-label="Síguenos en Instagram">
+                  Instagram
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Formulario de contacto -->
+      <section class="contact__form-section">
+        <h2 class="contact__section-title">Envíanos un mensaje</h2>
+
+        <!-- Mensaje de éxito -->
+        <div class="contact__success-message" *ngIf="successMessage" 
+             role="alert" aria-live="polite">
+          <span class="contact__success-icon" aria-hidden="true">✓</span>
+          Mensaje enviado correctamente. Te responderemos pronto.
+        </div>
+
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" 
+              class="contact__form" novalidate>
+          
+          <!-- Nombre -->
+          <div class="contact__form-group">
+            <label for="name" class="contact__form-label">
+              Nombre
+              <span class="contact__required" aria-label="requerido">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="name"
+              formControlName="name"
+              class="contact__form-input"
+              placeholder="Tu nombre completo"
+              aria-describedby="name-error"
+              required
+            >
+            <div class="contact__form-error" id="name-error" 
+                 *ngIf="submitted && f['name'].errors" role="alert">
+              <span *ngIf="f['name'].errors['required']">
+                El nombre es requerido
+              </span>
+              <span *ngIf="f['name'].errors['minlength']">
+                El nombre debe tener al menos 3 caracteres
+              </span>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="contact__form-group">
+            <label for="email" class="contact__form-label">
+              Correo electrónico
+              <span class="contact__required" aria-label="requerido">*</span>
+            </label>
+            <input 
+              type="email" 
+              id="email"
+              formControlName="email"
+              class="contact__form-input"
+              placeholder="tu@email.com"
+              aria-describedby="email-error"
+              required
+            >
+            <div class="contact__form-error" id="email-error"
+                 *ngIf="submitted && f['email'].errors" role="alert">
+              <span *ngIf="f['email'].errors['required']">
+                El email es requerido
+              </span>
+              <span *ngIf="f['email'].errors['email']">
+                Por favor, ingresa un email válido
+              </span>
+            </div>
+          </div>
+
+          <!-- Teléfono -->
+          <div class="contact__form-group">
+            <label for="phone" class="contact__form-label">
+              Teléfono (opcional)
+            </label>
+            <input 
+              type="tel" 
+              id="phone"
+              formControlName="phone"
+              class="contact__form-input"
+              placeholder="+34 123 456 789"
+              aria-describedby="phone-error"
+            >
+            <div class="contact__form-error" id="phone-error"
+                 *ngIf="submitted && f['phone'].errors" role="alert">
+              <span *ngIf="f['phone'].errors['pattern']">
+                Por favor, ingresa un teléfono válido
+              </span>
+            </div>
+          </div>
+
+          <!-- Asunto -->
+          <div class="contact__form-group">
+            <label for="subject" class="contact__form-label">
+              Asunto
+              <span class="contact__required" aria-label="requerido">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="subject"
+              formControlName="subject"
+              class="contact__form-input"
+              placeholder="¿Cuál es tu consulta?"
+              aria-describedby="subject-error"
+              required
+            >
+            <div class="contact__form-error" id="subject-error"
+                 *ngIf="submitted && f['subject'].errors" role="alert">
+              <span *ngIf="f['subject'].errors['required']">
+                El asunto es requerido
+              </span>
+              <span *ngIf="f['subject'].errors['minlength']">
+                El asunto debe tener al menos 5 caracteres
+              </span>
+            </div>
+          </div>
+
+          <!-- Mensaje -->
+          <div class="contact__form-group">
+            <label for="message" class="contact__form-label">
+              Mensaje
+              <span class="contact__required" aria-label="requerido">*</span>
+            </label>
+            <textarea 
+              id="message"
+              formControlName="message"
+              class="contact__form-textarea"
+              placeholder="Cuéntanos más detalles..."
+              rows="6"
+              aria-describedby="message-error"
+              required
+            ></textarea>
+            <div class="contact__form-error" id="message-error"
+                 *ngIf="submitted && f['message'].errors" role="alert">
+              <span *ngIf="f['message'].errors['required']">
+                El mensaje es requerido
+              </span>
+              <span *ngIf="f['message'].errors['minlength']">
+                El mensaje debe tener al menos 10 caracteres
+              </span>
+            </div>
+          </div>
+
+          <!-- Botón de envío -->
+          <div class="contact__form-actions">
+            <button 
+              type="submit" 
+              class="contact__submit-btn"
+              [disabled]="submitted && contactForm.invalid"
+              aria-label="Enviar formulario de contacto"
+            >
+              Enviar mensaje
+            </button>
+            <p class="contact__form-note">
+              Nunca compartiremos tu información personal con terceros.
+            </p>
+          </div>
+        </form>
+      </section>
+    </article>
+  </div>
+</main>

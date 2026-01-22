@@ -1,4 +1,5 @@
 @use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/responsive' as *;
 
 .data-input-wrapper {
   display: flex;
@@ -11,12 +12,17 @@
   display: flex;
   align-items: center;
   gap: $espaciado-12;
-  padding: $espaciado-12 $espaciado-16;
+  padding: $espaciado-10 $espaciado-12;
   background-color: var(--color-secundario-primary);
   border-radius: $radius-md;
   border: none;
   transition: all $transition-normal;
-  min-height: 48px;
+  min-height: 44px;
+
+  @include md {
+    padding: $espaciado-12 $espaciado-16;
+    min-height: 48px;
+  }
 
   &:focus-within {
     box-shadow: 0 0 0 3px rgba(var(--color-primario-primary-rgb), 0.1);
@@ -41,10 +47,14 @@
   border: none;
   outline: none;
   font-family: $font-primary;
-  font-size: $font-size-md;
+  font-size: $font-size-sm;
   color: var(--color-texto_borde_cajas);
   padding: 0;
   font-weight: $font-weight-medium;
+
+  @include md {
+    font-size: $font-size-md;
+  }
 
   &::placeholder {
     color: rgba(var(--color-texto_borde_cajas-rgb), 0.5);
@@ -80,7 +90,7 @@
 }
 
 // Responsive
-@media (max-width: 768px) {
+@include max-tablet {
   .data-input-wrapper {
     gap: $espaciado-8;
   }

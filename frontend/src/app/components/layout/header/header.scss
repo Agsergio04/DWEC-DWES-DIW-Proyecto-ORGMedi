@@ -3,17 +3,24 @@
 @use '../../../../styles/01-tools/_mixins' as *;
 
 .app-header {
-  height: 72px;
-  padding: 0 $espaciado-24;
+  height: 64px;
+  padding: 0 $espaciado-12;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   background-color: var(--color-primario-primary);
-
   font-family: $font-primary;
   position: relative;
   z-index: 60;
+
+  @include tablet {
+    height: 72px;
+    padding: 0 $espaciado-24;
+  }
+
+  @include desktop {
+    padding: 0 $espaciado-32;
+  }
 }
 
 .app-header__brand {
@@ -25,9 +32,13 @@
 .app-header__logo {
   display: flex;
   align-items: center;
-  gap: $espaciado-12;
+  gap: $espaciado-8;
   text-decoration: none;
   transition: opacity $transition-normal;
+
+  @include tablet {
+    gap: $espaciado-12;
+  }
 }
 
 .app-header__logo:hover {
@@ -36,9 +47,17 @@
 
 .app-header__title {
   font-family: $font-secondary;
-  font-size: $font-size-xl;
+  font-size: $font-size-lg;
   font-weight: $font-weight-bold;
   color: var(--color-texto_borde_cajas);
+
+  @include tablet {
+    font-size: $font-size-xl;
+  }
+
+  @include desktop {
+    font-size: $font-size-2xl;
+  }
 }
 
 .app-header__controls {
@@ -456,7 +475,7 @@
 }
 
 /* ======= Responsive ======= */
-@media (max-width: #{ $breakpoint-medio }) {
+@include max-tablet {
   .app-header {
     padding: 0 $espaciado-16;
   }

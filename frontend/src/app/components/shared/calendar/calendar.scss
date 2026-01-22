@@ -1,5 +1,5 @@
-@use '../../../../styles/00-settings/_variables' as *;
-@use '../../../../styles/01-tools/_mixins' as *;
+@use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/responsive' as *;
 
 // ============================================
 // CALENDAR COMPONENT STYLES - HORIZONTAL
@@ -246,7 +246,7 @@
 // RESPONSIVE DESIGN
 // ============================================
 
-@media (max-width: $breakpoint-medio) {
+@include max-tablet {
   .calendar__week-container {
     padding: $espaciado-16;
     gap: $espaciado-8;
@@ -275,7 +275,7 @@
   }
 }
 
-@media (max-width: $breakpoint-pequeño) {
+@include max-mobile {
   .calendar {
     padding: $espaciado-16;
   }

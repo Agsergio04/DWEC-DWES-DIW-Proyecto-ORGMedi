@@ -1,48 +1,113 @@
+@use '../../../styles/00-settings/variables' as *;
+@use '../../../styles/01-tools/responsive' as *;
+
 .demo-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
+  /* Mobile: Compact padding */
+  padding: $espaciado-24 $espaciado-16;
   background: linear-gradient(135deg, var(--color-primario-disabled) 0%, var(--color-fondo-primario) 100%);
   min-height: 100vh;
+
+  @include md {
+    padding: $espaciado-32 $espaciado-24;
+  }
+
+  @include lg {
+    padding: $espaciado-40 $espaciado-32;
+  }
 }
 
 .demo-header {
   text-align: center;
-  margin-bottom: 50px;
-  padding-bottom: 30px;
+  /* Mobile: Compact spacing */
+  margin-bottom: $espaciado-32;
+  padding-bottom: $espaciado-24;
   border-bottom: 3px solid var(--color-secundario-primary);
 
+  @include md {
+    margin-bottom: $espaciado-48;
+    padding-bottom: $espaciado-32;
+  }
+
+  @include lg {
+    margin-bottom: $espaciado-64;
+    padding-bottom: $espaciado-40;
+  }
+
   h1 {
-    font-size: 2.5rem;
+    /* Mobile: Smaller title */
+    font-size: $font-size-2xl;
     color: var(--color-texto_borde_cajas);
-    margin: 0 0 10px 0;
-    font-weight: 700;
+    margin: 0 0 $espaciado-12 0;
+    font-weight: $font-weight-bold;
+    line-height: $line-height-tight;
+
+    @include md {
+      font-size: $font-size-3xl;
+      margin-bottom: $espaciado-16;
+    }
+
+    @include lg {
+      font-size: 2.5rem;
+      margin-bottom: $espaciado-20;
+    }
   }
 
   p {
-    font-size: 1.1rem;
+    /* Mobile: Small text */
+    font-size: $font-size-md;
     color: var(--color-texto_borde_cajas);
     margin: 0;
+
+    @include md {
+      font-size: $font-size-lg;
+    }
+
+    @include lg {
+      font-size: 1.1rem;
+    }
   }
 }
 
 .demo-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-  gap: 40px;
-  margin-bottom: 40px;
+  /* Mobile: 1 columna */
+  grid-template-columns: 1fr;
+  gap: $espaciado-24;
+  margin-bottom: $espaciado-32;
 
-  @media (max-width: 1100px) {
-    grid-template-columns: 1fr;
+  @include sm {
+    gap: $espaciado-28;
+  }
+
+  @include md {
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: $espaciado-32;
+    margin-bottom: $espaciado-40;
+  }
+
+  @include lg {
+    gap: $espaciado-40;
+    margin-bottom: $espaciado-48;
   }
 }
 
 .demo-section {
   background: white;
-  border-radius: 16px;
-  padding: 30px;
+  border-radius: $radius-xl;
+  /* Mobile: Compact padding */
+  padding: $espaciado-20;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  transition: all $transition-normal;
+
+  @include md {
+    padding: $espaciado-24;
+  }
+
+  @include lg {
+    padding: $espaciado-32;
+  }
 
   &:hover {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
@@ -133,7 +198,7 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 600px) {
+@include max-desktop-small {
   .demo-container {
     padding: 20px 10px;
   }

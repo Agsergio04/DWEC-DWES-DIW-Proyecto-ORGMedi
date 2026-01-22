@@ -1,0 +1,233 @@
+<main class="animations-demo">
+  <div class="container">
+    <header class="page-header animate-fade-in">
+      <h1 class="page-header__title">Animaciones CSS Optimizadas</h1>
+      <p class="page-header__description">
+        Demostración de animaciones, transiciones y micro-interacciones
+      </p>
+    </header>
+
+    <!-- Sección 1: Loading Spinners -->
+    <section class="demo-section animate-slide-in-up">
+      <h2 class="demo-section__title">1. Loading Spinners</h2>
+      <p class="demo-section__description">
+        Spinners de carga optimizados para performance
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo-card">
+          <h3 class="demo-card__title">Spinner Fullscreen</h3>
+          <button class="btn btn--primary" (click)="toggleSpinner()">
+            <ng-container *ngIf="showSpinner">Ocultar</ng-container>
+            <ng-container *ngIf="!showSpinner">Mostrar</ng-container>
+            Spinner
+          </button>
+        </div>
+
+        <div class="demo-card">
+          <h3 class="demo-card__title">Variantes de Tamaño</h3>
+          <div class="demo-controls">
+            <button class="btn btn--secondary" (click)="changeSpinnerVariant('small')">Small</button>
+            <button class="btn btn--secondary" (click)="changeSpinnerVariant('medium')">Medium</button>
+            <button class="btn btn--secondary" (click)="changeSpinnerVariant('large')">Large</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 2: Transiciones Hover/Focus -->
+    <section class="demo-section animate-slide-in-up">
+      <h2 class="demo-section__title">2. Transiciones Hover/Focus (5+ elementos)</h2>
+      <p class="demo-section__description">
+        Botones, tarjetas, inputs, enlaces y badges
+      </p>
+
+      <div class="demo-grid">
+        <!-- Botones -->
+        <div class="demo-card">
+          <h3 class="demo-card__title">Botones Interactivos</h3>
+          <div class="button-demo-group">
+            <button class="btn btn--primary">Primario</button>
+            <button class="btn btn--secondary">Secundario</button>
+            <button class="btn btn--ghost">Ghost</button>
+          </div>
+          <p class="demo-note">Hover: elevación + color dinámico</p>
+        </div>
+
+        <!-- Tarjetas -->
+        <div class="demo-card">
+          <h3 class="demo-card__title">Tarjetas Responsive</h3>
+          <div class="card-demo-group">
+            <div class="card-hover-demo">
+              <div class="card-hover-demo__header">Medicamento</div>
+              <div class="card-hover-demo__body">Ibuprofeno 400mg</div>
+            </div>
+          </div>
+          <p class="demo-note">Hover: elevación + sombra</p>
+        </div>
+
+        <!-- Inputs -->
+        <div class="demo-card">
+          <h3 class="demo-card__title">Inputs con Focus</h3>
+          <div class="input-demo-group">
+            <input class="input-demo" type="text" placeholder="Nombre completo" />
+            <input class="input-demo" type="email" placeholder="Email" />
+          </div>
+          <p class="demo-note">Focus: borde + sombra de color</p>
+        </div>
+
+        <!-- Enlaces -->
+        <div class="demo-card">
+          <h3 class="demo-card__title">Enlaces Elegantes</h3>
+          <div class="link-demo-group">
+            <a href="#" class="link-demo">Ir a medicamentos</a>
+            <a href="#" class="link-demo">Ver perfil</a>
+            <a href="#" class="link-demo">Contactar soporte</a>
+          </div>
+          <p class="demo-note">Hover: color + subrayado suave</p>
+        </div>
+
+        <!-- Badges -->
+        <div class="demo-card">
+          <h3 class="demo-card__title">Badges Dinámicos</h3>
+          <div class="badge-demo-group">
+            <span class="badge badge--primary">Activo</span>
+            <span class="badge badge--secondary">Importante</span>
+            <span class="badge badge--success">Completado</span>
+            <span class="badge badge--warning">Pendiente</span>
+          </div>
+          <p class="demo-note">Hover: brillo dinámico + escala</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 3: Micro-Interacciones -->
+    <section class="demo-section animate-slide-in-up">
+      <h2 class="demo-section__title">3. Micro-Interacciones (Bounce, Fade, Slide)</h2>
+      <p class="demo-section__description">
+        Animaciones entrantes y efectos especiales
+      </p>
+
+      <div class="demo-grid">
+        <!-- Fade In / Slide -->
+        <div class="demo-card">
+          <h3 class="demo-card__title">Apariciones Suaves</h3>
+          <button class="btn btn--primary btn--sm" (click)="triggerAllAnimations()">
+            Animar Todos
+          </button>
+          <div class="animation-demo-grid">
+            <div
+              *ngFor="let item of animatedItems"
+              class="animation-item"
+              [class]="item.visible ? item.class : ''"
+              (click)="triggerAnimation(item)"
+            >
+              <span class="animation-item__label">{{ item.label }}</span>
+            </div>
+          </div>
+          <p class="demo-note">Haz clic para activar animaciones</p>
+        </div>
+
+        <!-- Bounce -->
+        <div class="demo-card">
+          <h3 class="demo-card__title">Bounce (Rebote)</h3>
+          <button class="btn btn--primary btn--sm" (click)="triggerBounce()">
+            Activar
+          </button>
+          <div id="bounce-demo" class="bounce-demo">Rebotar</div>
+          <p class="demo-note">Efecto elástico suave</p>
+        </div>
+
+        <!-- Shake -->
+        <div class="demo-card">
+          <h3 class="demo-card__title">Shake (Sacudida)</h3>
+          <button class="btn btn--danger btn--sm" (click)="triggerShake()">
+            Activar
+          </button>
+          <div id="shake-demo" class="shake-demo">Error</div>
+          <p class="demo-note">Efecto de rechazo/error</p>
+        </div>
+
+        <!-- Pulse -->
+        <div class="demo-card">
+          <h3 class="demo-card__title">Pulse (Pulsación)</h3>
+          <div class="pulse-demo">
+            <div class="pulse-circle"></div>
+          </div>
+          <p class="demo-note">Pulsación infinita suave</p>
+        </div>
+
+        <!-- Feedback -->
+        <div class="demo-card">
+          <h3 class="demo-card__title">Feedback Visual</h3>
+          <div class="feedback-demo-group">
+            <button class="btn btn--success btn--sm" (click)="showFeedback('success')">Éxito</button>
+            <button class="btn btn--danger btn--sm" (click)="showFeedback('error')">Error</button>
+            <button class="btn btn--warning btn--sm" (click)="showFeedback('warning')">Advertencia</button>
+          </div>
+          <div *ngIf="feedbackState" [class]="getFeedbackClass()">
+            <span *ngIf="feedbackState === 'success'">Operación exitosa</span>
+            <span *ngIf="feedbackState === 'error'">Ha ocurrido un error</span>
+            <span *ngIf="feedbackState === 'warning'">Por favor verifica</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 4: Performance & Accesibilidad -->
+    <section class="demo-section animate-slide-in-up">
+      <h2 class="demo-section__title">4. Performance & Accesibilidad</h2>
+      <p class="demo-section__description">
+        Optimizaciones implementadas en todas las animaciones
+      </p>
+
+      <div class="performance-info">
+        <div class="info-grid">
+          <div class="info-card">
+            <h3 class="info-card__title">GPU Acceleration</h3>
+            <ul class="info-list">
+              <li>Transform y opacity</li>
+              <li>Sin repaint/reflow</li>
+              <li>Will-change hints</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h3 class="info-card__title">Duraciones</h3>
+            <ul class="info-list">
+              <li>Fast: 150ms</li>
+              <li>Normal: 300ms</li>
+              <li>Slow: 500ms</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h3 class="info-card__title">Accesibilidad</h3>
+            <ul class="info-list">
+              <li>Prefers-reduced-motion</li>
+              <li>Focus states claros</li>
+              <li>ARIA roles</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h3 class="info-card__title">Responsive</h3>
+            <ul class="info-list">
+              <li>Mobile optimizado</li>
+              <li>Sin lag en devices</li>
+              <li>3G adaptable</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Spinner Fullscreen -->
+<app-loading-spinner
+  [isVisible]="showSpinner"
+  [size]="spinnerVariant"
+  [message]="spinnerMessage"
+  [fullScreen]="true"
+></app-loading-spinner>

@@ -149,11 +149,20 @@ $line-height-tight: 1.1;
 $line-height-normal: 1.5;
 $line-height-relaxed: 1.75;
 
-/* Breakpoints Genericos */
-$breakpoint-pequeño: 640px;
-$breakpoint-medio: 768px;
-$breakpoint-grande: 1024px;
-$breakpoint-extra_grande: 1280px;
+/* Breakpoints Genericos - ESTRATEGIA MOBILE-FIRST */
+/* Los breakpoints están diseñados para expandir desde mobile */
+$breakpoint-pequeño: 640px;      // Small phones to tablets
+$breakpoint-medio: 768px;         // Tablets
+$breakpoint-grande: 1024px;       // Small laptops
+$breakpoint-extra_grande: 1280px; // Large desktops
+
+/* Aliases para claridad en uso mobile-first */
+$mobile: 320px;     // Mínimo viewport
+$tablet-small: 640px;
+$tablet: 768px;
+$desktop-small: 1024px;
+$desktop: 1280px;
+$desktop-large: 1440px;
 
 /* Bordes y radios */
 $border-thin: 1px;

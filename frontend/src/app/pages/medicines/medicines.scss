@@ -1,19 +1,26 @@
 @use '../../../styles/00-settings/variables' as *;
+@use '../../../styles/01-tools/responsive' as *;
 
 .page--medicines {
-  padding: $espaciado-48 $espaciado-32;
+  /* Mobile: Compact padding */
+  padding: $espaciado-24 $espaciado-16;
   min-height: calc(100vh - 72px);
   background: linear-gradient(180deg, rgba(217, 123, 191, 0.1) 0%, rgba(217, 123, 191, 0.05) 100%);
-}
 
-/* Hacer que las líneas del fieldset se fusionen con el fondo (bordes transparentes)
-   Esto permite que, sobre fondos gradient/imagen, el fieldset no destaque con un color fijo. */
-.page--medicines fieldset {
-  border: 1px solid transparent;
-  /* Evita que el fondo del fieldset se recorte por el borde en navegadores que usan background-clip */
-  background-clip: padding-box;
-}
+  @include md {
+    padding: $espaciado-32 $espaciado-24;
+  }
 
+  @include lg {
+    padding: $espaciado-48 $espaciado-32;
+  }
+
+  /* Hacer que las líneas del fieldset se fusionen con el fondo */
+  fieldset {
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+}
 
 .page__container {
   max-width: 600px;
@@ -21,61 +28,315 @@
   width: 100%;
 }
 
-// ===== TÍTULO Y DESCRIPCIÓN =====
+/* Título y descripción */
 .medicines__title-section {
   text-align: center;
-  margin-bottom: $espaciado-48;
+  /* Mobile: Compact margin */
+  margin-bottom: $espaciado-16;
+
+  @include md {
+    margin-bottom: $espaciado-24;
+  }
+
+  @include lg {
+    margin-bottom: $espaciado-32;
+  }
 }
 
 .page--medicines h1 {
   font-family: $font-secondary;
-  font-size: $font-size-3xl;
+  /* Mobile: Smaller title */
+  font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
   color: var(--color-texto_borde_cajas);
-  margin: 0 0 $espaciado-8 0;
+  /* Mobile: Compact margins */
+  margin: 0 0 $espaciado-4 0;
+
+  @include md {
+    font-size: $font-size-3xl;
+    margin-bottom: $espaciado-8;
+  }
+
+  @include lg {
+    font-size: $font-size-4xl;
+    margin-bottom: $espaciado-12;
+  }
 }
 
 .medicines__description {
-  font-size: $font-size-md;
+  /* Mobile: Small font */
+  font-size: $font-size-sm;
   color: rgba(var(--color-texto_borde_cajas-rgb), 0.7);
   margin: 0;
   line-height: 1.5;
+
+  @include md {
+    font-size: $font-size-md;
+  }
+
+  @include lg {
+    font-size: $font-size-lg;
+  }
 }
 
-// ===== LISTA DE MEDICAMENTOS =====
+/* Lista de medicamentos */
 .medicines__list {
   display: flex;
   flex-direction: column;
-  gap: $espaciado-24;
-  margin-bottom: $espaciado-48;
+  /* Mobile: Small gap */
+  gap: $espaciado-12;
+  /* Mobile: Compact margin */
+  margin-bottom: $espaciado-16;
+
+  @include md {
+    gap: $espaciado-16;
+    margin-bottom: $espaciado-24;
+  }
+
+  @include lg {
+    gap: $espaciado-24;
+    margin-bottom: $espaciado-48;
+  }
 }
 
-// ===== MENSAJE VACÍO =====
+/* Mensaje vacío */
 .medicines__empty-message {
   text-align: center;
-  font-size: $font-size-lg;
+  /* Mobile: Small font */
+  font-size: $font-size-sm;
   color: rgba(var(--color-texto_borde_cajas-rgb), 0.6);
-  padding: $espaciado-32 $espaciado-20;
-  margin-bottom: $espaciado-48;
+  /* Mobile: Compact padding */
+  padding: $espaciado-16;
+  margin-bottom: $espaciado-16;
+
+  @include md {
+    font-size: $font-size-md;
+    padding: $espaciado-24 $espaciado-20;
+    margin-bottom: $espaciado-24;
+  }
+
+  @include lg {
+    font-size: $font-size-lg;
+    padding: $espaciado-32 $espaciado-20;
+    margin-bottom: $espaciado-48;
+  }
 }
 
-// ===== BOTONES DE ACCIÓN =====
+/* Botones de acción */
 .medicines__actions {
   display: flex;
+  /* Mobile: Stacked layout */
   flex-direction: column;
-  gap: $espaciado-16;
+  /* Mobile: Small gap */
+  gap: $espaciado-12;
+
+  @include md {
+    flex-direction: row;
+    gap: $espaciado-16;
+  }
+
+  @include lg {
+    gap: $espaciado-20;
+  }
 }
 
 .medicines__action-btn {
-  width: 100%;
-  padding: $espaciado-16 $espaciado-24;
+  flex: 1;
+  /* Mobile: Compact padding */
+  padding: $espaciado-12 $espaciado-16;
   border: none;
   border-radius: $radius-md;
   cursor: pointer;
   font-weight: $font-weight-semibold;
-  font-size: $font-size-md;
+  /* Mobile: Small font */
+  font-size: $font-size-sm;
   transition: background $transition-normal, transform $transition-normal;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $espaciado-8;
+
+  @include md {
+    padding: $espaciado-12 $espaciado-20;
+    font-size: $font-size-md;
+    gap: $espaciado-12;
+  }
+
+  @include lg {
+    padding: $espaciado-16 $espaciado-24;
+    font-size: $font-size-lg;
+    gap: $espaciado-16;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &--primary {
+    background: var(--color-primario-primary);
+    color: white;
+
+    &:hover {
+      background: var(--color-primario-secondary);
+    }
+  }
+
+  &--secondary {
+    background: var(--color-bordes_marco_botones);
+    color: white;
+
+    &:hover {
+      background: rgba(var(--color-bordes_marco_botones-rgb), 0.8);
+    }
+  }
+}
+
+/* Controlador de visualización */
+.medicines__view-control {
+  display: flex;
+  /* Mobile: Small gap */
+  gap: $espaciado-8;
+  margin-bottom: $espaciado-16;
+  justify-content: center;
+
+  @include md {
+    gap: $espaciado-12;
+    margin-bottom: $espaciado-24;
+  }
+
+  @include lg {
+    gap: $espaciado-16;
+  }
+}
+
+.medicines__view-btn {
+  background: none;
+  border: 1px solid var(--color-bordes_marco_botones);
+  border-radius: $radius-sm;
+  cursor: pointer;
+  /* Mobile: Compact padding */
+  padding: $espaciado-8;
+  color: var(--color-bordes_marco_botones);
+  transition: all $transition-normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include md {
+    padding: $espaciado-12;
+  }
+
+  &.active {
+    background: var(--color-primario-primary);
+    color: white;
+    border-color: var(--color-primario-primary);
+  }
+
+  &:hover:not(.active) {
+    background: rgba(var(--color-primario-primary), 0.1);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+
+    @include md {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+/* Paginación */
+.medicines__pagination {
+  display: flex;
+  /* Mobile: Stacked */
+  flex-direction: column;
+  align-items: center;
+  /* Mobile: Small gap */
+  gap: $espaciado-12;
+  margin-top: $espaciado-24;
+  padding-top: $espaciado-24;
+  border-top: 1px solid rgba(var(--color-texto_borde_cajas-rgb), 0.1);
+
+  @include md {
+    flex-direction: row;
+    gap: $espaciado-16;
+    margin-top: $espaciado-32;
+    padding-top: $espaciado-32;
+  }
+
+  @include lg {
+    gap: $espaciado-24;
+    margin-top: $espaciado-48;
+    padding-top: $espaciado-48;
+  }
+}
+
+.medicines__pagination-info {
+  /* Mobile: Small font */
+  font-size: $font-size-xs;
+  color: rgba(var(--color-texto_borde_cajas-rgb), 0.6);
+
+  @include md {
+    font-size: $font-size-sm;
+  }
+
+  @include lg {
+    font-size: $font-size-md;
+  }
+}
+
+.medicines__pagination-controls {
+  display: flex;
+  /* Mobile: Small gap */
+  gap: $espaciado-8;
+
+  @include md {
+    gap: $espaciado-12;
+  }
+
+  @include lg {
+    gap: $espaciado-16;
+  }
+}
+
+.medicines__pagination-btn {
+  background: var(--color-primario-primary);
+  color: white;
+  border: none;
+  border-radius: $radius-sm;
+  /* Mobile: Compact padding */
+  padding: $espaciado-8 $espaciado-12;
+  cursor: pointer;
+  font-weight: $font-weight-medium;
+  /* Mobile: Small font */
+  font-size: $font-size-sm;
+  transition: all $transition-normal;
+
+  @include md {
+    padding: $espaciado-10 $espaciado-16;
+    font-size: $font-size-md;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--color-primario-secondary);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* Dark mode */
+:root[data-theme='dark'] .page--medicines {
+  background: linear-gradient(180deg, rgba(217, 123, 191, 0.05) 0%, rgba(217, 123, 191, 0.02) 100%);
+}
+
+.medicines__btn-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -259,7 +520,7 @@
 }
 
 // ===== RESPONSIVE =====
-@media (max-width: 768px) {
+@include max-tablet {
   .page--medicines {
     padding: $espaciado-32 $espaciado-16;
   }
@@ -274,7 +535,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@include max-mobile {
   .page--medicines {
     padding: $espaciado-24 $espaciado-12;
   }
@@ -335,7 +596,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include max-tablet {
   .page--medicines {
     padding: $espaciado-32 $espaciado-16;
   }

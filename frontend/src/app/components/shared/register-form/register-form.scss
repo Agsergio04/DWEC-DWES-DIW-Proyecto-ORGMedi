@@ -1,13 +1,22 @@
 @use 'sass:color';
 @use '../../../../styles/00-settings/_variables' as *;
 @use '../../../../styles/01-tools/_mixins' as *;
+@use '../../../../styles/01-tools/responsive' as *;
 
 .register-form {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: $espaciado-20;
+  gap: $espaciado-16;
   position: relative;
+
+  @include md {
+    gap: $espaciado-20;
+  }
+
+  @include lg {
+    gap: $espaciado-24;
+  }
 }
 
 .register-form__fieldset {
@@ -16,7 +25,15 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: $espaciado-24;
+  gap: $espaciado-20;
+
+  @include md {
+    gap: $espaciado-24;
+  }
+
+  @include lg {
+    gap: $espaciado-28;
+  }
 }
 
 .register-form__legend {
@@ -31,17 +48,33 @@
 
 .register-form__label {
   font-family: $font-primary;
-  font-size: $font-size-md;
+  font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   color: var(--color-texto_borde_cajas);
   margin-bottom: $espaciado-4;
   line-height: 1.5;
+
+  @include md {
+    font-size: $font-size-md;
+  }
+
+  @include lg {
+    font-size: $font-size-md;
+  }
 }
 
 .form-error {
-  font-size: $font-size-sm;
+  font-size: $font-size-xs;
   color: var(--color-negacion-primary);
   margin-top: $espaciado-8;
+
+  @include md {
+    font-size: $font-size-sm;
+  }
+
+  @include lg {
+    font-size: $font-size-sm;
+  }
 }
 
 .form-error ul {

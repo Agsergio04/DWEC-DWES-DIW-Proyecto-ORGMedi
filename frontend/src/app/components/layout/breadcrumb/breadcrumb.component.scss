@@ -1,3 +1,6 @@
+@use '../../../../styles/00-settings/_variables' as *;
+@use '../../../../styles/01-tools/responsive' as *;
+
 .breadcrumb-container {
   padding: 0.75rem 1rem;
   background-color: var(--bg-light, #f5f5f5);
@@ -74,7 +77,7 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@include max-tablet {
   .breadcrumb {
     font-size: 0.8rem;
     gap: 0.125rem;

@@ -1,11 +1,25 @@
 @use '../../../styles/00-settings/variables' as *;
+@use '../../../styles/01-tools/responsive' as *;
 
 .login-page {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	min-height: calc(100vh - 100px);
-	padding: $espaciado-32 $espaciado-20;
+	/* Mobile: Compact padding */
+	padding: $espaciado-16 $espaciado-12;
+
+	@include sm {
+		padding: $espaciado-20 $espaciado-16;
+	}
+
+	@include md {
+		padding: $espaciado-32 $espaciado-20;
+	}
+
+	@include lg {
+		padding: $espaciado-48 $espaciado-32;
+	}
 }
 
 .login-page__container {
@@ -18,20 +32,42 @@
 
 .login-page__title {
 	font-family: $font-secondary;
-	font-size: 2.5rem;
+	/* Mobile: Smaller title */
+	font-size: 1.75rem;
 	font-weight: $font-weight-bold;
 	color: var(--color-texto_borde_cajas);
 	text-align: center;
 	margin: 0 0 $espaciado-12 0;
+
+	@include md {
+		font-size: $font-size-2xl;
+		margin-bottom: $espaciado-16;
+	}
+
+	@include lg {
+		font-size: $font-size-3xl;
+		margin-bottom: $espaciado-20;
+	}
+	@include md {
+		font-size: 2rem;
+	}
+
+	@include md {
+		font-size: 2.5rem;
+	}
 }
 
 .login-page__description {
 	font-family: $font-primary;
-	font-size: $font-size-md;
+	font-size: $font-size-sm;
 	color: var(--color-texto_borde_cajas);
 	text-align: center;
 	margin: 0 0 $espaciado-24 0;
 	line-height: 1.6;
+
+	@include md {
+		font-size: $font-size-md;
+	}
 }
 
 /* Dark theme */

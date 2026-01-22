@@ -1,23 +1,44 @@
 @use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/responsive' as *;
 
 // Estilos BEM para footer
 .app-footer {
   width: 100%;
-  padding: $espaciado-48 $espaciado-24;
+  padding: $espaciado-24 $espaciado-16;
   background: var(--color-primario-primary);
   color: var(--color-texto_borde_cajas);
   font-family: $font-primary;
   margin-top: auto;
+
+  @include md {
+    padding: $espaciado-32 $espaciado-24;
+  }
+
+  @include lg {
+    padding: $espaciado-48 $espaciado-24;
+  }
 }
 
 .app-footer__content {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  column-gap: $espaciado-48;
-  row-gap: $espaciado-24;
+  grid-template-columns: 1fr;
+  column-gap: $espaciado-24;
+  row-gap: $espaciado-20;
   align-items: start;
+
+  @include md {
+    grid-template-columns: 1fr 1fr;
+    column-gap: $espaciado-32;
+    row-gap: $espaciado-24;
+  }
+
+  @include lg {
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: $espaciado-48;
+    row-gap: $espaciado-24;
+  }
 }
 
 // Todas las columnas son flex column por defecto

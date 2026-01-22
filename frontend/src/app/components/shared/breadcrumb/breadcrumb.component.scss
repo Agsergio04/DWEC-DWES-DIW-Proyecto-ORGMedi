@@ -1,3 +1,6 @@
+@use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/responsive' as *;
+
 .breadcrumb-nav {
   margin: 0 0 1.5rem 0;
   padding: 0.75rem 0;
@@ -64,7 +67,7 @@
 }
 
 // Responsive
-@media (max-width: 640px) {
+@include max-mobile {
   .breadcrumb-nav {
     margin: 0 0 1rem 0;
     padding: 0.5rem 0;

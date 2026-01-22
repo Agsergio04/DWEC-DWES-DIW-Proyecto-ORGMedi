@@ -1,23 +1,52 @@
-@use '../../../../styles/00-settings/_variables' as *;
+@use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/responsive' as *;
 
-/* Actualizar estilos para que el textarea tenga el mismo fondo/estilo que los inputs */
+/* Estilos responsive para textarea */
 .form-textarea__label {
-  display:block; font-family:$font-primary; margin-bottom:$espaciado-8;
-  color:var(--color-texto_borde_cajas);
+  display: block;
+  font-family: $font-primary;
+  /* Mobile: Compact margin */
+  margin-bottom: $espaciado-8;
+  color: var(--color-texto_borde_cajas);
+  /* Mobile: Small font */
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+
+  @include md {
+    font-size: $font-size-md;
+  }
 }
+
 .form-textarea__field {
-  width:100%; min-height:120px;
-  padding:$espaciado-12 $espaciado-16;
-  border:$border-thin solid var(--color-bordes_marco_botones);
-  border-radius:$radius-md;
-  font-family:$font-primary;
-  /* Background igual que el input principal */
+  width: 100%;
+  /* Mobile: Smaller height */
+  min-height: 100px;
+  /* Mobile: Compact padding */
+  padding: $espaciado-10 $espaciado-12;
+  border: $border-thin solid var(--color-bordes_marco_botones);
+  border-radius: $radius-md;
+  font-family: $font-primary;
+  /* Mobile: Small font */
+  font-size: $font-size-sm;
   background: var(--color-secundario-primary);
   color: var(--color-texto_borde_cajas);
   transition: border-color 0.2s, box-shadow 0.2s;
-}
-.form-textarea__field:focus {
-  outline:none;
-  box-shadow:0 0 0 3px rgba(0,0,0,0.06);
-  border-color: var(--color-secundario-primary);
+  resize: vertical;
+
+  @include md {
+    min-height: 120px;
+    padding: $espaciado-12 $espaciado-16;
+    font-size: $font-size-md;
+  }
+
+  @include lg {
+    min-height: 140px;
+    padding: $espaciado-12 $espaciado-20;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--color-secundario-primary), 0.1);
+    border-color: var(--color-secundario-primary);
+  }
 }

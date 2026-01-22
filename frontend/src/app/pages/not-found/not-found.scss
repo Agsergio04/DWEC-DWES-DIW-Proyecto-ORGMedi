@@ -1,10 +1,23 @@
+﻿@use '../../../styles/00-settings/variables' as *;
+@use '../../../styles/01-tools/responsive' as *;
+
 .not-found-container {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 60vh;
-  padding: 2rem;
+  /* Mobile: Compact padding */
+  padding: $espaciado-16;
   background: linear-gradient(135deg, rgba(217, 123, 191, 0.1) 0%, rgba(181, 225, 119, 0.1) 100%);
+
+  @include md {
+    min-height: 70vh;
+    padding: $espaciado-24;
+  }
+
+  @include lg {
+    padding: $espaciado-32;
+  }
 }
 
 .not-found-content {
@@ -14,42 +27,85 @@
 }
 
 .error-code {
-  font-size: 8rem;
-  font-weight: 700;
+  /* Mobile: Smaller code */
+  font-size: 3rem;
+  font-weight: $font-weight-bold;
   color: var(--color-primario-primary);
   margin: 0;
   line-height: 1;
   opacity: 0.8;
   text-shadow: 0 4px 20px rgba(225, 119, 181, 0.2);
+
+  @include md {
+    font-size: 5rem;
+  }
+
+  @include lg {
+    font-size: 8rem;
+  }
 }
 
 .error-title {
-  font-size: 2rem;
-  margin: 1rem 0;
+  /* Mobile: Smaller title */
+  font-size: $font-size-xl;
+  margin: $espaciado-16 0;
   color: var(--color-texto_borde_cajas);
-  font-weight: 600;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+
+  @include md {
+    font-size: $font-size-2xl;
+    margin: $espaciado-20 0;
+  }
+
+  @include lg {
+    font-size: 2rem;
+    margin: $espaciado-24 0;
+  }
 }
 
 .error-description {
-  font-size: 1.1rem;
+  /* Mobile: Small description */
+  font-size: $font-size-sm;
   color: rgba(var(--color-texto_borde_cajas-rgb), 0.7);
-  margin: 1.5rem 0;
-  line-height: 1.6;
+  margin: $espaciado-16 0;
+  line-height: $line-height-relaxed;
+
+  @include md {
+    font-size: $font-size-md;
+    margin: $espaciado-20 0;
+  }
+
+  @include lg {
+    font-size: 1.1rem;
+    margin: $espaciado-24 0;
+  }
 }
 
 .btn-home {
   display: inline-block;
-  padding: 0.875rem 2.5rem;
+  /* Mobile: Smaller button */
+  padding: $espaciado-12 $espaciado-24;
   background-color: var(--color-secundario-primary);
   color: var(--color-texto_borde_cajas);
   text-decoration: none;
-  border-radius: 12px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  margin-top: 1.5rem;
+  border-radius: $radius-lg;
+  font-weight: $font-weight-bold;
+  transition: all $transition-normal;
+  margin-top: $espaciado-24;
   border: 2px solid var(--color-secundario-primary);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: $font-size-md;
+
+  @include md {
+    padding: $espaciado-16 $espaciado-32;
+    font-size: $font-size-lg;
+    margin-top: $espaciado-32;
+  }
+
+  @include lg {
+    padding: $espaciado-16 $espaciado-40;
+  }
 
   &:hover {
     background-color: var(--color-secundario-hover);
@@ -75,7 +131,8 @@
   }
 }
 
-@media (max-width: 600px) {
+// ===== RESPONSIVE =====
+@include max-desktop-small {
   .not-found-container {
     min-height: 70vh;
     padding: 1.5rem;

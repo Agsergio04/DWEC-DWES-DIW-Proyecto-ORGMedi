@@ -1,3 +1,6 @@
+@use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/responsive' as *;
+
 .selector-container {
   position: relative;
   width: 100%;
@@ -7,17 +10,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 10px 12px;
   background-color: var(--color-secundario-primary);
   border: 2px solid var(--color-secundario-hover);
   border-radius: 12px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--color-texto_borde_cajas);
   transition: all 0.3s ease;
   outline: none;
-  min-height: 48px;
+  min-height: 40px;
+
+  @include md {
+    padding: 12px 16px;
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  @include lg {
+    min-height: 48px;
+  }
 
   &:hover:not(.disabled) {
     background-color: var(--color-secundario-hover);

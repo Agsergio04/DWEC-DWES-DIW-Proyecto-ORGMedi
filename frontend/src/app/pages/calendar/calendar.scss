@@ -1,9 +1,19 @@
 @use '../../../styles/00-settings/variables' as *;
+@use '../../../styles/01-tools/responsive' as *;
 
 .page--calendar {
-  padding: $espaciado-48 $espaciado-32;
+  /* Mobile: Compact padding */
+  padding: $espaciado-24 $espaciado-16;
   min-height: 100vh;
   background: linear-gradient(180deg, rgba(217, 123, 191, 0.1) 0%, rgba(217, 123, 191, 0.05) 100%);
+
+  @include md {
+    padding: $espaciado-32 $espaciado-24;
+  }
+
+  @include lg {
+    padding: $espaciado-48 $espaciado-32;
+  }
 }
 
 .page__container {
@@ -14,15 +24,23 @@
 
 .calendar__title-section {
   text-align: center;
-  margin-bottom: $espaciado-24;
+  margin-bottom: $espaciado-16;
+
+  @include md {
+    margin-bottom: $espaciado-24;
+  }
 }
 
 .page--calendar h1 {
   font-family: $font-secondary;
-  font-size: $font-size-3xl;
+  font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
   color: var(--color-texto_borde_cajas);
   margin: 0 0 $espaciado-8 0;
+
+  @include md {
+    font-size: $font-size-3xl;
+  }
 }
 
 .calendar__description {
@@ -71,12 +89,17 @@
 }
 
 .calendar__weekday {
-  width: 48px;
+  width: 40px;
   text-align: center;
   font-weight: $font-weight-bold;
   color: var(--color-texto_borde_cajas);
-  font-size: $font-size-sm;
+  font-size: $font-size-xs;
   padding: 0;
+
+  @include md {
+    width: 48px;
+    font-size: $font-size-sm;
+  }
 }
 
 .calendar__week-buttons {
@@ -127,7 +150,7 @@
   gap: $espaciado-16;
 }
 
-@media (max-width: 768px) {
+@include max-tablet {
   .page--calendar {
     padding: $espaciado-32 $espaciado-16;
   }

@@ -1,4 +1,5 @@
 @use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/responsive' as *;
 
 .modal {
   position: fixed;
@@ -35,45 +36,83 @@
   background: white;
   border-radius: $radius-lg;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 500px;
-  width: 90%;
+  /* Mobile: Full width minus margins */
+  max-width: 90%;
+  width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   z-index: 1001;
   animation: slideUp $transition-normal;
   display: flex;
   flex-direction: column;
+
+  @include md {
+    max-width: 550px;
+    width: 90%;
+  }
+
+  @include lg {
+    max-width: 600px;
+    width: 85%;
+  }
 }
 
 .modal__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $espaciado-24;
+  /* Mobile: Compact padding */
+  padding: $espaciado-12 $espaciado-16;
   border-bottom: $border-thin solid var(--color-bordes_marco_botones);
+
+  @include md {
+    padding: $espaciado-16 $espaciado-20;
+  }
+
+  @include lg {
+    padding: $espaciado-20 $espaciado-24;
+  }
 }
 
 .modal__title {
   font-family: $font-secondary;
-  font-size: $font-size-xl;
+  /* Mobile: Smaller title */
+  font-size: $font-size-md;
   font-weight: $font-weight-bold;
   color: var(--color-texto_borde_cajas);
   margin: 0;
+
+  @include md {
+    font-size: $font-size-lg;
+  }
+
+  @include lg {
+    font-size: $font-size-xl;
+  }
 }
 
 .modal__close {
   background: none;
   border: none;
-  font-size: $font-size-lg;
+  /* Mobile: Smaller icon */
+  font-size: $font-size-md;
   cursor: pointer;
   color: rgba(var(--color-texto_borde_cajas-rgb), 0.6);
   transition: color $transition-normal;
   padding: $espaciado-4;
-  width: 32px;
-  height: 32px;
+  /* Mobile: Smaller button */
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+
+  @include md {
+    font-size: $font-size-lg;
+    width: 32px;
+    height: 32px;
+  }
 
   &:hover {
     color: var(--color-texto_borde_cajas);
@@ -86,16 +125,40 @@
 }
 
 .modal__body {
-  padding: $espaciado-24;
+  /* Mobile: Compact padding */
+  padding: $espaciado-12 $espaciado-16;
   flex: 1;
+
+  @include md {
+    padding: $espaciado-16 $espaciado-20;
+  }
+
+  @include lg {
+    padding: $espaciado-20 $espaciado-24;
+  }
 }
 
 .modal__footer {
-  padding: $espaciado-24;
+  /* Mobile: Compact padding */
+  padding: $espaciado-12 $espaciado-16;
   border-top: $border-thin solid var(--color-bordes_marco_botones);
   display: flex;
-  gap: $espaciado-12;
+  /* Mobile: Stacked layout */
+  flex-direction: column;
+  /* Mobile: Small gap */
+  gap: $espaciado-8;
   justify-content: flex-end;
+
+  @include md {
+    padding: $espaciado-16 $espaciado-20;
+    flex-direction: row;
+    gap: $espaciado-10;
+  }
+
+  @include lg {
+    padding: $espaciado-20 $espaciado-24;
+    gap: $espaciado-12;
+  }
 }
 
 @keyframes fadeIn {
@@ -118,7 +181,7 @@
   }
 }
 
-// Modo oscuro
+/* Dark mode */
 [data-theme="dark"] {
   .modal__dialog {
     background: rgba(255, 255, 255, 0.05);
@@ -142,24 +205,3 @@
     }
   }
 }
-
-@media (max-width: 768px) {
-  .modal__dialog {
-    width: 95%;
-    max-height: 95vh;
-  }
-
-  .modal__header {
-    padding: $espaciado-20;
-  }
-
-  .modal__body {
-    padding: $espaciado-20;
-  }
-
-  .modal__footer {
-    padding: $espaciado-20;
-    flex-direction: column;
-  }
-}
-

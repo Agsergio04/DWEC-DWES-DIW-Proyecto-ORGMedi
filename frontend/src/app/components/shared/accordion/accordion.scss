@@ -1,5 +1,4 @@
-@use '../../../../styles/00-settings/variables' as *;
-
+@use '../../../../styles/00-settings/variables' as *;@use '../../../../styles/01-tools/responsive' as *;
 .accordion {
   border: $border-thin solid var(--color-bordes_marco_botones);
   border-radius: $radius-lg;
@@ -111,7 +110,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include max-tablet {
   .accordion__header {
     padding: $espaciado-12 $espaciado-16;
     font-size: $font-size-sm;

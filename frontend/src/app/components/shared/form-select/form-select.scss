@@ -1,18 +1,41 @@
 @use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/responsive' as *;
 
 .form-select__label {
-  display:block;
-  margin-bottom:$espaciado-8;
-  font-family:$font-primary;
+  display: block;
+  /* Mobile: Compact margin */
+  margin-bottom: $espaciado-8;
+  font-family: $font-primary;
+  /* Mobile: Small font */
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+
+  @include md {
+    font-size: $font-size-md;
+  }
 }
+
 .form-select__field {
-  width:100%;
-  padding:$espaciado-12;
-  border:$border-thin solid var(--color-bordes_marco_botones);
-  border-radius:$radius-md;
+  width: 100%;
+  /* Mobile: Compact padding */
+  padding: $espaciado-10 $espaciado-12;
+  border: $border-thin solid var(--color-bordes_marco_botones);
+  border-radius: $radius-md;
   background: var(--color-secundario-primary);
-}
-.form-select__field:focus {
-  outline:none;
-  box-shadow:0 0 0 3px rgba(0,0,0,0.06);
+  /* Mobile: Small font */
+  font-size: $font-size-sm;
+  font-family: $font-primary;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  @include md {
+    padding: $espaciado-12 $espaciado-16;
+    font-size: $font-size-md;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-secundario-primary);
+    box-shadow: 0 0 0 3px rgba(var(--color-secundario-primary), 0.1);
+  }
 }

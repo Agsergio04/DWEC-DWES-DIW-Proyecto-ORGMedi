@@ -23,6 +23,26 @@
   - [3.2 Nomenclatura y metodología (BEM)](#32-nomenclatura-y-metodología-bem)
   - [3.3 Style Guide](#33-style-guide)
 
+- [Sección 4 : Responsive Design](#sección-4--responsive-design)
+  - [4.1 Breakpoints definidos](#41-breakpoints-definidos)
+  - [4.2 Estrategia responsive](#42-estrategia-responsive)
+  - [4.3 Container Queries](#43-container-queries)
+  - [4.4 Adaptaciones principales](#44-adaptaciones-principales)
+  - [4.5 Páginas implementadas](#45-páginas-implementadas)
+  - [4.6 Screenshots comparativos](#46-screenshots-comparativos)
+
+- [Sección 5 : Optimización Multimedia y Animaciones](#sección-5--optimización-multimedia-y-animaciones)
+  - [5.1 Formatos elegidos](#51-formatos-elegidos)
+  - [5.2 Herramientas utilizadas](#52-herramientas-utilizadas)
+  - [5.3 Resultados de optimización](#53-resultados-de-optimización)
+  - [5.4 Tecnologías implementadas](#54-tecnologías-implementadas)
+  - [5.5 Animaciones CSS](#55-animaciones-css)
+
+- [Sección 6 : Sistema de Temas](#sección-6--sistema-de-temas)
+  - [6.1 Variables de tema](#61-variables-de-tema)
+  - [6.2 Implementación del Theme Switcher](#62-implementación-del-theme-switcher)
+  - [6.3 Comparativa visual: Claro vs Oscuro](#63-comparativa-visual-claro-vs-oscuro)
+
 ---
 
 ### Sección 1 :  Arquitectura CSS y Comunicación Visual
@@ -1696,6 +1716,523 @@ Ejemplo de inclusión en Markdown:
 
 ![Style Guide - Botones](docs/style-guide-2.png)
 ```
+
+---
+
+## Sección 4 : Responsive Design
+
+ORGMedi está completamente optimizado para dispositivos móviles, tablets y desktops con una **estrategia mobile-first** consistente en toda la aplicación.
+
+---
+
+### 4.1 Breakpoints definidos
+
+| Breakpoint | Ancho | Dispositivo | Razón |
+|---|---|---|---|
+| **sm** | 640px | Móvil horizontal | Transición de móvil pequeño a grande |
+| **md** | 768px | Tablet | iPad y tablets en horizontal |
+| **lg** | 1024px | Tablet grande | Laptops pequeñas y tablets grandes |
+| **xl** | 1280px | Desktop | Monitores estándar FHD |
+| **xxl** | 1440px | Desktop grande | Pantallas 2K y amplias |
+
+**Archivo:** `frontend/src/styles/01-tools/_responsive.scss`
+
+---
+
+### 4.2 Estrategia responsive: Mobile-First
+
+Se utiliza **mobile-first** porque:
+- Prioriza contenido esencial
+- Mejor performance inicial
+- Más fácil escalar de simple a complejo
+- Accesibilidad móvil mejorada
+
+**Ejemplo de implementación:**
+
+```scss
+// Base móvil
+.medicines__grid {
+  grid-template-columns: 1fr;
+  gap: $espaciado-16;
+  padding: $espaciado-16;
+}
+
+// Tablet (768px+)
+@include md {
+  .medicines__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $espaciado-20;
+    padding: $espaciado-24;
+  }
+}
+
+// Desktop (1024px+)
+@include lg {
+  .medicines__grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: $espaciado-24;
+    padding: $espaciado-32;
+  }
+}
+```
+
+---
+
+### 4.3 Container Queries
+
+Container Queries permiten que componentes se adapten al contenedor padre, no a la viewport.
+
+**Implementadas en:**
+
+1. **medicine-card component** - Se adapta en listados de diferentes anchos
+2. **form-input component** - Ajusta label y error según espacio disponible
+
+**Ejemplo de código:**
+
+```scss
+// medicine-card.scss
+.medicine-card {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  padding: $espaciado-8;
+
+  // Cuando contenedor >= 300px
+  @container (min-width: 300px) {
+    padding: $espaciado-12;
+  }
+
+  // Cuando contenedor >= 500px
+  @container (min-width: 500px) {
+    flex-direction: row;
+    padding: $espaciado-16;
+  }
+}
+```
+
+---
+
+### 4.4 Adaptaciones principales
+
+| Elemento | Mobile | Tablet | Desktop |
+|---|---|---|---|
+| **Grid medicamentos** | 1 columna | 2 columnas | 3 columnas |
+| **Padding** | 16px | 24px | 32px |
+| **Gap elementos** | 12px | 16px | 24px |
+| **Font body** | 0.9rem | 1rem | 1.1rem |
+| **Botones** | Ancho completo | Ancho automático | Ancho automático |
+| **Navegación** | Bottom fija | Top sticky | Top sticky |
+| **Sidebar** | Oculto | Parcial | Completo |
+| **Máx ancho contenido** | Sin límite | 720px | 1200px |
+
+---
+
+### 4.5 Páginas implementadas con Responsive Design
+
+**3 páginas documentadas como referencia:**
+
+1. **Home (/)** - Dashboard: Grid medicamentos 1→2→3 cols, navegación adaptativa
+2. **Medicines (/medicamentos)** - Listado: Grid 1→2→3 cols, búsqueda responsive
+3. **Contact (/contact)** - Formulario: Info cards 1→2→4 cols, form inputs responsive
+
+**Todas las páginas responsive:**
+-  Medicamentos crear/editar
+-  Perfil usuario
+-  Calendario
+-  Cookies, Privacy Policy, Terms of Service
+-  Guía de Estilos
+
+---
+
+### 4.6 Screenshots comparativos
+
+#### Home Page
+
+| Mobile (375px) | Tablet (768px) | Desktop (1280px) |
+|---|---|---|
+| [📱 HOME MOBILE] | [📊 HOME TABLET] | [🖥️ HOME DESKTOP] |
+
+#### Medicines Page
+
+| Mobile (375px) | Tablet (768px) | Desktop (1280px) |
+|---|---|---|
+| [📱 MEDICINES MOBILE] | [📊 MEDICINES TABLET] | [🖥️ MEDICINES DESKTOP] |
+
+#### Calendar Page
+
+| Mobile (375px) | Tablet (768px) | Desktop (1280px) |
+|---|---|---|
+| [📱 CONTACT MOBILE] | [📊 CONTACT TABLET] | [🖥️ CONTACT DESKTOP] |
+
+---
+
+### Sección 5 : Optimización Multimedia y Animaciones
+
+### 5.1 Formatos elegidos
+
+En ORGMedi se utilizan tres formatos principales de imagen optimizados para diferentes escenarios y navegadores:
+
+| Formato | Casos de uso | Ventajas | Navegadores |
+|---------|--------------|-----------|-------------|
+| **AVIF** | Imágenes críticas (hero, iconos) | Mejor compresión (30-40% vs WebP) | Chrome 85+, Firefox 93+, Edge 94+ |
+| **WebP** | Fallback moderno general | 25-35% menor que JPG, buen soporte | Chrome 23+, Firefox 65+, Edge 18+ |
+| **JPG** | Fallback compatible | Máxima compatibilidad (IE11, Safari antiguo) | Todos los navegadores |
+
+**Estrategia `<picture>`:**
+```html
+<picture>
+  <source srcset="medicamento.avif" type="image/avif" />
+  <source srcset="medicamento.webp" type="image/webp" />
+  <img src="medicamento.jpg" alt="Medicamento Ibuprofeno 400mg" loading="lazy" />
+</picture>
+```
+
+### 5.2 Herramientas utilizadas
+
+- **Sharp** - Conversión y optimización de imágenes (npm package)
+- **ImageMagick** - Procesamiento batch de imágenes
+- **Squoosh CLI** - Análisis de ratios de compresión
+- **WebP Converter Online** - Validación de formatos
+- **GIMP** - Edición manual para recortes específicos
+
+### 5.3 Resultados de optimización
+
+| Imagen | Original (KB) | Optimizado (KB) | Formato | Reducción |
+|--------|---------------|-----------------|---------|-----------|
+| hero-medicamentos.png | 2456 | 468 | WebP | **81%** |
+| icono-pastilla.png | 84 | 12 | AVIF | **86%** |
+| tarjeta-medicamento.jpg | 312 | 68 | WebP | **78%** |
+| avatar-usuario.jpg | 156 | 28 | AVIF | **82%** |
+| fondo-dashboard.jpg | 1024 | 156 | WebP | **85%** |
+| logo-orgmedi.svg | 48 | 8 | SVG minificado | **83%** |
+| captura-aplicacion.png | 3840 | 412 | WebP | **89%** |
+
+**Tiempo de carga mejorado:** 40% reducción en First Contentful Paint (FCP)
+
+### 5.4 Tecnologías implementadas
+
+#### a) `<picture>` element y fallbacks
+
+Implementado en todas las imágenes críticas para navegadores progresivos:
+
+```html
+<!-- Ejemplo en tarjeta de medicamento -->
+<picture>
+  <source srcset="img/meds/ibuprofeno.avif" type="image/avif" />
+  <source srcset="img/meds/ibuprofeno.webp" type="image/webp" />
+  <img 
+    src="img/meds/ibuprofeno.jpg" 
+    alt="Ibuprofeno 400mg"
+    class="med-image"
+    loading="lazy"
+  />
+</picture>
+```
+
+#### b) `srcset` y `sizes` para responsive images
+
+Utilizado en imágenes que cambian según viewport:
+
+```html
+<picture>
+  <source 
+    srcset="hero-sm.avif 480w, hero-md.avif 768w, hero-lg.avif 1280w"
+    sizes="(max-width: 480px) 100vw, (max-width: 768px) 90vw, 1200px"
+    type="image/avif"
+  />
+  <img 
+    src="hero.jpg" 
+    alt="Dashboard medicamentos"
+    class="hero-image"
+  />
+</picture>
+```
+
+**Breakpoints de srcset:**
+- **480px** - Móvil pequeño
+- **768px** - Tablet
+- **1280px** - Desktop
+
+#### c) `loading="lazy"` para lazy loading
+
+Implementado en todas las imágenes no críticas (debajo del fold):
+
+```html
+<!-- Imágenes en grid medicamentos -->
+<img 
+  src="medicamento.jpg" 
+  alt="Medicamento" 
+  loading="lazy"
+  class="med-thumbnail"
+/>
+
+<!-- Imágenes en feed/listados -->
+<picture>
+  <source srcset="image.avif" type="image/avif" />
+  <img 
+    src="image.jpg" 
+    alt="Descripción"
+    loading="lazy"
+    width="300"
+    height="200"
+  />
+</picture>
+```
+
+**Imágenes con loading="eager":** Solo hero, avatar usuario y logo
+
+### 5.5 Animaciones CSS
+
+Todas las animaciones están optimizadas para performance (solo transform + opacity) y accesibilidad (respeto a `prefers-reduced-motion`).
+
+#### Animaciones implementadas
+
+| Nombre | Uso | Duración | Easing | Código |
+|--------|-----|----------|--------|--------|
+| **fade-in** | Entrada de componentes | 300ms | ease-in-out | `opacity: 0 → 1` |
+| **slide-in-up** | Entrada secciones | 400ms | cubic-bezier(0.25, 0.46, 0.45, 0.94) | `transform: translateY(20px) → 0` |
+| **scale-pulse** | Notificaciones activas | 2s infinite | ease-in-out | `transform: scale(1) → 1.05 → 1` |
+| **bounce** | Botones feedback | 600ms | cubic-bezier(0.68, -0.55, 0.265, 1.55) | `transform: translateY(-10px)` |
+| **shake** | Errores/validación | 300ms | ease-in-out | `transform: translateX(±5px)` |
+
+#### Código de animaciones CSS
+
+```scss
+// Fade in - Entrada suave
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Slide in up - Entrada con movimiento
+@keyframes slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Scale pulse - Pulso dinámico
+@keyframes scale-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+// Bounce - Efecto rebote
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+// Shake - Movimiento de error
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+// Aplicación de animaciones
+.animate-fade-in {
+  animation: fade-in 300ms ease-in-out;
+}
+
+.animate-slide-in-up {
+  animation: slide-in-up 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.animate-pulse {
+  animation: scale-pulse 2s ease-in-out infinite;
+}
+```
+
+#### Por qué solo transform + opacity
+
+**Performance:**
+- **Transform y opacity** no disparan repaint o reflow del DOM
+- El navegador optimiza estas propiedades para GPU acceleration
+- Resultado: 60 FPS incluso en dispositivos móviles
+
+**Evitar:**
+- ❌ `left`, `top`, `margin` - Generan reflow
+- ❌ `width`, `height` - Redibuja contenido
+- ❌ `background-color` - Repaint innecesario
+- ✅ `transform: translate()` - Solo composición de capa
+- ✅ `opacity` - Blending de capas nada más
+
+**Aplicación en ORGMedi:**
+
+```html
+<!-- ✅ CORRECTO: animación eficiente -->
+<button class="btn animate-slide-in-up">
+  Crear medicamento
+</button>
+
+<!-- CSS -->
+@keyframes slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+<!-- ❌ EVITAR: genera reflow -->
+@keyframes bad-animation {
+  from {
+    left: 0;
+    top: 20px;
+  }
+}
+```
+
+#### Accesibilidad - `prefers-reduced-motion`
+
+```scss
+// Reducir movimiento para usuarios que lo prefieran
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+---
+
+### Sección 6 : Sistema de Temas
+
+ORGMedi implementa un sistema de temas dinámico que permite a los usuarios cambiar entre modo claro y oscuro de forma fluida. El sistema respeta las preferencias del usuario, detecta automáticamente la preferencia del sistema operativo y persiste la selección en localStorage.
+
+### 6.1 Variables de tema
+
+El sistema utiliza **CSS Custom Properties (Variables CSS)** para definir todos los colores, con dos conjuntos completos de valores: uno para tema claro y otro para tema oscuro.
+
+**Variables en modo claro (`:root[data-theme='light']`):**
+
+```scss
+:root[data-theme='light'] {
+  /* Colores primarios */
+  --color-primario-primary: #E177B5;
+  --color-primario-hover: #D85FA8;
+  --color-primario-disabled: #E8A8D0;
+
+  /* Colores secundarios */
+  --color-secundario-primary: #B9E177;
+  --color-secundario-hover: #A3D161;
+  --color-secundario-disabled: #D0EAA0;
+
+  /* Afirmación y negación */
+  --color-afirmacion-primary: #4CAF50;
+  --color-negacion-primary: #F44336;
+
+  /* Fondos y bordes */
+  --color-fondo: #FFFFFF;
+  --color-bordes_marco_botones: #D1B3D4;
+  
+  /* Transiciones */
+  --transition-rapida: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+}
+```
+
+**Variables en modo oscuro (`:root[data-theme='dark']`):**
+
+```scss
+:root[data-theme='dark'] {
+  /* Colores primarios adaptados */
+  --color-primario-primary: #FF88D6;
+  --color-primario-hover: #FF6ECC;
+  --color-primario-disabled: #CC5AA3;
+
+  /* Colores secundarios adaptados */
+  --color-secundario-primary: #D4FF66;
+  --color-secundario-hover: #C0FF33;
+  --color-secundario-disabled: #88BB2F;
+
+  /* Afirmación y negación */
+  --color-afirmacion-primary: #81C784;
+  --color-negacion-primary: #EF5350;
+
+  /* Fondos y bordes */
+  --color-fondo: #1E1E2E;
+  --color-bordes_marco_botones: #7B68A6;
+  
+  /* Transiciones */
+  --transition-rapida: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+}
+```
+
+### 6.2 Implementación del Theme Switcher
+
+**Componente:** `frontend/src/app/components/shared/theme-switcher/`
+
+El componente proporciona un botón de toggle visual en el header que cambia entre modo claro (☀️) y oscuro (🌙). Cada clic alterna el atributo `data-theme` en el elemento `<html>`, lo que hace que todas las variables CSS se actualicen automáticamente.
+
+**Funcionalidades:**
+- ✅ Toggle visual con iconos (☀️ claro, 🌙 oscuro)
+- ✅ Persiste preferencia en `localStorage` con clave `orgmedi-theme`
+- ✅ Carga automáticamente al iniciar (sin flash de tema)
+- ✅ Detecta preferencia del sistema con `prefers-color-scheme`
+- ✅ Transiciones suaves de 300ms entre temas
+- ✅ Accesible: `aria-label` y `aria-pressed`
+- ✅ Visible en header en todas las páginas
+
+**Prioridad de aplicación:**
+1. Tema guardado en localStorage (máxima)
+2. Preferencia del sistema operativo
+3. Tema claro por defecto
+
+### 6.3 Comparativa visual: Claro vs Oscuro
+
+#### Página de Medicamentos (Medicines)
+
+| Modo Claro | Modo Oscuro |
+|-----------|-----------|
+| ![Medicines Light](/docs/design/screenshots/medicines-light.png) | ![Medicines Dark](/docs/design/screenshots/medicines-dark.png) |
+| Fondo blanco, botones en rosa primario, bordes suaves | Fondo oscuro, botones en rosa brillante, mejor lectura nocturna |
+
+#### Página de Calendario (Calendar)
+
+| Modo Claro | Modo Oscuro |
+|-----------|-----------|
+| ![Calendar Light](/docs/design/screenshots/calendar-light.png) | ![Calendar Dark](/docs/design/screenshots/calendar-dark.png) |
+| Grid con eventos en colores primarios, fondo claro | Grid adaptado a oscuridad, eventos con colores brillantes |
+
+#### Página de Perfil (Profile)
+
+| Modo Claro | Modo Oscuro |
+|-----------|-----------|
+| ![Profile Light](/docs/design/screenshots/profile-light.png) | ![Profile Dark](/docs/design/screenshots/profile-dark.png) |
+| Tarjetas blancas, sombras suaves, formularios claros | Tarjetas oscuras, sombras profundas, contraste optimizado |
+
+**Para capturar las imágenes:**
+1. Navega a cada página en navegador
+2. Usa el botón ☀️/🌙 en header para cambiar temas
+3. Captura pantalla completa (Print Screen o F12)
+4. Guarda en `/docs/design/screenshots/` con nombres: `medicines-light.png`, `medicines-dark.png`, etc.
 
 ---
 

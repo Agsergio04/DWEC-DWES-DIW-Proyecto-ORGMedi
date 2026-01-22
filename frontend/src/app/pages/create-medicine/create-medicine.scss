@@ -1,9 +1,19 @@
 @use '../../../styles/00-settings/variables' as *;
+@use '../../../styles/01-tools/responsive' as *;
 
 .page--create-medicine {
-  padding: $espaciado-48 $espaciado-32;
+  /* Mobile: Compact padding */
+  padding: $espaciado-24 $espaciado-16;
   min-height: calc(100vh - 72px);
   background: linear-gradient(180deg, rgba(217, 123, 191, 0.1) 0%, rgba(217, 123, 191, 0.05) 100%);
+
+  @include md {
+    padding: $espaciado-32 $espaciado-24;
+  }
+
+  @include lg {
+    padding: $espaciado-48 $espaciado-32;
+  }
 }
 
 .page__container {
@@ -15,15 +25,23 @@
 // ===== ENCABEZADO =====
 .create-medicine__title-section {
   text-align: center;
-  margin-bottom: $espaciado-48;
+  margin-bottom: $espaciado-24;
+
+  @include md {
+    margin-bottom: $espaciado-48;
+  }
 }
 
 .page--create-medicine h1 {
   font-family: $font-secondary;
-  font-size: $font-size-3xl;
+  font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
   color: var(--color-texto_borde_cajas);
   margin: 0 0 $espaciado-8 0;
+
+  @include md {
+    font-size: $font-size-3xl;
+  }
 }
 
 .create-medicine__description {
@@ -31,6 +49,10 @@
   color: rgba(var(--color-texto_borde_cajas-rgb), 0.7);
   margin: 0;
   line-height: 1.5;
+
+  @include md {
+    font-size: $font-size-md;
+  }
 }
 
 // ===== FORMULARIO =====
@@ -51,7 +73,7 @@
   grid-template-columns: 1fr 1fr;
   gap: $espaciado-16;
 
-  @media (max-width: 600px) {
+  @include max-desktop-small {
     grid-template-columns: 1fr;
   }
 }
@@ -151,7 +173,7 @@
 }
 
 // ===== RESPONSIVE =====
-@media (max-width: 768px) {
+@include max-tablet {
   .page--create-medicine {
     padding: $espaciado-32 $espaciado-16;
   }
@@ -170,7 +192,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@include max-mobile {
   .page--create-medicine {
     padding: $espaciado-24 $espaciado-12;
   }

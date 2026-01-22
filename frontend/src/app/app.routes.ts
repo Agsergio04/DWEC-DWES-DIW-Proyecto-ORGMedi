@@ -181,6 +181,61 @@ export const UTILITY_ROUTES: Routes = [
       breadcrumb: 'Guía de Estilos',
       description: 'Guía de estilos de la aplicación'
     }
+  },
+  {
+    path: 'animaciones',
+    loadComponent: () =>
+      import('./pages/animations-demo/animations-demo').then(m => m.AnimationsDemoComponent),
+    data: { 
+      chunkName: 'utils-animations',
+      breadcrumb: 'Animaciones',
+      description: 'Demostración de animaciones CSS'
+    }
+  }
+];
+
+// ============ RUTAS INFORMATIVAS Y LEGALES (LAZY) ============
+// Páginas estáticas de información y términos legales
+export const LEGAL_ROUTES: Routes = [
+  {
+    path: 'cookies',
+    loadComponent: () =>
+      import('./pages/cookies/cookies').then(m => m.CookiesComponent),
+    data: { 
+      chunkName: 'legal-cookies',
+      breadcrumb: 'Política de Cookies',
+      description: 'Información sobre cookies y tecnologías similares'
+    }
+  },
+  {
+    path: 'contact',
+    loadComponent: () =>
+      import('./pages/contact/contact').then(m => m.ContactComponent),
+    data: { 
+      chunkName: 'legal-contact',
+      breadcrumb: 'Contacto',
+      description: 'Formulario de contacto y canales de comunicación'
+    }
+  },
+  {
+    path: 'privacy-policy',
+    loadComponent: () =>
+      import('./pages/privacy-policy/privacy-policy').then(m => m.PrivacyPolicyComponent),
+    data: { 
+      chunkName: 'legal-privacy',
+      breadcrumb: 'Política de Privacidad',
+      description: 'Política de privacidad y protección de datos'
+    }
+  },
+  {
+    path: 'terms-of-service',
+    loadComponent: () =>
+      import('./pages/terms-of-service/terms-of-service').then(m => m.TermsOfServiceComponent),
+    data: { 
+      chunkName: 'legal-terms',
+      breadcrumb: 'Términos de Servicio',
+      description: 'Términos y condiciones de uso del servicio'
+    }
   }
 ];
 
@@ -207,13 +262,14 @@ export const PROFILE_ROUTES: Routes = [
 ];
 
 // ============ CONSOLIDACIÓN DE RUTAS ============
-// Ordenadas por relevancia: principales > auth > medicamentos > perfil > utilidades > 404
+// Ordenadas por relevancia: principales > auth > medicamentos > perfil > utilidades > legales > 404
 export const routes: Routes = [
   ...MAIN_ROUTES,
   ...AUTH_ROUTES,
   ...MEDICINES_ROUTES,
   ...PROFILE_ROUTES,
   ...UTILITY_ROUTES,
+  ...LEGAL_ROUTES,
   
   // ============ RUTA WILDCARD PARA 404 ============
   // IMPORTANTE: Debe ir SIEMPRE al final de todas las rutas
