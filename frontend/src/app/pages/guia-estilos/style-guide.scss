@@ -37,7 +37,7 @@
 
 .style-guide__intro {
   font-size: 16px;
-  color: #666;
+  color: var(--color-texto_borde_cajas);
   margin: 0;
   line-height: 1.6;
 }
@@ -100,7 +100,7 @@
 
 .style-guide__section-desc {
   margin: 0;
-  color: #666;
+  color: var(--color-texto_borde_cajas);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -162,7 +162,7 @@
   padding: 12px;
   border-radius: 8px;
   background: white;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-texto_borde_cajas);
   transition: all 0.3s ease;
 
   &:hover {
@@ -194,7 +194,7 @@
 
 .color-code {
   font-size: 12px;
-  color: #999;
+  color: var(--color-texto_borde_cajas);
   font-family: 'Courier New', monospace;
 }
 
@@ -229,8 +229,8 @@
   }
 
   &.pending {
-    background: rgba(33, 150, 243, 0.1);
-    border-color: #2196f3;
+    background: rgba(var(--color-primario-primary-rgb), 0.1);
+    border-color: var(--color-primario-primary);
   }
 }
 
@@ -248,7 +248,7 @@
 .validation-text {
   margin: 0;
   font-size: 14px;
-  color: #666;
+  color: var(--color-texto_borde_cajas);
 }
 
 /* ===== MEDICINE CARD ===== */
@@ -294,9 +294,9 @@
     color: white;
 
     &:hover {
-      background: #d90000;
+      background: var(--color-negacion-hover);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 2, 2, 0.3);
+      box-shadow: 0 4px 12px rgba(var(--color-negacion-primary-rgb), 0.3);
     }
   }
 }
@@ -422,7 +422,7 @@
   }
 
   .style-guide__nav {
-    background: #1a1a1a;
+    background: var(--color-fondo-secundario);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
@@ -437,12 +437,12 @@
   }
 
   .style-guide__section {
-    background: #242424;
+    background: var(--color-fondo-primario);
     border-left-color: var(--color-primario-dark);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
     &:nth-child(odd) {
-      background: #1f1f1f;
+      background: var(--color-fondo-secundario);
     }
   }
 
@@ -455,7 +455,7 @@
   }
 
   .style-guide__section-desc {
-    color: #999;
+    color: var(--color-texto_borde_cajas-dark);
   }
 
   .style-guide__subsection {
@@ -468,8 +468,8 @@
   }
 
   .color-item {
-    background: #1f1f1f;
-    border-color: rgba(225, 119, 181, 0.2);
+    background: var(--color-fondo-secundario);
+    border-color: rgba(var(--color-primario-primary-rgb), 0.2);
   }
 
   .color-name {

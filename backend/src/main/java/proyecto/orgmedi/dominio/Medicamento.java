@@ -50,6 +50,9 @@ public class Medicamento {
     @Column(nullable = false)
     private Integer frecuencia;
 
+    // Estado para marcar si el medicamento fue consumido (UI)
+    @Column(nullable = false)
+    private Boolean consumed = false;
     // Métodos para cambiar un atributo a la vez
     public void cambiarCantidadMg(Integer nuevaCantidad) {
         if (nuevaCantidad != null && nuevaCantidad > 0) {

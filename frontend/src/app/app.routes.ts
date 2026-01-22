@@ -166,6 +166,10 @@ export const UTILITY_ROUTES: Routes = [
       chunkName: 'utils-calendar',
       breadcrumb: 'Calendario',
       description: 'Calendario de medicamentos'
+    },
+    canActivate: [authGuard],
+    resolve: {
+      medicines: medicinesResolver
     }
   },
   {

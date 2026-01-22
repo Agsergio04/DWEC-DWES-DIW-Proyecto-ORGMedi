@@ -5,6 +5,7 @@ import { CalendarComponent } from '../../components/shared/calendar/calendar';
 import { MedicineCardCalendarComponent } from '../../components/shared/medicine-card-calendar/medicine-card-calendar';
 import { MedicineStoreSignals } from '../../data/stores/medicine-signals.store';
 import { MedicineViewModel } from '../../data/models/medicine.model';
+import { MedicineService } from '../../data/medicine.service';
 
 export interface MedicineWithTime extends MedicineViewModel {
   displayTime: string; // HH:mm
@@ -25,6 +26,7 @@ export interface MedicineTimeGroup {
 })
 export class CalendarPage implements OnInit {
   private medicineStore = inject(MedicineStoreSignals);
+  private medicineService = inject(MedicineService);
   private router = inject(Router);
 
   // Signals del store (readonly)
@@ -36,6 +38,17 @@ export class CalendarPage implements OnInit {
   selectedDay: number | null = null;
   medicinesToShow: MedicineWithTime[] = []; // Medicamentos expandidos con horas
   medicineGroups: MedicineTimeGroup[] = []; // Grupos de medicamentos por hora
+
+  constructor() {
+    // Effect: Reaccionar a cambios en el store de medicamentos
+    // IMPORTANTE: El effect debe crearse en el constructor para estar en el contexto de inyección correcto
+    effect(() => {
+      const medicines = this.medicineStore.medicines();
+      console.log('[CalendarPage Effect] Medicamentos actualizados en el store:', medicines.length);
+      // Actualizar vista cuando cambia el store
+      this.updateMedicinesToShow();
+    });
+  }
 
   ngOnInit(): void {
     // Verificar si hay token de autenticación
@@ -49,14 +62,6 @@ export class CalendarPage implements OnInit {
     // Actualizar vista cuando cambian los medicamentos en el store
     // Usar effect para reactividad con signals
     this.updateMedicinesToShowInitial();
-    
-    // Effect: Reaccionar a cambios en el store de medicamentos
-    effect(() => {
-      const medicines = this.medicineStore.medicines();
-      console.log('[CalendarPage Effect] Medicamentos actualizados en el store:', medicines.length);
-      // Actualizar vista cuando cambia el store
-      this.updateMedicinesToShow();
-    });
   }
 
   private updateMedicinesToShowInitial(): void {
@@ -226,11 +231,47 @@ export class CalendarPage implements OnInit {
   }
 
   /**
-   * Toggle consumo del medicamento
+   * Maneja el toggle de consumo del medicamento
    */
-  toggleConsumption(id: number): void {
-    console.log('Toggle consumo para medicamento:', id);
-    // TODO: Implementar toggle de consumo
+  onMedicineSelected(id: number): void {
+    console.log('[CalendarPage] Toggle consumo para medicamento:', id);
+    const current = this.medicineStore.getById(id)();
+    if (!current) {
+      console.warn('[CalendarPage] Medicamento no encontrado:', id);
+      return;
+    }
+
+    const newValue = !current.consumed;
+    console.log(`[CalendarPage] Cambiando consumo de ${current.nombre}: ${current.consumed} → ${newValue}`);
+    
+    // Optimistic update local store
+    this.medicineStore.update({ ...current, consumed: newValue });
+
+    // Actualizar solo los medicamentos que corresponden a este ID en medicinesToShow
+    this.medicinesToShow = this.medicinesToShow.map(med => 
+      med.id === id ? { ...med, consumed: newValue } : med
+    );
+
+    // Persistir en backend (PATCH parcial)
+    this.medicineService.patch(id as any, { consumed: newValue }).subscribe({
+      next: (updated) => {
+        console.log('[CalendarPage] Consumo actualizado en servidor:', updated);
+        // Actualizar store con respuesta del servidor
+        this.medicineStore.update(updated as any);
+        // Actualizar medicinesToShow con datos del servidor
+        this.medicinesToShow = this.medicinesToShow.map(med =>
+          med.id === id ? { ...med, ...(updated as any) } : med
+        );
+      },
+      error: (err) => {
+        console.error('[CalendarPage] Error al persistir consumo:', err);
+        // Revertir cambio local
+        this.medicineStore.update(current);
+        this.medicinesToShow = this.medicinesToShow.map(med =>
+          med.id === id ? { ...med, consumed: current.consumed } : med
+        );
+      }
+    });
   }
 
   /**
@@ -311,10 +352,6 @@ export class CalendarPage implements OnInit {
     this.updateMedicinesToShow(); // Actualizar lista al cambiar día
   }
 
-  onMedicineSelected(medicineId: number): void {
-    this.toggleConsumption(medicineId);
-  }
-
   getWeekDays(): number[] {
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
@@ -332,4 +369,5 @@ export class CalendarPage implements OnInit {
     return weekDays;
   }
 }
+
 

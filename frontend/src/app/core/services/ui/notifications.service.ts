@@ -151,7 +151,7 @@ export class NotificationsService {
    */
   stopPolling(): void {
     if (!this.isPolling) {
-      console.warn('⚠️ El polling no está activo');
+      console.debug('ℹ️ El polling no estaba activo, ignorando detención');
       return;
     }
 
@@ -237,8 +237,15 @@ export class NotificationsService {
 
         // 4️⃣ NO AUTORIZADO (401) → Propagar error (usuario debe loguearse)
         if (error.status === 401) {
-          console.error('🔐 No autorizado → Limpiando sesión');
+          console.error('🔐 No autorizado (401) → Limpiando sesión');
           this.toastService.error('Sesión expirada, por favor vuelve a iniciar sesión');
+          return throwError(() => error);
+        }
+
+        // 4️⃣ PROHIBIDO (403) → Token inválido/expirado o usuario sin permisos
+        if (error.status === 403) {
+          console.error('🚫 Prohibido (403) → Token inválido o expirado');
+          // El interceptor de errores manejará esto y redirigirá al login
           return throwError(() => error);
         }
 

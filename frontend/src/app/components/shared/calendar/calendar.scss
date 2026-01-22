@@ -102,10 +102,15 @@
 }
 
 // ============================================
-// WEEK - Contenedor HORIZONTAL de días
+// WEEK - Contenedor HORIZONTAL de días (ol)
 // ============================================
 
 .calendar__week {
+  // Reset de estilos de lista semántica
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
   display: flex;
   flex-direction: row;  // ← HORIZONTAL (no column)
   justify-content: center;
@@ -116,10 +121,15 @@
 }
 
 // ============================================
-// DAY ITEM - Contenedor de cada día (día + nombre)
+// DAY ITEM - Contenedor de cada día (li)
 // ============================================
 
 .calendar__day-item {
+  // Reset de estilos de lista semántica
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -161,6 +171,14 @@
 
   transition: all $transition-normal;
 
+  // Asegurar que el elemento <time> herede estilos del botón
+  time {
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    font-family: inherit;
+  }
+
   &:hover:not(:disabled) {
     background: var(--color-primario-hover);
     transform: scale(1.1);
@@ -189,8 +207,8 @@
 
 .calendar__day--today {
   background: var(--color-primario-primary);
-  color: #fff;
-  border-color: var(--color-primario-primary);
+  color: var(--color-texto_borde_cajas);
+  border-color: var(--color-texto_borde_cajas);
   font-weight: $font-weight-bold;
   box-shadow: 0 4px 8px rgba($color-primario-primary, 0.3);
 
@@ -203,7 +221,7 @@
 
 .calendar__day--selected {
   background: var(--color-primario-primary);
-  color: #fff;
+  color: white;
   border-color: var(--color-primario-primary);
 
   &:hover {

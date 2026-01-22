@@ -1,35 +1,36 @@
 <section class="page page--edit-medicine">
-  <div class="page__container">
+  <header class="page__container">
     <!-- Encabezado -->
-    <div class="edit-medicine__title-section">
+    <header class="edit-medicine__title-section">
       <h1>Editar Medicamento</h1>
       <p class="edit-medicine__description">Aqui podras editar los parametros que tienen los medicamentos</p>
-    </div>
+    </header>
 
     <!-- Mensaje de carga -->
-    <div *ngIf="loading" class="loading-message">
+    <div *ngIf="loading" class="loading-message" role="status" aria-live="polite" aria-busy="true">
       Cargando medicamento...
     </div>
 
     <!-- Componente formulario -->
-    <app-medicine-form
-      *ngIf="!loading"
-      [initialData]="medicine"
-      [isSubmitting]="saving"
-      submitButtonText="Guardar cambios"
-      cancelButtonText="Cancelar"
-      (formSubmit)="onFormSubmit($event)"
-      (formCancel)="onFormCancel()">
-    </app-medicine-form>
+    <main *ngIf="!loading" class="edit-medicine__form">
+      <app-medicine-form
+        [initialData]="medicine"
+        [isSubmitting]="saving"
+        submitButtonText="Guardar cambios"
+        cancelButtonText="Cancelar"
+        (formSubmit)="onFormSubmit($event)"
+        (formCancel)="onFormCancel()">
+      </app-medicine-form>
+    </main>
 
     <!-- Mensaje de error -->
-    <div *ngIf="error" class="error-message">
+    <aside *ngIf="error" class="error-message" role="alert" aria-live="assertive">
       {{ error.message }}
-    </div>
+    </aside>
 
     <!-- Mensaje de información sobre cambios parciales -->
-    <div *ngIf="!loading && medicine" class="info-message">
+    <aside *ngIf="!loading && medicine" class="info-message" role="region" aria-label="Información importante">
       💡 Solo se guardarán los cambios que realices en los campos
-    </div>
-  </div>
+    </aside>
+  </header>
 </section>

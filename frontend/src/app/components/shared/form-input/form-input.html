@@ -1,7 +1,9 @@
-<div class="form-input">
+<fieldset class="form-input">
 	<label [attr.for]="inputId" class="form-input__label">
-		{{ label }}
-		<span *ngIf="required" class="form-input__asterisk">*</span>
+		<span class="form-input__label-text">
+			{{ label }}
+			<span *ngIf="required" class="form-input__asterisk" aria-hidden="true">*</span>
+		</span>
 	</label>
 	<input
 		[id]="inputId"
@@ -10,10 +12,11 @@
 		[placeholder]="placeholder"
 		[required]="required"
 		class="form-input__field"
-		[attr.aria-describedby]="helpText ? inputId + '-help' : null"
+		[attr.aria-describedby]="(helpText ? inputId + '-help' : null) + (error ? ' ' + inputId + '-error' : '')"
+		[attr.aria-invalid]="!!error"
 		[ngModel]="value"
 		(ngModelChange)="valueChange.emit($event)"
 	/>
-	<div *ngIf="helpText" [id]="inputId + '-help'" class="form-input__help">{{ helpText }}</div>
-	<div *ngIf="error" class="form-input__error">{{ error }}</div>
-</div>
+	<small *ngIf="helpText" [id]="inputId + '-help'" class="form-input__help">{{ helpText }}</small>
+	<small *ngIf="error" [id]="inputId + '-error'" class="form-input__error" role="alert">{{ error }}</small>
+</fieldset>

@@ -3,8 +3,9 @@
     <img 
       *ngIf="icon" 
       [src]="icon" 
-      alt="icon" 
+      [alt]="label || placeholder"
       class="data-input__icon"
+      aria-hidden="true"
     />
     <input
       class="data-input__input"
@@ -12,6 +13,7 @@
       [placeholder]="label || placeholder"
       [disabled]="disabled"
       [value]="value"
+      [attr.aria-label]="label || placeholder"
       (input)="onInputChange($event)"
       (blur)="onBlur()"
     />

@@ -140,7 +140,15 @@ export class ProfilePage implements OnInit {
   }
 
   logout(): void {
+    console.log('[ProfilePage] Usuario cerrando sesión...');
+    
+    // Cerrar sesión en el AuthService (borra el JWT)
     this.authService.logout();
+    
+    // Mostrar mensaje confirmativo
+    this.toastService.success('Sesión cerrada correctamente. Por favor, vuelve a iniciar sesión.');
+    
+    // Navegar a login
     this.router.navigate(['/iniciar-sesion']);
   }
 }

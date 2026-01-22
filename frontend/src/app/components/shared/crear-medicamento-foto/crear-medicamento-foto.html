@@ -1,0 +1,170 @@
+<section class="crear-medicamento-foto" aria-labelledby="foto-titulo">
+  <!-- Área principal de selección de foto -->
+  <div class="crear-medicamento-foto__main">
+    <!-- Preview de foto seleccionada -->
+    <figure *ngIf="photoPreview && !showCamera" class="crear-medicamento-foto__preview">
+      <div class="crear-medicamento-foto__preview-wrapper">
+        <img 
+          [src]="photoPreview" 
+          alt="Vista previa del medicamento capturado" 
+          class="crear-medicamento-foto__preview-image"
+          loading="lazy"
+        >
+      </div>
+      <figcaption class="crear-medicamento-foto__preview-actions">
+        <app-button
+          variant="ghost"
+          [width]="'100%'"
+          [padding]="'12px 24px'"
+          [fontSize]="'1rem'"
+          (clicked)="clearPhoto()"
+          [disabled]="isProcessingOcr"
+          aria-label="Cambiar foto del medicamento"
+        >
+          🔄 Cambiar foto
+        </app-button>
+      </figcaption>
+    </figure>
+
+    <!-- Vista de cámara activa -->
+    <section 
+      *ngIf="showCamera" 
+      class="crear-medicamento-foto__camera"
+      aria-label="Captura de foto en tiempo real"
+    >
+      <video
+        #cameraVideo
+        id="cameraVideo"
+        autoplay
+        playsinline
+        class="crear-medicamento-foto__camera-video"
+        aria-label="Vista previa de la cámara"
+      ></video>
+      <nav class="crear-medicamento-foto__camera-controls" aria-label="Controles de cámara">
+        <app-button
+          variant="primary"
+          [width]="'auto'"
+          [padding]="'12px 24px'"
+          [fontSize]="'1rem'"
+          (clicked)="capturePhoto()"
+          aria-label="Capturar foto del medicamento"
+        >
+          📸 Capturar
+        </app-button>
+        <app-button
+          variant="secondary"
+          [width]="'auto'"
+          [padding]="'12px 24px'"
+          [fontSize]="'1rem'"
+          (clicked)="stopCamera()"
+          aria-label="Cerrar cámara"
+        >
+          ✕ Cerrar
+        </app-button>
+      </nav>
+    </section>
+
+    <!-- Área de selección de archivo -->
+    <section 
+      *ngIf="!photoPreview && !showCamera" 
+      class="crear-medicamento-foto__upload"
+      aria-labelledby="upload-titulo"
+    >
+      <input
+        #fileInput
+        type="file"
+        id="fileInput"
+        accept="image/*"
+        (change)="onFileInputChange($event)"
+        hidden
+        [disabled]="isProcessingOcr"
+        aria-label="Seleccionar archivo de imagen del medicamento"
+      />
+      
+      <label 
+        for="fileInput" 
+        class="crear-medicamento-foto__upload-area"
+        tabindex="0"
+        (keydown.enter)="fileInput.click()"
+        (keydown.space)="fileInput.click()"
+      >
+        <div class="crear-medicamento-foto__upload-icon-wrapper" aria-hidden="true">
+          <svg class="crear-medicamento-foto__upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </div>
+        <p id="upload-titulo" class="crear-medicamento-foto__upload-title">Selecciona una foto</p>
+        <p class="crear-medicamento-foto__upload-subtitle">JPG, PNG o PDF</p>
+      </label>
+
+      <nav class="crear-medicamento-foto__upload-buttons" aria-label="Opciones de carga">
+        <app-button
+          variant="primary"
+          [width]="'100%'"
+          [padding]="'14px 28px'"
+          [fontSize]="'1.1rem'"
+          (clicked)="fileInput.click()"
+          [disabled]="isProcessingOcr"
+          aria-label="Abrir galería de fotos"
+        >
+          Galería
+        </app-button>
+        <app-button
+          variant="primary"
+          [width]="'100%'"
+          [padding]="'14px 28px'"
+          [fontSize]="'1.1rem'"
+          (clicked)="startCamera()"
+          [disabled]="isProcessingOcr"
+          aria-label="Abrir cámara para capturar foto"
+        >
+          Cámara
+        </app-button>
+      </nav>
+    </section>
+
+    <!-- Estado de procesamiento -->
+    <aside 
+      *ngIf="isProcessingOcr" 
+      class="crear-medicamento-foto__processing"
+      role="status"
+      aria-live="polite"
+      aria-label="Procesando imagen"
+    >
+      <div class="crear-medicamento-foto__processing-content">
+        <div class="crear-medicamento-foto__spinner" aria-hidden="true"></div>
+        <p class="crear-medicamento-foto__processing-text">Extrayendo datos...</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Acciones finales -->
+  <footer class="crear-medicamento-foto__footer" *ngIf="photoPreview">
+    <nav aria-label="Acciones de confirmación">
+      <app-button
+        variant="ghost"
+        [width]="'100%'"
+        [padding]="'14px 28px'"
+        [fontSize]="'1.1rem'"
+        (clicked)="onCancel()"
+        [disabled]="isProcessingOcr"
+        aria-label="Cancelar y volver"
+      >
+        Cancelar
+      </app-button>
+
+      <app-button
+        variant="primary"
+        [width]="'100%'"
+        [padding]="'14px 28px'"
+        [fontSize]="'1.1rem'"
+        [disabled]="isProcessingOcr"
+        (clicked)="confirmPhoto()"
+        aria-label="{{ isProcessingOcr ? 'Procesando imagen' : 'Confirmar foto del medicamento' }}"
+      >
+        {{ isProcessingOcr ? 'Procesando...' : 'Confirmar' }}
+      </app-button>
+    </nav>
+  </footer>
+</section>

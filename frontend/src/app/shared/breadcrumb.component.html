@@ -20,12 +20,12 @@
   link    link             texto
 -->
 
-<nav aria-label="breadcrumb" *ngIf="(breadcrumbs$ | async) as breadcrumbs; else noBreadcrumbs">
+<nav aria-label="Ruta de navegación" *ngIf="(breadcrumbs$ | async) as breadcrumbs; else noBreadcrumbs">
   <ol class="breadcrumb">
     
     <!-- ITEM: Inicio (siempre presente como raíz) -->
     <li class="breadcrumb-item">
-      <a routerLink="/">Inicio</a>
+      <a routerLink="/" aria-label="Inicio">Inicio</a>
     </li>
 
     <!-- ITEMS: Dinámicos generados desde BreadcrumbService -->
@@ -37,12 +37,12 @@
     >
       <!-- Si NO es último: link clickeable para navegación -->
       <ng-container *ngIf="!last">
-        <a [routerLink]="crumb.url">{{ crumb.label }}</a>
+        <a [routerLink]="crumb.url" [attr.aria-label]="'Ir a ' + crumb.label">{{ crumb.label }}</a>
       </ng-container>
 
       <!-- Si ES último: texto plano (página actual) -->
       <ng-container *ngIf="last">
-        {{ crumb.label }}
+        <span role="status">{{ crumb.label }}</span>
       </ng-container>
     </li>
   </ol>

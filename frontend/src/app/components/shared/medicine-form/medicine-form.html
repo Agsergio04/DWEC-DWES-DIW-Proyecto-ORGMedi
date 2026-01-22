@@ -1,104 +1,128 @@
 <form class="medicine-form" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="formInitialized && form">
+  <h1 class="visually-hidden">Formulario de medicamento</h1>
 
   <!-- Nombre del Medicamento -->
-  <div class="form-group">
-    <label class="form-label">Introduce el nombre del medicamento:</label>
-    <input
-      type="text"
-      class="form-input"
-      formControlName="nombre"
-      placeholder="Nombre del medicamento"
-      [disabled]="isSubmitting"
-      required
-    />
-  </div>
-
-  <!-- Cantidad en Mg -->
-  <div class="form-group">
-    <label class="form-label">Introduce la cantidad del medicamento:</label>
-    <input
-      type="text"
-      class="form-input"
-      formControlName="cantidadMg"
-      placeholder="Cantidad(En Mg)"
-      [disabled]="isSubmitting"
-      required
-    />
-  </div>
-
-  <!-- Hora de Inicio -->
-  <div class="form-group">
-    <label class="form-label">Introduce la hora de inicio:</label>
-    <input
-      type="time"
-      class="form-input"
-      formControlName="horaInicio"
-      placeholder="Hora de inicio(08:00 AM)"
-      [disabled]="isSubmitting"
-      required
-    />
-  </div>
-
-  <!-- Fecha de Inicio con SVG -->
-  <div class="form-group date-input-group">
-    <label class="form-label">Introduce la fecha de inicio cuando la vas a tomar:</label>
-    <div class="date-input-wrapper">
+  <fieldset class="form-group form-group--fieldset">
+    
+    <div class="form-group">
+      <label for="nombre" class="form-label">Introduce el nombre del medicamento:</label>
       <input
-        type="date"
-        class="form-input date-input"
-        formControlName="fechaInicio"
+        id="nombre"
+        type="text"
+        class="form-input"
+        formControlName="nombre"
+        placeholder="Nombre del medicamento"
         [disabled]="isSubmitting"
         required
-      />Fecha Inici(dd/mm/yyyy)
+        aria-describedby="nombre-error"
+      />
+      <small id="nombre-error" class="form-error" *ngIf="form?.get('nombre')?.invalid && form?.get('nombre')?.touched" role="alert">Campo requerido</small>
     </div>
-  </div>
 
-  <!-- Fecha de Fin con SVG -->
-  <div class="form-group date-input-group">
-    <label class="form-label">Introduce la fecha de fin cuando la vas a acabar de tomar:</label>
-    <div class="date-input-wrapper">
+    <!-- Cantidad en Mg -->
+    <div class="form-group">
+      <label for="cantidadMg" class="form-label">Introduce la cantidad del medicamento:</label>
       <input
-        type="date"
-        class="form-input date-input"
-        formControlName="fechaFin"
+        id="cantidadMg"
+        type="text"
+        class="form-input"
+        formControlName="cantidadMg"
+        placeholder="Cantidad (En Mg)"
         [disabled]="isSubmitting"
-      />Fecha Inici(dd/mm/yyyy)
+        required
+        aria-describedby="cantidadMg-error"
+      />
+      <small id="cantidadMg-error" class="form-error" *ngIf="form?.get('cantidadMg')?.invalid && form?.get('cantidadMg')?.touched" role="alert">Campo requerido</small>
     </div>
-  </div>
+
+    <!-- Hora de Inicio -->
+    <div class="form-group">
+      <label for="horaInicio" class="form-label">Introduce la hora de inicio:</label>
+      <input
+        id="horaInicio"
+        type="time"
+        class="form-input"
+        formControlName="horaInicio"
+        placeholder="Hora de inicio (08:00 AM)"
+        [disabled]="isSubmitting"
+        required
+        aria-describedby="horaInicio-error"
+      />
+      <small id="horaInicio-error" class="form-error" *ngIf="form?.get('horaInicio')?.invalid && form?.get('horaInicio')?.touched" role="alert">Campo requerido</small>
+    </div>
+
+    <!-- Fecha de Inicio -->
+    <div class="form-group date-input-group">
+      <label for="fechaInicio" class="form-label">Introduce la fecha de inicio cuando la vas a tomar:</label>
+      <div class="date-input-wrapper">
+        <input
+          id="fechaInicio"
+          type="date"
+          class="form-input date-input"
+          formControlName="fechaInicio"
+          [disabled]="isSubmitting"
+          required
+          aria-describedby="fechaInicio-format fechaInicio-error"
+        />
+        <small id="fechaInicio-format" class="form-hint">Formato: dd/mm/yyyy</small>
+      </div>
+      <small id="fechaInicio-error" class="form-error" *ngIf="form?.get('fechaInicio')?.invalid && form?.get('fechaInicio')?.touched" role="alert">Campo requerido</small>
+    </div>
+
+    <!-- Fecha de Fin -->
+    <div class="form-group date-input-group">
+      <label for="fechaFin" class="form-label">Introduce la fecha de fin cuando la vas a acabar de tomar:</label>
+      <div class="date-input-wrapper">
+        <input
+          id="fechaFin"
+          type="date"
+          class="form-input date-input"
+          formControlName="fechaFin"
+          [disabled]="isSubmitting"
+          aria-describedby="fechaFin-format"
+        />
+        <small id="fechaFin-format" class="form-hint">Formato: dd/mm/yyyy</small>
+      </div>
+    </div>
+  </fieldset>
 
   <!-- Selectores de Frecuencia y Color -->
-  <div class="selectors-row">
+  <fieldset class="selectors-row">
     <div class="selector-group">
-      <label class="form-label">Seleccione la frecuencia de consumo de la pastilla:</label>
+      <label for="frecuencia" class="form-label">Seleccione la frecuencia de consumo de la pastilla:</label>
       <app-data-input-selector
+        id="frecuencia"
         formControlName="frecuencia"
         [selectedOption]="selectedFrequency"
         [options]="frequencyOptions"
         [type]="'text'"
         [disabled]="isSubmitting"
         placeholder="Selecciona cada cuanto"
-        (optionSelected)="onFrequencySelected($event)">
+        (optionSelected)="onFrequencySelected($event)"
+        aria-describedby="frecuencia-error">
       </app-data-input-selector>
-      <span class="form-error" *ngIf="form?.get('frecuencia')?.hasError('required') && form?.get('frecuencia')?.touched">Selecciona una frecuencia</span>
+      <small id="frecuencia-error" class="form-error" *ngIf="form?.get('frecuencia')?.hasError('required') && form?.get('frecuencia')?.touched" role="alert">Selecciona una frecuencia</small>
     </div>
 
     <div class="selector-group">
-      <label class="form-label">Selecciona el color de la pastilla :</label>
+      <label for="color" class="form-label">Selecciona el color de la pastilla:</label>
       <app-data-input-selector
+        id="color"
         formControlName="color"
         [selectedOption]="selectedColor"
         [options]="colorOptions"
         [type]="'color'"
         [disabled]="isSubmitting"
         placeholder="Selecciona un color"
-        (optionSelected)="onColorSelected($event)">
+        (optionSelected)="onColorSelected($event)"
+        aria-describedby="color-error">
       </app-data-input-selector>
-      <span class="form-error" *ngIf="form?.get('color')?.hasError('required') && form?.get('color')?.touched">Selecciona un color</span>
+      <small id="color-error" class="form-error" *ngIf="form?.get('color')?.hasError('required') && form?.get('color')?.touched" role="alert">Selecciona un color</small>
     </div>
-  </div>
+  </fieldset>
 
   <!-- Botones de Acción -->
-  <div class="form-actions">
+  <div class="form-actions" role="group" aria-label="Acciones del formulario">
     <app-button
       variant="secondary"
       [width]="'20rem'"
@@ -123,6 +147,6 @@
 </form>
 
 <!-- Cargar mensaje si formulario no está inicializado -->
-<div *ngIf="!formInitialized" class="loading-message">
+<div *ngIf="!formInitialized" class="loading-message" role="status" aria-live="polite">
   Inicializando formulario...
 </div>

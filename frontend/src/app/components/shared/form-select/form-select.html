@@ -1,5 +1,11 @@
-<label class="form-select__label">{{ label }}
-  <select class="form-select__field" [(ngModel)]="value">
+<label class="form-select__label">
+  <span class="form-select__label-text">{{ label }}</span>
+  <select 
+    class="form-select__field" 
+    [(ngModel)]="value"
+    [attr.aria-label]="label"
+  >
+    <option value="">Selecciona una opción</option>
     <option *ngFor="let o of options; trackBy: trackByValue" [value]="o.value">{{ o.label }}</option>
   </select>
 </label>

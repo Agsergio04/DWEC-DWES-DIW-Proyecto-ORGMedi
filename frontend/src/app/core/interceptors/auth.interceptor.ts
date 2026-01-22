@@ -16,19 +16,18 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                     req.url.includes('/auth/register') || 
                     req.url.includes('/public');
   
-  const logData = {
-    hasToken: !!token,
-    isAuthUrl,
-    url: req.url,
-    tokenLength: token ? token.length : 0,
-    timestamp: new Date().toISOString()
-  };
-  
   console.log('[AuthInterceptor] Request to:', req.url, '| Token present:', !!token, '| Auth URL:', isAuthUrl);
   
-  if (!token || isAuthUrl) {
-    if (!token) console.log('[AuthInterceptor] No token found in localStorage');
-    if (isAuthUrl) console.log('[AuthInterceptor] Auth URL, skipping token injection');
+  if (!token) {
+    console.log('[AuthInterceptor] ⚠️  No token found in localStorage - User must login again');
+    if (isAuthUrl) {
+      console.log('[AuthInterceptor] Auth URL detected, allowing request without token');
+    }
+    return next(req);
+  }
+
+  if (isAuthUrl) {
+    console.log('[AuthInterceptor] Auth URL, skipping token injection');
     return next(req);
   }
 

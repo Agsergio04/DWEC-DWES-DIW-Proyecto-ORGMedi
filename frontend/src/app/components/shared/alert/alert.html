@@ -1,5 +1,22 @@
-<div *ngIf="isOpen" class="alert" [ngClass]="'alert--' + type">
-  <div class="alert__content"><ng-content></ng-content></div>
-  <button *ngIf="closable" class="alert__close" (click)="close()" aria-label="Cerrar alerta">×</button>
-</div>
+<aside 
+  *ngIf="isOpen" 
+  class="alert" 
+  [ngClass]="'alert--' + type"
+  role="alert"
+  [attr.aria-live]="type === 'error' ? 'assertive' : 'polite'"
+  aria-atomic="true"
+>
+  <div class="alert__content" role="status">
+    <ng-content></ng-content>
+  </div>
+  <button 
+    *ngIf="closable" 
+    class="alert__close" 
+    (click)="close()" 
+    aria-label="Cerrar alerta"
+    type="button"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</aside>
 

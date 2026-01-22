@@ -1,14 +1,16 @@
 <section class="page page--medicines">
-  <div class="page__container">
+  <article class="page__container">
     <!-- Encabezado -->
-    <div class="medicines__title-section">
+    <header class="medicines__title-section">
       <h1>Medicamentos</h1>
       <p class="medicines__description">Aqui podras gestionar cuando has consumido los medicamentos</p>
-    </div>
+    </header>
 
     <!-- ✅ INPUT DE BÚSQUEDA (Tarea 5) -->
-    <div class="medicines__search-section">
+    <div class="medicines__search-section" role="search">
+      <label for="medicine-search" class="visually-hidden">Buscar medicamentos</label>
       <input
+        id="medicine-search"
         type="search"
         [formControl]="searchControl"
         placeholder="Buscar medicamento por nombre o dosis..."
@@ -18,47 +20,51 @@
       <!-- Clear button -->
       <button
         *ngIf="searchControl.value"
+        type="button"
         (click)="clearSearch()"
         class="medicines__search-clear"
         aria-label="Limpiar búsqueda">
-        ✕
+        <span aria-hidden="true">✕</span>
       </button>
     </div>
 
     <!-- LOADING INICIAL -->
-    <div *ngIf="paginationState().loading && paginationState().items.length === 0" class="loading-spinner">
+    <div *ngIf="paginationState().loading && paginationState().items.length === 0" class="loading-spinner" role="status" aria-live="polite" aria-busy="true">
       <p>Cargando medicamentos...</p>
     </div>
 
     <!-- LOADING DE BÚSQUEDA -->
-    <div *ngIf="searchState().loading && searchState().term" class="search-loading">
+    <div *ngIf="searchState().loading && searchState().term" class="search-loading" role="status" aria-live="polite">
       <p>Buscando medicamentos...</p>
     </div>
 
     <!-- Lista de medicamentos o mensaje vacío -->
-    <div *ngIf="itemsToDisplay.length > 0; else noMedicines" class="medicines__list">
+    <main *ngIf="itemsToDisplay.length > 0; else noMedicines" class="medicines__list" role="region" aria-label="Listado de medicamentos">
       <app-medicine-card
         *ngFor="let medicine of itemsToDisplay; trackBy: trackById"
         [medicine]="medicine"
         (edit)="editMedicine($event)"
-        (delete)="deleteMedicine($event)">
+        (delete)="deleteMedicine($event)"
+        [attr.aria-label]="'Medicamento: ' + medicine.name">
       </app-medicine-card>
-    </div>
+    </main>
 
     <!-- Sin medicamentos / Sin resultados -->
     <ng-template #noMedicines>
-      <p class="medicines__empty-message">
-        <span *ngIf="searchState().term">
-          No se encontraron medicamentos para "{{ searchState().term }}"
-        </span>
-        <span *ngIf="!searchState().term">
-          No se han creado medicamentos todavía
-        </span>
-      </p>
+      <aside class="medicines__empty-message" role="status">
+        <p>
+          <span *ngIf="searchState().term">
+            No se encontraron medicamentos para "{{ searchState().term }}"
+          </span>
+          <span *ngIf="!searchState().term">
+            No se han creado medicamentos todavía
+          </span>
+        </p>
+      </aside>
     </ng-template>
 
     <!-- PAGINACIÓN (Tarea 4 - solo mostrar si no hay búsqueda) -->
-    <div *ngIf="!searchState().term && paginationState().total > 0" class="medicines__pagination">
+    <nav *ngIf="!searchState().term && paginationState().total > 0" class="medicines__pagination" aria-label="Paginación de medicamentos">
       <span class="medicines__pagination-info">
         Página <strong>{{ currentPage() }}</strong> de <strong>{{ paginationState().totalPages }}</strong>
         <span class="medicines__pagination-total">({{ paginationState().total }} medicamentos)</span>
@@ -66,28 +72,41 @@
 
       <button 
         class="medicines__pagination-btn medicines__pagination-btn--next"
+        type="button"
         (click)="nextPage()" 
         [disabled]="!canGoNext() || paginationState().loading"
-        aria-label="Página siguiente">
+        aria-label="Ir a la página siguiente">
         Siguiente →
       </button>
-    </div>
+    </nav>
 
     <!-- LOADING AL CARGAR MÁS (infinite scroll style) -->
-    <div *ngIf="paginationState().loading && paginationState().items.length > 0" class="loading-more">
+    <div *ngIf="paginationState().loading && paginationState().items.length > 0" class="loading-more" role="status" aria-live="polite">
       <p>Cargando más medicamentos...</p>
     </div>
 
     <!-- Botones de acción -->
-    <div class="medicines__actions">
-      <button class="medicines__action-btn medicines__action-btn--photo" (click)="navigateToCreateFromPhoto()">
-        <img src="/Icono Fotos.svg" alt="Icono de fotos" class="medicines__action-icon">
+    <footer class="medicines__actions">
+      <button 
+        type="button"
+        class="medicines__action-btn medicines__action-btn--photo" 
+        (click)="navigateToCreateFromPhoto()"
+        aria-label="Crear un nuevo medicamento por foto">
+        <span aria-hidden="true">
+          <img src="/Icono Fotos.svg" alt="" class="medicines__action-icon">
+        </span>
         Crear un nuevo medicamento por foto
       </button>
-      <button class="medicines__action-btn medicines__action-btn--manual" (click)="navigateToCreate()">
-        <img src="/Icono Medicamento.svg" alt="Icono manual" class="medicines__action-icon"> 
+      <button 
+        type="button"
+        class="medicines__action-btn medicines__action-btn--manual" 
+        (click)="navigateToCreate()"
+        aria-label="Crear un nuevo medicamento manualmente">
+        <span aria-hidden="true">
+          <img src="/Icono Medicamento.svg" alt="" class="medicines__action-icon">
+        </span>
         Crear un nuevo medicamento manualmente
       </button>
-    </div>
-  </div>
+    </footer>
+  </article>
 </section>

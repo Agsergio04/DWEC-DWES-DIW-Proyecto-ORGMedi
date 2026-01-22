@@ -1,14 +1,14 @@
-<div class="dom-demo-root">
-  <h3>Demo manipulación del DOM</h3>
+<section class="dom-demo-root" aria-labelledby="dom-demo-title">
+  <h2 id="dom-demo-title">Demo manipulación del DOM</h2>
 
-  <div #contenedor class="demo-contenedor">Contenido inicial del contenedor</div>
+  <div #contenedor class="demo-contenedor" role="region" aria-label="Contenedor de demostración">Contenido inicial del contenedor</div>
 
-  <div class="controls">
-    <button (click)="changeStyle()">Cambiar estilo</button>
-    <button (click)="createItem()">Crear elemento</button>
-    <button (click)="removeItem()">Eliminar elemento</button>
-  </div>
+  <nav class="controls" role="group" aria-label="Controles de demostración">
+    <button (click)="changeStyle()" type="button">Cambiar estilo</button>
+    <button (click)="createItem()" type="button">Crear elemento</button>
+    <button (click)="removeItem()" type="button">Eliminar elemento</button>
+  </nav>
 
   <p class="nota">Usa las herramientas de desarrollador para inspeccionar los nodos creados.</p>
-</div>
+</section>
 

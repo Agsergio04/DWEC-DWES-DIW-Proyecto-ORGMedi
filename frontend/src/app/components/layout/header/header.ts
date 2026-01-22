@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild, inject, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild, inject, ChangeDetectionStrategy, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -32,6 +32,7 @@ export class Header implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private authService = inject(AuthService);
   private notificationsService = inject(NotificationsService);
+  private cdr = inject(ChangeDetectorRef);
 
   constructor(public router: Router, private elementRef: ElementRef) {}
 
@@ -45,6 +46,7 @@ export class Header implements OnInit, OnDestroy {
     // Suscribirse al estado de autenticación
     this.authSub = this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
+      this.cdr.markForCheck();
       // Auto-start polling cuando el usuario inicia sesión
       if (isLoggedIn) {
         this.notificationsService.startPolling();

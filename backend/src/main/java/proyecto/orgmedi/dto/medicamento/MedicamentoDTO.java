@@ -20,4 +20,5 @@ public class MedicamentoDTO {
     private LocalDate fechaFin;
     private String color;
     private Integer frecuencia;
+    private Boolean consumed;
 }

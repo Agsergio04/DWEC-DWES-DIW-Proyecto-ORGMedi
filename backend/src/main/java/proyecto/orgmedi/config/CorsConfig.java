@@ -19,7 +19,7 @@ public class CorsConfig implements WebMvcConfigurer {
         
         // Obtener origen permitido de variable de entorno o usar valores por defecto
         String[] allowedOrigins = {
-            // Desarrollo
+            // Desarrollo local
             "http://localhost",
             "http://localhost:80",
             "http://localhost:4200",
@@ -27,6 +27,10 @@ public class CorsConfig implements WebMvcConfigurer {
             "http://127.0.0.1",
             "http://127.0.0.1:4200",
             "http://127.0.0.1:3000",
+            // Docker compose interno
+            "http://frontend",
+            "http://frontend:80",
+            "http://frontend:4200",
             // Producción en Render
             "https://dwec-dwes-diw-proyecto-orgmedi.onrender.com"
         };

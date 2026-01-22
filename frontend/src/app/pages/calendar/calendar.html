@@ -1,20 +1,21 @@
 <section class="page page--calendar">
   <div class="page__container">
-    <div class="calendar__title-section">
+    <header class="calendar__title-section">
       <h1>Calendario</h1>
       <p class="calendar__description">Aquí podrás gestionar cuando has consumido los medicamentos</p>
-    </div>
+    </header>
 
-    <app-calendar (daySelected)="onCalendarDaySelected($event)"></app-calendar>
+    <app-calendar (daySelected)="onCalendarDaySelected($event)" aria-label="Calendario de medicamentos"></app-calendar>
 
-
-    <div class="calendar__medicines-list">
+    <main class="calendar__medicines-list" aria-label="Medicamentos del día seleccionado">
       <!-- Lista de medicamentos o mensaje vacío -->
-      <div *ngIf="!loading() && medicineGroups.length > 0; else noMedicines" class="medicines__list">
+      <div *ngIf="!loading() && medicineGroups.length > 0; else noMedicines" class="medicines__list" role="region">
         <!-- Mostrar grupos de medicamentos por hora -->
         <div *ngFor="let group of medicineGroups; trackBy: trackByTime" class="medicines__time-group">
           <!-- Hora como encabezado -->
-          <div class="medicines__time-header">{{ group.time }}</div>
+          <div class="medicines__time-header">
+            <time>{{ group.time }}</time>
+          </div>
           
           <!-- Medicamentos en esta hora -->
           <div class="medicines__group-items">
@@ -26,7 +27,8 @@
               [isExpiring]="isExpiring(medicine)"
               (medicineEdit)="editMedicine($event)"
               (medicineDelete)="deleteMedicine($event)"
-              (medicineSelected)="onMedicineSelected($event)">
+              (medicineSelected)="onMedicineSelected($event)"
+              [attr.aria-label]="'Medicamento: ' + medicine.nombre">
             </app-medicine-card-calendar>
           </div>
         </div>
@@ -34,9 +36,11 @@
 
       <!-- Sin medicamentos -->
       <ng-template #noMedicines>
-        <p class="medicines__empty-message">No se han creado medicamentos todavia</p>
+        <aside class="medicines__empty-message" role="status">
+          <p>No se han creado medicamentos todavia</p>
+        </aside>
       </ng-template>
-    </div>
+    </main>
   </div>
 </section>
 

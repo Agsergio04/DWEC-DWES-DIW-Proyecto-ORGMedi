@@ -255,7 +255,25 @@ export class MedicinesPage implements OnInit, OnDestroy {
    */
   toggleConsumption(id: number): void {
     console.log('Toggle consumo para medicamento:', id);
-    // TODO: Implementar toggle de consumo
+    const current = this.medicineStore.getById(id)();
+    if (!current) return;
+
+    const newValue = !current.consumed;
+    // Optimist update local store
+    this.medicineStore.update({ ...current, consumed: newValue });
+
+    // Persistir en backend (PATCH parcial)
+    this.medicineService.patch(id as any, { consumed: newValue }).subscribe({
+      next: (updated) => {
+        // Actualizar store con respuesta del servidor
+        this.medicineStore.update(updated as any);
+      },
+      error: (err) => {
+        console.error('Error al persistir consumo:', err);
+        // Revertir cambio local
+        this.medicineStore.update(current);
+      }
+    });
   }
 
   /**

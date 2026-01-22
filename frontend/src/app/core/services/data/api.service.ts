@@ -204,6 +204,14 @@ export class ApiService {
   }
 
   /**
+   * Extrae datos OCR de una imagen de medicamento
+   * @param formData - FormData con la imagen
+   */
+  extractOcr<T>(formData: FormData): Observable<T> {
+    return this.postFormData<T>('medicamentos/extract-ocr', formData);
+  }
+
+  /**
    * Manejo centralizado de errores HTTP
    * Registra el error y propaga un error formateado
    */

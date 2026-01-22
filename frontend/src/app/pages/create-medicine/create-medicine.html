@@ -1,24 +1,36 @@
 <section class="page page--create-medicine">
-  <div class="page__container">
+  <article class="page__container">
     <!-- Encabezado -->
-    <div class="create-medicine__title-section">
-      <h1>Crear Medicamento</h1>
-      <p class="create-medicine__description">Aqui podras gestionar cuando has consumido los medicamentos</p>
-    </div>
+    <header class="create-medicine__title-section">
+      <h1>{{ ocrData ? 'Revisar Medicamento (OCR)' : 'Crear Medicamento' }}</h1>
+      <p class="create-medicine__description">
+        {{ ocrData ? 'Verifica y edita los datos extraídos de la foto' : 'Aqui podras gestionar cuando has consumido los medicamentos' }}
+      </p>
+    </header>
 
     <!-- Componente formulario -->
-    <app-medicine-form
-      [isSubmitting]="saving"
-      submitButtonText="Crear medicamento"
-      cancelButtonText="Cancelar"
-      (formSubmit)="onFormSubmit($event)"
-      (formCancel)="onFormCancel()">
-    </app-medicine-form>
+    <main class="create-medicine__form">
+      <app-medicine-form
+        [isSubmitting]="saving"
+        [initialData]="ocrData ? {
+          nombre: ocrData.nombre,
+          cantidadMg: ocrData.cantidad || 0,
+          horaInicio: ocrData.horaInicio || '',
+          fechaInicio: ocrData.fechaInicio || '',
+          fechaFin: ocrData.fechaFin || '',
+          frecuencia: 2
+        } : null"
+        [submitButtonText]="ocrData ? 'Guardar desde OCR' : 'Crear medicamento'"
+        cancelButtonText="Cancelar"
+        (formSubmit)="onFormSubmit($event)"
+        (formCancel)="onFormCancel()">
+      </app-medicine-form>
+    </main>
 
     <!-- Mensaje de error -->
-    <div *ngIf="error" class="error-message">
+    <aside *ngIf="error" class="error-message" role="alert" aria-live="assertive">
       {{ error.message }}
-    </div>
-  </div>
+    </aside>
+  </article>
 </section>
 

@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, inject, ChangeDetectionStrategy
 import { CommonModule } from '@angular/common';
 import { MedicineViewModel } from '../../../data/models/medicine.model';
 import { MedicineService } from '../../../data/medicine.service';
+import { MedicineStoreSignals } from '../../../data/stores/medicine-signals.store';
 
 @Component({
   selector: 'app-medicine-card-calendar',
@@ -13,6 +14,7 @@ import { MedicineService } from '../../../data/medicine.service';
 })
 export class MedicineCardCalendarComponent {
   private medicineService = inject(MedicineService);
+  private medicineStore = inject(MedicineStoreSignals);
 
   @Input() medicine!: MedicineViewModel;
   @Input() displayTime: string = '00:00'; // Nueva prop para mostrar la hora
@@ -60,29 +62,8 @@ export class MedicineCardCalendarComponent {
   toggleConsumption(): void {
     if (this.saving) return;
     
-    this.saving = true;
-    const updatedMedicine = {
-      ...this.medicine,
-      consumed: !this.medicine.consumed
-    };
-
-    // Actualizar el estado localmente de inmediato
-    this.medicine.consumed = !this.medicine.consumed;
-
-    // Guardar en la base de datos
-    this.medicineService.update(this.medicine.id, updatedMedicine).subscribe({
-      next: () => {
-        console.log('Estado de consumo actualizado:', updatedMedicine);
-        this.saving = false;
-        this.medicineSelected.emit(this.medicine.id);
-      },
-      error: (err) => {
-        console.error('Error al actualizar consumo:', err);
-        // Revertir el cambio local si falla
-        this.medicine.consumed = !this.medicine.consumed;
-        this.saving = false;
-      }
-    });
+    // Emitir evento al padre (calendar) con medicineId y displayTime
+    this.medicineSelected.emit(this.medicine.id);
   }
 }
 

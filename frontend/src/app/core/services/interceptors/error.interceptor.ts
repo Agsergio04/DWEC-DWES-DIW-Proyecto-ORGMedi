@@ -1,5 +1,6 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { ToastService } from '../../../shared/toast.service';
 
@@ -20,6 +21,7 @@ import { ToastService } from '../../../shared/toast.service';
  */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastService = inject(ToastService);
+  const router = inject(Router);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -31,8 +33,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       } else if (error.status === 401) {
         // No autenticado
         message = 'Sesión no válida o expirada. Vuelve a iniciar sesión.';
-        // Opcional: redirigir al login
-        // inject(Router).navigate(['/iniciar-sesion']);
+        // Limpiar token y redirigir a login
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUser');
+        router.navigate(['/iniciar-sesion']);
       } else if (error.status === 403) {
         // Sin permisos
         message = 'No tienes permisos para realizar esta acción.';

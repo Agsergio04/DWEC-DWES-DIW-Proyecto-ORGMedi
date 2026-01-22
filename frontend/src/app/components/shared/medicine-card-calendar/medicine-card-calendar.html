@@ -1,19 +1,19 @@
 <article class="medicine-card-calendar">
   <!-- Hora de toma (solo si es proporcionada) -->
-  <div *ngIf="displayTime" class="medicine-card-calendar__time">{{ displayTime }}</div>
+  <time *ngIf="displayTime" class="medicine-card-calendar__time" [dateTime]="displayTime">{{ displayTime }}</time>
 
   <!-- Icono + Título -->
-  <div class="medicine-card-calendar__content">
-    <div class="medicine-card-calendar__icon">
+  <header class="medicine-card-calendar__content">
+    <figure class="medicine-card-calendar__icon" aria-hidden="true">
       <svg class="medicine-card-calendar__icon-svg" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M6.19589 6.19589L11.8041 11.8041M7.79824 15.81L15.81 7.79824C16.1843 7.43136 16.4823 6.99391 16.6865 6.51117C16.8908 6.02844 16.9973 5.51 16.9999 4.98584C17.0026 4.46168 16.9013 3.94219 16.7019 3.45742C16.5026 2.97264 16.2091 2.5322 15.8384 2.16156C15.4678 1.79092 15.0274 1.49743 14.5426 1.29806C14.0578 1.09869 13.5383 0.997403 13.0142 1.00005C12.49 1.0027 11.9716 1.10923 11.4888 1.31348C11.0061 1.51774 10.5686 1.81566 10.2018 2.19003L2.19003 10.2018C1.81566 10.5686 1.51774 11.0061 1.31348 11.4888C1.10923 11.9716 1.0027 12.49 1.00005 13.0142C0.997403 13.5383 1.09869 14.0578 1.29806 14.5426C1.49743 15.0274 1.79092 15.4678 2.16156 15.8384C2.5322 16.2091 2.97264 16.5026 3.45742 16.7019C3.94219 16.9013 4.46168 17.0026 4.98584 16.9999C5.51 16.9973 6.02844 16.8908 6.51117 16.6865C6.99391 16.4823 7.43136 16.1843 7.79824 15.81Z" 
           [attr.stroke]="getColorHex(medicine.color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-    </div>
+    </figure>
     <h3 class="medicine-card-calendar__title" [style.color]="getColorHex(medicine.color)">
       {{ medicine.nombre }}
     </h3>
-  </div>
+  </header>
 
   <!-- Botón de estado (consumido/no consumido) -->
   <button 
@@ -21,7 +21,9 @@
     [class.medicine-card-calendar__status-btn--consumed]="medicine.consumed"
     (click)="toggleConsumption()"
     [disabled]="saving"
-    [attr.aria-label]="'Marcar ' + medicine.nombre + ' como ' + (medicine.consumed ? 'no consumido' : 'consumido')">
-    {{ medicine.consumed ? '✓' : '✕' }}
+    type="button"
+    [attr.aria-label]="'Marcar ' + medicine.nombre + ' como ' + (medicine.consumed ? 'no consumido' : 'consumido')"
+    [attr.aria-pressed]="medicine.consumed">
+    <span aria-hidden="true">{{ medicine.consumed ? '✓' : '✕' }}</span>
   </button>
 </article>

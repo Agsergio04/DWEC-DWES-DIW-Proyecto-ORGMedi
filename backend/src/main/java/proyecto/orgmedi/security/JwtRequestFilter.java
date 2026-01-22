@@ -29,9 +29,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         final String requestUri = request.getRequestURI();
         
-        // Ignorar rutas de health y actuator
-        if (requestUri.startsWith("/actuator")) {
-            logger.debug("[JwtRequestFilter] Skipping JWT validation for actuator endpoint: " + requestUri);
+        // Ignorar rutas públicas (auth y actuator)
+        if (requestUri.startsWith("/api/auth") || requestUri.startsWith("/actuator")) {
+            logger.debug("[JwtRequestFilter] Skipping JWT validation for public endpoint: " + requestUri);
             chain.doFilter(request, response);
             return;
         }

@@ -2,7 +2,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
-  background: linear-gradient(135deg, #f0f8ff 0%, #f5f5f5 100%);
+  background: linear-gradient(135deg, var(--color-primario-disabled) 0%, var(--color-fondo-primario) 100%);
   min-height: 100vh;
 }
 
@@ -10,18 +10,18 @@
   text-align: center;
   margin-bottom: 50px;
   padding-bottom: 30px;
-  border-bottom: 3px solid #b8e6a1;
+  border-bottom: 3px solid var(--color-secundario-primary);
 
   h1 {
     font-size: 2.5rem;
-    color: #2d5a2d;
+    color: var(--color-texto_borde_cajas);
     margin: 0 0 10px 0;
     font-weight: 700;
   }
 
   p {
     font-size: 1.1rem;
-    color: #666;
+    color: var(--color-texto_borde_cajas);
     margin: 0;
   }
 }
@@ -55,14 +55,14 @@
 
   h2 {
     font-size: 1.5rem;
-    color: #2d5a2d;
+    color: var(--color-texto_borde_cajas);
     margin: 0 0 8px 0;
     font-weight: 600;
   }
 
   .section-description {
     font-size: 0.9rem;
-    color: #888;
+    color: var(--color-texto_borde_cajas);
     margin: 0;
     font-style: italic;
   }
@@ -71,37 +71,37 @@
 .demo-example {
   margin: 25px 0;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: var(--color-fondo-primario);
   border-radius: 12px;
-  border-left: 4px solid #b8e6a1;
+  border-left: 4px solid var(--color-secundario-primary);
 }
 
 .result-section {
   margin-top: 25px;
   padding-top: 25px;
-  border-top: 2px solid #e0e0e0;
+  border-top: 2px solid var(--color-texto_borde_cajas);
 
   h3 {
     font-size: 1rem;
-    color: #2d5a2d;
+    color: var(--color-texto_borde_cajas);
     margin: 0 0 12px 0;
     font-weight: 600;
   }
 }
 
 .result-box {
-  background: linear-gradient(135deg, #f0fff4 0%, #e8f5e9 100%);
+  background: linear-gradient(135deg, var(--color-primario-disabled) 0%, var(--color-secundario-disabled) 100%);
   padding: 15px;
   border-radius: 8px;
-  border: 1px solid #c8e6c9;
+  border: 1px solid var(--color-secundario-hover);
 
   p {
     margin: 8px 0;
     font-size: 0.95rem;
-    color: #333;
+    color: var(--color-texto_borde_cajas);
 
     strong {
-      color: #2d5a2d;
+      color: var(--color-texto_borde_cajas);
       font-weight: 600;
     }
   }
@@ -111,7 +111,7 @@
     height: 60px;
     border-radius: 8px;
     margin-top: 12px;
-    border: 2px solid #999;
+    border: 2px solid var(--color-texto_borde_cajas);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 }

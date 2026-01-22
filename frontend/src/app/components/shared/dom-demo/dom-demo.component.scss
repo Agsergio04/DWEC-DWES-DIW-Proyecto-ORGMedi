@@ -1,16 +1,16 @@
 .dom-demo-root {
-  border: 1px dashed #ccc;
+  border: 1px dashed var(--color-texto_borde_cajas);
   padding: 1rem;
   border-radius: 6px;
-  background: #fff7fb;
+  background: var(--color-primario-disabled);
 }
 
 .demo-contenedor {
   min-height: 40px;
   padding: 0.5rem;
   margin-bottom: 0.75rem;
-  background: #f6f1f4;
-  color: #3a3a3a;
+  background: var(--color-primario-off);
+  color: var(--color-texto_borde_cajas);
 }
 
 .controls {
@@ -24,11 +24,11 @@
 .demo-item {
   margin-top: 0.5rem;
   padding: 0.4rem;
-  background: #1a73e8;
+  background: var(--color-primario-primary);
   border-radius: 4px;
 }
 
 .nota {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-texto_borde_cajas);
 }

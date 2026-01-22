@@ -1,43 +1,44 @@
 <section class="page page--home">
-  <div class="page__container">
-    <div class="home-header">
+  <article class="page__container">
+    <header class="home-header">
       <h1 class="home-title">ORGMedi</h1>
       <p class="home-description">ORGMedi es una aplicacion con la cual podras gestionar el consumo de los medicamentos de manera sencilla, cómoda y a tu gusto.</p>
-    </div>
+    </header>
 
-    <div class="features-section">
-      <div class="feature-card">
-        <div class="feature-icon-wrapper">
-          <img src="/Icono engranaje.svg" alt="Medicamentos personalizados" class="feature-icon" />
-        </div>
-        <div class="feature-content">
+    <section class="features-section" aria-label="Características principales">
+      <article class="feature-card">
+        <figure class="feature-icon-wrapper">
+          <img src="/Icono engranaje.svg" alt="" class="feature-icon" aria-hidden="true" />
+        </figure>
+        <section class="feature-content">
           <h2>Medicamentos personalizados</h2>
           <p>ORGMedi es la herramienta por la cual podras gestionar tu calendario con el consumo de medicamentos de manera visual e intuitiva.</p>
-        </div>
-      </div>
+        </section>
+      </article>
 
-      <div class="feature-card">
-        <div class="feature-icon-wrapper">
-          <img src="/Icono Home.svg" alt="Calendario de consumo" class="feature-icon" />
-        </div>
-        <div class="feature-content">
+      <article class="feature-card">
+        <figure class="feature-icon-wrapper">
+          <img src="/Icono Home.svg" alt="" class="feature-icon" aria-hidden="true" />
+        </figure>
+        <section class="feature-content">
           <h2>Calendario de consumo</h2>
           <p>ORGMedi es la herramienta por la cual podras personalizar un calendario con el consumo de medicamentos diseñada solo para ti.</p>
-        </div>
-      </div>
-    </div>
+        </section>
+      </article>
+    </section>
 
-    <div class="button-wrapper">
+    <footer class="button-wrapper">
       <app-button 
         variant="primary" 
         [width]="'18rem'"
         [height]="'2.75rem'"
         [fontSize]="'1.75rem'"
         (clicked)="navigateToRegister()"
+        aria-label="Comienza ahora con ORGMedi"
       >
         Comienza Ahora
       </app-button>
-    </div>
-  </div>
+    </footer>
+  </article>
 </section>
 

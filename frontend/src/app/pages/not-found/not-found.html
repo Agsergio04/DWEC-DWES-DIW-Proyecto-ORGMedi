@@ -1,5 +1,5 @@
-<div class="not-found-container">
-  <div class="not-found-content">
+<section class="not-found-container" role="region" aria-label="Página no encontrada">
+  <article class="not-found-content" role="status">
     <h1 class="error-code">404</h1>
     <h2 class="error-title">Página no encontrada</h2>
     <p class="error-description">
@@ -11,8 +11,9 @@
       [height]="'2.75rem'"
       [fontSize]="'1.75rem'"
       (clicked)="navigateToHome()"
+      aria-label="Volver al inicio"
     >
       Volver al inicio
     </app-button>
-  </div>
-</div>
+  </article>
+</section>

@@ -3,6 +3,8 @@
   [class.calendar-button--today]="isToday"
   [class.calendar-button--selected]="isSelected"
   (click)="onClick()"
-  [attr.aria-label]="'Día ' + day">
-  {{ day }}
+  [attr.aria-label]="'Día ' + day"
+  [attr.aria-pressed]="isSelected"
+  type="button">
+  <span>{{ day }}</span>
 </button>

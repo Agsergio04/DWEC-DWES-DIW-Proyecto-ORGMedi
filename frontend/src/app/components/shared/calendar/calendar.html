@@ -1,54 +1,66 @@
+<section class="calendar" role="application" aria-label="Calendario semanal de medicamentos">
+  <!-- Encabezado con fecha actual -->
+  <header class="calendar__header">
+    <time 
+      class="calendar__current-date"
+      [attr.datetime]="getCurrentDateFormatted()"
+      aria-live="polite"
+    >
+      {{ getCurrentDateFormatted() }}
+    </time>
+  </header>
 
-<div class="calendar">
-  <!-- Header con fecha actual (derecha) -->
-  <div class="calendar__header">
-    <span class="calendar__current-date">{{ getCurrentDateFormatted() }}</span>
-  </div>
-
-  <!-- Contenedor HORIZONTAL con botones de navegación -->
-  <div class="calendar__week-container">
-    <!-- Botón navegación anterior (izquierda) -->
+  <!-- Navegación semanal -->
+  <nav 
+    class="calendar__week-container" 
+    aria-label="Navegación de semanas y selección de días"
+  >
+    <!-- Botón semana anterior -->
     <button
       class="calendar__nav-btn calendar__nav-btn--prev"
       (click)="previousWeek()"
-      aria-label="Semana anterior"
+      aria-label="Ir a la semana anterior"
       type="button"
     >
-      ‹
+      <span aria-hidden="true">‹</span>
     </button>
 
-    <!-- Contenedor HORIZONTAL de días -->
-    <div class="calendar__week">
-      <div
+    <!-- Lista de días de la semana -->
+    <ol class="calendar__week" role="group" aria-label="Días de la semana actual">
+      <li
         *ngFor="let day of weekDays; trackBy: trackByDate"
         class="calendar__day-item"
       >
         <!-- Nombre del día -->
-        <div class="calendar__day-name">
+        <span class="calendar__day-name" aria-hidden="true">
           {{ day.dayName }}
-        </div>
+        </span>
 
-        <!-- Número del día (botón seleccionable) -->
+        <!-- Botón de selección de día -->
         <button
           [ngClass]="getDayClass(day)"
           (click)="selectDay(day)"
           type="button"
-          [attr.aria-label]="day.date | date: 'long'"
+          [attr.aria-label]="getFullDayLabel(day)"
+          [attr.aria-pressed]="isSelectedDay(day)"
+          [attr.aria-current]="isToday(day) ? 'date' : null"
           [disabled]="!day.isCurrentMonth"
         >
-          {{ day.dayNumber }}
+          <time [attr.datetime]="day.date | date: 'yyyy-MM-dd'">
+            {{ day.dayNumber }}
+          </time>
         </button>
-      </div>
-    </div>
+      </li>
+    </ol>
 
-    <!-- Botón navegación siguiente (derecha) -->
+    <!-- Botón semana siguiente -->
     <button
       class="calendar__nav-btn calendar__nav-btn--next"
       (click)="nextWeek()"
-      aria-label="Próxima semana"
+      aria-label="Ir a la próxima semana"
       type="button"
     >
-      ›
+      <span aria-hidden="true">›</span>
     </button>
-  </div>
-</div>
+  </nav>
+</section>

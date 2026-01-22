@@ -89,6 +89,7 @@ public class MedicamentoService {
         m.setFechaFin(dto.getFechaFin());
         m.setColor(dto.getColor());
         m.setFrecuencia(dto.getFrecuencia());
+        m.setConsumed(dto.getConsumed() != null ? dto.getConsumed() : false);
         return m;
     }
 
@@ -102,6 +103,7 @@ public class MedicamentoService {
         dto.setFechaFin(m.getFechaFin());
         dto.setColor(m.getColor());
         dto.setFrecuencia(m.getFrecuencia());
+        dto.setConsumed(m.getConsumed() != null ? m.getConsumed() : false);
         return dto;
     }
 

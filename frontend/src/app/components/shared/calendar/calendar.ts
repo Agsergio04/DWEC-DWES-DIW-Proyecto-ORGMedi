@@ -106,20 +106,21 @@ export class CalendarComponent implements OnInit {
       const dayDate = new Date(startOfWeek);
       dayDate.setDate(dayDate.getDate() + i);
 
-      const isToday = this.isToday(dayDate);
       const isCurrentMonth = dayDate.getMonth() === date.getMonth();
 
       // Obtener dosis para este día
       const dayDoses = this.getDosesForDate(dayDate);
 
-      this.weekDays.push({
+      const dayObject: CalendarDay = {
         date: dayDate,
         dayNumber: dayDate.getDate(),
         dayName: this.dayNames[dayDate.getDay()],
-        isToday,
+        isToday: this.isTodayInternal(dayDate),
         isCurrentMonth,
         doses: dayDoses,
-      });
+      };
+
+      this.weekDays.push(dayObject);
     }
   }
 
@@ -147,15 +148,22 @@ export class CalendarComponent implements OnInit {
   }
 
   /**
-   * Verifica si una fecha es hoy
+   * Verifica si una fecha es hoy (privado, para uso interno)
    */
-  private isToday(date: Date): boolean {
+  private isTodayInternal(date: Date): boolean {
     const today = new Date();
     return (
       date.getDate() === today.getDate() &&
       date.getMonth() === today.getMonth() &&
       date.getFullYear() === today.getFullYear()
     );
+  }
+
+  /**
+   * Verifica si un día es hoy (público, para el template)
+   */
+  isToday(day: CalendarDay): boolean {
+    return day.isToday;
   }
 
   /**
@@ -216,5 +224,33 @@ export class CalendarComponent implements OnInit {
     }
 
     return classes;
+  }
+
+  /**
+   * Obtiene la etiqueta accesible completa para un día
+   * Incluye nombre del día, número y si es hoy
+   */
+  getFullDayLabel(day: CalendarDay): string {
+    const dayOfWeekName = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const nameOfDay = dayOfWeekName[day.date.getDay()];
+    const dayNum = day.dayNumber;
+    const monthNum = day.date.getMonth() + 1;
+    const year = day.date.getFullYear();
+    
+    let label = `${nameOfDay}, ${dayNum}/${monthNum}/${year}`;
+    
+    if (day.isToday) {
+      label += ' (Hoy)';
+    }
+    
+    return label;
+  }
+
+  /**
+   * Verifica si un día está seleccionado
+   */
+  isSelectedDay(day: CalendarDay): boolean {
+    return this.selectedDate !== null && 
+           this.selectedDate.getTime() === day.date.getTime();
   }
 }

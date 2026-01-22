@@ -4,11 +4,11 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-texto_borde_cajas);
 
   // Header con fondo rosa
   &__header {
-    background-color: var(--color-primario);
+    background-color: var(--color-primario-primary);
     padding: 12px 16px;
     display: flex;
     align-items: center;
@@ -24,7 +24,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     
     svg {
@@ -37,9 +36,9 @@
 
   // Título
   &__title {
-    font-family: 'Poppins', serif;
+    font-family: var(--font-primary);
     font-size: 2.5rem;
-    color: var(--color-texto_borde_cajas);
+    color: white;
     font-weight: 400;
     letter-spacing: -0.02em;
     margin: 0;
@@ -60,14 +59,17 @@
     padding: 0;
     width: 32px;
     height: 32px;
-    color: var(--color-texto_borde_cajas);
+    color: var(--color-bordes_marco_botones);
     transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
       transform: scale(1.1);
     }
 
-    svg {
+    svg, img {
       width: 100%;
       height: 100%;
     }
@@ -110,7 +112,7 @@
   }
 
   &__text {
-    color: var(--color-texto_borde_cajas);
+    color: var(--color-bordes_marco_botones);
     font-size: 1.125rem;
     margin: 0;
     display: flex;
@@ -125,5 +127,14 @@
   &__value {
     font-weight: 400;
     opacity: 0.9;
+  }
+}
+
+/* Dark mode styles */
+:root[data-theme='dark'] .medicine-card {
+  background: #2a2a2a;
+
+  &__content {
+    background: #2a2a2a;
   }
 }

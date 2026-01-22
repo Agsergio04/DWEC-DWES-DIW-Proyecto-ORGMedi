@@ -6,6 +6,15 @@
   background: linear-gradient(180deg, rgba(217, 123, 191, 0.1) 0%, rgba(217, 123, 191, 0.05) 100%);
 }
 
+/* Hacer que las líneas del fieldset se fusionen con el fondo (bordes transparentes)
+   Esto permite que, sobre fondos gradient/imagen, el fieldset no destaque con un color fijo. */
+.page--medicines fieldset {
+  border: 1px solid transparent;
+  /* Evita que el fondo del fieldset se recorte por el borde en navegadores que usan background-clip */
+  background-clip: padding-box;
+}
+
+
 .page__container {
   max-width: 600px;
   margin: 0 auto;

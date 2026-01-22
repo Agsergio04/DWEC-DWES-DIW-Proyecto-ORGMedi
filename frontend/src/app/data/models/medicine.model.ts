@@ -56,6 +56,7 @@ export interface UpdateMedicineDto {
   fechaFin?: string;
   color?: string;
   frecuencia?: number;
+  consumed?: boolean;
 }
 
 /**

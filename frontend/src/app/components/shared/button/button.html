@@ -2,17 +2,16 @@
   class="button"
   [ngClass]="['button--' + variant, disabled ? 'button--disabled' : '', fullWidth ? 'button--fullwidth' : '']"
   [disabled]="disabled"
-  [attr.aria-disabled]="disabled"
-  [attr.role]="'button'"
-  [attr.tabindex]="disabled ? -1 : 0"
+  [tabindex]="disabled ? -1 : 0"
   [style.width]="width"
   [style.height]="height"
   [style.padding]="padding"
   [style.font-size]="fontSize"
   (click)="onClick($event)"
   (keydown)="onKeydown($event)"
-  [attr.type]="type"
+  [type]="type"
+  type="button"
 >
-  <img *ngIf="icon" [src]="icon" class="button__icon" />
+  <img *ngIf="icon" [src]="icon" class="button__icon" [attr.aria-hidden]="true" />
   <ng-content></ng-content>
 </button>

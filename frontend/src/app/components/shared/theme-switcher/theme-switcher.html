@@ -1,5 +1,13 @@
-<button class="theme-switcher" (click)="toggle()" [attr.aria-pressed]="current === 'dark'" aria-label="Cambiar tema">
-  <ng-container *ngIf="current !== 'dark'">☀️</ng-container>
-  <ng-container *ngIf="current === 'dark'">🌙</ng-container>
+<button 
+  class="theme-switcher" 
+  (click)="toggle()" 
+  [attr.aria-pressed]="current === 'dark'" 
+  aria-label="Cambiar tema a {{ current === 'dark' ? 'modo claro' : 'modo oscuro' }}"
+  type="button"
+>
+  <span aria-hidden="true">
+    <ng-container *ngIf="current !== 'dark'">☀️</ng-container>
+    <ng-container *ngIf="current === 'dark'">🌙</ng-container>
+  </span>
 </button>
 

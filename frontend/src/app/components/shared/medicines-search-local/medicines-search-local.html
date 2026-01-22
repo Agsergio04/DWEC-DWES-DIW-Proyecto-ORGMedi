@@ -1,14 +1,14 @@
-<div class="search-container">
+<section class="search-container" aria-labelledby="search-title">
   <!-- Header -->
   <header class="header">
-    <h2>Búsqueda Local de Medicamentos</h2>
+    <h1 id="search-title">Búsqueda Local de Medicamentos</h1>
     <p class="subtitle">Filtrado en tiempo real con debounce (sin llamadas API)</p>
   </header>
 
   <!-- Barra de búsqueda -->
   <div class="search-bar">
     <div class="search-input-wrapper">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
         <circle cx="11" cy="11" r="8"/>
         <path d="m21 21-4.35-4.35"/>
       </svg>
@@ -18,7 +18,9 @@
         [formControl]="searchControl" 
         placeholder="Buscar por nombre, dosis o descripción..."
         class="search-input"
-        autocomplete="off">
+        autocomplete="off"
+        aria-label="Buscar medicamentos"
+        aria-describedby="search-info">
       
       @if (searchControl.value) {
         <button 
@@ -26,13 +28,13 @@
           class="clear-button"
           type="button"
           aria-label="Limpiar búsqueda">
-          ✕
+          <span aria-hidden="true">✕</span>
         </button>
       }
     </div>
 
     <!-- Info técnica -->
-    <div class="search-info">
+    <div class="search-info" id="search-info">
       <span class="info-badge">
         <strong>Debounce:</strong> 300ms
       </span>
@@ -46,16 +48,17 @@
   </div>
 
   <!-- Resultados -->
-  <div class="results-section">
+  <section class="results-section" aria-labelledby="results-title">
+    <h2 id="results-title" class="visually-hidden">Resultados de búsqueda</h2>
     @if (filteredMedicines$ | async; as medicines) {
       <!-- Info de resultados -->
       <div class="results-header">
         @if (searchControl.value) {
-          <p class="results-count">
+          <p class="results-count" role="status">
             Encontrados <strong>{{ medicines.length }}</strong> medicamento(s)
           </p>
         } @else {
-          <p class="results-count">
+          <p class="results-count" role="status">
             Mostrando <strong>{{ medicines.length }}</strong> medicamento(s)
           </p>
         }
@@ -63,10 +66,10 @@
 
       <!-- Lista de medicamentos -->
       @if (medicines.length > 0) {
-        <ul class="medicines-list">
+        <ul class="medicines-list" role="list">
           @for (medicine of medicines; track medicine.id) {
-            <li class="medicine-item">
-              <div class="medicine-info">
+            <li class="medicine-item" role="listitem">
+              <article class="medicine-info">
                 <h3 class="medicine-name">{{ medicine.name }}</h3>
                 @if (medicine.dosage) {
                   <p class="medicine-dosage">{{ medicine.dosage }}</p>
@@ -74,15 +77,15 @@
                 @if (medicine.description) {
                   <p class="medicine-description">{{ medicine.description }}</p>
                 }
-              </div>
+              </article>
             </li>
           }
         </ul>
       } @else {
-        <div class="no-results">
+        <div class="no-results" role="status" aria-live="polite">
           <p>No se encontraron medicamentos que coincidan con "{{ searchControl.value }}"</p>
         </div>
       }
     }
-  </div>
-</div>
+  </section>
+</section>

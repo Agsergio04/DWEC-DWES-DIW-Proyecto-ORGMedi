@@ -38,8 +38,6 @@ app.use((err, req, res, next) => {
   res.status(500).send('Internal Server Error');
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Frontend corriendo en http://0.0.0.0:${PORT}`);
-  console.log(`📊 Health check: http://0.0.0.0:${PORT}/health`);
+app.listen(PORT, 'localhost', () => {
+  console.log(`Frontend corriendo en http://localhost:${PORT}`);
 });
-

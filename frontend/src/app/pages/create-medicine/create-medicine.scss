@@ -68,7 +68,7 @@
   padding: $espaciado-12 $espaciado-16;
   border: none;
   border-radius: $radius-sm;
-  background: #A8E6A1;
+  background: var(--color-secundario-hover);
   font-size: $font-size-md;
   color: var(--color-texto_borde_cajas);
   font-family: inherit;

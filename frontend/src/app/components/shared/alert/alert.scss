@@ -46,9 +46,9 @@
 }
 
 .alert--warning {
-  background: #ffae42;
-  color: #4a2b00;
-  border-color: #ff9800;
+  background: var(--color-primario-disabled);
+  color: var(--color-texto_borde_cajas);
+  border-color: var(--color-primario-hover);
 }
 
 .alert--info {

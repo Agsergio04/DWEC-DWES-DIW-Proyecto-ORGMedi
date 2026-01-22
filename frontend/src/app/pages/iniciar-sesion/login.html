@@ -1,9 +1,13 @@
-<section class="login-page">
-	<div class="login-page__container">
-		<h1 class="login-page__title">Iniciar Sesión</h1>
-		<p class="login-page__description">Para acceder al calendario y la creación de los medicamentos primero tendrás que iniciar sesión en caso de que tengas una cuenta existente.</p>
+<section class="login-page" role="region" aria-labelledby="login-page-title">
+	<article class="login-page__container">
+		<header>
+			<h1 class="login-page__title" id="login-page-title">Iniciar Sesión</h1>
+			<p class="login-page__description">Para acceder al calendario y la creación de los medicamentos primero tendrás que iniciar sesión en caso de que tengas una cuenta existente.</p>
+		</header>
 		
-		<app-login-form></app-login-form>
-	</div>
+		<main class="login-page__form-wrapper">
+			<app-login-form aria-label="Formulario de iniciar sesión"></app-login-form>
+		</main>
+	</article>
 </section>
 

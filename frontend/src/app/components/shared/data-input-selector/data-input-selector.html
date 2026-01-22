@@ -1,12 +1,15 @@
 <div class="selector-container">
-  <div 
+  <button
     class="selector-button"
     [class.open]="isOpen"
     [class.selected]="selectedOption !== null"
     [class.disabled]="disabled"
     (click)="toggleDropdown()"
-    [attr.tabindex]="disabled ? -1 : 0">
-    
+    [disabled]="disabled"
+    type="button"
+    [attr.aria-haspopup]="'listbox'"
+    [attr.aria-expanded]="isOpen"
+  >
     <span class="selector-text">{{ getDisplayText() }}</span>
     
     <svg 
@@ -15,19 +18,22 @@
       width="20" 
       height="20" 
       viewBox="0 0 20 20" 
-      fill="none">
+      fill="none"
+      aria-hidden="true">
       <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-  </div>
+  </button>
 
-  <div class="options-container" *ngIf="isOpen" (click)="$event.stopPropagation()">
+  <div class="options-container" *ngIf="isOpen" (click)="$event.stopPropagation()" role="listbox">
     <div class="options-list" [class.color-mode]="type === 'color'">
       <div 
         *ngFor="let option of options; trackBy: trackById"
         class="option-item"
         [class.color-option]="type === 'color'"
         [class.selected]="selectedOption?.id === option.id"
-        (click)="selectOption(option)">
+        (click)="selectOption(option)"
+        role="option"
+        [attr.aria-selected]="selectedOption?.id === option.id">
         
         <ng-container [ngSwitch]="type">
           <!-- Modo texto -->
@@ -40,7 +46,9 @@
             <div class="color-wrapper">
               <div 
                 class="color-box" 
-                [style.backgroundColor]="option.color">
+                [style.backgroundColor]="option.color"
+                [attr.aria-label]="option.label"
+              >
               </div>
               <span class="color-label">{{ option.label }}</span>
             </div>

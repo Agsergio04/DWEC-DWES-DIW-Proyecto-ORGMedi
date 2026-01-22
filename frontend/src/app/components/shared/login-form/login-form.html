@@ -1,27 +1,37 @@
 <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
-	<app-loading-spinner [isVisible]="isLoading" message="Iniciando sesión..." [fullScreen]="false"></app-loading-spinner>
+	<app-loading-spinner [isVisible]="isLoading" message="Validando credenciales..." [fullScreen]="true"></app-loading-spinner>
 
-	<fieldset class="login-form__fieldset">
+	<!-- Mensaje de error general -->
+	<div class="login-form__error-message" role="alert" *ngIf="errorMessage && !isLoading">
+		{{ errorMessage }}
+	</div>
+
+	<fieldset class="login-form__fieldset" [disabled]="isLoading">
+		
 		<div class="login-form__field-group">
-			<label class="login-form__label">Introduce el nombre de usuario :</label>
+			<label for="usuario" class="login-form__label">Introduce el nombre de usuario:</label>
 			<app-data-input
+				id="usuario"
 				formControlName="usuario"
 				placeholder="Usuario123"
 				icon="/Icono Usuario.svg"
 				type="text"
+				aria-describedby="usuario-error"
 			></app-data-input>
-			<div class="form-error" *ngIf="loginForm.get('usuario')?.touched && loginForm.get('usuario')?.invalid">{{ getErrorMessage('usuario') }}</div>
+			<div id="usuario-error" class="form-error" role="alert" *ngIf="submitted && loginForm.get('usuario')?.invalid">{{ getErrorMessage('usuario') }}</div>
 		</div>
 
 		<div class="login-form__field-group">
-			<label class="login-form__label">Introduce la contraseña :</label>
+			<label for="password" class="login-form__label">Introduce la contraseña:</label>
 			<app-data-input
+				id="password"
 				formControlName="password"
 				placeholder="Contraseña"
 				icon="/Icono contraseña.svg"
 				type="password"
+				aria-describedby="password-error"
     ></app-data-input>
-			<div class="form-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">{{ getErrorMessage('password') }}</div>
+			<div id="password-error" class="form-error" role="alert" *ngIf="submitted && loginForm.get('password')?.invalid">{{ getErrorMessage('password') }}</div>
 		</div>
 
 		<app-button
@@ -35,18 +45,19 @@
 			{{ isLoading ? 'Iniciando sesión...' : 'Iniciar Sesion' }}
 		</app-button>
 
-		<div class="login-form__register-section">
-			<p class="login-form__register-text">¿No tienes cuenta?</p>
+		<section class="login-form__register-section">
+			<h2 class="login-form__register-heading">¿No tienes cuenta?</h2>
 			<a routerLink="/registrarse" class="login-form__register-link">
 				<app-button
 					variant="primary"
 					[width]="'100%'"
 					[padding]="'12px 24px'"
 					[fontSize]="'1.25rem'"
+					[disabled]="isLoading"
 				>
 					Crear Cuenta
 				</app-button>
 			</a>
-		</div>
+		</section>
 	</fieldset>
 </form>

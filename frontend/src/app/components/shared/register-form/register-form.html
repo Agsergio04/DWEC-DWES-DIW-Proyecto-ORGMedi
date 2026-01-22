@@ -1,46 +1,55 @@
 <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
-	<app-loading-spinner [isVisible]="isLoading" message="Creando cuenta..." [fullScreen]="false"></app-loading-spinner>
+	<app-loading-spinner [isVisible]="isLoading" message="Validando credenciales..." [fullScreen]="true"></app-loading-spinner>
 
 	<fieldset class="register-form__fieldset">
+		
 		<div class="register-form__field-group">
-			<label class="register-form__label">Introduce el nombre de usuario :</label>
+			<label for="username" class="register-form__label">Introduce el nombre de usuario:</label>
 			<app-data-input
+				id="username"
 				formControlName="username"
 				placeholder="Usuario123"
 				icon="/Icono Usuario.svg"
 				type="text"
+				aria-describedby="username-error username-loading"
 			></app-data-input>
-			<div *ngIf="registerForm.get('username')?.pending" class="loading">Comprobando disponibilidad...</div>
-			<div class="form-error" *ngIf="registerForm.get('username')?.touched && registerForm.get('username')?.invalid">{{ getErrorMessage('username') }}</div>
+			<div id="username-loading" *ngIf="registerForm.get('username')?.pending" class="loading" role="status">Comprobando disponibilidad...</div>
+			<div id="username-error" class="form-error" *ngIf="registerForm.get('username')?.touched && registerForm.get('username')?.invalid" role="alert">{{ getErrorMessage('username') }}</div>
 		</div>
 
 		<div class="register-form__field-group">
-			<label class="register-form__label">Introduce la contraseña:</label>
+			<label for="password" class="register-form__label">Introduce la contraseña:</label>
 			<app-data-input
+				id="password"
 				formControlName="password"
 				placeholder="Contraseña"
 				icon="/Icono contraseña.svg"
 				type="password"
+				aria-describedby="password-error"
 			></app-data-input>
-			<div class="form-error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
-				<div *ngIf="registerForm.get('password')?.errors?.['noUppercase']">Debe contener al menos una letra mayúscula</div>
-				<div *ngIf="registerForm.get('password')?.errors?.['noLowercase']">Debe contener al menos una letra minúscula</div>
-				<div *ngIf="registerForm.get('password')?.errors?.['noNumber']">Debe contener al menos un número</div>
-				<div *ngIf="registerForm.get('password')?.errors?.['noSpecial']">Debe contener al menos un carácter especial</div>
-				<div *ngIf="registerForm.get('password')?.errors?.['minLength']">Debe tener al menos {{ registerForm.get('password')?.errors?.['minLength'].requiredLength }} caracteres</div>
+			<div id="password-error" class="form-error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" role="alert">
+				<ul>
+					<li *ngIf="registerForm.get('password')?.errors?.['noUppercase']">Debe contener al menos una letra mayúscula</li>
+					<li *ngIf="registerForm.get('password')?.errors?.['noLowercase']">Debe contener al menos una letra minúscula</li>
+					<li *ngIf="registerForm.get('password')?.errors?.['noNumber']">Debe contener al menos un número</li>
+					<li *ngIf="registerForm.get('password')?.errors?.['noSpecial']">Debe contener al menos un carácter especial</li>
+					<li *ngIf="registerForm.get('password')?.errors?.['minLength']">Debe tener al menos {{ registerForm.get('password')?.errors?.['minLength'].requiredLength }} caracteres</li>
+				</ul>
 			</div>
 		</div>
 
 		<div class="register-form__field-group">
-			<label class="register-form__label">Introduce el email:</label>
+			<label for="email" class="register-form__label">Introduce el email:</label>
 			<app-data-input
+				id="email"
 				formControlName="email"
 				placeholder="correo@ejemplo.com"
 				icon="/Icono de email.svg"
 				type="email"
+				aria-describedby="email-error email-loading"
 			></app-data-input>
-			<div *ngIf="registerForm.get('email')?.pending" class="loading">Verificando...</div>
-			<div class="form-error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">{{ getErrorMessage('email') }}</div>
+			<div id="email-loading" *ngIf="registerForm.get('email')?.pending" class="loading" role="status">Verificando...</div>
+			<div id="email-error" class="form-error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" role="alert">{{ getErrorMessage('email') }}</div>
 		</div>
 
 		<app-button
@@ -54,8 +63,8 @@
 			{{ registerForm.pending || isLoading ? 'Validando...' : 'Crear Cuenta' }}
 		</app-button>
 
-		<div class="register-form__login-section">
-			<p class="register-form__login-text">¿Ya tienes cuenta?</p>
+		<section class="register-form__login-section">
+			<h2 class="register-form__login-heading">¿Ya tienes cuenta?</h2>
 			<a routerLink="/iniciar-sesion" class="register-form__login-link">
 				<app-button
 					variant="primary"
@@ -66,6 +75,6 @@
 					Iniciar Sesion
 				</app-button>
 			</a>
-		</div>
+		</section>
 	</fieldset>
 </form>

@@ -41,6 +41,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
+                // Desarrollo local
                 "http://localhost",
                 "http://localhost:80",
                 "http://localhost:4200",
@@ -48,7 +49,13 @@ public class SecurityConfig {
                 "http://127.0.0.1",
                 "http://127.0.0.1:80",
                 "http://127.0.0.1:4200",
-                "http://127.0.0.1:8080"
+                "http://127.0.0.1:8080",
+                // Docker compose interno
+                "http://frontend",
+                "http://frontend:80",
+                "http://frontend:4200",
+                // Producción en Render
+                "https://dwec-dwes-diw-proyecto-orgmedi.onrender.com"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));

@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   gap: $espaciado-20;
-  position: relative; /* Para que el spinner relativo funcione correctamente */
+  position: relative;
 }
 
 .register-form__fieldset {
@@ -17,6 +17,10 @@
   display: flex;
   flex-direction: column;
   gap: $espaciado-24;
+}
+
+.register-form__legend {
+  display: none;
 }
 
 .register-form__field-group {
@@ -31,12 +35,23 @@
   font-weight: $font-weight-medium;
   color: var(--color-texto_borde_cajas);
   margin-bottom: $espaciado-4;
+  line-height: 1.5;
 }
 
 .form-error {
   font-size: $font-size-sm;
-  color: #ff0202;
+  color: var(--color-negacion-primary);
   margin-top: $espaciado-8;
+}
+
+.form-error ul {
+  margin: 0;
+  padding-left: $espaciado-20;
+  list-style-type: disc;
+}
+
+.form-error li {
+  margin-bottom: $espaciado-4;
 }
 
 .loading {
@@ -53,11 +68,12 @@
   margin-top: $espaciado-16;
 }
 
-.register-form__login-text {
+.register-form__login-heading {
   font-family: $font-primary;
   font-size: $font-size-md;
   color: var(--color-texto_borde_cajas);
   margin: 0;
+  font-weight: $font-weight-regular;
 }
 
 .register-form__login-link {
@@ -69,16 +85,8 @@
 /* Dark theme */
 :root[data-theme="dark"] {
   .register-form__label,
-  .register-form__login-text {
+  .register-form__login-heading {
     color: var(--color-texto_borde_cajas);
-  }
-
-  .register-form__login-button {
-    background-color: var(--color-primario-dark);
-
-    &:hover {
-      background-color: var(--color-primario-off);
-    }
   }
 }
 
@@ -90,12 +98,11 @@
   font-size: $font-size-md;
   color: var(--color-texto_borde_cajas);
 
-  background: var(--color-secundario-primary);
-  border: $border-medium solid var(--color-bordes_marco_botones);
+  //background: var(--color-secundario-primary);
+  border: none;
   border-radius: $radius-md;
 
-  transition: border-color $transition-normal,
-  background-color $transition-normal,
+  transition: background-color $transition-normal,
   box-shadow $transition-normal;
 
   &::placeholder {
@@ -104,7 +111,6 @@
 
   &:focus {
     outline: none;
-    border-color: var(--color-primario-primary);
     background: var(--color-secundario-hover);
     box-shadow: 0 0 0 3px rgba(var(--color-bordes_marco_botones-rgb), 0.08);
   }
@@ -132,8 +138,8 @@
   font-size: $font-size-md;
   font-weight: $font-weight-semibold;
 
-  background: $color-secundario-primary;
-  color: #fff;
+  background: var(--color-secundario-primary);
+  color: white;
   border: none;
   border-radius: $radius-md;
 

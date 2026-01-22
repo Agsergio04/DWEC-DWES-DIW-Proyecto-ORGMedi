@@ -28,17 +28,21 @@ export class RegisterPage {
 
     this.authService.register(data.email, data.username, data.password).subscribe({
       next: (success) => {
-        if (success) {
-          this.toastService.success('Cuenta creada exitosamente. Redirigiendo al calendario...');
-          this.router.navigate(['/calendario']);
-        }
+        // El spinner se cierra cuando el servidor responde
         this.isLoading = false;
+        if (success) {
+          this.toastService.success('Cuenta creada exitosamente. Redirigiendo...');
+          this.router.navigate(['/calendario']);
+        } else {
+          this.toastService.error('Error al crear la cuenta. Intenta de nuevo.');
+        }
       },
       error: (err) => {
+        // El spinner se cierra cuando el servidor responde con error
+        this.isLoading = false;
         console.error('Error al crear cuenta:', err);
         const errorMsg = err.error?.message || 'Error al crear la cuenta. Intenta de nuevo.';
         this.toastService.error(errorMsg);
-        this.isLoading = false;
       }
     });
   }

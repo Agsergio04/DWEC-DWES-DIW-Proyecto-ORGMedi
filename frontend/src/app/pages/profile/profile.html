@@ -1,80 +1,96 @@
 <section class="page page--profile" *ngIf="formInitialized && form">
-  <form class="page__container" [formGroup]="form">
+  <form class="page__container" [formGroup]="form" aria-label="Formulario de perfil de usuario">
     <!-- Encabezado -->
-    <div class="profile__title-section">
+    <header class="profile__title-section">
       <h1>Perfil</h1>
       <p class="profile__description">Aqui podras gestionar cuando has consumido los medicamentos</p>
-    </div>
+    </header>
 
-    <!-- Sección: Nombre de Usuario -->
-    <div class="profile__form-section">
-      <h2 class="profile__section-title">Nombre de Usuario</h2>
-      <p class="profile__section-subtitle">Aqui puedes ver el nombre de usuario</p>
-      
-      <p class="profile__input-label">Introduce un nuevo nombre de usuario para cambiarlo:</p>
-      <app-data-input
-        formControlName="username"
-        placeholder="Usuario123"
-        icon="/Icono Usuario.svg"
-        type="text"
-      ></app-data-input>
+    <main class="profile__form-content">
+      <!-- Sección: Nombre de Usuario -->
+      <fieldset class="profile__form-section">
+        <legend class="profile__section-title">Nombre de Usuario</legend>
+        <p class="profile__section-subtitle">Aqui puedes ver el nombre de usuario</p>
+        
+        <label for="username-field" class="profile__input-label">Introduce un nuevo nombre de usuario para cambiarlo:</label>
+        <app-data-input
+          id="username-field"
+          formControlName="username"
+          placeholder="Usuario123"
+          icon="/Icono Usuario.svg"
+          type="text"
+          aria-label="Nuevo nombre de usuario"
+        ></app-data-input>
 
-      <app-button
-        variant="primary"
-        [width]="'100%'"
-        [padding]="'12px 24px'"
-        [fontSize]="'1rem'"
-        (click)="changeUsername()"
-        [disabled]="!form.get('username')?.value"
-      >
-        Cambiar el nombre de usuario
-      </app-button>
-    </div>
+        <app-button
+          variant="primary"
+          [width]="'100%'"
+          [padding]="'12px 24px'"
+          [fontSize]="'1rem'"
+          (click)="changeUsername()"
+          [disabled]="!form.get('username')?.value"
+          type="button"
+          aria-label="Cambiar el nombre de usuario"
+        >
+          Cambiar el nombre de usuario
+        </app-button>
+      </fieldset>
 
-    <!-- Sección: Contraseña -->
-    <div class="profile__form-section">
-      <h2 class="profile__section-title">Contraseña</h2>
-      <p class="profile__section-subtitle">Introduce la contraseña actual y luego la nueva contraseña para poder cambiarla.</p>
-      
-      <p class="profile__input-label">Introduce la contraseña actual:</p>
-      <app-data-input
-        formControlName="currentPassword"
-        placeholder="Introduce la contraseña"
-        icon="/Icono contraseña.svg"
-        type="password"
-      ></app-data-input>
+      <!-- Sección: Contraseña -->
+      <fieldset class="profile__form-section">
+        <legend class="profile__section-title">Contraseña</legend>
+        <p class="profile__section-subtitle">Introduce la contraseña actual y luego la nueva contraseña para poder cambiarla.</p>
+        
+        <label for="current-password-field" class="profile__input-label">Introduce la contraseña actual:</label>
+        <app-data-input
+          id="current-password-field"
+          formControlName="currentPassword"
+          placeholder="Introduce la contraseña"
+          icon="/Icono contraseña.svg"
+          type="password"
+          aria-label="Contraseña actual"
+        ></app-data-input>
 
-      <p class="profile__input-label">Introduce la contraseña a la que se quiere cambiar:</p>
-      <app-data-input
-        formControlName="newPassword"
-        placeholder="Introduce la nueva contraseña"
-        icon="/Icono contraseña.svg"
-        type="password"
-      ></app-data-input>
+        <label for="new-password-field" class="profile__input-label">Introduce la contraseña a la que se quiere cambiar:</label>
+        <app-data-input
+          id="new-password-field"
+          formControlName="newPassword"
+          placeholder="Introduce la nueva contraseña"
+          icon="/Icono contraseña.svg"
+          type="password"
+          aria-label="Nueva contraseña"
+        ></app-data-input>
 
-      <app-button
-        variant="primary"
-        [width]="'100%'"
-        [padding]="'12px 24px'"
-        [fontSize]="'1rem'"
-        (click)="changePassword()"
-        [disabled]="!form.get('currentPassword')?.value || !form.get('newPassword')?.value"
-      >
-        Cambiar la contraseña
-      </app-button>
-    </div>
+        <app-button
+          variant="primary"
+          [width]="'100%'"
+          [padding]="'12px 24px'"
+          [fontSize]="'1rem'"
+          (click)="changePassword()"
+          [disabled]="!form.get('currentPassword')?.value || !form.get('newPassword')?.value"
+          type="button"
+          aria-label="Cambiar la contraseña"
+        >
+          Cambiar la contraseña
+        </app-button>
+      </fieldset>
 
-    <!-- Botón Cerrar Sesión -->
-    <app-button
-      variant="primary"
-      [width]="'100%'"
-      [padding]="'12px 24px'"
-      [fontSize]="'1rem'"
-      (click)="logout()"
-      class="profile__logout-btn"
-    >
-      Cerrar sesion
-    </app-button>
+      <!-- Botón Cerrar Sesión -->
+      <footer class="profile__actions">
+        <app-button
+          variant="primary"
+          [width]="'100%'"
+          [padding]="'12px 24px'"
+          [fontSize]="'1rem'"
+          (click)="logout()"
+          type="button"
+          class="profile__logout-btn"
+          aria-label="Cerrar sesión de usuario"
+        >
+          Cerrar sesion
+        </app-button>
+      </footer>
+    </main>
   </form>
 </section>
 

@@ -1,9 +1,12 @@
-<div class="tabs">
-  <div class="tabs__header" role="tablist">
+<section class="tabs" role="region" aria-labelledby="tabs-title">
+  <h2 id="tabs-title" class="visually-hidden">Navegación por pestañas</h2>
+  
+  <nav class="tabs__header" role="tablist" aria-label="Opciones de navegación">
     <button
       #tabButton
       *ngFor="let tab of tabs; trackBy: trackById; let i = index"
       class="tabs__tab"
+      [id]="'tab-' + tab.id"
       [class.tabs__tab--active]="isActive(tab.id)"
       [disabled]="tab.disabled"
       [attr.aria-selected]="isActive(tab.id)"
@@ -12,13 +15,14 @@
       role="tab"
       (click)="selectTab(tab.id)"
       (keydown)="onKeyDown($event, i)"
+      type="button"
     >
       {{ tab.label }}
     </button>
-  </div>
+  </nav>
 
-  <div class="tabs__content" role="tabpanel" [attr.aria-labelledby]="'tab-' + activeTabId">
+  <main class="tabs__content" role="tabpanel" [attr.aria-labelledby]="'tab-' + activeTabId">
     <ng-content></ng-content>
-  </div>
-</div>
+  </main>
+</section>
 

@@ -10,6 +10,28 @@
   position: relative; /* Para que el spinner relativo funcione correctamente */
 }
 
+.login-form__error-message {
+  padding: $espaciado-12 $espaciado-16;
+  background-color: var(--color-fondo-card);
+  border-left: 4px solid #d32f2f;
+  border-radius: 4px;
+  color: #d32f2f;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  animation: slideInDown 0.3s ease-out;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .login-form__fieldset {
   border: none;
   padding: 0;
@@ -17,6 +39,11 @@
   display: flex;
   flex-direction: column;
   gap: $espaciado-24;
+  
+  &:disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
 }
 
 .login-form__field-group {
@@ -51,6 +78,14 @@
   align-items: center;
   gap: $espaciado-16;
   margin-top: $espaciado-16;
+}
+
+.login-form__register-heading {
+  font-family: $font-primary;
+  font-size: $font-size-md;
+  color: var(--color-texto_borde_cajas)  ;
+  margin: 0;
+  font-weight: $font-weight-regular;
 }
 
 .login-form__register-text {
@@ -119,7 +154,7 @@
 .form-error {
   font-size: $font-size-xs;
   font-weight: $font-weight-medium;
-  color: $color-negacion-primary;
+  color: var(--color-negacion-primary);
   margin-top: -$espaciado-8;
 }
 
@@ -132,8 +167,7 @@
   font-size: $font-size-md;
   font-weight: $font-weight-semibold;
 
-  background: $color-secundario-primary;
-  color: #fff;
+  background: var(--color-secundario-primary);
   border: none;
   border-radius: $radius-md;
 
@@ -143,19 +177,19 @@
   box-shadow $transition-normal;
 
   &:hover {
-    background: $color-secundario-hover;
+    background: var(--color-secundario-hover);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba($color-secundario-primary, 0.3);
+    box-shadow: 0 6px 16px rgba(var(--color-secundario-primary-rgb), 0.3);
   }
 
   &:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba($color-secundario-primary, 0.2);
+    box-shadow: 0 2px 8px rgba(var(--color-secundario-primary-rgb), 0.2);
   }
 
   &:disabled {
-    background: $color-primario-disabled;
-    color: $color-texto_borde_cajas;
+    background: var(--color-primario-disabled);
+    color: var(--color-texto_borde_cajas);
     cursor: not-allowed;
     transform: none;
   }
@@ -177,13 +211,13 @@
 .link-primary {
   font-size: $font-size-md;
   font-weight: $font-weight-semibold;
-  color: $color-primario-primary;
+  color: var(--color-primario-primary);
   text-decoration: none;
 
   transition: color $transition-normal;
 
   &:hover {
-    color: $color-primario-hover;
+    color: var(--color-primario-hover);
     text-decoration: underline;
   }
 }

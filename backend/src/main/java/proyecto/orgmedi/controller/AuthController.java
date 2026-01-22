@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import proyecto.orgmedi.error.UnauthorizedException;
+import proyecto.orgmedi.error.ConflictException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,13 +90,13 @@ public class AuthController {
         // Verificar si el correo ya existe
         if (usuarioRepository.findByCorreo(request.getCorreo()).isPresent()) {
             logger.warn("Register failed: email already exists for correo={}", request.getCorreo());
-            throw new UnauthorizedException("El correo ya está registrado");
+            throw new ConflictException("El correo ya está registrado");
         }
 
         // Verificar si el usuario ya existe
         if (usuarioRepository.findByUsuario(request.getUsuario()).isPresent()) {
             logger.warn("Register failed: username already exists for usuario={}", request.getUsuario());
-            throw new UnauthorizedException("El usuario ya está registrado");
+            throw new ConflictException("El usuario ya está registrado");
         }
 
         // Hash de la contraseña

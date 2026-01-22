@@ -6,8 +6,8 @@
   gap: 12px;
   padding: 12px 16px;
   border-radius: 12px;
-  background: #f5f5f5;
-  border: 1px solid #e0e0e0;
+  background: var(--color-primario-primary);
+  border: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s, box-shadow 0.2s;
   min-height: 56px;
@@ -25,7 +25,7 @@
   left: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-primario-primary);
   line-height: 1;
 }
 
@@ -45,7 +45,6 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.6);
   border-radius: 8px;
 }
 
@@ -60,7 +59,7 @@
   margin: 0;
   word-break: break-word;
   overflow-wrap: break-word;
-  color: #333;
+  color: #ffffff;
 }
 
 /* ===== BOTÓN DE ESTADO ===== */

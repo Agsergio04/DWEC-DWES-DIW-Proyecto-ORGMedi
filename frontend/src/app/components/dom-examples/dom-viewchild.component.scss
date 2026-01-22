@@ -1,7 +1,7 @@
 :host { display:block; }
 
 .card {
-  border:1px solid #ddd;
+  border:1px solid var(--color-texto_borde_cajas);
   padding:10px;
   margin:10px 0;
   border-radius:6px;

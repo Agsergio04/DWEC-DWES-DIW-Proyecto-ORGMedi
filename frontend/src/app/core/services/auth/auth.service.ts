@@ -154,13 +154,34 @@ export class AuthService {
 
   /**
    * Cerrar sesión
+   * Borra el token JWT y todos los datos de sesión del localStorage
    */
   logout(): void {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('currentUser');
+    console.log('[AuthService] Cerrando sesión...');
+    
+    // Limpiar todos los datos de autenticación del localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('currentUser');
+      
+      // Limpiar cualquier otra data de sesión que pudiera estar guardada
+      const keysToRemove = Object.keys(localStorage).filter(key => 
+        key.includes('auth') || key.includes('token') || key.includes('user')
+      );
+      
+      keysToRemove.forEach(key => {
+        if (!['authToken', 'isLoggedIn', 'currentUser'].includes(key)) {
+          localStorage.removeItem(key);
+        }
+      });
+    }
+    
+    // Actualizar los estados observables
     this.isLoggedInSubject.next(false);
     this.currentUserSubject.next(null);
+    
+    console.log('[AuthService] ✓ Sesión cerrada correctamente. Token borrado del localStorage.');
   }
 
   /**

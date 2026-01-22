@@ -1,9 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MedicineService } from '../../data/medicine.service';
+import { MedicineStoreSignals } from '../../data/stores/medicine-signals.store';
 import { ApiError } from '../../data/models/medicine.model';
 import { MedicineFormComponent, MedicineFormData } from '../../components/shared/medicine-form/medicine-form';
+import { OcrDataService } from '../../core/services/ocr/ocr-data.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-medicine-page',
@@ -12,12 +16,16 @@ import { MedicineFormComponent, MedicineFormData } from '../../components/shared
   templateUrl: './create-medicine.html',
   styleUrls: ['./create-medicine.scss']
 })
-export class CreateMedicinePage implements OnInit {
+export class CreateMedicinePage implements OnInit, OnDestroy {
   private medicineService = inject(MedicineService);
   private router = inject(Router);
+  private ocrDataService = inject(OcrDataService);
+  private medicineStore = inject(MedicineStoreSignals);
+  private destroy$ = new Subject<void>();
 
   saving = false;
   error: ApiError | null = null;
+  ocrData: any = null;  // Almacena datos del OCR para mostrar en formulario
 
   // Mapeo de variantes a colores hex
   private colorMap: { [key: string]: string } = {
@@ -38,6 +46,21 @@ export class CreateMedicinePage implements OnInit {
     if (!authToken) {
       this.router.navigate(['/iniciar-sesion']);
     }
+
+    // Suscribirse a los datos del OCR
+    this.ocrDataService.ocrData$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(ocrData => {
+        if (ocrData) {
+          console.log('[CreateMedicinePage] Datos OCR recibidos:', ocrData);
+          this.ocrData = ocrData;
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
@@ -59,10 +82,29 @@ export class CreateMedicinePage implements OnInit {
       color: this.getColorHex(formData.color)  // Convertir variante a hex
     };
 
+    // Validación básica: asegurar que fechaInicio <= fechaFin si ambas existen
+    if (medicineData.fechaInicio && medicineData.fechaFin && medicineData.fechaFin < medicineData.fechaInicio) {
+      console.warn('[CreateMedicinePage] fechaFin anterior a fechaInicio — intercambiando valores');
+      // Intercambiar para evitar crear registros inválidos
+      const tmp = medicineData.fechaInicio;
+      medicineData.fechaInicio = medicineData.fechaFin;
+      medicineData.fechaFin = tmp;
+    }
+
     console.log('[CreateMedicinePage] Mapped medicine data:', medicineData);
     this.medicineService.create(medicineData).subscribe({
       next: (medicine) => {
         console.log('[CreateMedicinePage] Medicamento creado:', medicine);
+      
+        // Asegurar que el gestor refleje el estado persistido en el servidor
+        try {
+          this.medicineStore.load();
+        } catch (e) {
+          console.warn('[CreateMedicinePage] Error al recargar los medicamentos tras crear:', e);
+        }
+
+        // Limpiar datos del OCR después de guardar
+        this.ocrDataService.clearOcrData();
         this.router.navigate(['/medicamentos']);
         this.saving = false;
       },

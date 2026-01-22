@@ -208,6 +208,36 @@
   gap: $espaciado-12;
 }
 
+// ===== LISTA DE MEDICINAS EN MISMA HORA =====
+.medicines__list-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-8;
+  border-left: 3px solid var(--color-primario-primary);
+  padding-left: $espaciado-16;
+}
+
+.medicines__list-item {
+  margin: 0;
+  padding: $espaciado-8 0;
+  position: relative;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    left: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--color-primario-primary);
+    border-radius: 50%;
+  }
+}
+
 // ===== GRUPO DE MEDICAMENTOS CON LA MISMA HORA (legacy) =====
 .medicines__group {
   position: relative;
@@ -220,7 +250,7 @@
   left: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-texto_borde_cajas);
   line-height: 1;
 }
 

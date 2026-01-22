@@ -56,11 +56,21 @@ public class UsuarioService {
 
     // Actualiza o lanza NotFoundException
     public Usuario updateUsuario(Long id, Usuario usuario) {
-        if (usuarioRepository.findById(id).isEmpty()) {
-            throw new NotFoundException("Usuario no encontrado");
+        Usuario existing = usuarioRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+        
+        // Solo actualizar campos que no estén vacíos/nulos
+        if (usuario.getUsuario() != null && !usuario.getUsuario().isBlank()) {
+            existing.setUsuario(usuario.getUsuario());
         }
-        usuario.setId(id);
-        return usuarioRepository.save(usuario);
+        if (usuario.getCorreo() != null && !usuario.getCorreo().isBlank()) {
+            existing.setCorreo(usuario.getCorreo());
+        }
+        if (usuario.getContrasena() != null && !usuario.getContrasena().isBlank()) {
+            existing.setContrasena(usuario.getContrasena());
+        }
+        
+        return usuarioRepository.save(existing);
     }
 
     public void deleteById(Long id) {

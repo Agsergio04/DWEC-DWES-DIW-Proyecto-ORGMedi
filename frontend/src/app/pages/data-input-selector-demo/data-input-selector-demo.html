@@ -1,17 +1,17 @@
-<div class="demo-container">
-  <div class="demo-header">
-    <h1>Data Input Selector - Demo</h1>
+<section class="demo-container" aria-labelledby="demo-title">
+  <header class="demo-header">
+    <h1 id="demo-title">Data Input Selector - Demo</h1>
     <p>Prueba los dos modos del componente: texto y color</p>
-  </div>
+  </header>
 
-  <div class="demo-content">
+  <main class="demo-content">
     
     <!-- Selector de Frecuencia -->
-    <section class="demo-section">
-      <div class="section-header">
-        <h2>Selector de Frecuencia</h2>
+    <section class="demo-section" aria-labelledby="frequency-title">
+      <header class="section-header">
+        <h2 id="frequency-title">Selector de Frecuencia</h2>
         <p class="section-description">Tipo: Texto (modo lista)</p>
-      </div>
+      </header>
 
       <div class="demo-example">
         <app-data-input-selector
@@ -19,25 +19,26 @@
           [selectedOption]="selectedFrequency"
           [type]="'text'"
           placeholder="Selecciona una frecuencia"
-          (optionSelected)="onFrequencySelected($event)">
+          (optionSelected)="onFrequencySelected($event)"
+          aria-label="Selector de frecuencia">
         </app-data-input-selector>
       </div>
 
-      <div class="result-section" *ngIf="selectedFrequency">
-        <h3>Resultado seleccionado:</h3>
+      <section class="result-section" *ngIf="selectedFrequency" aria-labelledby="frequency-result">
+        <h3 id="frequency-result">Resultado seleccionado:</h3>
         <div class="result-box">
           <p><strong>ID:</strong> {{ selectedFrequency.id }}</p>
           <p><strong>Etiqueta:</strong> {{ selectedFrequency.label }}</p>
         </div>
-      </div>
+      </section>
     </section>
 
     <!-- Selector de Color -->
-    <section class="demo-section">
-      <div class="section-header">
-        <h2>Selector de Color</h2>
+    <section class="demo-section" aria-labelledby="color-title">
+      <header class="section-header">
+        <h2 id="color-title">Selector de Color</h2>
         <p class="section-description">Tipo: Color (vista previa de colores)</p>
-      </div>
+      </header>
 
       <div class="demo-example">
         <app-data-input-selector
@@ -45,19 +46,20 @@
           [selectedOption]="selectedColor"
           [type]="'color'"
           placeholder="Selecciona un color"
-          (optionSelected)="onColorSelected($event)">
+          (optionSelected)="onColorSelected($event)"
+          aria-label="Selector de color">
         </app-data-input-selector>
       </div>
 
-      <div class="result-section" *ngIf="selectedColor">
-        <h3>Resultado seleccionado:</h3>
+      <section class="result-section" *ngIf="selectedColor" aria-labelledby="color-result">
+        <h3 id="color-result">Resultado seleccionado:</h3>
         <div class="result-box">
           <p><strong>ID:</strong> {{ selectedColor.id }}</p>
           <p><strong>Etiqueta:</strong> {{ selectedColor.label }}</p>
-          <div class="color-preview" [style.backgroundColor]="selectedColor.color"></div>
+          <div class="color-preview" [style.backgroundColor]="selectedColor.color" aria-hidden="true"></div>
         </div>
-      </div>
+      </section>
     </section>
 
-  </div>
-</div>
+  </main>
+</section>

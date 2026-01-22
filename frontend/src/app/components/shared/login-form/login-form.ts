@@ -23,6 +23,7 @@ export class LoginFormComponent {
   loginForm: FormGroup<LoginFormModel>;
   isLoading = false;
   errorMessage = '';
+  submitted = false;  // Controla si se ha intentado enviar el formulario
 
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -40,6 +41,8 @@ export class LoginFormComponent {
    * Envía el formulario si es válido
    */
   onSubmit() {
+    this.submitted = true;  // Marcar formulario como enviado
+
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
@@ -53,15 +56,20 @@ export class LoginFormComponent {
     // Llamar a authService.login() con usuario
     this.authService.login(usuario, password).subscribe({
       next: (success) => {
+        // El spinner se cierra cuando el servidor responde
+        this.isLoading = false;
         if (success) {
           // Navegar al calendario después de login exitoso
           this.router.navigate(['/calendario']);
+        } else {
+          this.errorMessage = 'Credenciales inválidas. Por favor intenta de nuevo.';
         }
-        this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Error al iniciar sesión. Intenta de nuevo.';
+        // El spinner se cierra cuando el servidor responde con error
         this.isLoading = false;
+        this.errorMessage = err.error?.message || 'Error al iniciar sesión. Verifica tus credenciales.';
+        console.error('[LoginForm] Error en login:', err);
       }
     });
   }

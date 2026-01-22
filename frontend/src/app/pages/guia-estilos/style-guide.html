@@ -1,18 +1,18 @@
-<main class="style-guide">
+<section class="style-guide" role="doc-page">
   <div class="l-container">
     <!-- HEADER MEJORADO -->
-    <header class="style-guide__header">
+    <header class="style-guide__header" role="banner">
       <div class="style-guide__header-content">
         <h1 class="style-guide__title">Style Guide</h1>
         <p class="style-guide__subtitle">Sistema de diseño y componentes ORGMedi</p>
-        <div class="style-guide__intro">
+        <div class="style-guide__intro" role="region" aria-label="Introducción de la guía de estilos">
           <p>Guía completa de colores, componentes, formularios y patrones de interacción</p>
         </div>
       </div>
     </header>
 
     <!-- ÍNDICE RÁPIDO -->
-    <nav class="style-guide__nav">
+    <nav class="style-guide__nav" aria-label="Índice de guía de estilos">
       <a href="#colors" class="style-guide__nav-link">Colores</a>
       <a href="#typography" class="style-guide__nav-link">Tipografía</a>
       <a href="#buttons" class="style-guide__nav-link">Botones</a>
@@ -23,73 +23,73 @@
     </nav>
 
     <!-- COLORES -->
-    <section class="style-guide__section" id="colors">
+    <section class="style-guide__section" id="colors" aria-labelledby="colors-title">
       <div class="style-guide__section-header">
-        <h2 class="style-guide__section-title">🎨 Colores</h2>
+        <h2 class="style-guide__section-title" id="colors-title">🎨 Colores</h2>
         <p class="style-guide__section-desc">Paleta de colores del sistema con soporte para modo claro y oscuro</p>
       </div>
 
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Modo Claro</h3>
-        <div class="colors-grid">
-          <div class="color-item">
-            <div class="color-swatch" style="background:#E177B5"></div>
+      <div class="style-guide__subsection" aria-labelledby="light-mode-title">
+        <h3 class="style-guide__subsection-title" id="light-mode-title">Modo Claro</h3>
+        <div class="colors-grid" role="list">
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#E177B5" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Primario</div>
               <div class="color-code">#E177B5</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#F08EC7"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#F08EC7" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Primario Hover</div>
               <div class="color-code">#F08EC7</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#F6D5E8"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#F6D5E8" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Primario Disabled</div>
               <div class="color-code">#F6D5E8</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#99397C"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#99397C" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Secundario</div>
               <div class="color-code">#99397C</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#22FF00"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#22FF00" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Afirmación</div>
               <div class="color-code">#22FF00</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#FF0202"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#FF0202" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Negación</div>
               <div class="color-code">#FF0202</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#1F0A1A"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#1F0A1A" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Bordes</div>
               <div class="color-code">#1F0A1A</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#3A4730"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#3A4730" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Texto Cajas</div>
               <div class="color-code">#3A4730</div>
@@ -97,32 +97,32 @@
           </div>
 
           <!-- Variantes -->
-          <div class="color-item">
-            <div class="color-swatch" style="background:#00FFFB"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#00FFFB" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Variante 1</div>
               <div class="color-code">#00FFFB</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#F2FF00"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#F2FF00" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Variante 2</div>
               <div class="color-code">#F2FF00</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#FF00C3"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#FF00C3" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Variante 3</div>
               <div class="color-code">#FF00C3</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#FFAA00"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#FFAA00" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Variante 4</div>
               <div class="color-code">#FFAA00</div>
@@ -131,67 +131,67 @@
         </div>
       </div>
 
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Modo Oscuro</h3>
-        <div class="colors-grid">
-          <div class="color-item">
-            <div class="color-swatch" style="background:#A95988"></div>
+      <div class="style-guide__subsection" aria-labelledby="dark-mode-title">
+        <h3 class="style-guide__subsection-title" id="dark-mode-title">Modo Oscuro</h3>
+        <div class="colors-grid" role="list">
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#A95988" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Primario Dark</div>
               <div class="color-code">#A95988</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#87476D"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#87476D" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Primario Dark Hover</div>
               <div class="color-code">#87476D</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#4F2A3F"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#4F2A3F" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Primario Off</div>
               <div class="color-code">#4F2A3F</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#441638"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#441638" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Secundario Dark</div>
               <div class="color-code">#441638</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#168C04"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#168C04" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Afirmación Dark</div>
               <div class="color-code">#168C04</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#9C1010"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#9C1010" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Negación Dark</div>
               <div class="color-code">#9C1010</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#EBA4CD"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#EBA4CD" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Bordes Dark</div>
               <div class="color-code">#EBA4CD</div>
             </div>
           </div>
 
-          <div class="color-item">
-            <div class="color-swatch" style="background:#A4D281"></div>
+          <div class="color-item" role="listitem">
+            <div class="color-swatch" style="background:#A4D281" aria-hidden="true"></div>
             <div class="color-meta">
               <div class="color-name">Texto Dark</div>
               <div class="color-code">#A4D281</div>
@@ -202,9 +202,9 @@
     </section>
 
     <!-- TIPOGRAFÍA -->
-    <section class="style-guide__section" id="typography">
+    <section class="style-guide__section" id="typography" aria-labelledby="typography-title">
       <div class="style-guide__section-header">
-        <h2 class="style-guide__section-title">📝 Tipografía</h2>
+        <h2 class="style-guide__section-title" id="typography-title">📝 Tipografía</h2>
         <p class="style-guide__section-desc">Escala tipográfica y estilos de texto</p>
       </div>
 
@@ -218,15 +218,15 @@
     </section>
 
     <!-- BOTONES -->
-    <section class="style-guide__section" id="buttons">
+    <section class="style-guide__section" id="buttons" aria-labelledby="buttons-title">
       <div class="style-guide__section-header">
-        <h2 class="style-guide__section-title">🔘 Botones</h2>
+        <h2 class="style-guide__section-title" id="buttons-title">🔘 Botones</h2>
         <p class="style-guide__section-desc">Variantes, tamaños y estados del componente botón</p>
       </div>
 
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Variantes</h3>
-        <div class="style-guide__row">
+      <div class="style-guide__subsection" aria-labelledby="buttons-variants">
+        <h3 class="style-guide__subsection-title" id="buttons-variants">Variantes</h3>
+        <div class="style-guide__row" role="group" aria-label="Variantes de botones">
           <app-button>Primary</app-button>
           <app-button variant="secondary">Secondary</app-button>
           <app-button variant="danger">Danger</app-button>
@@ -234,62 +234,63 @@
         </div>
       </div>
 
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Tamaños</h3>
-        <div class="style-guide__row">
+      <div class="style-guide__subsection" aria-labelledby="buttons-sizes">
+        <h3 class="style-guide__subsection-title" id="buttons-sizes">Tamaños</h3>
+        <div class="style-guide__row" role="group" aria-label="Tamaños de botones">
           <app-button size="sm">Small</app-button>
           <app-button size="md">Medium</app-button>
           <app-button size="lg">Large</app-button>
         </div>
       </div>
 
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Estados</h3>
-        <div class="style-guide__row">
+      <div class="style-guide__subsection" aria-labelledby="buttons-states">
+        <h3 class="style-guide__subsection-title" id="buttons-states">Estados</h3>
+        <div class="style-guide__row" role="group" aria-label="Estados de botones">
           <app-button>Normal</app-button>
           <app-button [disabled]="true">Disabled</app-button>
-          <app-button ariaLabel="icon" icon="star">Con Icon</app-button>
+          <app-button [ariaLabel]="'Botón con icono de estrella'" icon="star">Con Icon</app-button>
         </div>
       </div>
     </section>
 
     <!-- FORMULARIOS -->
-    <section class="style-guide__section" id="forms">
+    <section class="style-guide__section" id="forms" aria-labelledby="forms-title">
       <div class="style-guide__section-header">
-        <h2 class="style-guide__section-title">📋 Formularios</h2>
+        <h2 class="style-guide__section-title" id="forms-title">📋 Formularios</h2>
         <p class="style-guide__section-desc">Componente reutilizable que integra inputs, selectores, fechas y validación</p>
       </div>
 
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Formulario de Medicamento</h3>
+      <div class="style-guide__subsection" aria-labelledby="medicine-form-title">
+        <h3 class="style-guide__subsection-title" id="medicine-form-title">Formulario de Medicamento</h3>
         <div class="form-example-container">
           <app-medicine-form
             [initialData]="medicineFormData"
             submitButtonText="Guardar medicamento"
             cancelButtonText="Cancelar"
             (formSubmit)="onMedicineFormSubmit($event)"
-            (formCancel)="onMedicineFormCancel()">
+            (formCancel)="onMedicineFormCancel()"
+            aria-label="Ejemplo de formulario de medicamento">
           </app-medicine-form>
         </div>
       </div>
     </section>
 
     <!-- CARDS -->
-    <section class="style-guide__section" id="cards">
+    <section class="style-guide__section" id="cards" aria-labelledby="cards-title">
       <div class="style-guide__section-header">
-        <h2 class="style-guide__section-title">🎴 Cards y Contenedores</h2>
+        <h2 class="style-guide__section-title" id="cards-title">🎴 Cards y Contenedores</h2>
         <p class="style-guide__section-desc">Componentes contenedores para agrupar contenido</p>
       </div>
 
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Tarjeta de Medicamento</h3>
+      <div class="style-guide__subsection" aria-labelledby="medicine-card-title">
+        <h3 class="style-guide__subsection-title" id="medicine-card-title">Tarjeta de Medicamento</h3>
         <div class="medicine-card-showcase">
           <div class="medicine-card-container">
-            <app-medicine-card [medicine]="exampleMedicine">
-              <div class="medicine-card-actions">
-                <button class="btn btn-edit">✏️ Editar</button>
-                <button class="btn btn-delete">🗑️ Eliminar</button>
-              </div>
+            <app-medicine-card [medicine]="exampleMedicine" aria-label="Ejemplo de tarjeta de medicamento">
+              <footer class="medicine-card-actions">
+                <button class="btn btn-edit" type="button" aria-label="Editar medicamento">✏️ Editar</button>
+                <button class="btn btn-delete" type="button" aria-label="Eliminar medicamento">🗑️ Eliminar</button>
+              </footer>
             </app-medicine-card>
           </div>
         </div>
@@ -297,114 +298,100 @@
     </section>
 
     <!-- COMPONENTES INTERACTIVOS -->
-    <section class="style-guide__section" id="interactive">
+    <section class="style-guide__section" id="interactive" aria-labelledby="interactive-title">
       <div class="style-guide__section-header">
-        <h2 class="style-guide__section-title">⚡ Componentes Interactivos</h2>
+        <h2 class="style-guide__section-title" id="interactive-title">⚡ Componentes Interactivos</h2>
         <p class="style-guide__section-desc">Componentes con interacción y navegación</p>
       </div>
 
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Navegación por Tabs</h3>
-        <app-tabs></app-tabs>
+      <div class="style-guide__subsection" aria-labelledby="tabs-demo">
+        <h3 class="style-guide__subsection-title" id="tabs-demo">Navegación por Tabs</h3>
+        <app-tabs aria-label="Ejemplo de navegación con pestañas"></app-tabs>
       </div>
 
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Cambio de Tema</h3>
-        <div class="style-guide__theme-demo">
+      <div class="style-guide__subsection" aria-labelledby="theme-demo">
+        <h3 class="style-guide__subsection-title" id="theme-demo">Cambio de Tema</h3>
+        <div class="style-guide__theme-demo" role="region" aria-label="Demo de cambio de tema">
           <p>Usa el selector para cambiar entre modo claro y oscuro:</p>
           <app-theme-switcher></app-theme-switcher>
         </div>
       </div>
 
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Demo de DOM</h3>
-        <app-dom-demo></app-dom-demo>
+      <div class="style-guide__subsection" aria-labelledby="dom-demo">
+        <h3 class="style-guide__subsection-title" id="dom-demo">Demo de DOM</h3>
+        <app-dom-demo aria-label="Demostración de elementos del DOM"></app-dom-demo>
       </div>
     </section>
 
     <!-- NOTIFICACIONES -->
-    <section class="style-guide__section" id="alerts">
+    <section class="style-guide__section" id="alerts" aria-labelledby="alerts-title">
       <div class="style-guide__section-header">
-        <h2 class="style-guide__section-title">🔔 Notificaciones y Alertas</h2>
+        <h2 class="style-guide__section-title" id="alerts-title">🔔 Notificaciones y Alertas</h2>
         <p class="style-guide__section-desc">Componentes para mostrar mensajes al usuario</p>
       </div>
 
-      <div class="style-guide__subsection">
-        <h3 class="style-guide__subsection-title">Alertas</h3>
+      <div class="style-guide__subsection" aria-labelledby="alerts-examples">
+        <h3 class="style-guide__subsection-title" id="alerts-examples">Alertas</h3>
         <div class="alerts-examples">
           <div class="alerts-row">
-            <app-alert *ngIf="showAlertSuccess" type="success" (closed)="closeAlert('success')">
+            <app-alert *ngIf="showAlertSuccess" type="success" (closed)="closeAlert('success')" aria-label="Alerta de éxito">
               ✓ Operación completada correctamente
             </app-alert>
-            <app-alert *ngIf="showAlertError" type="error" (closed)="closeAlert('error')">
+            <app-alert *ngIf="showAlertError" type="error" (closed)="closeAlert('error')" aria-label="Alerta de error">
               ✕ Ha ocurrido un error al guardar los datos
             </app-alert>
           </div>
           <div class="alerts-row">
-            <app-alert *ngIf="showAlertWarning" type="warning" (closed)="closeAlert('warning')">
+            <app-alert *ngIf="showAlertWarning" type="warning" (closed)="closeAlert('warning')" aria-label="Alerta de advertencia">
               ⚠ Atención: revisa los campos obligatorios
             </app-alert>
-            <app-alert *ngIf="showAlertInfo" type="info" (closed)="closeAlert('info')">
+            <app-alert *ngIf="showAlertInfo" type="info" (closed)="closeAlert('info')" aria-label="Alerta de información">
               ⓘ Información: la sesión expirará en 10 minutos
             </app-alert>
           </div>
         </div>
         <div style="margin-top:16px;">
-          <app-button (clicked)="resetAlerts()">Mostrar alertas nuevamente</app-button>
+          <app-button (clicked)="resetAlerts()" aria-label="Mostrar alertas nuevamente">Mostrar alertas nuevamente</app-button>
         </div>
       </div>
     </section>
 
-    <!-- FORMULARIO DE MEDICINA -->
     <!-- ESPACIADO -->
-    <section class="style-guide__section" id="spacing">
+    <section class="style-guide__section" id="spacing" aria-labelledby="spacing-title">
       <div class="style-guide__section-header">
-        <h2 class="style-guide__section-title">📏 Espaciado</h2>
+        <h2 class="style-guide__section-title" id="spacing-title">📏 Espaciado</h2>
         <p class="style-guide__section-desc">Escala de espaciado utilizada en el proyecto</p>
       </div>
 
       <div class="style-guide__subsection">
-        <div class="spacing-grid">
-          <div class="spacing-item">
-            <div class="spacing-box" style="width: 8px;"></div>
+        <div class="spacing-grid" role="list">
+          <div class="spacing-item" role="listitem">
+            <div class="spacing-box" style="width: 8px;" aria-hidden="true"></div>
             <p>8px</p>
           </div>
-          <div class="spacing-item">
-            <div class="spacing-box" style="width: 12px;"></div>
+          <div class="spacing-item" role="listitem">
+            <div class="spacing-box" style="width: 12px;" aria-hidden="true"></div>
             <p>12px</p>
           </div>
-          <div class="spacing-item">
-            <div class="spacing-box" style="width: 16px;"></div>
+          <div class="spacing-item" role="listitem">
+            <div class="spacing-box" style="width: 16px;" aria-hidden="true"></div>
             <p>16px</p>
           </div>
-          <div class="spacing-item">
-            <div class="spacing-box" style="width: 20px;"></div>
+          <div class="spacing-item" role="listitem">
+            <div class="spacing-box" style="width: 20px;" aria-hidden="true"></div>
             <p>20px</p>
           </div>
-          <div class="spacing-item">
-            <div class="spacing-box" style="width: 24px;"></div>
+          <div class="spacing-item" role="listitem">
+            <div class="spacing-box" style="width: 24px;" aria-hidden="true"></div>
             <p>24px</p>
           </div>
-          <div class="spacing-item">
-            <div class="spacing-box" style="width: 32px;"></div>
+          <div class="spacing-item" role="listitem">
+            <div class="spacing-box" style="width: 32px;" aria-hidden="true"></div>
             <p>32px</p>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- REFERENCIA OCULTA DE COMPONENTES -->
-    <div style="display:none;" aria-hidden="true">
-      <app-button></app-button>
-      <app-card></app-card>
-      <app-form-input></app-form-input>
-      <app-form-textarea></app-form-textarea>
-      <app-form-select></app-form-select>
-      <app-tabs></app-tabs>
-      <app-theme-switcher></app-theme-switcher>
-      <app-dom-demo></app-dom-demo>
-      <app-modal></app-modal>
-    </div>
 
     <!-- Contenedor oculto que referencia todos los componentes para que el compilador los detecte -->
     <div style="display:none;" aria-hidden="true">
@@ -420,5 +407,5 @@
     </div>
 
   </div>
-</main>
+</section>
 

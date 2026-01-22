@@ -6,6 +6,12 @@
   background: linear-gradient(180deg, rgba(217, 123, 191, 0.1) 0%, rgba(217, 123, 191, 0.05) 100%);
 }
 
+/* Bordes de fieldset transparentes para integrarse con el fondo */
+.page--profile fieldset {
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
 .page__container {
   max-width: 600px;
   margin: 0 auto;

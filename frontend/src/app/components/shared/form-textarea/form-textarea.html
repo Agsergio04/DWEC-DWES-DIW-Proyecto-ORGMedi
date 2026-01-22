@@ -1,2 +1,11 @@
-<label class="form-textarea__label">{{ label }}<textarea class="form-textarea__field" [(ngModel)]="value" [placeholder]="placeholder" [required]="required"></textarea></label>
+<label class="form-textarea__label">
+  <span class="form-textarea__label-text">{{ label }}</span>
+  <textarea 
+    class="form-textarea__field" 
+    [(ngModel)]="value" 
+    [placeholder]="placeholder" 
+    [required]="required"
+    [attr.aria-label]="label"
+  ></textarea>
+</label>
 
