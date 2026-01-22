@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { tap, catchError, map } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 
 export interface AuthUser {
   id: number;
@@ -31,7 +32,7 @@ export interface ChangePasswordRequest {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly baseUrl = '/api/auth';
+  private readonly baseUrl = `${environment.apiUrl}/api/auth`;
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.checkStoredAuth());
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.getStoredUser());
 
@@ -286,14 +287,13 @@ export class AuthService {
     if (!currentUser) {
       return throwError(() => new Error('No user logged in'));
     }
-
     const request = {
       usuario: newUsername,
       correo: currentUser.email,
       contrasena: '' // Campo requerido por la API pero no se actualiza
     };
 
-    return this.http.put<any>(`/api/usuarios/${currentUser.id}`, request).pipe(
+    return this.http.put<any>(`${environment.apiUrl}/api/usuarios/${currentUser.id}`, request).pipe(
       tap((response) => {
         // Actualizar usuario en localStorage
         const updatedUser: AuthUser = {

@@ -38,11 +38,11 @@ export class ApiService {
 
   private getApiUrl(): string {
     if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-      // Producción en Render
-      return 'https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com/api';
+      // Producción en Render - URL del backend sin /api (se añade después)
+      return 'https://orgmedi-backend.onrender.com/api';
     }
     // Desarrollo local
-    return '/api';
+    return 'http://localhost:8080/api';
   }
 
   /**
