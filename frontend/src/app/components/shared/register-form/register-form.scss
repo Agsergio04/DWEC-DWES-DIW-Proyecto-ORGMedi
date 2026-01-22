@@ -16,13 +16,13 @@
   }
 
   @include lg {
-    gap: $espaciado-28;
+    gap: $espaciado-24;
     padding: 0 $espaciado-24;
   }
 
   @include xl {
-    gap: $espaciado-32;
-    padding: 0 $espaciado-32;
+    gap: $espaciado-24;
+    padding: 0 $espaciado-24;
   }
 }
 
@@ -39,11 +39,11 @@
   }
 
   @include lg {
-    gap: $espaciado-28;
+    gap: $espaciado-24;
   }
 
   @include xl {
-    gap: $espaciado-32;
+    gap: $espaciado-24;
   }
 }
 
@@ -57,7 +57,7 @@
   gap: $espaciado-12;
 
   @include md {
-    gap: $espaciado-14;
+    gap: $espaciado-16;
   }
 
   @include lg {
