@@ -20,6 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import proyecto.orgmedi.error.UnauthorizedException;
 import proyecto.orgmedi.error.ConflictException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +36,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Autenticación", description = "Endpoints de autenticación y gestión de usuarios")
 public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     @Autowired
@@ -43,6 +50,13 @@ public class AuthController {
 
     @PostMapping(value = "/login", produces = "application/json")
     @Transactional
+    @Operation(summary = "Login de usuario", description = "Autentica un usuario y retorna un token JWT")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Login exitoso", 
+            content = @Content(schema = @Schema(implementation = AuthResponse.class))),
+        @ApiResponse(responseCode = "401", description = "Credenciales inválidas"),
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos")
+    })
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByUsuario(request.getUsuario());
         if (usuarioOpt.isEmpty()) {
@@ -97,6 +111,13 @@ public class AuthController {
 
     @PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
     @Transactional
+    @Operation(summary = "Registro de nuevo usuario", description = "Crea una nueva cuenta de usuario y retorna un token JWT")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente", 
+            content = @Content(schema = @Schema(implementation = AuthResponse.class))),
+        @ApiResponse(responseCode = "409", description = "El usuario o correo ya existe"),
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos")
+    })
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         // Verificar si el correo ya existe
         if (usuarioRepository.findByCorreo(request.getCorreo()).isPresent()) {

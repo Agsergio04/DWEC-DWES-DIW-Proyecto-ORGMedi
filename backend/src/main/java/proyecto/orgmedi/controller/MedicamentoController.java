@@ -14,6 +14,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +31,8 @@ import java.sql.Statement;
 
 @RestController
 @RequestMapping("/api/medicamentos")
+@Tag(name = "Medicamentos", description = "Endpoints para gestión de medicamentos")
+@SecurityRequirement(name = "Bearer Authentication")
 public class MedicamentoController {
     private final MedicamentoService medicamentoService;
     private final GestorMedicamentosService gestorMedicamentosService;
@@ -45,6 +54,8 @@ public class MedicamentoController {
      * Obtiene todos los medicamentos del usuario autenticado
      */
     @GetMapping
+    @Operation(summary = "Listar medicamentos", description = "Obtiene todos los medicamentos del usuario autenticado")
+    @ApiResponse(responseCode = "200", description = "Lista de medicamentos obtenida correctamente")
     public List<Medicamento> getAllMedicamentos() {
         Usuario usuario = SecurityUtil.getCurrentUser(usuarioRepository);
         GestorMedicamentos gestor = usuario.getGestorMedicamentos();

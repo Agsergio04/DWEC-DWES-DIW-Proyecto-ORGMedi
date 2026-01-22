@@ -60,6 +60,8 @@ DWEC-DWES-DIW-Proyecto-ORGMedi/
 - **Build**: Maven
 - **Testing**: JUnit 5, MockMvc
 - **OCR**: Tesseract para lectura de recetas
+- **API Documentation**: OpenAPI 3.0 / Swagger UI
+- **Monitoring**: Spring Boot Actuator
 
 ### DevOps & Deployment
 - **Containerización**: Docker (backend y frontend optimizados)
@@ -114,10 +116,38 @@ docker-compose up -d
 - Frontend: https://orgmedi-frontend.onrender.com
 - API Backend: https://orgmedi-backend.onrender.com/api
 
+### Herramientas de Desarrollo y Monitoreo
+
+#### Swagger UI (Documentación Interactiva)
+Interfaz interactiva para explorar y probar todos los endpoints de la API.
+
+- **Desarrollo**: http://localhost:8080/api/swagger-ui.html
+- **Producción**: https://orgmedi-backend.onrender.com/api/swagger-ui.html
+
+#### OpenAPI JSON Spec
+Especificación OpenAPI 3.0 en formato JSON para integración con herramientas third-party.
+
+- **Desarrollo**: http://localhost:8080/api/docs
+- **Producción**: https://orgmedi-backend.onrender.com/api/docs
+
+#### Spring Boot Actuator
+Endpoints de monitoreo y salud de la aplicación.
+
+| Endpoint | Descripción | Desarrollo |
+|----------|-------------|-----------|
+| `/actuator/health` | Estado general de la aplicación | http://localhost:8080/actuator/health |
+| `/actuator/health/liveness` | Verifica si la app está viva | http://localhost:8080/actuator/health/liveness |
+| `/actuator/health/readiness` | Verifica si la app está lista | http://localhost:8080/actuator/health/readiness |
+| `/actuator/info` | Información de la aplicación | http://localhost:8080/actuator/info |
+| `/actuator/metrics` | Métricas de rendimiento | http://localhost:8080/actuator/metrics |
+| `/actuator/prometheus` | Métricas en formato Prometheus | http://localhost:8080/actuator/prometheus |
+
 ---
 
-## Documentacion 
-- [Documentacion del Backend/API](docs/servidor/Proyecto_API_REST.md)
-- [Documentacion del Diseño UI/UX](docs/design/DOCUMENTACION_DISEÑO.md)
-- [Documentacion del Cliente](docs/cliente/Documentacion_cliente.md)
+## Documentación
+- [Documentación Técnica Completa](docs/DOCUMENTACION_TECNICA.md)
+- [Documentación del Backend/API](docs/servidor/Proyecto_API_REST.md)
+- [Documentación del Diseño UI/UX](docs/design/DOCUMENTACION_DISEÑO.md)
+- [Documentación del Cliente](docs/cliente/Documentacion_cliente.md)
+- [Guía de Despliegue en Render](DESPLIEGUE_RENDER_PASO_A_PASO.md)
 
