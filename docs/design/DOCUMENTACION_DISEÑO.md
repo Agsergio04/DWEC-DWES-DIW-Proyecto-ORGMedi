@@ -2216,21 +2216,21 @@ El componente proporciona un botón de toggle visual en el header que cambia ent
 
 | Modo Claro | Modo Oscuro |
 |-----------|-----------|
-| ![Medicines Light](/docs/design/screenshots/medicines-light.png) | ![Medicines Dark](/docs/design/screenshots/medicines-dark.png) |
+| ![Medicines Light](/docs/design/screenshots/medicamento-claro.png) | ![Medicines Dark](/docs/design/screenshots/medicamento-oscuro.png) |
 | Fondo blanco, botones en rosa primario, bordes suaves | Fondo oscuro, botones en rosa brillante, mejor lectura nocturna |
 
 #### Página de Calendario (Calendar)
 
 | Modo Claro | Modo Oscuro |
 |-----------|-----------|
-| ![Calendar Light](/docs/design/screenshots/calendar-light.png) | ![Calendar Dark](/docs/design/screenshots/calendar-dark.png) |
+| ![Calendar Light](/docs/design/screenshots/calendario-claro.png) | ![Calendar Dark](/docs/design/screenshots/calendario-oscuro.png) |
 | Grid con eventos en colores primarios, fondo claro | Grid adaptado a oscuridad, eventos con colores brillantes |
 
 #### Página de Perfil (Profile)
 
 | Modo Claro | Modo Oscuro |
 |-----------|-----------|
-| ![Profile Light](/docs/design/screenshots/profile-light.png) | ![Profile Dark](/docs/design/screenshots/profile-dark.png) |
+| ![Profile Light](/docs/design/screenshots/perfil-claro.png) | ![Profile Dark](/docs/design/screenshots/perfiñ-oscuro.png) |
 | Tarjetas blancas, sombras suaves, formularios claros | Tarjetas oscuras, sombras profundas, contraste optimizado |
 
 **Para capturar las imágenes:**
