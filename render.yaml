@@ -8,6 +8,9 @@ services:
     region: frankfurt
     plan: starter
     healthCheckPath: /actuator/health
+    buildFilter:
+      paths:
+        - backend/**
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod

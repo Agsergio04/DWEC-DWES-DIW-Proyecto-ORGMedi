@@ -1,50 +1,51 @@
-# Stage 1: Build
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
+# Stage 1: Build - Lightweight builder
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 
 WORKDIR /app
 
-# Copiar solo pom.xml para descargar dependencias (cacheable layer)
+# Copiar solo pom.xml para descargar dependencias
 COPY pom.xml .
 COPY mvnw .
 COPY mvnw.cmd .
 COPY .mvn .mvn
 
-# Descargar dependencias (este paso se cachea)
-RUN mvn dependency:resolve -DskipTests
+# Descargar dependencias
+RUN mvn dependency:resolve -DskipTests -q
 
-# Copiar código fuente (después de descargar dependencias)
+# Copiar código fuente
 COPY src src
 
-# Compilar la aplicación
-RUN mvn clean package -DskipTests
+# Compilar - FUERZA BUILD v0.0.2 (2026-01-22 20:00)
+RUN mvn clean package -DskipTests -q && \
+    rm -rf ~/.m2/repository
 
-# Stage 2: Runtime
-FROM eclipse-temurin:21-jre-jammy
+# Stage 2: Runtime - Minimal JRE
+FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
-# Instalar Tesseract OCR y dependencias en una sola capa
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+# Instalar solo Tesseract OCR necesario (minimal)
+RUN apk add --no-cache \
     curl \
     tesseract-ocr \
-    tesseract-ocr-spa \
-    tesseract-ocr-eng \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    && rm -rf /var/lib/apt/lists/*
+    tesseract-ocr-data-spa \
+    tesseract-ocr-data-eng \
+    && rm -rf /var/cache/apk/*
 
-# Copiar el JAR construido desde el stage anterior
+# Copiar JAR desde builder
 COPY --from=builder /app/target/*.jar app.jar
 
 # Exponer puerto
 EXPOSE 8080
 
-# Variables de entorno por defecto
-ENV SPRING_PROFILES_ACTIVE=docker
-ENV JAVA_OPTS="-Xmx512m -Xms256m"
-ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr-4.00/tessdata
+# Optimizar JVM para contenedores pequeños
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV JAVA_OPTS="-Xmx256m -Xms128m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ParallelRefProcEnabled"
+ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/tessdata
 
-# Comando para ejecutar la aplicación
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Ejecutar
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
