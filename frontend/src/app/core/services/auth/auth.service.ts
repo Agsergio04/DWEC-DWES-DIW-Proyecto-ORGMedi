@@ -32,7 +32,7 @@ export interface ChangePasswordRequest {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/api/auth`;
+  private readonly baseUrl = `${environment.apiUrl}/auth`;
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.checkStoredAuth());
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.getStoredUser());
 
@@ -293,7 +293,7 @@ export class AuthService {
       contrasena: '' // Campo requerido por la API pero no se actualiza
     };
 
-    return this.http.put<any>(`${environment.apiUrl}/api/usuarios/${currentUser.id}`, request).pipe(
+    return this.http.put<any>(`${this.baseUrl.replace('/auth', '')}/usuarios/${currentUser.id}`, request).pipe(
       tap((response) => {
         // Actualizar usuario en localStorage
         const updatedUser: AuthUser = {

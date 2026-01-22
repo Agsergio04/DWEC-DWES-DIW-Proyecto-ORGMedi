@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 
 /**
  * Servicio API base
@@ -34,24 +35,15 @@ import { catchError } from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private http = inject(HttpClient);
-  private readonly baseUrl = this.getApiUrl();
-
-  private getApiUrl(): string {
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-      // Producción en Render - URL del backend sin /api (se añade después)
-      return 'https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com/api';
-    }
-    // Desarrollo local
-    return 'http://localhost:8080/api';
-  }
+  private readonly baseUrl = environment.apiUrl;
 
   /**
    * GET genérico
-   * @param endpoint - Ruta del endpoint (sin la baseUrl)
+   * @param endpoint - Ruta del endpoint (sin /api)
    * @param options - Opciones adicionales (headers, params, etc.)
    */
   get<T>(endpoint: string, options?: object): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, options)
+    return this.http.get<T>(`${this.baseUrl}/api/${endpoint}`, options)
       .pipe(catchError(this.handleError));
   }
 
@@ -62,7 +54,7 @@ export class ApiService {
    * @param options - Opciones adicionales
    */
   post<T>(endpoint: string, body: unknown, options?: object): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body, options)
+    return this.http.post<T>(`${this.baseUrl}/api/${endpoint}`, body, options)
       .pipe(catchError(this.handleError));
   }
 
@@ -73,7 +65,7 @@ export class ApiService {
    * @param options - Opciones adicionales
    */
   put<T>(endpoint: string, body: unknown, options?: object): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/${endpoint}`, body, options)
+    return this.http.put<T>(`${this.baseUrl}/api/${endpoint}`, body, options)
       .pipe(catchError(this.handleError));
   }
 
@@ -84,7 +76,7 @@ export class ApiService {
    * @param options - Opciones adicionales
    */
   patch<T>(endpoint: string, body: unknown, options?: object): Observable<T> {
-    return this.http.patch<T>(`${this.baseUrl}/${endpoint}`, body, options)
+    return this.http.patch<T>(`${this.baseUrl}/api/${endpoint}`, body, options)
       .pipe(catchError(this.handleError));
   }
 
@@ -94,7 +86,7 @@ export class ApiService {
    * @param options - Opciones adicionales
    */
   delete<T>(endpoint: string, options?: object): Observable<T> {
-    return this.http.delete<T>(`${this.baseUrl}/${endpoint}`, options)
+    return this.http.delete<T>(`${this.baseUrl}/api/${endpoint}`, options)
       .pipe(catchError(this.handleError));
   }
 
@@ -106,7 +98,7 @@ export class ApiService {
    * @param options - Opciones adicionales (sin Content-Type)
    */
   postFormData<T>(endpoint: string, formData: FormData, options?: object): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, formData, options)
+    return this.http.post<T>(`${this.baseUrl}/api/${endpoint}`, formData, options)
       .pipe(catchError(this.handleError));
   }
 
@@ -124,7 +116,7 @@ export class ApiService {
       }
     });
 
-    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params: httpParams })
+    return this.http.get<T>(`${this.baseUrl}/api/${endpoint}`, { params: httpParams })
       .pipe(catchError(this.handleError));
   }
 
@@ -145,7 +137,7 @@ export class ApiService {
       headers = headers.set(key, value);
     });
 
-    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { ...options, headers })
+    return this.http.get<T>(`${this.baseUrl}/api/${endpoint}`, { ...options, headers })
       .pipe(catchError(this.handleError));
   }
 
@@ -155,7 +147,7 @@ export class ApiService {
    * @param options - Opciones adicionales
    */
   getBlob(endpoint: string, options?: object): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/${endpoint}`, {
+    return this.http.get(`${this.baseUrl}/api/${endpoint}`, {
       ...options,
       responseType: 'blob'
     }).pipe(catchError(this.handleError));
@@ -167,7 +159,7 @@ export class ApiService {
    * @param options - Opciones adicionales
    */
   getText(endpoint: string, options?: object): Observable<string> {
-    return this.http.get(`${this.baseUrl}/${endpoint}`, {
+    return this.http.get(`${this.baseUrl}/api/${endpoint}`, {
       ...options,
       responseType: 'text'
     }).pipe(catchError(this.handleError));
