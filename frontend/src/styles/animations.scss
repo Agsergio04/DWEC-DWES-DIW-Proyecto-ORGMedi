@@ -476,9 +476,9 @@ select {
   /* Variante: Multicolor gradient */
   &--gradient {
     border-top-color: #E177B5;
-    border-right-color: #B5E177;
+    border-right-color: var(--color-texto_borde_cajas);
     border-bottom-color: #E177B5;
-    border-left-color: #B5E177;
+    border-left-color: var(--color-texto_borde_cajas);
     filter: drop-shadow(0 0 2px rgba(225, 119, 181, 0.3));
   }
 }

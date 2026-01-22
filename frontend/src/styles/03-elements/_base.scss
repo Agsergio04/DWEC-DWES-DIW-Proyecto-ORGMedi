@@ -10,7 +10,7 @@ html {
 body {
   font-family: $font-primary;
   background: var(--color-fondo);
-  color: $color-texto_borde_cajas;
+  color: var(--color-texto_borde_cajas);
   min-height: 100vh;
   line-height: $line-height-normal;
   -webkit-font-smoothing: antialiased;
@@ -18,8 +18,8 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: $font-secondary;
-  color: $color-secundario-primary;
-  font-weight: $font-weight-bold;
+  color: var(--color-texto_borde_cajas);
+  font-weight: var(--font-secondary-weight-bold);
   margin-bottom: $espaciado-12;
   line-height: $line-height-tight;
 }
