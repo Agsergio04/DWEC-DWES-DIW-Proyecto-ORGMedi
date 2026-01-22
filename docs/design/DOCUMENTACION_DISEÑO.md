@@ -1855,19 +1855,19 @@ Container Queries permiten que componentes se adapten al contenedor padre, no a 
 
 | Mobile (375px) | Tablet (768px) | Desktop (1280px) |
 |---|---|---|
-| [📱 HOME MOBILE] | [📊 HOME TABLET] | [🖥️ HOME DESKTOP] |
+| ![📱 HOME MOBILE](/docs/design/screenshots/home-movil.png) | ![📊 HOME TABLET](/docs/design/screenshots/home-tablet.png) | ![🖥️ HOME DESKTOP](/docs/design/screenshots/home-desktop.png) |
 
 #### Medicines Page
 
 | Mobile (375px) | Tablet (768px) | Desktop (1280px) |
 |---|---|---|
-| [📱 MEDICINES MOBILE] | [📊 MEDICINES TABLET] | [🖥️ MEDICINES DESKTOP] |
+| ![📱 MEDICINES MOBILE](/docs/design/screenshots/medicine-movil.png) | ![📊 MEDICINES TABLET](/docs/design/screenshots/medicine-tablet.png) | ![🖥️ MEDICINES DESKTOP](/docs/design/screenshots/medicine-desktop.png) |
 
 #### Calendar Page
 
 | Mobile (375px) | Tablet (768px) | Desktop (1280px) |
 |---|---|---|
-| [📱 CONTACT MOBILE] | [📊 CONTACT TABLET] | [🖥️ CONTACT DESKTOP] |
+| ![📱 CONTACT MOBILE](/docs/design/screenshots/calendar-movil.png) | ![📊 CONTACT TABLET](/docs/design/screenshots/calendar-tablet.png) | ![🖥️ CONTACT DESKTOP](/docs/design/screenshots/calendar-desktop.png) |
 
 ---
 
