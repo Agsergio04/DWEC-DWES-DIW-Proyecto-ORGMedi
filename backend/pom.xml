@@ -11,7 +11,7 @@
     </parent>
     <groupId>proyecto.orgmedi</groupId>
     <artifactId>orgmedi</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>orgmedi</name>
     <description>Proyecto Orgmedi adaptado a estructura profesional</description>
     <properties>

@@ -79,6 +79,7 @@ public class AuthController {
             throw new UnauthorizedException("Credenciales inválidas");
         }
 
+        logger.info("=== LOGIN V2 (2026-01-22 19:50) ===");
         String token = jwtUtil.generateToken(usuario.getCorreo());
         logger.info("Login success for usuario={}", request.getUsuario());
         
@@ -86,6 +87,7 @@ public class AuthController {
         AuthResponse response = new AuthResponse();
         response.setToken(token);
         
+        logger.info("✓ RESPONSE OBJECT: token={}", response.getToken() != null ? "present" : "NULL");
         logger.info("✓ ENVIANDO RESPUESTA LOGIN: {}", token.substring(0, Math.min(20, token.length())));
         
         return ResponseEntity.ok()
@@ -130,6 +132,7 @@ public class AuthController {
         savedUsuario.setGestorMedicamentos(savedGestor);
         usuarioRepository.save(savedUsuario);
         
+        logger.info("=== REGISTER V2 (2026-01-22 19:50) ===");
         logger.info("Register success for correo={}", request.getCorreo());
 
         // Generar token JWT
@@ -140,6 +143,7 @@ public class AuthController {
         AuthResponse response = new AuthResponse();
         response.setToken(token);
         
+        logger.info("✓ RESPONSE OBJECT: token={}", response.getToken() != null ? "present" : "NULL");
         logger.info("✓ ENVIANDO RESPUESTA REGISTER: {}", response.getToken().substring(0, Math.min(20, response.getToken().length())));
         
         // Retornar 201 CREATED con el token en el body
