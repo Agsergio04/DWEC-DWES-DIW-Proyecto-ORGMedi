@@ -57,7 +57,7 @@ public class AuthController {
         @ApiResponse(responseCode = "401", description = "Credenciales inválidas"),
         @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos")
     })
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
+    public ResponseEntity<java.util.Map<String, Object>> login(@Valid @RequestBody AuthRequest request) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByUsuario(request.getUsuario());
         if (usuarioOpt.isEmpty()) {
             logger.warn("Login failed for usuario={}", request.getUsuario());
@@ -97,16 +97,16 @@ public class AuthController {
         String token = jwtUtil.generateToken(usuario.getCorreo());
         logger.info("Login success for usuario={}", request.getUsuario());
         
-        // Crear respuesta con token explícitamente
-        AuthResponse response = new AuthResponse();
-        response.setToken(token);
+        // Retornar token como Map para asegurar serialización
+        java.util.Map<String, Object> responseMap = new java.util.HashMap<>();
+        responseMap.put("token", token);
         
-        logger.info("✓ RESPONSE OBJECT: token={}", response.getToken() != null ? "present" : "NULL");
+        logger.info("✓ MAP RESPONSE: {}", responseMap);
         logger.info("✓ ENVIANDO RESPUESTA LOGIN: {}", token.substring(0, Math.min(20, token.length())));
         
         return ResponseEntity.ok()
                 .header("Content-Type", "application/json")
-                .body(response);
+                .body(responseMap);
     }
 
     @PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
@@ -118,7 +118,7 @@ public class AuthController {
         @ApiResponse(responseCode = "409", description = "El usuario o correo ya existe"),
         @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos")
     })
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<java.util.Map<String, Object>> register(@Valid @RequestBody RegisterRequest request) {
         // Verificar si el correo ya existe
         if (usuarioRepository.findByCorreo(request.getCorreo()).isPresent()) {
             logger.warn("Register failed: email already exists for correo={}", request.getCorreo());
@@ -160,17 +160,15 @@ public class AuthController {
         String token = jwtUtil.generateToken(request.getCorreo());
         logger.info("✓ TOKEN GENERADO EN REGISTER: {}", token.substring(0, Math.min(20, token.length())));
         
-        // Crear respuesta con token
-        AuthResponse response = new AuthResponse();
-        response.setToken(token);
+        // Retornar 201 CREATED con el token en el body como Map para asegurar serialización
+        java.util.Map<String, Object> responseMap = new java.util.HashMap<>();
+        responseMap.put("token", token);
         
-        logger.info("✓ RESPONSE OBJECT: token={}", response.getToken() != null ? "present" : "NULL");
-        logger.info("✓ ENVIANDO RESPUESTA REGISTER: {}", response.getToken().substring(0, Math.min(20, response.getToken().length())));
+        logger.info("✓ MAP RESPONSE CREATED: {}", responseMap);
         
-        // Retornar 201 CREATED con el token en el body
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header("Content-Type", "application/json")
-                .body(response);
+                .body(responseMap);
     }
 
     @PostMapping("/rehash")
