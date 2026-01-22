@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { ToastService } from '../../shared/toast.service';
+import { AuthService } from '../services/auth/auth.service';
 
 /**
  * Interceptor de manejo global de errores HTTP
@@ -10,7 +11,7 @@ import { ToastService } from '../../shared/toast.service';
  * 
  * Mapeo de códigos de estado a mensajes:
  * - 0: Sin conexión con el servidor
- * - 401: Sesión no válida, redirige a login
+ * - 401: Sesión expirada o no válida - limpia sesión y va al home
  * - 403: Sin permisos para la acción
  * - 404: Recurso no encontrado
  * - 409: Conflicto, recurso duplicado
@@ -22,6 +23,7 @@ import { ToastService } from '../../shared/toast.service';
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastService = inject(ToastService);
   const router = inject(Router);
+  const authService = inject(AuthService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -31,12 +33,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         // Sin conexión al servidor
         message = 'No hay conexión con el servidor. Verifica tu conexión a internet.';
       } else if (error.status === 401) {
-        // No autenticado
-        message = 'Sesión no válida o expirada. Vuelve a iniciar sesión.';
-        router.navigate(['/iniciar-sesion']);
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('currentUser');
-        router.navigate(['/iniciar-sesion']);
+        // Token expirado o no autenticado
+        message = 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.';
+        // Limpiar sesión completamente usando AuthService (como logout)
+        authService.logout();
+        // Redirigir al home (/) en lugar de al login
+        router.navigate(['/']);
       } else if (error.status === 403) {
         // Sin permisos
         message = 'No tienes permisos para realizar esta acción.';

@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { tap, catchError, map } from 'rxjs/operators';
-import { environment } from '../../../../environments/environment';
+import { ApiService } from '../data/api.service';
 
 export interface AuthUser {
   id: number;
@@ -31,8 +30,8 @@ export interface ChangePasswordRequest {
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/auth`;
+  private api = inject(ApiService);
+  private readonly baseUrl = 'auth';
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.checkStoredAuth());
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.getStoredUser());
 
@@ -86,7 +85,7 @@ export class AuthService {
       contrasena: password
     };
 
-    return this.http.post<any>(`${this.baseUrl}/login`, request, {
+    return this.api.post<any>(`${this.baseUrl}/login`, request, {
       responseType: 'json' as const
     }).pipe(
       tap((response) => {
@@ -137,7 +136,7 @@ export class AuthService {
       contrasena: password
     };
 
-    return this.http.post<any>(`${this.baseUrl}/register`, request, {
+    return this.api.post<any>(`${this.baseUrl}/register`, request, {
       headers: { 'Content-Type': 'application/json' },
       responseType: 'json' as const
     }).pipe(
@@ -241,7 +240,7 @@ export class AuthService {
    * Devuelve los datos reales del usuario autenticado
    */
   getCurrentUser(): Observable<AuthUser> {
-    return this.http.get<AuthUser>(`${this.baseUrl}/me`).pipe(
+    return this.api.get<AuthUser>(`${this.baseUrl}/me`).pipe(
       tap((user) => {
         // Manejar respuestas vacías del servidor
         if (!user || !user.id) {
@@ -293,7 +292,7 @@ export class AuthService {
       contrasena: '' // Campo requerido por la API pero no se actualiza
     };
 
-    return this.http.put<any>(`${this.baseUrl.replace('/auth', '')}/usuarios/${currentUser.id}`, request).pipe(
+    return this.api.put<any>(`usuarios/${currentUser.id}`, request).pipe(
       tap((response) => {
         // Actualizar usuario en localStorage
         const updatedUser: AuthUser = {
@@ -328,7 +327,7 @@ export class AuthService {
       contrasenanueva: newPassword
     };
 
-    return this.http.post<any>(`${this.baseUrl}/change-password`, request).pipe(
+    return this.api.post<any>(`${this.baseUrl}/change-password`, request).pipe(
       tap((response) => {
         console.log('[AuthService] Password changed successfully');
       }),
