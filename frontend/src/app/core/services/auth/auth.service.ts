@@ -85,14 +85,25 @@ export class AuthService {
       contrasena: password
     };
 
-    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, request).pipe(
+    return this.http.post<any>(`${this.baseUrl}/login`, request, {
+      responseType: 'json' as const
+    }).pipe(
       tap((response) => {
-        console.log('[AuthService] Login response:', response);
-        if (!response || !response.token) {
-          throw new Error('Invalid login response: missing token');
+        console.log('[AuthService] Login response CRUDO:', response);
+        console.log('[AuthService] Type de response:', typeof response);
+        
+        // Manejar respuesta vacía o sin token
+        if (!response || (typeof response === 'object' && Object.keys(response).length === 0)) {
+          console.error('[AuthService] ⚠️  Response vacía en login:', response);
+          throw new Error('Servidor respondió sin token. Verifica que el backend está actualizado.');
         }
-        console.log('[AuthService] Login successful, token:', response.token.substring(0, 20) + '...');
-        this.setToken(response.token);
+        
+        const token = response?.token || response?.['token'];
+        if (!token) {
+          throw new Error('Invalid login response: missing token. Response: ' + JSON.stringify(response));
+        }
+        console.log('[AuthService] ✓ Login exitoso, token:', token.substring(0, 20) + '...');
+        this.setToken(token);
         const user: AuthUser = {
           id: 1,
           name: username,
@@ -126,25 +137,31 @@ export class AuthService {
     };
 
     return this.http.post<any>(`${this.baseUrl}/register`, request, {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      responseType: 'json' as const
     }).pipe(
       tap((response) => {
-        console.log('[AuthService] Register response completo:', response);
+        console.log('[AuthService] Register response CRUDO:', response);
         console.log('[AuthService] Type de response:', typeof response);
-        console.log('[AuthService] Keys de response:', response ? Object.keys(response) : 'null');
+        console.log('[AuthService] Response stringified:', JSON.stringify(response));
         
-        // Manejar respuesta null o vacía
-        if (!response) {
-          console.error('[AuthService] Response es null, intentando extraer token del header');
-          throw new Error('Invalid register response: empty response');
+        // La respuesta puede llegar como null, string vacío, o un objeto
+        // Si es null, el servidor está enviando una respuesta sin cuerpo
+        if (!response || (typeof response === 'object' && Object.keys(response).length === 0)) {
+          console.error('[AuthService] ⚠️  Response vacía. El servidor respondió pero sin token:', response);
+          throw new Error('Servidor respondió sin token en el cuerpo. Verifica que la versión del backend tiene las fixes.');
         }
         
         // Extraer token - puede venir como response.token o directamente como token
-        const token = response?.token || response?.['token'];
+        let token: string | null = null;
+        
+        if (typeof response === 'object' && response !== null) {
+          token = response.token || response['token'];
+        }
         
         if (!token) {
-          console.error('[AuthService] No token found in response:', response);
-          throw new Error('Invalid register response: missing token. Response: ' + JSON.stringify(response));
+          console.error('[AuthService] ❌ No se encontró token en la respuesta:', response);
+          throw new Error('La respuesta del servidor no contiene token. Response: ' + JSON.stringify(response));
         }
         
         console.log('[AuthService] ✓ Token extraído exitosamente:', token.substring(0, 20) + '...');
@@ -159,7 +176,7 @@ export class AuthService {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.isLoggedInSubject.next(true);
         this.currentUserSubject.next(user);
-        console.log('[AuthService] ✓ Token guardado en localStorage');
+        console.log('[AuthService] ✓ Registro exitoso y token guardado');
       }),
       map(() => true),
       catchError(err => {
