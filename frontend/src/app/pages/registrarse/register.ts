@@ -41,8 +41,13 @@ export class RegisterPage {
         // El spinner se cierra cuando el servidor responde con error
         this.isLoading = false;
         console.error('Error al crear cuenta:', err);
-        const errorMsg = err.error?.message || 'Error al crear la cuenta. Intenta de nuevo.';
-        this.toastService.error(errorMsg);
+        // Extraer mensaje de error de múltiples fuentes posibles
+        const errorMsg =
+          err?.error?.message ||
+          err?.message ||
+          (err?.status ? `Error ${err.status}: ${err.statusText || 'Error del servidor'}` : 'Error al crear la cuenta. Intenta de nuevo.');
+        // Asegurar que se muestra una cadena
+        this.toastService.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
       }
     });
   }
