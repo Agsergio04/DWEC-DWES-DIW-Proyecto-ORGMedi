@@ -28,7 +28,7 @@
   display: inline-block;
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
-  color: $color-texto_borde_cajas;
+  color: var(--color-texto_borde_cajas);
   background: transparent;
   padding: 0;
   border-radius: 0;

@@ -53,14 +53,12 @@
 .profile__description {
   margin: 0;
   line-height: 1.5;
+  font-size: $font-size-sm;
+  color: rgba(var(--color-texto_borde_cajas-rgb), 0.7);
 
   @include md {
     font-size: $font-size-md;
-  }on {
-  font-size: $font-size-md;
-  color: rgba(var(--color-texto_borde_cajas-rgb), 0.7);
-  margin: 0;
-  line-height: 1.5;
+  }
 }
 
 // ===== SECCIONES =====
@@ -68,6 +66,9 @@
   margin-bottom: $espaciado-32;
   padding-bottom: $espaciado-32;
   border-bottom: 1px solid rgba(var(--color-texto_borde_cajas-rgb), 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: $espaciado-16; /* Separación consistente entre controles/elementos */
 }
 
 .profile__form-section:last-of-type {
@@ -241,9 +242,8 @@
   }
 }
 
+/* Ajustes finales: asegurar cierre correcto y disposición en tablet */
 @include max-tablet {
-  }
-
   .profile__card {
     padding: $espaciado-20;
   }

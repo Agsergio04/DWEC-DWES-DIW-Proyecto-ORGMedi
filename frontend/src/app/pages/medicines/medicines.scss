@@ -150,7 +150,7 @@
   font-weight: $font-weight-semibold;
   /* Mobile: Small font */
   font-size: $font-size-sm;
-  transition: background $transition-normal, transform $transition-normal;
+  transition: center $transition-normal, transform $transition-normal;
   text-align: center;
   display: flex;
   align-items: center;
@@ -189,6 +189,12 @@
     &:hover {
       background: rgba(var(--color-bordes_marco_botones-rgb), 0.8);
     }
+  }
+
+  /* Botones específicos para crear medicamento: icono y texto deben usar la variable de color */
+  &--photo,
+  &--manual {
+    color: var(--color-bordes_marco_botones);
   }
 }
 
@@ -368,7 +374,25 @@
 .medicines__action-icon {
   width: 24px;
   height: 24px;
-  object-fit: contain;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Si el icono es un SVG inline, forzamos que use currentColor */
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+  }
+
+  /* Si por alguna razón aparece una imagen externa, mantenemos tamaño */
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 }
 
 // ===== BÚSQUEDA (Tarea 5) =====
@@ -448,7 +472,7 @@
   cursor: pointer;
   font-weight: $font-weight-semibold;
   font-size: $font-size-sm;
-  transition: background $transition-normal, opacity $transition-normal;
+  transition: color $transition-normal, opacity $transition-normal;
 
   &:hover:not(:disabled) {
     background: var(--color-primario-hover);

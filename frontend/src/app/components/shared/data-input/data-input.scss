@@ -36,9 +36,21 @@
 .data-input__icon {
   width: 24px;
   height: 24px;
-  object-fit: contain;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-texto_borde_cajas);
   flex-shrink: 0;
-  filter: brightness(0.3) saturate(1);
+}
+
+.data-input__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  /* Allow stroke/fill using currentColor */
+  stroke: currentColor;
+  fill: currentColor;
 }
 
 .data-input__input {

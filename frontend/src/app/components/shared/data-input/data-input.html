@@ -1,12 +1,15 @@
 <div class="data-input-wrapper">
   <div class="data-input__container">
-    <img 
-      *ngIf="icon" 
-      [src]="icon" 
-      [alt]="label || placeholder"
-      class="data-input__icon"
-      aria-hidden="true"
-    />
+    <span *ngIf="svgIcon; else imgTpl" class="data-input__icon" [innerHTML]="svgIcon"></span>
+    <ng-template #imgTpl>
+      <img 
+        *ngIf="icon" 
+        [src]="icon" 
+        [alt]="label || placeholder"
+        class="data-input__icon"
+        aria-hidden="true"
+      />
+    </ng-template>
     <input
       class="data-input__input"
       [type]="type"

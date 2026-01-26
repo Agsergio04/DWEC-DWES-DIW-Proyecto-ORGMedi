@@ -74,7 +74,7 @@ button {
   font-weight: $font-weight-semibold;
   border: $border-thin solid var(--color-bordes_marco_botones);
   border-radius: $radius-lg;
-  transition: background $transition-normal, color $transition-normal;
+  transition: color $transition-normal, color $transition-normal;
 }
 button:hover, button:focus {
   background: var(--color-primario-hover);

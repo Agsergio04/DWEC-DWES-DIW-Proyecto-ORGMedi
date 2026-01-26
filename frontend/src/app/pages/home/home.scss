@@ -145,6 +145,7 @@
     border-radius: $radius-lg;
     display: flex;
     align-items: center;
+    color: var(--color-texto_borde_cajas);
     justify-content: center;
 
     @include md {
@@ -161,6 +162,12 @@
   .feature-icon {
     width: 100%;
     height: 100%;
+    color: var(--color-bordes_marco_botones);
+    /* Force inline SVG strokes/fills to use currentColor */
+    svg, path, circle, rect, line, polyline, polygon {
+      stroke: currentColor !important;
+      fill: none;
+    }
   }
 
   .feature-content {
