@@ -1341,3 +1341,22 @@ He añadido estas secciones aquí para que queden integradas en la documentació
 - generar ejemplos concretos de tests para 3 componentes y 3 servicios y añadirlos al repo,
 - añadir un job de CI (GitHub Actions) que haga `npm ci`, `npm run test:coverage`, `npx playwright install` y `npx playwright test`.
 
+---
+
+## Plantilla: Verificación Cross-Browser (para completar)
+
+Rellena esta tabla tras ejecutar las pruebas en cada navegador para dejar un registro reproducible.
+
+| Navegador | Versión probada | Fecha | URL probada | Flujos probados | Incompatibilidades encontradas | Polyfills aplicados | Notas |
+|-----------|-----------------|-------|-------------|-----------------|-------------------------------|---------------------|-------|
+| Chromium  |                 |       |             | Login, Crear medicamento, Checkout |                               |                     |       |
+| Firefox   |                 |       |             | Login, Crear medicamento, Checkout |                               |                     |       |
+| WebKit (Safari) |          |       |             | Login, Crear medicamento, Checkout |                               |                     |       |
+
+Pasos para la verificación:
+1. Levantar backend y frontend (`docker-compose up` o `npm run start` + `mvn spring-boot:run`).
+2. Ejecutar tests E2E reproducibles o realizar pruebas manuales siguiendo los flujos listados.
+3. Registrar cualquier error visual, funcional o de consola en la tabla anterior.
+4. Si se detecta incompatibilidad de API/CSS, añadir un polyfill o workaround en `frontend/src/polyfills.ts` y anotar la razón.
+
+
