@@ -55,7 +55,12 @@ export class ProfilePage implements OnInit {
       },
       error: (err) => {
         console.error('Error cargando datos del usuario:', err);
-        // Si falla, intentar usar el usuario del localStorage
+        // Notificar al usuario y usar datos del localStorage si existen
+        const errorMsg =
+          err?.error?.message ||
+          err?.message ||
+          (err?.status ? `Error ${err.status}: ${err.statusText || 'Error del servidor'}` : 'No se pudieron cargar los datos del usuario');
+        this.toastService.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
         const currentUser = this.authService.currentUser;
         if (currentUser && currentUser.name) {
           this.form.get('username')?.setValue(currentUser.name);
@@ -86,8 +91,11 @@ export class ProfilePage implements OnInit {
       },
       error: (err) => {
         console.error('Error al actualizar nombre de usuario:', err);
-        const errorMsg = err.error?.message || 'Error al actualizar el nombre de usuario';
-        this.toastService.error(errorMsg);
+        const errorMsg =
+          err?.error?.message ||
+          err?.message ||
+          (err?.status ? `Error ${err.status}: ${err.statusText || 'Error del servidor'}` : 'Error al actualizar el nombre de usuario');
+        this.toastService.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
         this.isLoading = false;
       }
     });
@@ -131,10 +139,13 @@ export class ProfilePage implements OnInit {
         });
       },
       error: (err) => {
-        console.error('Error al cambiar contraseña:', err);
-        const errorMsg = err.error?.message || 'Error al cambiar la contraseña';
-        this.toastService.error(errorMsg);
-        this.isLoading = false;
+          console.error('Error al cambiar contraseña:', err);
+          const errorMsg =
+            err?.error?.message ||
+            err?.message ||
+            (err?.status ? `Error ${err.status}: ${err.statusText || 'Error del servidor'}` : 'Error al cambiar la contraseña');
+          this.toastService.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
+          this.isLoading = false;
       }
     });
   }

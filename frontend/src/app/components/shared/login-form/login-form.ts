@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
+import { ToastService } from '../../../shared/toast.service';
 import { DataInputComponent } from '../data-input/data-input';
 import { ButtonComponent } from '../button/button';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner';
@@ -29,6 +30,7 @@ export class LoginFormComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
+  private toastService = inject(ToastService);
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -68,7 +70,14 @@ export class LoginFormComponent {
       error: (err) => {
         // El spinner se cierra cuando el servidor responde con error
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Error al iniciar sesión. Verifica tus credenciales.';
+        // Extraer mensaje de error de varias fuentes posibles
+        const errorMsg =
+          err?.error?.message ||
+          err?.message ||
+          (err?.status ? `Error ${err.status}: ${err.statusText || 'Error del servidor'}` : 'Error al iniciar sesión. Verifica tus credenciales.');
+        this.errorMessage = typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg);
+        // Mostrar notificación toast además del mensaje inline
+        this.toastService.error(this.errorMessage);
         console.error('[LoginForm] Error en login:', err);
       }
     });
