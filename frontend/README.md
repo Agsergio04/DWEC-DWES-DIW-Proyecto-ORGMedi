@@ -1,3 +1,55 @@
+# Frontend — ORGMedi
+
+Mini-README específico del frontend con pasos rápidos para desarrollo, pruebas y despliegue.
+
+Requisitos
+- Node.js 18+
+- npm
+
+Setup rápido
+
+```powershell
+cd frontend
+npm install
+```
+
+Comandos útiles
+- `npm run dev` → servidor de desarrollo (ng serve)
+- `npm start` → servidor estático `server.js` (usado en Docker/producción local)
+- `npm run build` → build de producción (`--configuration production`)
+- `npm run test` → tests unitarios (Karma/Jasmine)
+- `npm run test:coverage` → tests + coverage
+- `npm run test:e2e:playwright` → ejecutar Playwright E2E (asegúrate de `npx playwright install`)
+
+E2E Playwright (local)
+
+```powershell
+cd frontend
+npx playwright install
+npx playwright test --project=chromium
+```
+
+Build y análisis de bundles
+
+```powershell
+cd frontend
+npm run build
+npm run build:analyze
+```
+
+Producción (servir `dist/` con `server.js` o Nginx)
+
+```powershell
+cd frontend
+npm run build
+node server.js
+# o construir una imagen Docker con Dockerfile existente
+```
+
+Consejos rápidos
+- Para CI ejecutar `npm ci` en lugar de `npm install`.
+- Usar `--base-href` en builds cuando la app se sirva desde una subruta.
+- Ejecutar `npx playwright install --with-deps` en runners Linux para instalar navegadores.
 # Proyecto
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.1.

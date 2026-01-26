@@ -33,7 +33,8 @@
 
 6. [Fase 6 — Optimización y Rendimiento](#fase-6--optimización-y-rendimiento)
   - [Tarea 7: Documentación (Patrón de estado con Signals)](#tarea-7-documentación-patrón-de-estado-con-signals)
-7. [Gestión de estado y Signals (resumen)](#gestión-de-estado-y-signals-resumen)
+  - [Cross-browser y polyfills](#cross-browser-y-polyfills)
+  - [Gestión de estado y Signals (resumen)](#gestión-de-estado-y-signals-resumen)
 ---
 ## Fase 1 — Arquitectura de eventos
 
@@ -1078,7 +1079,7 @@ En la sección de arquitectura se incluye una tabla que explica las alternativas
 
 ---
 
-## Gestión de estado y Signals (resumen)
+## Gestión de estado y Signals 
 
 En este proyecto se utiliza un **patrón de gestión de estado centralizado** basado en servicios (store) y Signals de Angular.
 
@@ -1112,4 +1113,231 @@ Servicio HTTP
 
 Para más detalles, consulta la sección [Tarea 7: Documentación (Patrón de estado con Signals)](#tarea-7-documentación-patrón-de-estado-con-signals).
 
+
+## Cross-browser y polyfills
+Breve guía práctica para compatibilidad entre navegadores (Chrome, Firefox, Safari, Edge).
+
+Resumen rápido
+- Navegadores objetivo: Chrome, Firefox, Safari y Edge (últimas 2 versiones).
+- Polyfills mínimos añadidos en `frontend/src/polyfills.ts`: `zone.js`, `Promise.allSettled`, `Element.prototype.closest`, `matchMedia`.
+
+Snippets importantes
+
+- Incluir `polyfills.ts` en el build (ya registrado en `angular.json`).
+
+- Ejemplo de polyfill relevante (ya en `frontend/src/polyfills.ts`):
+
+```ts
+// Promise.allSettled polyfill (Safari antiguas)
+if (!Promise.allSettled) {
+  (Promise as any).allSettled = function (promises: any[]) {
+    return Promise.all(
+      promises.map(p =>
+        Promise.resolve(p)
+          .then((value) => ({ status: 'fulfilled', value }))
+          .catch((reason) => ({ status: 'rejected', reason }))
+      )
+    );
+  } as any;
+}
+```
+
+Cómo probar rápidamente
+- Instalar Playwright (devDependency añadido) y ejecutar tests E2E:
+
+```bash
+cd frontend
+npm install
+npx playwright install
+npx playwright test
+```
+
+Recomendaciones prácticas
+- Verificar en Safari Mobile/Desktop los puntos de CSS y APIs no soportadas (e.g. `backdrop-filter`).
+- Usar `matchMedia` y `prefers-color-scheme` con fallbacks cuando sea necesario.
+- Añadir polyfills solo cuando sea necesario: evitar cargarlos si objetivo son navegadores modernos.
+
+Notas
+- El polyfills creado es deliberadamente mínimo y conservador; amplíalo si necesitas soportar navegadores legacy (IE11 no está soportado por Angular v21).
+- Para integración continua, añade un job que ejecute `npx playwright test --project=chromium,firefox,webkit`.
+
 ---
+
+## Testing y cobertura (guía rápida)
+
+Objetivos mínimos:
+- Unit tests: al menos 3 componentes y 3 servicios con coverage >= 50%.
+- Integración: tests de flujos completos con mocks HTTP.
+
+Comandos útiles:
+
+```bash
+# Ejecutar tests unitarios (Karma/Jasmine)
+cd frontend
+npm run test
+
+# Generar coverage
+npm run test:coverage
+
+# Ejecutar E2E con Playwright
+npm install
+npx playwright install
+npx playwright test
+```
+
+Recomendaciones:
+- Utilizar `HttpClientTestingModule` para mocks HTTP en unit tests de servicios.
+- Usar spies para simular respuestas en servicios que delegan en `ApiService`.
+- Configurar tests E2E en CI (Playwright) para Chrome/Firefox/WebKit.
+
+---
+
+## Checklist detallado de Testing (añadido)
+
+- **Testing unitario (objetivo mínimo):**
+  - **Componentes:** escribir al menos 3 tests de componentes principales (p. ej. `MedicinesPage`, `MedicineCardComponent`, `ProfilePage`).
+  - **Servicios:** al menos 3 tests de servicios (p. ej. `MedicineService`, `AuthService`, `ApiService`) usando `HttpClientTestingModule`.
+  - **Pipes personalizados:** testear pipes si existen (transformaciones puras y casos borde).
+  - **Coverage:** objetivo mínimo global >= 50% (aumentar con tests de integración/componentes si hace falta).
+
+- **Testing de integración (unit/integration):**
+  - Tests que comprueben flujos completos a nivel de componentes y servicios: crear producto, login, flujo de checkout (simulado).
+  - Mockear llamadas HTTP con `HttpTestingController` en tests de integración donde se quiera aislar la API.
+  - Verificar formularios reactivos: validaciones, estados `pending`, `dirty` y envíos.
+
+Ejemplo breve: mockear petición en un test de servicio
+
+```ts
+it('debería crear medicamento', inject([HttpTestingController, MedicineService], (httpMock: HttpTestingController, service: MedicineService) => {
+  const dto = { name: 'Paracetamol' };
+  service.create(dto).subscribe(res => expect(res.name).toBe('Paracetamol'));
+  const req = httpMock.expectOne('/api/medicines');
+  expect(req.request.method).toBe('POST');
+  req.flush({ id: 1, ...dto });
+  httpMock.verify();
+}));
+```
+
+Ejemplo de test de formulario reactivo
+
+```ts
+it('form válido tras llenar campos', () => {
+  component.form.controls['name'].setValue('Paracetamol');
+  component.form.controls['price'].setValue(1.23);
+  expect(component.form.valid).toBeTrue();
+});
+```
+
+---
+
+## Testing de integración E2E (Playwright)
+
+- Definir flujos E2E representativos: registro/login, crear producto, añadir al carrito y checkout.
+- Utilizar Playwright para cross-browser: `chromium`, `firefox`, `webkit`.
+- En CI: ejecutar `npx playwright install --with-deps` y luego `npx playwright test --project=chromium,firefox,webkit`.
+
+Recomendación: para pasos que requieren backend, usar un mock server o fixtures que devuelvan respuestas consistentes.
+
+---
+
+## Verificación cross-browser (pasos concretos)
+
+1. Instalar dependencias y Playwright:
+
+```powershell
+cd frontend
+npm install
+npx playwright install
+```
+
+2. Ejecutar E2E en los tres motores:
+
+```powershell
+npx playwright test --project=chromium,firefox,webkit
+```
+
+3. Documentar cualquier incompatibilidad encontrada (API faltante, CSS no soportado, comportamientos distintos). Añadir polyfills en `frontend/src/polyfills.ts` cuando sea necesario.
+
+4. Verificar que `angular.json` incluye los targets/browsers configurados en `browserslist` y que `tsconfig`/`target` y `lib` son compatibles con los navegadores objetivo.
+
+---
+
+## Optimización de rendimiento (acciones y herramientas)
+
+- **Lighthouse:** ejecutar auditoría y apuntar a Performance > 80.
+
+```powershell
+# lanzar una instancia de la app (servidor estático o build dev)
+npm run start
+# desde otra terminal ejecutar lighthouse (instalar npm i -g lighthouse o usar npx)
+npx lighthouse http://localhost:4200 --output html --output-path=./reports/lighthouse.html
+```
+
+- **Lazy loading:** comprobar que módulos grandes se cargan bajo demanda (usar Network tab y analizar chunks generados).
+- **Tree shaking:** verificar que build de producción elimina código no usado.
+- **Analizar bundles:** usar `source-map-explorer` para entender tamaño y buscar optimizaciones.
+
+```powershell
+npx source-map-explorer "dist/**/main.*.js" --html dist/report-bundle.html
+```
+
+Objetivo de bundle inicial: < 500KB (gzip/brotli preferible). Si está por encima, identificar dependencias grandes y considerar lazy-load o reemplazo por alternativas más ligeras.
+
+---
+
+## Build de producción (checklist)
+
+1. Ejecutar:
+
+```powershell
+cd frontend
+npm run build -- --configuration production
+```
+
+2. Verificar que no hay errores ni warnings críticos en la consola.
+3. Analizar bundles con `source-map-explorer` (ver arriba).
+4. Configurar `--base-href` si la app se sirve desde subruta:
+
+```powershell
+ng build --configuration production --base-href "/mi-subruta/"
+```
+
+5. Asegurar que el servidor devuelve `index.html` para rutas de la SPA (fallback) y configurar redirects si es necesario.
+
+---
+
+## Despliegue (chequeo final)
+
+- Desplegar en la misma URL que DIW: ajustar `base-href` y/o configuración del servidor.
+- Verificar todas las rutas con navegación manual y pruebas E2E.
+- Comprobar llamadas HTTP en producción (CORS, endpoints correctos en `environment.prod.ts`).
+- Configurar redirecciones en el servidor (Nginx ejemplo):
+
+```nginx
+location / {
+  try_files $uri $uri/ /index.html;
+}
+```
+
+- Probar el deploy final y documentar pasos (script de deploy o CI job) en el README.
+
+---
+
+## Documentación técnica final y resumen de decisiones (Fase 7, simplificado)
+
+- **README:** incluir setup (instalar deps, comandos dev/build/test), arquitectura resumida, y cómo ejecutar E2E y Lighthouse.
+- **Contribución:** `CONTRIBUTING.md` con reglas de commits, PRs y formato de tests.
+- **Changelog:** `CHANGELOG.md` con releases semánticos o usar `keep a changelog`.
+- **Decisiones técnicas (resumen):**
+  - Gestión de estado: **Services + Signals** (simplicidad y rendimiento).
+  - Detección de cambios: `OnPush` en componentes de alto costo.
+  - Test E2E: **Playwright** por cross-browser (Chromium/Firefox/WebKit).
+  - Polyfills: añadir sólo cuando se detecten incompatibilidades (polyfills mínimos ya en `frontend/src/polyfills.ts`).
+  - Dependencias pesadas: evitar incluir libs grandes en bundle inicial; usar lazy-load.
+
+---
+
+He añadido estas secciones aquí para que queden integradas en la documentación cliente. Si quieres, puedo:
+- generar ejemplos concretos de tests para 3 componentes y 3 servicios y añadirlos al repo,
+- añadir un job de CI (GitHub Actions) que haga `npm ci`, `npm run test:coverage`, `npx playwright install` y `npx playwright test`.
+
