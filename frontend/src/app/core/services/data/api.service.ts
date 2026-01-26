@@ -208,7 +208,19 @@ export class ApiService {
    * Registra el error y propaga un error formateado
    */
   private handleError(error: any) {
-    console.error('HTTP error', error);
+    // Log detallado para depuración local: muestra status, url y body si están presentes
+    try {
+      console.error('HTTP error (detailed):', {
+        message: error?.message,
+        status: error?.status,
+        url: error?.url ?? error?.request?.url,
+        body: error?.error
+      });
+    } catch (logErr) {
+      // En caso de que el objeto de error no sea serializable
+      console.error('HTTP error (fallback):', error);
+    }
+
     return throwError(() => error);
   }
 }
