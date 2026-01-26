@@ -115,7 +115,7 @@
   flex-direction: row;  // ← HORIZONTAL (no column)
   justify-content: center;
   gap: $espaciado-8;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
   align-self: center;
 }
@@ -155,6 +155,9 @@
   width: 44px;
   height: 44px;
   flex-shrink: 0;
+
+  /* Allow flexible shrinking/wrapping so the grid adapts responsively */
+  flex: 0 1 44px;
 
   display: flex;
   align-items: center;
@@ -250,11 +253,14 @@
   .calendar__week-container {
     padding: $espaciado-16;
     gap: $espaciado-8;
-    overflow-x: auto;
+    /* Eliminar scroll horizontal y permitir que el contenido envuelva */
+    overflow-x: visible;
   }
 
   .calendar__week {
     gap: $espaciado-8;
+    /* Asegurar que la lista de días pueda hacer wrap */
+    flex-wrap: wrap;
   }
 
   .calendar__nav-btn {
@@ -267,6 +273,7 @@
     width: 40px;
     height: 40px;
     font-size: $font-size-sm;
+    flex: 0 1 40px;
   }
 
   .calendar__day-name {
@@ -283,11 +290,12 @@
   .calendar__week-container {
     padding: $espaciado-12;
     gap: $espaciado-6;
-    overflow-x: auto;
+    overflow-x: visible;
   }
 
   .calendar__week {
     gap: $espaciado-6;
+    flex-wrap: wrap;
   }
 
   .calendar__nav-btn {
@@ -300,6 +308,7 @@
     width: 36px;
     height: 36px;
     font-size: $font-size-xs;
+    flex: 0 1 36px;
   }
 
   .calendar__day-name {
