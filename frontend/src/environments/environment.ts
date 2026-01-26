@@ -6,3 +6,4 @@ export const environment = {
   //Para probar cosas en render descomenta el render y comenta el de local
   apiUrl: 'https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com'
 };
+  
