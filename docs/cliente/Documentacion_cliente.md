@@ -33,6 +33,7 @@
 
 6. [Fase 6 — Optimización y Rendimiento](#fase-6--optimización-y-rendimiento)
   - [Tarea 7: Documentación (Patrón de estado con Signals)](#tarea-7-documentación-patrón-de-estado-con-signals)
+7. [Gestión de estado y Signals (resumen)](#gestión-de-estado-y-signals-resumen)
 ---
 ## Fase 1 — Arquitectura de eventos
 
@@ -1074,3 +1075,41 @@ En la sección de arquitectura se incluye una tabla que explica las alternativas
 3. **Usar computed para valores derivados:** No duplicar datos en múltiples signals.
 4. **Testing:** Los servicios con signals son fáciles de testear.
 5. **Documentación:** Cada store debe documentar su estado público y métodos disponibles.
+
+---
+
+## Gestión de estado y Signals (resumen)
+
+En este proyecto se utiliza un **patrón de gestión de estado centralizado** basado en servicios (store) y Signals de Angular.
+
+**¿Cómo funciona?**
+- Cada feature (por ejemplo, medicamentos) tiene un store propio (`MedicineStoreSignals`).
+- El store mantiene el estado con signals y expone métodos para mutarlo (`add`, `update`, `remove`).
+- Los componentes inyectan el store y leen el estado reactivo directamente.
+- El template se actualiza automáticamente cuando cambia el estado, sin recargar ni navegar.
+
+**Ventajas:**
+- Sincronización automática de la UI tras crear, editar o eliminar.
+- Sin fugas de memoria (no hay subscribes manuales).
+- Mejor rendimiento (detección granular de cambios).
+
+**Diagrama simplificado:**
+```
+Componente
+  │
+  ▼
+Store (Signals)
+  │
+  ▼
+Servicio HTTP
+```
+
+**Alternativas consideradas:**
+- BehaviorSubject (RxJS): flexible pero más verboso.
+- NgRx: potente pero excesivo para este tamaño de app.
+
+**Decisión:** Signals + Store propio por simplicidad, rendimiento y claridad.
+
+Para más detalles, consulta la sección [Tarea 7: Documentación (Patrón de estado con Signals)](#tarea-7-documentación-patrón-de-estado-con-signals).
+
+---
