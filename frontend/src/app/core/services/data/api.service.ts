@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 
 /**
@@ -55,8 +55,7 @@ export class ApiService {
    * @param options - Opciones adicionales
    */
   post<T>(endpoint: string, body: unknown, options?: object): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}/api/${endpoint}`, body, options)
-      .pipe(catchError(this.handleError));
+    return this.requestAsJson<T>('POST', endpoint, body, options);
   }
 
   /**
@@ -66,8 +65,7 @@ export class ApiService {
    * @param options - Opciones adicionales
    */
   put<T>(endpoint: string, body: unknown, options?: object): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/api/${endpoint}`, body, options)
-      .pipe(catchError(this.handleError));
+    return this.requestAsJson<T>('PUT', endpoint, body, options);
   }
 
   /**
@@ -164,6 +162,33 @@ export class ApiService {
       ...options,
       responseType: 'text'
     }).pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Convertidor de texto a JSON para cuando el backend devuelva texto  o 
+   * body vacios pero la respuesta del HTTP sea 200. 
+   */
+  private requestAsJson<T>(method: 'POST'|'PUT'|'PATCH'|'DELETE'|'GET', endpoint: string, body?: unknown, options?: object): Observable<T> {
+    const url = `${this.baseUrl}/api/${endpoint}`;
+    return this.http.request('' + method, url, {
+      body,
+      ...(options || {}),
+      responseType: 'text' as 'json'
+    }).pipe(
+      map((text: any) => {
+        if (typeof text === 'string') {
+          try {
+            return JSON.parse(text) as T;
+          } catch {
+            // not JSON — return raw text (casted)
+            return text as unknown as T;
+          }
+        }
+        // already an object
+        return text as T;
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
