@@ -32,14 +32,33 @@ import { authInterceptor } from './app/core/interceptors/auth.interceptor';
 import { errorInterceptor } from './app/core/interceptors/error.interceptor';
 import { loggingInterceptor } from './app/core/interceptors/logging.interceptor';
 
-bootstrapApplication(App, {
-  providers: [
-    provideRouter(
-      routes,
-      withPreloading(PreloadAllModules) // Precarga todos los componentes lazy en segundo plano
-    ),
-    provideHttpClient(
-      withInterceptors([loggingInterceptor, authInterceptor, errorInterceptor])
-    ),
-  ],
-}).catch((err) => console.error(err));
+async function loadAppConfig() {
+  try {
+    const resp = await fetch('/assets/app-config.json', { cache: 'no-cache' });
+    if (resp.ok) {
+      // attach to global so services can read it synchronously after load
+      (window as any).APP_CONFIG = await resp.json();
+      console.info('Loaded runtime config', (window as any).APP_CONFIG);
+      return;
+    }
+    console.warn('Runtime config not found, using build-time environment');
+  } catch (e) {
+    console.warn('Could not load runtime config, using build-time environment', e);
+  }
+}
+
+(async () => {
+  await loadAppConfig();
+
+  bootstrapApplication(App, {
+    providers: [
+      provideRouter(
+        routes,
+        withPreloading(PreloadAllModules) // Precarga todos los componentes lazy en segundo plano
+      ),
+      provideHttpClient(
+        withInterceptors([loggingInterceptor, authInterceptor, errorInterceptor])
+      ),
+    ],
+  }).catch((err) => console.error(err));
+})();

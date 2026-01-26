@@ -35,7 +35,8 @@ import { environment } from '../../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private http = inject(HttpClient);
-  private readonly baseUrl = environment.apiUrl;
+  // Read runtime config (set by main.ts from /assets/app-config.json) and fall back to build-time env
+  private readonly baseUrl = (window as any)?.APP_CONFIG?.apiUrl ?? environment.apiUrl;
 
   /**
    * GET genérico
