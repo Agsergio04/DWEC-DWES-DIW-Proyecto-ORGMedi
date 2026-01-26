@@ -23,7 +23,7 @@ export interface HomeData {
 export const homeResolver: ResolveFn<HomeData | null> = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
-) => {
+  ) => {
   // Datos simulados que vendrían de un API en producción
   const mockHomeData: HomeData = {
     stats: {
