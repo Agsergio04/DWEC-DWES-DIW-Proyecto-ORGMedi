@@ -356,6 +356,24 @@
   aspect-ratio: 16 / 9;
 }
 
+/* Asegurar que los elementos <picture> e imágenes internas escalen correctamente
+   y no rompan el layout en pantallas pequeñas */
+.contact__image-container picture,
+.contact__image-container picture img,
+.contact__image-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+@include max-mobile {
+  .contact__image {
+    aspect-ratio: 4 / 3;
+  }
+}
+
 .contact__image-caption {
   padding: $espaciado-12 $espaciado-16;
   background: rgba(var(--color-primario-primary), 0.05);

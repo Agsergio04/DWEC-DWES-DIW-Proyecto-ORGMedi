@@ -610,16 +610,6 @@ $color-variante-cuarta: #A66F00
 $color-variante-quinta: #9100BD
 ```
 
-**Decisión de diseño para la paleta simplificada:**
-
-Después de revisar el uso en componentes, se eliminaron los colores **Terciario, Cuaternario y Quintario** porque:
-- ✓ No se utilizaban en el código actual
-- ✓ La paleta con 6 colores es más legible y coherente
-- ✓ Reduce complejidad sin perder funcionalidad
-- ✓ Las variantes de pastilla proporcionan suficiente diversidad visual
-
-La estructura **hover → primary → disabled** permite mostrar claramente el estado interactivo de cualquier elemento en modo claro y oscuro.
-
 #### 1.4.2 Tokens Tipográficos
 
 **Familias tipográficas elegidas:**
@@ -1182,29 +1172,6 @@ body.dark-mode {
 ```
 
 Con ViewEncapsulation.None, el toggle de tema afecta toda la aplicación de una vez.
-
-**Con ViewEncapsulation.Emulated (NO recomendado):**
-
-Cada componente necesitaría su propio logic de tema:
-
-```typescript
-// Esto sería necesario en CADA componente
-@Component({
-  selector: 'app-pastilla',
-  template: `
-    <div [class]="isDarkMode ? 'pastilla-dark' : 'pastilla'">
-      ...
-    </div>
-  `,
-  styles: [`
-    .pastilla { ... }
-    .pastilla-dark { ... }
-  `]
-})
-export class PastillaComponent {
-  @Input() isDarkMode: boolean;
-}
-```
 
 ---
 

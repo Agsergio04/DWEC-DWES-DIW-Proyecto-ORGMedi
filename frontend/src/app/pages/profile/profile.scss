@@ -185,7 +185,7 @@
   border-radius: $radius-md;
   cursor: pointer;
   font-weight: $font-weight-semibold;
-  transition: background $transition-normal;
+  transition: color $transition-normal;
 
   &:hover {
     background: var(--color-afirmacion-hover);
@@ -201,7 +201,7 @@
   border-radius: $radius-md;
   cursor: pointer;
   font-weight: $font-weight-semibold;
-  transition: background $transition-normal, border-color $transition-normal;
+  transition: color $transition-normal, border-color $transition-normal;
 
   &:hover {
     background: rgba(var(--color-primario-primary), 0.05);

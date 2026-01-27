@@ -316,6 +316,24 @@
   }
 }
 
+/* Imágenes en página de Términos: evitar que se desborden y mantener la proporción */
+.page--terms img,
+.page--terms picture,
+.page--terms figure img,
+.page--terms .terms__content img {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Si se usa figura con caption, limitar la altura para evitar layouts gigantes */
+.page--terms figure {
+  max-width: 100%;
+  overflow: hidden;
+}
+
 // ===== ENLACES =====
 .terms__link {
   color: var(--color-primario-primary);

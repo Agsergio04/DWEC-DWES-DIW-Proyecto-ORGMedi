@@ -17,11 +17,10 @@
 
 ## Requisitos Previos
 
-✅ Cuenta activa en [Render.com](https://render.com)  
-✅ Repositorio GitHub público con el código del proyecto  
-✅ Acceso a GitHub desde tu cuenta de Render  
-✅ Java 21 instalado localmente (para pruebas)  
-✅ Node.js 20+ instalado localmente (para pruebas)  
+ Cuenta activa en [Render.com](https://render.com)  
+ Repositorio GitHub público con el código del proyecto  
+ Acceso a GitHub desde tu cuenta de Render  
+ Java 21 instalado localmente (para pruebas)  
 
 ---
 
@@ -50,7 +49,7 @@ proyecto-root/
 **Backend - `backend/pom.xml`:**
 - Debe tener Spring Boot 3.2.5+
 - Dependencia `spring-boot-starter-web`
-- Dependencia `spring-boot-starter-actuator` ✅ (ya añadido)
+- Dependencia `spring-boot-starter-actuator` 
 
 **Frontend - `frontend/package.json`:**
 - Debe tener script `build`: `ng build --configuration production`
@@ -90,7 +89,7 @@ app.listen(PORT, () => {
 
 ### 3. Preparar el Archivo `render.yaml`
 
-✅ Ya está creado en la raíz del proyecto con la configuración necesaria.
+Ya está creado en la raíz del proyecto con la configuración necesaria.
 
 ---
 
@@ -125,7 +124,7 @@ Services:
 - orgmedi-db (H2 Database)
 ```
 
-✅ Hacer clic en **"Deploy"**
+Hacer clic en **"Deploy"**
 
 ---
 
@@ -140,7 +139,7 @@ Services:
    - **Build Command**: `./mvnw clean package -DskipTests`
    - **Start Command**: `java -jar target/*.jar`
 
-2. **Configurar Variables de Entorno**
+2. **Configurar Variables de Entorno()**
    - `SPRING_PROFILES_ACTIVE` = `prod`
    - `SPRING_JPA_HIBERNATE_DDL_AUTO` = `update`
    - `SPRING_DATASOURCE_URL` = (Base de datos, ver sección [Base de Datos](#base-de-datos))
