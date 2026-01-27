@@ -283,7 +283,7 @@
 .medicines__pagination-info {
   /* Mobile: Small font */
   font-size: $font-size-xs;
-  color: rgba(var(--color-texto_borde_cajas-rgb), 0.6);
+  color: var(--color-marco-medicina);
 
   @include md {
     font-size: $font-size-sm;
@@ -310,7 +310,7 @@
 
 .medicines__pagination-btn {
   background: var(--color-primario-primary);
-  color: white;
+  color: var(--color-marco-medicina-light);
   border: none;
   border-radius: $radius-sm;
   /* Mobile: Compact padding */
@@ -466,7 +466,7 @@
 .medicines__pagination-btn {
   padding: $espaciado-8 $espaciado-16;
   background: var(--color-primario-primary);
-  color: white;
+  color: var(--color-marco-medicina);
   border: none;
   border-radius: $radius-sm;
   cursor: pointer;
@@ -606,7 +606,7 @@
   .medicine__action-btn {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    color: var(--color-marco-medicina);
 
     &:hover {
       background: rgba(var(--color-primario-primary), 0.15);

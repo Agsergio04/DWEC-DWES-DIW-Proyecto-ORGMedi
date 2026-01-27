@@ -2,8 +2,7 @@
 # Mantiene el backend activo haciendo ping periódico a /actuator/health
 
 # ===== CONFIGURACIÓN =====
-$backendUrl = "https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com/actuator/health"  # ⚠️ CAMBIAR XXX POR TU URL
-$checkInterval = 600  # segundos (10 minutos)
+$backendUrl = "https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com/actuator/health"  # ⚠️ CAMBIAR XXX POR TU 
 $timeoutSeconds = 5
 
 # Colores para output

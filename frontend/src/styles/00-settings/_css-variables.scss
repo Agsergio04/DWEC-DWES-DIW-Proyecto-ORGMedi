@@ -29,6 +29,9 @@
   --color-borde-primario: var(--color-bordes_marco_botones);
   --color-borde-texto-caja: var(--color-texto_borde_cajas);
 
+  /* Variante de color para la card de medicamentos */
+  --color-marco-medicina: #{vars.$color-rosa-claro};
+
   --color-variante-primera: #{vars.$color-variante-primera};
   --color-variante-segunda: #{vars.$color-variante-segunda};
   --color-variante-tercera: #{vars.$color-variante-tercera};
