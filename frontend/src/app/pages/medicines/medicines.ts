@@ -304,15 +304,43 @@ export class MedicinesPage implements OnInit, OnDestroy {
    */
   deleteMedicine(medicineId: string | number): void {
     const currentMedicines = this.medicines();
-    const medicine = currentMedicines.find(m => m.id === medicineId);
+    const medicine = currentMedicines.find(m => Number(m.id) === Number(medicineId));
     if (!medicine) return;
 
     if (!confirm(`¿Está seguro de que desea eliminar "${medicine.nombre}"?`)) {
       return;
     }
 
-    this.medicineStore.remove(medicineId);
-    console.log('Medicamento eliminado:', medicine.nombre);
+    // Llamar a la API para eliminar en backend y, en caso de éxito,
+    // actualizar tanto el store global como el estado de paginación/local.
+    this.medicineService.delete(medicineId).subscribe({
+      next: () => {
+        // Quitar del store reactivo
+        this.medicineStore.remove(medicineId);
+
+        // Quitar de la página actual si pertenece a ella
+        this.paginationState.update(s => {
+          const items = s.items.filter(it => Number(it.id) !== Number(medicineId));
+          const total = Math.max(0, s.total - 1);
+          const totalPages = total === 0 ? 0 : Math.max(1, Math.ceil(total / this.pageSize()));
+          const hasMore = this.currentPage() < totalPages;
+          return { ...s, items, total, totalPages, hasMore };
+        });
+
+        console.log('Medicamento eliminado:', medicine.nombre);
+
+        // Si la página quedó vacía y existen páginas anteriores, retroceder una
+        const nowItems = this.paginationState().items;
+        if (nowItems.length === 0 && this.currentPage() > 1) {
+          this.loadPage(this.currentPage() - 1);
+        }
+      },
+      error: (err) => {
+        console.error('Error eliminando medicamento:', err);
+        // Notificar al usuario de forma simple
+        alert('Error al eliminar el medicamento. Intenta de nuevo.');
+      }
+    });
   }
 }
 
