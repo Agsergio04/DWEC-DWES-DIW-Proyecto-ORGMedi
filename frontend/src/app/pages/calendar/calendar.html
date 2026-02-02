@@ -27,7 +27,7 @@
               [isExpiring]="isExpiring(medicine)"
               (medicineEdit)="editMedicine($event)"
               (medicineDelete)="deleteMedicine($event)"
-              (medicineSelected)="onMedicineSelected($event)"
+              (medicineSelected)="onMedicineSelected($event.id, $event.instanceId)"
               [attr.aria-label]="'Medicamento: ' + medicine.nombre">
             </app-medicine-card-calendar>
           </div>

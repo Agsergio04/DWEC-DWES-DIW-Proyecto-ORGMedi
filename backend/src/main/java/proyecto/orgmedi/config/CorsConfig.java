@@ -12,10 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig implements WebMvcConfigurer {
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        if (registry == null) {
-            return;
-        }
+    public void addCorsMappings(@org.springframework.lang.NonNull CorsRegistry registry) {
         
         // Obtener origen permitido de variable de entorno o usar valores por defecto
         String[] allowedOrigins = {

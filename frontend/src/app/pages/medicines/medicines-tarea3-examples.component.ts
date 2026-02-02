@@ -353,12 +353,12 @@ export class MedicinesExampleSearchComponent {
   private medicineService = inject(MedicineService);
 
   searchTerm = signal('');
-  searchResults$ = this.medicineService.searchRemote('');
+  searchResults$ = this.medicineService.search('');
 
   onSearch(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchTerm.set(value);
-    this.searchResults$ = this.medicineService.searchRemote(value);
+    this.searchResults$ = this.medicineService.search(value);
   }
 }
 

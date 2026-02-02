@@ -1,0 +1,204 @@
+/**
+ * Estilos de compatibilidad para navegadores específicos
+ * Incluyendo Avast Secure Browser, Edge, Chrome, Firefox, Safari
+ */
+
+/* ========================================
+   Estilos base para todos los navegadores
+   ======================================== */
+
+:root {
+  /* Variables CSS para diferentes navegadores */
+  --webkit-prefix: -webkit-;
+  --moz-prefix: -moz-;
+  --ms-prefix: -ms-;
+  --o-prefix: -o-;
+}
+
+/* ========================================
+   Optimizaciones para Chromium (Chrome, Edge, Avast, Brave, Opera)
+   ======================================== */
+
+html[data-browser="chrome"],
+html[data-browser="edge"],
+html[data-browser="avast"] {
+  /* Habilitar aceleración por hardware */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  
+  /* Optimizar renderizado */
+  -webkit-font-smoothing: antialiased;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Específico para Avast Secure Browser */
+html[data-browser="avast"] {
+  /* Avast usa motor Chromium, aplicar optimizaciones específicas */
+  scroll-behavior: smooth;
+  -webkit-scroll-behavior: smooth;
+}
+
+/* ========================================
+   Optimizaciones para Firefox
+   ======================================== */
+
+html[data-browser="firefox"] {
+  /* Optimizaciones específicas de Firefox */
+  -moz-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ========================================
+   Optimizaciones para Safari
+   ======================================== */
+
+html[data-browser="safari"] {
+  /* Optimizaciones específicas de Safari */
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Prevenir zoom en inputs */
+  input {
+    font-size: 16px;
+  }
+}
+
+/* ========================================
+   Compatibilidad de Flexbox
+   ======================================== */
+
+/* Prefijos para navegadores más antiguos */
+.flex-container {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+}
+
+/* ========================================
+   Compatibilidad de Grid
+   ======================================== */
+
+.grid-container {
+  display: -ms-grid;
+  display: grid;
+  
+  /* Soporte para navegadores antiguos */
+  @supports (display: grid) {
+    display: grid;
+  }
+}
+
+/* ========================================
+   Compatibilidad de Transforms
+   ======================================== */
+
+.transform-3d {
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+/* ========================================
+   Compatibilidad de Transitions
+   ======================================== */
+
+.transition {
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+/* ========================================
+   Compatibilidad de Animations
+   ======================================== */
+
+@-webkit-keyframes slideIn {
+  from {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+  to {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+}
+
+@-moz-keyframes slideIn {
+  from {
+    -moz-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+  to {
+    -moz-transform: translateX(0);
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ========================================
+   Fixes específicos por navegador
+   ======================================== */
+
+/* Firefox: Fix para inputs */
+html[data-browser="firefox"] input,
+html[data-browser="firefox"] textarea,
+html[data-browser="firefox"] select {
+  background-color: rgba(255, 255, 255, 0.99);
+}
+
+/* Safari: Fix para border-radius en overflow hidden */
+html[data-browser="safari"] {
+  .overflow-hidden {
+    -webkit-mask-image: radial-gradient(white, black);
+  }
+}
+
+/* Avast/Chrome: Soporte para smooth scrolling */
+html[data-browser="avast"],
+html[data-browser="chrome"],
+html[data-browser="edge"] {
+  scroll-behavior: smooth;
+}
+
+/* ========================================
+   Media Queries de navegador
+   ======================================== */
+
+/* Chromium-based browsers */
+@supports (-webkit-appearance: none) {
+  html[data-browser="chrome"],
+  html[data-browser="edge"],
+  html[data-browser="avast"] {
+    /* Optimizaciones específicas */
+  }
+}
+
+/* Firefox */
+@-moz-document url-prefix() {
+  html[data-browser="firefox"] {
+    /* Optimizaciones específicas de Firefox */
+  }
+}
+
+/* Safari */
+@supports (-webkit-touch-callout: none) {
+  html[data-browser="safari"] {
+    /* Optimizaciones específicas de Safari */
+  }
+}

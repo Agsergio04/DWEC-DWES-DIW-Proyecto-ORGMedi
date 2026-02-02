@@ -165,7 +165,7 @@ export class MedicinesPage implements OnInit, OnDestroy {
 
     // Si hay término de búsqueda
     if (term.trim().length > 0) {
-      this.medicineService.searchRemote(term).subscribe({
+      this.medicineService.search(term).subscribe({
         next: (results) => {
           this.searchState.set({
             term,

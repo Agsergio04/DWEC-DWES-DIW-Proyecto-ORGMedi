@@ -117,7 +117,7 @@ export class EditMedicinePage implements OnInit {
     // Si no hay cambios, simplemente navegar sin guardar
     if (Object.keys(changedFields).length === 0) {
       console.log('[EditMedicinePage] Sin cambios, navegando...');
-      this.router.navigate(['/medicamentos']);
+      this.router.navigate(['/calendario']);
       this.saving = false;
       return;
     }
@@ -126,7 +126,10 @@ export class EditMedicinePage implements OnInit {
     this.medicineService.patch(this.medicineId, changedFields).subscribe({
       next: (medicine) => {
         console.log('Medicamento actualizado (parcial):', medicine);
-        this.router.navigate(['/medicamentos']);
+        // Marcar que hay cambios pendientes para que el calendario se refresque automáticamente
+        sessionStorage.setItem('medicinesUpdated', 'true');
+        // Navegar al calendario en lugar de a medicamentos para ver los cambios inmediatamente
+        this.router.navigate(['/calendario']);
         this.saving = false;
       },
       error: (err: ApiError) => {
@@ -200,6 +203,6 @@ export class EditMedicinePage implements OnInit {
    * Maneja la cancelación del formulario
    */
   onFormCancel(): void {
-    this.router.navigate(['/medicamentos']);
+    this.router.navigate(['/calendario']);
   }
 }

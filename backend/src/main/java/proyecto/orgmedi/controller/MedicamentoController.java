@@ -6,7 +6,10 @@ import proyecto.orgmedi.dominio.Usuario;
 import proyecto.orgmedi.dominio.GestorMedicamentos;
 import proyecto.orgmedi.service.MedicamentoService;
 import proyecto.orgmedi.service.GestorMedicamentosService;
+import proyecto.orgmedi.service.ConsumoRegistroService;
 import proyecto.orgmedi.dto.medicamento.MedicamentoDTO;
+import proyecto.orgmedi.dto.medicamento.MedicamentosPorFechaDTO;
+import proyecto.orgmedi.dto.medicamento.ConsumoRegistroDTO;
 import proyecto.orgmedi.repo.UsuarioRepository;
 import proyecto.orgmedi.security.SecurityUtil;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -37,14 +39,17 @@ public class MedicamentoController {
     private final MedicamentoService medicamentoService;
     private final GestorMedicamentosService gestorMedicamentosService;
     private final UsuarioRepository usuarioRepository;
+    private final ConsumoRegistroService consumoRegistroService;
 
     @Autowired
     public MedicamentoController(MedicamentoService medicamentoService, 
                                 GestorMedicamentosService gestorMedicamentosService,
-                                UsuarioRepository usuarioRepository) {
+                                UsuarioRepository usuarioRepository,
+                                ConsumoRegistroService consumoRegistroService) {
         this.medicamentoService = medicamentoService;
         this.gestorMedicamentosService = gestorMedicamentosService;
         this.usuarioRepository = usuarioRepository;
+        this.consumoRegistroService = consumoRegistroService;
     }
 
     @Autowired
@@ -64,6 +69,73 @@ public class MedicamentoController {
         }
         return gestor.getMedicamentos();
     }
+
+    /**
+     * Obtiene todos los medicamentos agrupados por hora para una fecha específica
+     * 
+     * Endpoint: GET /api/medicamentos/por-fecha?fecha=yyyy-MM-dd
+     * Ejemplo: GET /api/medicamentos/por-fecha?fecha=2024-12-25
+     * 
+     * Respuesta:
+     * {
+     *   "fecha": "2024-12-25",
+     *   "gruposPorHora": [
+     *     {
+     *       "hora": "08:00",
+     *       "medicamentos": [...]
+     *     },
+     *     {
+     *       "hora": "16:00",
+     *       "medicamentos": [...]
+     *     }
+     *   ],
+     *   "totalMedicamentos": 5
+     * }
+     */
+    @GetMapping("/por-fecha")
+    @Operation(summary = "Listar medicamentos por fecha agrupados por hora", 
+               description = "Obtiene todos los medicamentos del usuario para una fecha específica, agrupados por hora de toma")
+    @ApiResponse(responseCode = "200", description = "Medicamentos agrupados por hora obtenidos correctamente")
+    @ApiResponse(responseCode = "400", description = "Formato de fecha inválido")
+    public ResponseEntity<MedicamentosPorFechaDTO> getMedicamentosPorFecha(
+            @RequestParam(name = "fecha") String fechaStr) {
+        try {
+            // Parsear la fecha del parámetro (esperado formato yyyy-MM-dd)
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+            LocalDate fecha = LocalDate.parse(fechaStr, formatter);
+
+            // Obtener usuario autenticado
+            Usuario usuario = SecurityUtil.getCurrentUser(usuarioRepository);
+            GestorMedicamentos gestor = usuario.getGestorMedicamentos();
+            
+            if (gestor == null) {
+                return ResponseEntity.ok(MedicamentosPorFechaDTO.builder()
+                        .fecha(fecha)
+                        .gruposPorHora(List.of())
+                        .totalMedicamentos(0)
+                        .build());
+            }
+
+            // Obtener medicamentos del gestor y agruparlos por hora para la fecha
+            List<Medicamento> medicamentos = gestor.getMedicamentos();
+            System.out.println("[MedicamentoController - getMedicamentosPorFecha] Fecha solicitada: " + fecha);
+            System.out.println("[MedicamentoController - getMedicamentosPorFecha] Total medicamentos: " + medicamentos.size());
+            for (Medicamento m : medicamentos) {
+                System.out.println("[MedicamentoController - getMedicamentosPorFecha] - " + m.getNombre() + 
+                                 " | horaInicio: " + m.getHoraInicio() + 
+                                 " | frecuencia: " + m.getFrecuencia() +
+                                 " | fechaInicio: " + m.getFechaInicio() +
+                                 " | fechaFin: " + m.getFechaFin());
+            }
+            MedicamentosPorFechaDTO resultado = medicamentoService.getMedicamentosPorFecha(medicamentos, fecha);
+
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            System.err.println("[MedicamentoController] Error parsing date or fetching medicines: " + e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 
     /**
      * Obtiene un medicamento específico del usuario autenticado
@@ -273,6 +345,76 @@ public class MedicamentoController {
             System.err.println("[DB] Error adding column: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    /**
+     * Registra o actualiza el consumo de un medicamento en una fecha y hora específica
+     * POST /api/medicamentos/{id}/consumo?fecha=yyyy-MM-dd&hora=HH:mm&consumido=true
+     */
+    @PostMapping("/{id}/consumo")
+    @Operation(summary = "Registrar consumo de medicamento", description = "Marca una toma específica de un medicamento como consumida")
+    @ApiResponse(responseCode = "200", description = "Consumo registrado correctamente")
+    @ApiResponse(responseCode = "404", description = "Medicamento no encontrado")
+    public ResponseEntity<ConsumoRegistroDTO> registrarConsumo(
+        @PathVariable Long id,
+        @RequestParam String fecha,
+        @RequestParam String hora,
+        @RequestParam Boolean consumido
+    ) {
+        try {
+            System.out.println("[MedicamentoController] registrarConsumo - id: " + id + ", fecha: " + fecha + ", hora: " + hora + ", consumido: " + consumido);
+            ConsumoRegistroDTO resultado = consumoRegistroService.registrarConsumo(id, fecha, hora, consumido);
+            System.out.println("[MedicamentoController] Consumo registrado exitosamente: " + resultado);
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            System.err.println("[MedicamentoController] Error al registrar consumo: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Obtiene todos los consumos registrados para un usuario en una fecha
+     * GET /api/medicamentos/consumos?fecha=yyyy-MM-dd
+     */
+    @GetMapping("/consumos")
+    @Operation(summary = "Obtener consumos del día", description = "Obtiene todos los registros de consumo para una fecha específica")
+    @ApiResponse(responseCode = "200", description = "Consumos obtenidos correctamente")
+    public ResponseEntity<List<ConsumoRegistroDTO>> obtenerConsumosDelDia(
+        @RequestParam String fecha
+    ) {
+        try {
+            List<ConsumoRegistroDTO> consumos = consumoRegistroService.obtenerConsumosDelDia(fecha);
+            return ResponseEntity.ok(consumos);
+        } catch (Exception e) {
+            System.err.println("[MedicamentoController] Error al obtener consumos: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Obtiene el estado de consumo para un medicamento en una fecha y hora específicas
+     * GET /api/medicamentos/{id}/consumo?fecha=yyyy-MM-dd&hora=HH:mm
+     */
+    @GetMapping("/{id}/consumo")
+    @Operation(summary = "Obtener consumo específico", description = "Obtiene el estado de consumo de un medicamento en una fecha y hora específica")
+    @ApiResponse(responseCode = "200", description = "Consumo obtenido correctamente")
+    @ApiResponse(responseCode = "404", description = "Registro no encontrado")
+    public ResponseEntity<ConsumoRegistroDTO> obtenerConsumo(
+        @PathVariable Long id,
+        @RequestParam String fecha,
+        @RequestParam String hora
+    ) {
+        try {
+            return consumoRegistroService.obtenerConsumo(id, fecha, hora)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            System.err.println("[MedicamentoController] Error al obtener consumo: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

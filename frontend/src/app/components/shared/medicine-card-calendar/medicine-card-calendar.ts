@@ -16,14 +16,14 @@ export class MedicineCardCalendarComponent {
   private medicineService = inject(MedicineService);
   private medicineStore = inject(MedicineStoreSignals);
 
-  @Input() medicine!: MedicineViewModel;
+  @Input() medicine!: MedicineViewModel & { instanceId?: string }; // Medicina puede tener instanceId
   @Input() displayTime: string = '00:00'; // Nueva prop para mostrar la hora
   @Input() isExpired: boolean = false;
   @Input() isExpiring: boolean = false;
   
   @Output() medicineEdit = new EventEmitter<number>();
   @Output() medicineDelete = new EventEmitter<number>();
-  @Output() medicineSelected = new EventEmitter<number>();
+  @Output() medicineSelected = new EventEmitter<{ id: number; instanceId?: string }>();
 
   saving = false;
 
@@ -62,8 +62,11 @@ export class MedicineCardCalendarComponent {
   toggleConsumption(): void {
     if (this.saving) return;
     
-    // Emitir evento al padre (calendar) con medicineId y displayTime
-    this.medicineSelected.emit(this.medicine.id);
+    // Emitir evento al padre (calendar) con medicineId e instanceId
+    this.medicineSelected.emit({
+      id: this.medicine.id,
+      instanceId: this.medicine.instanceId
+    });
   }
 }
 

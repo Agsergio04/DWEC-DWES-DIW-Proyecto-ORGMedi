@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, of, throwError, timer } from 'rxjs';
+import { Observable, of, throwError, timer, Subject } from 'rxjs';
 import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { 
   catchError, 
@@ -20,7 +20,8 @@ import {
   MedicineViewModel,
   MedicineGrouped,
   ApiError,
-  PaginatedResponse
+  PaginatedResponse,
+  MedicinesGroupedByDateDTO
 } from './models/medicine.model';
 
 /**
@@ -30,6 +31,13 @@ import {
 @Injectable({ providedIn: 'root' })
 export class MedicineService {
   private api = inject(ApiService);
+  
+  /**
+   * Subject para notificar cambios en medicamentos
+   * Se emite cuando se actualiza un medicamento (frecuencia, horaInicio, fechaInicio, fechaFin)
+   * Los suscriptores pueden recargar el calendario u otras vistas
+   */
+  medicineUpdated$ = new Subject<{ id: string | number; changedFields: any }>();
 
   /**
    * Obtiene la lista completa de medicamentos
@@ -137,6 +145,26 @@ export class MedicineService {
   }
 
   /**
+   * Obtiene medicamentos agrupados por hora para una fecha específica
+   * GET /medicamentos/por-fecha?fecha=yyyy-MM-dd
+   * 
+   * @param fecha Fecha en formato yyyy-MM-dd (ejemplo: 2024-12-25)
+   * @returns Observable<MedicinesGroupedByDateDTO>
+   */
+  getMedicinesByDate(fecha: string): Observable<MedicinesGroupedByDateDTO> {
+    return this.api.get<MedicinesGroupedByDateDTO>(
+      `medicamentos/por-fecha?fecha=${fecha}`
+    ).pipe(
+      timeout(10000),
+      tap(result => console.log('[MedicineService] Medicamentos por fecha obtenidos:', result)),
+      catchError(err => {
+        console.error('[MedicineService] Error al obtener medicamentos por fecha:', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  /**
    * Crea un nuevo medicamento
    * POST /medicamentos
    * @param medicine Datos del medicamento a crear
@@ -181,7 +209,23 @@ export class MedicineService {
   patch(id: string, partial: Partial<UpdateMedicineDto>): Observable<MedicineViewModel> {
     return this.api.patch<Medicine>(`medicamentos/${id}`, partial).pipe(
       // Log del éxito
-      tap(result => console.log('Medicamento actualizado parcialmente:', result)),
+      tap(result => {
+        console.log('Medicamento actualizado parcialmente:', result);
+        
+        // Si cambiaron campos que afectan al horario en el calendario, notificar
+        const fieldsAffectingSchedule = ['frecuencia', 'horaInicio', 'fechaInicio', 'fechaFin'];
+        const changedScheduleFields = Object.keys(partial).filter(key => 
+          fieldsAffectingSchedule.includes(key)
+        );
+        
+        if (changedScheduleFields.length > 0) {
+          console.log(`[MedicineService] Notificando actualización de medicamento ${id} - campos: ${changedScheduleFields.join(', ')}`);
+          this.medicineUpdated$.next({ 
+            id, 
+            changedFields: changedScheduleFields 
+          });
+        }
+      }),
       // Transformar a ViewModel
       map(result => this.transformMedicineToViewModel(result)),
       // Manejo de errores
@@ -216,62 +260,86 @@ export class MedicineService {
   }
 
   /**
-   * Busca medicamentos con filtros y paginación
-   * GET /medicines?page=1&pageSize=10&search=aspirina&status=active
-   * @param filters Objeto con filtros opcionales
-   * @returns Observable<ApiListResponse<MedicineViewModel>>
+   * Obtiene una página de medicamentos con paginación
+   * GET /medicines?page={page}&pageSize={pageSize}
+   * 
+   * @param page Número de página (base 1)
+   * @param pageSize Tamaño de la página
+   * @returns Observable<PaginatedResponse<MedicineViewModel>>
+   * 
+   * Ejemplo de uso:
+   * ```typescript
+   * this.medicineService.getPage(1, 10).subscribe(response => {
+   *   console.log(response.items); // MedicineViewModel[]
+   *   console.log(response.total); // Total de registros
+   *   console.log(response.hasMore); // ¿Hay más páginas?
+   * });
+   * ```
    */
-  searchMedicines(filters: {
-    page?: number;
-    pageSize?: number;
-    search?: string;
-    status?: 'active' | 'expired' | 'all';
-    sortBy?: 'name' | 'startDate' | 'endDate';
-    sortOrder?: 'asc' | 'desc';
-  } = {}): Observable<ApiListResponse<MedicineViewModel>> {
-    const params: Record<string, string | number> = {
-      page: filters.page ?? 1,
-      pageSize: filters.pageSize ?? 10
-    };
+  getPage(page: number, pageSize: number): Observable<PaginatedResponse<MedicineViewModel>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
 
-    if (filters.search) params['search'] = filters.search;
-    if (filters.status && filters.status !== 'all') params['status'] = filters.status;
-    if (filters.sortBy) params['sortBy'] = filters.sortBy;
-    if (filters.sortOrder) params['sortOrder'] = filters.sortOrder;
+    // SIMULACIÓN: En producción, la API devolvería datos paginados reales
+    // Por ahora, simulamos paginación en el cliente obteniendo todos los datos
+    return this.getAll().pipe(
+      map(allMedicines => {
+        // Calcular índices de paginación
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        
+        // Obtener items de la página actual
+        const items = allMedicines.slice(startIndex, endIndex);
+        
+        // Calcular metadatos de paginación
+        const total = allMedicines.length;
+        const totalPages = Math.ceil(total / pageSize);
+        const hasMore = page < totalPages;
 
-    return this.api.getWithParams<ApiListResponse<Medicine>>('medicamentos', params).pipe(
-      retryWhen(errors =>
-        errors.pipe(
-          scan((acc, error: any) => {
-            if (acc >= 2 || (error.status && error.status < 500)) {
-              throw error;
-            }
-            return acc + 1;
-          }, 0),
-          delay(500)
-        )
-      ),
-      map(response => ({
-        ...response,
-        items: this.transformMedicinesToViewModel(response.items)
-      })),
-      catchError(err => this.handleError(err, 'al buscar medicamentos'))
+        return {
+          items,
+          total,
+          page,
+          pageSize,
+          totalPages,
+          hasMore
+        };
+      }),
+      catchError(err => this.handleError(err, 'al cargar página de medicamentos'))
     );
   }
 
   /**
-   * Obtiene medicamentos que expiran en un rango de días
-   * GET /medicamentos?expiringInDays=7
-   * @param days Número de días hasta expiración
+   * Busca medicamentos por término
+   * Busca en nombre, dosis y descripción del medicamento
+   * 
+   * @param term Término de búsqueda
+   * @param pageSize Límite de resultados (default: 20)
    * @returns Observable<MedicineViewModel[]>
    */
-  getMedicinesExpiringInDays(days: number): Observable<MedicineViewModel[]> {
-    return this.api.getWithParams<ApiListResponse<Medicine>>('medicamentos', {
-      expiringInDays: days,
-      status: 'active'
-    }).pipe(
-      map(response => this.transformMedicinesToViewModel(response.items)),
-      catchError(err => this.handleError(err, `al obtener medicamentos que expiran en ${days} días`))
+  search(term: string, pageSize: number = 20): Observable<MedicineViewModel[]> {
+    if (!term || term.trim().length === 0) {
+      return of([]);
+    }
+
+    return this.getAll().pipe(
+      map(allMedicines => {
+        const searchTerm = term.toLowerCase().trim();
+        
+        const results = allMedicines.filter(medicine =>
+          medicine.nombre.toLowerCase().includes(searchTerm) ||
+          medicine.cantidadMg.toString().includes(searchTerm) ||
+          (medicine.displayName && medicine.displayName.toLowerCase().includes(searchTerm))
+        );
+
+        return results.slice(0, pageSize);
+      }),
+      timeout(5000),
+      catchError(err => {
+        console.error('Error en búsqueda:', err);
+        return of([]);
+      })
     );
   }
 
@@ -433,109 +501,6 @@ export class MedicineService {
   }
 
   /**
-   * Obtiene una página de medicamentos con paginación
-   * GET /medicines?page={page}&pageSize={pageSize}
-   * 
-   * @param page Número de página (base 1)
-   * @param pageSize Tamaño de la página
-   * @returns Observable<PaginatedResponse<MedicineViewModel>>
-   * 
-   * Ejemplo de uso:
-   * ```typescript
-   * this.medicineService.getPage(1, 10).subscribe(response => {
-   *   console.log(response.items); // MedicineViewModel[]
-   *   console.log(response.total); // Total de registros
-   *   console.log(response.hasMore); // ¿Hay más páginas?
-   * });
-   * ```
-   */
-  getPage(page: number, pageSize: number): Observable<PaginatedResponse<MedicineViewModel>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
-
-    // SIMULACIÓN: En producción, la API devolvería datos paginados reales
-    // Por ahora, simulamos paginación en el cliente obteniendo todos los datos
-    return this.getAll().pipe(
-      map(allMedicines => {
-        // Calcular índices de paginación
-        const startIndex = (page - 1) * pageSize;
-        const endIndex = startIndex + pageSize;
-        
-        // Obtener items de la página actual
-        const items = allMedicines.slice(startIndex, endIndex);
-        
-        // Calcular metadatos de paginación
-        const total = allMedicines.length;
-        const totalPages = Math.ceil(total / pageSize);
-        const hasMore = page < totalPages;
-
-        return {
-          items,
-          total,
-          page,
-          pageSize,
-          totalPages,
-          hasMore
-        };
-      }),
-      catchError(err => this.handleError(err, 'al cargar página de medicamentos'))
-    );
-  }
-
-  /**
-   * Busca medicamentos por término (búsqueda remota)
-   * GET /medicines/search?q={term}&pageSize={pageSize}
-   * 
-   * Busca en nombre, dosis y descripción del medicamento
-   * 
-   * @param term Término de búsqueda
-   * @param pageSize Límite de resultados (default: 20)
-   * @returns Observable<MedicineViewModel[]>
-   * 
-   * Ejemplo de uso:
-   * ```typescript
-   * this.medicineService.searchRemote('aspirina').subscribe(results => {
-   *   console.log(results); // Medicamentos que coinciden
-   * });
-   * ```
-   */
-  searchRemote(term: string, pageSize: number = 20): Observable<MedicineViewModel[]> {
-    if (!term || term.trim().length === 0) {
-      return of([]);
-    }
-
-    const params = new HttpParams()
-      .set('q', term.trim())
-      .set('pageSize', pageSize.toString());
-
-    // SIMULACIÓN: En producción, esto haría una búsqueda real en el backend
-    // Por ahora, simulamos filtrando todos los datos en el cliente
-    return this.getAll().pipe(
-      map(allMedicines => {
-        const searchTerm = term.toLowerCase().trim();
-        
-        // Buscar en múltiples campos
-        const results = allMedicines.filter(medicine =>
-          medicine.nombre.toLowerCase().includes(searchTerm) ||
-          medicine.cantidadMg.toString().includes(searchTerm) ||
-          (medicine.displayName && medicine.displayName.toLowerCase().includes(searchTerm))
-        );
-
-        // Limitar resultados
-        return results.slice(0, pageSize);
-      }),
-      // Timeout de 5 segundos
-      timeout(5000),
-      // Manejo de errores
-      catchError(err => {
-        console.error('Error en búsqueda remota:', err);
-        return of([]);
-      })
-    );
-  }
-
-  /**
    * Medicamentos de demostración para fallback
    * Se usan cuando el servidor no está disponible
    */
@@ -602,5 +567,83 @@ export class MedicineService {
         expirationStatus: 'active'
       }
     ];
+  }
+
+  /**
+   * Registra el consumo de un medicamento en una fecha y hora específica
+   * POST /medicamentos/{id}/consumo?fecha=yyyy-MM-dd&hora=HH:mm&consumido=true
+   * @param id ID del medicamento
+   * @param fecha Fecha en formato yyyy-MM-dd
+   * @param hora Hora en formato HH:mm
+   * @param consumido Estado del consumo
+   * @returns Observable de la respuesta del consumo registrado
+   */
+  registrarConsumo(id: number, fecha: string, hora: string, consumido: boolean): Observable<any> {
+    // Construir parámetros de query explícitamente
+    let params = new HttpParams();
+    params = params.set('fecha', fecha);
+    params = params.set('hora', hora);
+    params = params.set('consumido', consumido.toString());
+    
+    const fullUrl = `medicamentos/${id}/consumo`;
+    console.log(`[MedicineService] registrarConsumo - Enviando POST a ${fullUrl}?${params.toString()}`);
+    
+    return this.api.post<any>(
+      fullUrl,
+      null,
+      { params: params }
+    ).pipe(
+      tap(response => {
+        console.log(`[MedicineService] Consumo registrado para ${id} en ${fecha} ${hora}:`, response);
+      }),
+      catchError(error => {
+        console.error(`[MedicineService] Error al registrar consumo:`, error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Obtiene los consumos registrados para una fecha específica
+   * GET /medicamentos/consumos?fecha=yyyy-MM-dd
+   * @param fecha Fecha en formato yyyy-MM-dd
+   * @returns Observable con lista de consumos registrados
+   */
+  obtenerConsumosDelDia(fecha: string): Observable<any[]> {
+    return this.api.getWithParams<any[]>(
+      `medicamentos/consumos`,
+      { fecha }
+    ).pipe(
+      tap(response => {
+        console.log(`[MedicineService] Consumos obtenidos para ${fecha}:`, response);
+      }),
+      catchError(error => {
+        console.error(`[MedicineService] Error al obtener consumos:`, error);
+        return of([]);
+      })
+    );
+  }
+
+  /**
+   * Obtiene el estado de consumo para una instancia específica
+   * GET /medicamentos/{id}/consumo?fecha=yyyy-MM-dd&hora=HH:mm
+   * @param id ID del medicamento
+   * @param fecha Fecha en formato yyyy-MM-dd
+   * @param hora Hora en formato HH:mm
+   * @returns Observable con el estado del consumo
+   */
+  obtenerConsumo(id: number, fecha: string, hora: string): Observable<any> {
+    return this.api.getWithParams<any>(
+      `medicamentos/${id}/consumo`,
+      { fecha, hora }
+    ).pipe(
+      tap(response => {
+        console.log(`[MedicineService] Consumo obtenido para ${id} en ${fecha} ${hora}:`, response);
+      }),
+      catchError(error => {
+        console.warn(`[MedicineService] No hay registro de consumo:`, error);
+        return of(null);
+      })
+    );
   }
 }

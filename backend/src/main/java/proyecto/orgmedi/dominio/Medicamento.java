@@ -52,6 +52,7 @@ public class Medicamento {
 
     // Estado para marcar si el medicamento fue consumido (UI)
     @Column(nullable = false)
+    @Builder.Default
     private Boolean consumed = false;
     // Métodos para cambiar un atributo a la vez
     public void cambiarCantidadMg(Integer nuevaCantidad) {

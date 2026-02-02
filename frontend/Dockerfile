@@ -19,6 +19,9 @@ RUN npm run build -- --configuration production --optimization
 # Stage 2: Nginx minimal
 FROM nginx:alpine
 
+# Instalar wget para health checks
+RUN apk add --no-cache wget curl
+
 # Copiar configuración optimizada
 COPY nginx.conf /etc/nginx/nginx.conf
 

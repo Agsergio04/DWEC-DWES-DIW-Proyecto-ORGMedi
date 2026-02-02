@@ -1,14 +1,17 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { CalendarComponent } from '../../components/shared/calendar/calendar';
 import { MedicineCardCalendarComponent } from '../../components/shared/medicine-card-calendar/medicine-card-calendar';
 import { MedicineStoreSignals } from '../../data/stores/medicine-signals.store';
-import { MedicineViewModel } from '../../data/models/medicine.model';
+import { MedicineViewModel, MedicineTimeGroupDTO } from '../../data/models/medicine.model';
 import { MedicineService } from '../../data/medicine.service';
 
 export interface MedicineWithTime extends MedicineViewModel {
   displayTime: string; // HH:mm
+  instanceId?: string; // ID único para esta instancia: id_HH:mm (para medicamentos con múltiples tomas al día)
 }
 
 export interface MedicineTimeGroup {
@@ -24,10 +27,11 @@ export interface MedicineTimeGroup {
   styleUrls: ['./calendar.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CalendarPage implements OnInit {
+export class CalendarPage implements OnInit, OnDestroy {
   private medicineStore = inject(MedicineStoreSignals);
   private medicineService = inject(MedicineService);
   private router = inject(Router);
+  private destroy$ = new Subject<void>();
 
   // Signals del store (readonly)
   loading = this.medicineStore.loading;
@@ -38,6 +42,13 @@ export class CalendarPage implements OnInit {
   selectedDay: number | null = null;
   medicinesToShow: MedicineWithTime[] = []; // Medicamentos expandidos con horas
   medicineGroups: MedicineTimeGroup[] = []; // Grupos de medicamentos por hora
+  
+  // Estado de carga del nuevo endpoint
+  isLoadingByDate = false;
+  
+  // Mapa de estado de consumo por instancia (medicamentoId_hora -> consumed)
+  // Permite que cada instancia tenga su propio estado independiente
+  instanceConsumptionState = new Map<string, boolean>();
 
   constructor() {
     // Effect: Reaccionar a cambios en el store de medicamentos
@@ -59,9 +70,39 @@ export class CalendarPage implements OnInit {
       return;
     }
 
+    // Verificar si hay cambios pendientes desde la edición de una medicina
+    const medicinesUpdated = sessionStorage.getItem('medicinesUpdated');
+    if (medicinesUpdated === 'true') {
+      console.log('[CalendarPage] Cambios pendientes detectados, refrescando medicamentos');
+      sessionStorage.removeItem('medicinesUpdated');
+      // Recargar los medicamentos para la fecha seleccionada
+      if (this.selectedDay) {
+        this.updateMedicinesToShow();
+      }
+    }
+
+    // Suscribirse a cambios de medicamentos (frecuencia, horaInicio, fechaInicio, fechaFin)
+    this.medicineService.medicineUpdated$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ id, changedFields }) => {
+        console.log(`[CalendarPage] Medicamento ${id} actualizado con campos: ${changedFields.join(', ')}`);
+        console.log('[CalendarPage] Recargando medicamentos del calendario debido a cambios en horario');
+        
+        // Recargar la lista de medicamentos para la fecha actual
+        // Esto forzará a recalcular las horas basadas en la nueva frecuencia/horaInicio
+        if (this.selectedDay) {
+          this.updateMedicinesToShow();
+        }
+      });
+
     // Actualizar vista cuando cambian los medicamentos en el store
     // Usar effect para reactividad con signals
     this.updateMedicinesToShowInitial();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private updateMedicinesToShowInitial(): void {
@@ -86,76 +127,9 @@ export class CalendarPage implements OnInit {
   }
 
   /**
-   * Calcula las horas de aparición de un medicamento basándose en su frecuencia
-   * Incluye horas que se extiendan al siguiente día si el medicamento es válido para ese día
-   * @param medicine Medicamento a analizar
-   * @param date Fecha para la que se calculan las horas
-   * @returns Array de horas en formato HH:mm
-   */
-  private calculateMedicineTimes(medicine: MedicineViewModel, date: Date): string[] {
-    const times: string[] = [];
-    
-    // Verificar que el medicamento es válido para esta fecha
-    if (!this.isMedicineValidForDate(medicine, date)) {
-      return times;
-    }
-
-    // Obtener la hora de inicio
-    const [startHour, startMinute] = medicine.horaInicio.split(':').map(Number);
-    let currentHour = startHour;
-    const frequency = medicine.frecuencia || 1;
-
-    // Generar todas las horas dentro del día actual
-    while (currentHour < 24) {
-      times.push(`${String(currentHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`);
-      currentHour += frequency;
-    }
-
-    // Si hay una toma que se extiende al siguiente día, verificar si el medicamento es válido para mañana
-    if (currentHour >= 24) {
-      const nextDay = new Date(date);
-      nextDay.setDate(nextDay.getDate() + 1);
-      
-      if (this.isMedicineValidForDate(medicine, nextDay)) {
-        // Calcular la hora en el siguiente día (restar 24)
-        const nextDayHour = currentHour - 24;
-        times.push(`${String(nextDayHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`);
-      }
-    }
-
-    return times;
-  }
-
-  /**
-   * Verifica si un medicamento es válido para una fecha específica
-   * (respeta las fechas de inicio y fin)
-   */
-  private isMedicineValidForDate(medicine: MedicineViewModel, date: Date): boolean {
-    const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    
-    // Verificar fecha de inicio
-    if (medicine.fechaInicio) {
-      const startDate = new Date(medicine.fechaInicio);
-      const startDateOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-      if (dateOnly < startDateOnly) {
-        return false;
-      }
-    }
-
-    // Verificar fecha de fin
-    if (medicine.fechaFin) {
-      const endDate = new Date(medicine.fechaFin);
-      const endDateOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-      if (dateOnly > endDateOnly) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  /**
    * Actualiza la lista de medicamentos a mostrar basándose en el día seleccionado
+   * Utiliza el nuevo endpoint GET /medicamentos/por-fecha para obtener medicamentos
+   * agrupados por hora desde el backend
    */
   private updateMedicinesToShow(): void {
     const displayDate = this.selectedDay 
@@ -163,51 +137,148 @@ export class CalendarPage implements OnInit {
       : new Date();
 
     console.log('[updateMedicinesToShow] Display date:', displayDate);
-    
-    const medicines = this.medicineStore.medicines();
-    console.log('[updateMedicinesToShow] Medicines to process:', medicines.length);
 
-    this.medicinesToShow = [];
-    const timeMap = new Map<string, MedicineWithTime[]>();
+    // Convertir fecha a formato yyyy-MM-dd para el endpoint
+    const year = displayDate.getFullYear();
+    const month = String(displayDate.getMonth() + 1).padStart(2, '0');
+    const day = String(displayDate.getDate()).padStart(2, '0');
+    const fechaStr = `${year}-${month}-${day}`;
 
-    // Para cada medicamento, calcular sus horas de aparición en la fecha seleccionada
-    for (const medicine of medicines) {
-      const isValid = this.isMedicineValidForDate(medicine, displayDate);
-      console.log(`[updateMedicinesToShow] Medicine "${medicine.nombre}": valid=${isValid}, horaInicio=${medicine.horaInicio}, frecuencia=${medicine.frecuencia}`);
-      
-      const times = this.calculateMedicineTimes(medicine, displayDate);
-      console.log(`[updateMedicinesToShow] Medicine "${medicine.nombre}" times:`, times);
-      
-      // Crear una instancia del medicamento por cada hora de aparición
-      for (const time of times) {
-        const medicineWithTime = {
-          ...medicine,
-          displayTime: time
-        } as MedicineWithTime;
-        
-        this.medicinesToShow.push(medicineWithTime);
-        
-        // Agrupar por hora
-        if (!timeMap.has(time)) {
-          timeMap.set(time, []);
+    // Mostrar estado de carga
+    this.isLoadingByDate = true;
+
+    // Llamar al nuevo endpoint del backend
+    this.medicineService.getMedicinesByDate(fechaStr).subscribe({
+      next: (response) => {
+        console.log('[updateMedicinesToShow] Response from backend:', response);
+
+        // Limpiar estado de consumo anterior
+        this.instanceConsumptionState.clear();
+
+        // Convertir la respuesta del backend a estructura local
+        // Crear IDs únicos para cada instancia (medicamentoId_hora)
+        this.medicineGroups = response.gruposPorHora.map(grupo => ({
+          time: grupo.hora,
+          medicines: grupo.medicamentos.map(med => {
+            const instanceId = `${med.id}_${med.displayTime}`; // ID único para esta instancia
+            // Inicializar estado de consumo independiente para cada instancia
+            this.instanceConsumptionState.set(instanceId, med.consumed || false);
+            return {
+              ...med,
+              displayTime: med.displayTime,
+              instanceId: instanceId
+            };
+          })
+        }));
+
+        // Aplanar medicamentos para medicinesToShow
+        this.medicinesToShow = [];
+        for (const grupo of this.medicineGroups) {
+          this.medicinesToShow.push(...grupo.medicines);
         }
-        timeMap.get(time)!.push(medicineWithTime);
+
+        // Ordenar medicamentos por hora
+        this.medicinesToShow.sort((a, b) => a.displayTime.localeCompare(b.displayTime));
+
+        // Actualizar el estado de consumo de las medicinas desde el mapa
+        this.medicinesToShow = this.medicinesToShow.map(med => ({
+          ...med,
+          consumed: this.instanceConsumptionState.get(med.instanceId || `${med.id}_${med.displayTime}`) || false
+        }));
+
+        this.medicineGroups = this.medicineGroups.map(group => ({
+          ...group,
+          medicines: group.medicines.map(med => ({
+            ...med,
+            consumed: this.instanceConsumptionState.get(med.instanceId || `${med.id}_${med.displayTime}`) || false
+          }))
+        }));
+
+        console.log('[updateMedicinesToShow] Final medicines to show:', this.medicinesToShow.length);
+        console.log('[updateMedicinesToShow] Medicine groups:', this.medicineGroups.length);
+        console.log('[updateMedicinesToShow] Instance consumption state before loading consumos:', this.instanceConsumptionState);
+        
+        // Ahora cargar el estado de consumo persistido en el servidor
+        this.loadConsumptionStateFromServer(fechaStr);
+      },
+      error: (err) => {
+        console.error('[updateMedicinesToShow] Error fetching medicines by date:', err);
+        this.isLoadingByDate = false;
+        
+        // En caso de error, mostrar lista vacía
+        this.medicinesToShow = [];
+        this.medicineGroups = [];
       }
-    }
-
-    // Construir grupos ordenados por hora
-    this.medicineGroups = Array.from(timeMap.entries())
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([time, medicines]) => ({
-        time,
-        medicines
-      }));
-
-    // Ordenar medicinesToShow por hora
-    this.medicinesToShow.sort((a, b) => a.displayTime.localeCompare(b.displayTime));
-    console.log('[updateMedicinesToShow] Final medicines to show:', this.medicinesToShow.length);
-    console.log('[updateMedicinesToShow] Medicine groups:', this.medicineGroups.length);
+    });
   }
+
+  /**
+   * Carga el estado de consumo persistido en el servidor para la fecha especificada
+   * y actualiza el estado local (instanceConsumptionState)
+   * 
+   * @param fechaStr - Fecha en formato yyyy-MM-dd
+   */
+  private loadConsumptionStateFromServer(fechaStr: string): void {
+    this.medicineService.obtenerConsumosDelDia(fechaStr).subscribe({
+      next: (consumos: any[]) => {
+        console.log('[loadConsumptionStateFromServer] Consumos obtenidos del servidor:', consumos);
+        
+        // Actualizar instanceConsumptionState con los datos del servidor
+        // Cada consumo tiene: {id, fecha, hora, medicamentoId, medicamentoNombre, consumido}
+        // donde hora viene en formato "HH:mm" del servidor (gracias a @JsonFormat)
+        if (Array.isArray(consumos)) {
+          consumos.forEach(consumo => {
+            // Normalizar la hora: asegurar formato HH:mm
+            let horaStr = consumo.hora;
+            if (typeof horaStr === 'string') {
+              // Si viene como "14:00:00", extraer solo "14:00"
+              horaStr = horaStr.split(':').slice(0, 2).join(':');
+            }
+            
+            const instanceId = `${consumo.medicamentoId}_${horaStr}`;
+            this.instanceConsumptionState.set(instanceId, consumo.consumido || false);
+            console.log(`[loadConsumptionStateFromServer] Instancia ${instanceId}: consumido=${consumo.consumido}, hora original=${consumo.hora}, hora normalizada=${horaStr}`);
+          });
+        }
+
+        // Actualizar medicinesToShow con el estado del servidor
+        this.medicinesToShow = this.medicinesToShow.map(med => {
+          const instanceId = med.instanceId || `${med.id}_${med.displayTime}`;
+          return {
+            ...med,
+            consumed: this.instanceConsumptionState.get(instanceId) || false
+          };
+        });
+
+        // Actualizar medicineGroups con el estado del servidor
+        this.medicineGroups = this.medicineGroups.map(group => ({
+          ...group,
+          medicines: group.medicines.map(med => {
+            const instanceId = med.instanceId || `${med.id}_${med.displayTime}`;
+            return {
+              ...med,
+              consumed: this.instanceConsumptionState.get(instanceId) || false
+            };
+          })
+        }));
+
+        console.log('[loadConsumptionStateFromServer] Estado de consumo cargado desde servidor');
+        console.log('[loadConsumptionStateFromServer] medicinesToShow después de cargar consumos:');
+        this.medicinesToShow.forEach(med => {
+          console.log(`  - ${med.id} (${med.displayTime}): consumed=${med.consumed}`);
+        });
+        console.log('[loadConsumptionStateFromServer] Instance consumption state final:', this.instanceConsumptionState);
+        
+        this.isLoadingByDate = false;
+      },
+      error: (err) => {
+        console.error('[loadConsumptionStateFromServer] Error al cargar estado de consumo:', err);
+        // No es crítico si falla, continuamos con los valores por defecto
+        this.isLoadingByDate = false;
+      }
+    });
+  }
+
 
   /**
    * Verifica si un medicamento ha expirado
@@ -231,45 +302,82 @@ export class CalendarPage implements OnInit {
   }
 
   /**
-   * Maneja el toggle de consumo del medicamento
+   * Maneja el toggle de consumo de una instancia específica de medicamento
+   * Cada instancia (medicamento + hora) tiene su propio estado de consumo independiente
+   * 
+   * @param id - ID del medicamento
+   * @param instanceId - ID único de la instancia (medicamentoId_hora)
    */
-  onMedicineSelected(id: number): void {
-    console.log('[CalendarPage] Toggle consumo para medicamento:', id);
-    const current = this.medicineStore.getById(id)();
-    if (!current) {
-      console.warn('[CalendarPage] Medicamento no encontrado:', id);
+  onMedicineSelected(id: number, instanceId?: string): void {
+    if (!this.selectedDay) {
+      console.warn('[CalendarPage] No hay día seleccionado');
       return;
     }
 
-    const newValue = !current.consumed;
-    console.log(`[CalendarPage] Cambiando consumo de ${current.nombre}: ${current.consumed} → ${newValue}`);
-    
-    // Optimistic update local store
-    this.medicineStore.update({ ...current, consumed: newValue });
+    // Construir instanceId si no se proporciona
+    const actualInstanceId = instanceId || this.medicinesToShow
+      .find(m => m.id === id)
+      ?.instanceId 
+      || `${id}_unknown`;
 
-    // Actualizar solo los medicamentos que corresponden a este ID en medicinesToShow
-    this.medicinesToShow = this.medicinesToShow.map(med => 
-      med.id === id ? { ...med, consumed: newValue } : med
+    console.log('[CalendarPage] Toggle consumo para instancia:', actualInstanceId);
+
+    // Obtener la hora de esta instancia específica
+    const medicineInstance = this.medicinesToShow.find(m => m.instanceId === actualInstanceId);
+    if (!medicineInstance) {
+      console.warn('[CalendarPage] Instancia no encontrada:', actualInstanceId);
+      return;
+    }
+
+    // Obtener estado actual de esta instancia específica
+    const currentConsumed = medicineInstance.consumed || false;
+    const newValue = !currentConsumed;
+
+    console.log(`[CalendarPage] Cambiando consumo de instancia ${actualInstanceId}: ${currentConsumed} → ${newValue}`);
+    
+    // Actualizar SOLO esta instancia en la UI
+    this.medicinesToShow = this.medicinesToShow.map(med =>
+      med.instanceId === actualInstanceId ? { ...med, consumed: newValue } : med
     );
 
-    // Persistir en backend (PATCH parcial)
-    this.medicineService.patch(id as any, { consumed: newValue }).subscribe({
-      next: (updated) => {
-        console.log('[CalendarPage] Consumo actualizado en servidor:', updated);
-        // Actualizar store con respuesta del servidor
-        this.medicineStore.update(updated as any);
-        // Actualizar medicinesToShow con datos del servidor
-        this.medicinesToShow = this.medicinesToShow.map(med =>
-          med.id === id ? { ...med, ...(updated as any) } : med
-        );
+    // Actualizar medicineGroups para esta instancia específica
+    this.medicineGroups = this.medicineGroups.map(group => ({
+      ...group,
+      medicines: group.medicines.map(med =>
+        med.instanceId === actualInstanceId ? { ...med, consumed: newValue } : med
+      )
+    }));
+
+    console.log(`[CalendarPage] Instancia ${actualInstanceId} marcada como consumida: ${newValue}`);
+
+    // Construir fecha en formato yyyy-MM-dd
+    const displayDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), this.selectedDay);
+    const year = displayDate.getFullYear();
+    const month = String(displayDate.getMonth() + 1).padStart(2, '0');
+    const day = String(displayDate.getDate()).padStart(2, '0');
+    const fechaStr = `${year}-${month}-${day}`;
+
+    console.log(`[CalendarPage] medicineInstance.displayTime = "${medicineInstance.displayTime}" (tipo: ${typeof medicineInstance.displayTime})`);
+    console.log(`[CalendarPage] Enviando: id=${id}, fecha=${fechaStr}, hora="${medicineInstance.displayTime}", consumido=${newValue}`);
+
+    // Persistir en backend con fecha y hora específica
+    this.medicineService.registrarConsumo(id, fechaStr, medicineInstance.displayTime, newValue).subscribe({
+      next: (response) => {
+        console.log('[CalendarPage] Consumo registrado en servidor para instancia:', actualInstanceId, response);
+        // El servidor ha guardado el consumo de forma independiente por fecha/hora
       },
       error: (err) => {
-        console.error('[CalendarPage] Error al persistir consumo:', err);
+        console.error('[CalendarPage] Error al registrar consumo:', err);
         // Revertir cambio local
-        this.medicineStore.update(current);
         this.medicinesToShow = this.medicinesToShow.map(med =>
-          med.id === id ? { ...med, consumed: current.consumed } : med
+          med.instanceId === actualInstanceId ? { ...med, consumed: currentConsumed } : med
         );
+        this.medicineGroups = this.medicineGroups.map(group => ({
+          ...group,
+          medicines: group.medicines.map(med =>
+            med.instanceId === actualInstanceId ? { ...med, consumed: currentConsumed } : med
+          )
+        }));
       }
     });
   }

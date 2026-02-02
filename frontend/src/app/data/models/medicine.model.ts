@@ -166,3 +166,76 @@ export interface MedicineGrouped {
   medicines: MedicineViewModel[];
   count: number;
 }
+
+/**
+ * Medicamento con hora de toma específica
+ * Utilizado cuando un medicamento se muestra múltiples veces en un día
+ * (por ejemplo, un medicamento que se toma cada 8 horas)
+ */
+export interface MedicineWithTimeDTO extends MedicineViewModel {
+  displayTime: string; // HH:mm
+}
+
+/**
+ * Agrupa medicamentos por hora
+ * Representa todos los medicamentos que se deben tomar a una hora específica
+ */
+export interface MedicineTimeGroupDTO {
+  hora: string; // HH:mm
+  medicamentos: MedicineWithTimeDTO[];
+}
+
+/**
+ * Medicamentos agrupados por fecha y hora
+ * Respuesta del endpoint GET /api/medicamentos/por-fecha?fecha=yyyy-MM-dd
+ */
+export interface MedicinesGroupedByDateDTO {
+  fecha: string; // yyyy-MM-dd
+  gruposPorHora: MedicineTimeGroupDTO[];
+  totalMedicamentos: number;
+}
+/**
+ * Medicamento con hora específica (desde backend)
+ * Utilizado cuando un medicamento se muestra múltiples veces en un día
+ * por su frecuencia
+ */
+export interface MedicineWithTimeDTO extends MedicineViewModel {
+  /**
+   * Hora específica de toma en formato HH:mm
+   */
+  displayTime: string;
+}
+
+/**
+ * Grupo de medicamentos para una hora específica
+ * Respuesta del endpoint /api/medicamentos/por-fecha
+ */
+export interface MedicineTimeGroupDTO {
+  /**
+   * Hora en formato HH:mm
+   */
+  hora: string;
+  /**
+   * Medicamentos que se deben tomar a esta hora
+   */
+  medicamentos: MedicineWithTimeDTO[];
+}
+
+/**
+ * Medicamentos agrupados por fecha y hora
+ * Respuesta del endpoint GET /api/medicamentos/por-fecha?fecha=yyyy-MM-dd
+ */
+export interface MedicinesGroupedByDateDTO {
+  /**
+   * Fecha de los medicamentos en formato yyyy-MM-dd
+   */
+  fecha: string;
+  /**
+   * Medicamentos agrupados por hora (ordenados de menor a mayor)
+   */
+  gruposPorHora: MedicineTimeGroupDTO[];
+  /**
+   * Total de medicamentos incluyendo duplicados por hora
+   */
+  totalMedicamentos: number;
+}
