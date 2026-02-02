@@ -10,16 +10,13 @@ services:
       SPRING_PROFILES_ACTIVE: docker
       JWT_SECRET: clave_secreta_demo_clave_mucho_mas_larga_0123456789
       JWT_EXPIRATION: 86400000
-      SPRING_DATASOURCE_URL: jdbc:h2:file:/data/orgmedi;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-      SPRING_DATASOURCE_DRIVERNAME: org.h2.Driver
-      SPRING_DATASOURCE_USERNAME: sa
-      SPRING_DATASOURCE_PASSWORD: ""
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
-      SPRING_H2_CONSOLE_ENABLED: "true"
+      SPRING_DATASOURCE_URL: ${DB_URL:-jdbc:postgresql://ep-morning-haze-ahxdg1yh-pooler.c-3.us-east-1.aws.neon.tech/neondb}
+      SPRING_DATASOURCE_DRIVERNAME: org.postgresql.Driver
+      SPRING_DATASOURCE_USERNAME: neondb_owner
+      SPRING_DATASOURCE_PASSWORD: npg_sPZS49cmJLAh
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: "false"
-    volumes:
-      - h2_data:/data
     networks:
       - orgmedi-network
     healthcheck:
@@ -54,6 +51,3 @@ services:
 networks:
   orgmedi-network:
     driver: bridge
-
-volumes:
-  h2_data:

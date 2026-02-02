@@ -58,16 +58,17 @@ export class StyleGuidePage implements OnInit {
     { value: '3h', label: '3 horas' }
   ];
 
-  // Medicamento de ejemplo para la card
+  // Medicamento de ejemplo para la card - Paracetamol del admin
   exampleMedicine = {
-    id: '1',
-    name: 'Amoxicilina',
-    dosage: '500mg',
-    frequency: 'Cada 8 horas',
-    description: 'Tomar con agua',
-    startDate: '2026-01-11',
-    endDate: '2026-02-11',
-    quantity: 21
+    id: 1,
+    nombre: 'Paracetamol',
+    cantidadMg: 500,
+    frecuencia: 6,
+    horaInicio: '08:00',
+    fechaInicio: '2026-01-15',
+    fechaFin: '2026-02-15',
+    color: '#FF6B6B',
+    consumed: false
   };
 
   // Datos iniciales para el formulario de ejemplo
