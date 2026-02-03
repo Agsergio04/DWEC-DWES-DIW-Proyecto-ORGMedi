@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,6 +6,8 @@ import { AuthService } from '../../core/services/auth';
 import { DataInputComponent } from '../../components/shared/data-input/data-input';
 import { ButtonComponent } from '../../components/shared/button/button';
 import { ToastService } from '../../shared/toast.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 interface ProfileFormModel {
   username: FormControl<string>;
@@ -20,11 +22,12 @@ interface ProfileFormModel {
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss']
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
   private toastService = inject(ToastService);
+  private destroy$ = new Subject<void>();
 
   form!: FormGroup<ProfileFormModel>;
   formInitialized = false;
@@ -46,27 +49,34 @@ export class ProfilePage implements OnInit {
     this.formInitialized = true;
 
     // Cargar datos del usuario actual del backend
-    this.authService.getCurrentUser().subscribe({
-      next: (user) => {
-        // Usar el ID real obtenido del servidor
-        if (user && user.name) {
-          this.form.get('username')?.setValue(user.name);
+    this.authService.getCurrentUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user) => {
+          // Usar el ID real obtenido del servidor
+          if (user && user.name) {
+            this.form.get('username')?.setValue(user.name);
+          }
+        },
+        error: (err) => {
+          console.error('Error cargando datos del usuario:', err);
+          // Notificar al usuario y usar datos del localStorage si existen
+          const errorMsg =
+            err?.error?.message ||
+            err?.message ||
+            (err?.status ? `Error ${err.status}: ${err.statusText || 'Error del servidor'}` : 'No se pudieron cargar los datos del usuario');
+          this.toastService.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
+          const currentUser = this.authService.currentUser;
+          if (currentUser && currentUser.name) {
+            this.form.get('username')?.setValue(currentUser.name);
+          }
         }
-      },
-      error: (err) => {
-        console.error('Error cargando datos del usuario:', err);
-        // Notificar al usuario y usar datos del localStorage si existen
-        const errorMsg =
-          err?.error?.message ||
-          err?.message ||
-          (err?.status ? `Error ${err.status}: ${err.statusText || 'Error del servidor'}` : 'No se pudieron cargar los datos del usuario');
-        this.toastService.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
-        const currentUser = this.authService.currentUser;
-        if (currentUser && currentUser.name) {
-          this.form.get('username')?.setValue(currentUser.name);
-        }
-      }
-    });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   changeUsername(): void {
@@ -82,23 +92,25 @@ export class ProfilePage implements OnInit {
 
     this.isLoading = true;
 
-    this.authService.updateUsername(newUsername).subscribe({
-      next: () => {
-        this.toastService.success('Nombre de usuario actualizado exitosamente');
-        this.isLoading = false;
-        // Limpiar el campo después de actualizar
-        this.form.patchValue({ username: newUsername });
-      },
-      error: (err) => {
-        console.error('Error al actualizar nombre de usuario:', err);
-        const errorMsg =
-          err?.error?.message ||
-          err?.message ||
-          (err?.status ? `Error ${err.status}: ${err.statusText || 'Error del servidor'}` : 'Error al actualizar el nombre de usuario');
-        this.toastService.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
-        this.isLoading = false;
-      }
-    });
+    this.authService.updateUsername(newUsername)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.toastService.success('Nombre de usuario actualizado exitosamente');
+          this.isLoading = false;
+          // Limpiar el campo después de actualizar
+          this.form.patchValue({ username: newUsername });
+        },
+        error: (err) => {
+          console.error('Error al actualizar nombre de usuario:', err);
+          const errorMsg =
+            err?.error?.message ||
+            err?.message ||
+            (err?.status ? `Error ${err.status}: ${err.statusText || 'Error del servidor'}` : 'Error al actualizar el nombre de usuario');
+          this.toastService.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
+          this.isLoading = false;
+        }
+      });
   }
 
   changePassword(): void {
@@ -128,17 +140,19 @@ export class ProfilePage implements OnInit {
 
     this.isLoading = true;
 
-    this.authService.changePassword(currentPassword, newPassword).subscribe({
-      next: () => {
-        this.toastService.success('Contraseña cambiada exitosamente');
-        this.isLoading = false;
-        // Limpiar los campos de contraseña
-        this.form.patchValue({
-          currentPassword: '',
-          newPassword: ''
-        });
-      },
-      error: (err) => {
+    this.authService.changePassword(currentPassword, newPassword)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.toastService.success('Contraseña cambiada exitosamente');
+          this.isLoading = false;
+          // Limpiar los campos de contraseña
+          this.form.patchValue({
+            currentPassword: '',
+            newPassword: ''
+          });
+        },
+        error: (err) => {
           console.error('Error al cambiar contraseña:', err);
           const errorMsg =
             err?.error?.message ||
@@ -146,8 +160,8 @@ export class ProfilePage implements OnInit {
             (err?.status ? `Error ${err.status}: ${err.statusText || 'Error del servidor'}` : 'Error al cambiar la contraseña');
           this.toastService.error(typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg));
           this.isLoading = false;
-      }
-    });
+        }
+      });
   }
 
   logout(): void {

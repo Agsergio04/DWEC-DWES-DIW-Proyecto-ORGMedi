@@ -1,9 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MedicineService } from '../../data/medicine.service';
-import { ApiError } from '../../data/models/medicine.model';
+import { ApiError, MedicineViewModel } from '../../data/models/medicine.model';
 import { MedicineFormComponent, MedicineFormData } from '../../components/shared/medicine-form/medicine-form';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-medicine-page',
@@ -12,14 +14,15 @@ import { MedicineFormComponent, MedicineFormData } from '../../components/shared
   templateUrl: './edit-medicine.html',
   styleUrls: ['./edit-medicine.scss']
 })
-export class EditMedicinePage implements OnInit {
+export class EditMedicinePage implements OnInit, OnDestroy {
   private medicineService = inject(MedicineService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private destroy$ = new Subject<void>();
 
   medicineId: string | null = null;
-  medicine: any = null;
-  originalMedicine: any = null; // Guardar los datos originales para detectar cambios
+  medicine: MedicineViewModel | null = null;
+  originalMedicine: MedicineViewModel | null = null; // Guardar los datos originales para detectar cambios
   saving = false;
   loading = false;
   error: ApiError | null = null;
@@ -31,27 +34,34 @@ export class EditMedicinePage implements OnInit {
     this.medicineId = this.route.snapshot.paramMap.get('id');
 
     // Intentar leer datos del resolver primero (precargas)
-    this.route.data.subscribe((data: any) => {
-      const resolvedMedicine = data['medicine'];
-      if (resolvedMedicine) {
-        this.loadMedicineData(resolvedMedicine);
-      } else if (this.medicineId) {
-        // Si no hay data resuelta, cargar desde el servicio
-        this.loadMedicine(this.medicineId);
-      } else {
-        this.error = {
-          code: 'INVALID_ID',
-          message: 'ID de medicamento inválido',
-          timestamp: new Date().toISOString()
-        };
-      }
-    });
+    this.route.data
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: Record<string, MedicineViewModel | undefined>) => {
+        const resolvedMedicine = data['medicine'];
+        if (resolvedMedicine) {
+          this.loadMedicineData(resolvedMedicine);
+        } else if (this.medicineId) {
+          // Si no hay data resuelta, cargar desde el servicio
+          this.loadMedicine(this.medicineId);
+        } else {
+          this.error = {
+            code: 'INVALID_ID',
+            message: 'ID de medicamento inválido',
+            timestamp: new Date().toISOString()
+          };
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
    * Carga los datos del medicamento
    */
-  private loadMedicineData(medicine: any): void {
+  private loadMedicineData(medicine: MedicineViewModel): void {
     this.loading = false;
     this.error = null;
     this.medicine = medicine;
@@ -66,17 +76,19 @@ export class EditMedicinePage implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.medicineService.getById(id).subscribe({
-      next: (medicine) => {
-        this.loadMedicineData(medicine);
-        this.loading = false;
-      },
-      error: (err: ApiError) => {
-        console.error('Error al cargar medicamento:', err);
-        this.error = err;
-        this.loading = false;
-      }
-    });
+    this.medicineService.getById(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (medicine) => {
+          this.loadMedicineData(medicine);
+          this.loading = false;
+        },
+        error: (err: ApiError) => {
+          console.error('Error al cargar medicamento:', err);
+          this.error = err;
+          this.loading = false;
+        }
+      });
   }
 
   /**

@@ -107,21 +107,23 @@ export class MedicinesPage implements OnInit, OnDestroy {
     this.currentPage.set(page);
     this.paginationState.update(s => ({ ...s, loading: true }));
 
-    this.medicineService.getPage(page, this.pageSize()).subscribe({
-      next: (response: PaginatedResponse<MedicineViewModel>) => {
-        this.paginationState.set({
-          loading: false,
-          items: response.items,
-          total: response.total,
-          totalPages: response.totalPages,
-          hasMore: response.hasMore
-        });
-      },
-      error: (error) => {
-        console.error('Error loading page:', error);
-        this.paginationState.update(s => ({ ...s, loading: false }));
-      }
-    });
+    this.medicineService.getPage(page, this.pageSize())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: PaginatedResponse<MedicineViewModel>) => {
+          this.paginationState.set({
+            loading: false,
+            items: response.items,
+            total: response.total,
+            totalPages: response.totalPages,
+            hasMore: response.hasMore
+          });
+        },
+        error: (error) => {
+          console.error('Error loading page:', error);
+          this.paginationState.update(s => ({ ...s, loading: false }));
+        }
+      });
   }
 
   /**
@@ -165,19 +167,21 @@ export class MedicinesPage implements OnInit, OnDestroy {
 
     // Si hay término de búsqueda
     if (term.trim().length > 0) {
-      this.medicineService.search(term).subscribe({
-        next: (results) => {
-          this.searchState.set({
-            term,
-            loading: false,
-            results
-          });
-        },
-        error: (error) => {
-          console.error('Error en búsqueda:', error);
-          this.searchState.update(s => ({ ...s, loading: false, results: [] }));
-        }
-      });
+      this.medicineService.search(term)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (results) => {
+            this.searchState.set({
+              term,
+              loading: false,
+              results
+            });
+          },
+          error: (error) => {
+            console.error('Error en búsqueda:', error);
+            this.searchState.update(s => ({ ...s, loading: false, results: [] }));
+          }
+        });
     } else {
       // Sin término, mostrar lista paginada
       this.searchState.set({ term: '', loading: false, results: [] });
