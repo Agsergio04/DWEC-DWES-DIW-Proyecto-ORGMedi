@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class FormSelectComponent {
   @Input() label = '';
-  @Input() options: { value: any, label: string }[] = [];
+  @Input() options: { value: string | number, label: string }[] = [];
   value: any;
 
   /**

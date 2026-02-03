@@ -103,7 +103,7 @@ export class InvoiceFormComponent {
 
   getTotal(): number {
     return this.items.value
-      .reduce((acc: number, item: any) => acc + (Number(item.quantity) || 0) * (Number(item.price) || 0), 0);
+      .reduce((acc: number, item: { quantity: number; price: number }) => acc + (Number(item.quantity) || 0) * (Number(item.price) || 0), 0);
   }
 
   onSubmit() {

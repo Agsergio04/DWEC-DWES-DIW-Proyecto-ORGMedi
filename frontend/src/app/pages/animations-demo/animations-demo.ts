@@ -44,7 +44,7 @@ export class AnimationsDemoComponent {
     return this.feedbackState ? `feedback-${this.feedbackState} feedback-message` : '';
   }
 
-  triggerAnimation(item: any) {
+  triggerAnimation(item: { visible: boolean }): void {
     item.visible = true;
     setTimeout(() => {
       item.visible = false;

@@ -56,7 +56,7 @@ export class LoginFormComponent {
     const { usuario, password } = this.loginForm.value;
 
     // Llamar a authService.login() con usuario
-    this.authService.login(usuario, password).subscribe({
+    this.authService.login(usuario || '', password || '').subscribe({
       next: (success) => {
         // El spinner se cierra cuando el servidor responde
         this.isLoading = false;

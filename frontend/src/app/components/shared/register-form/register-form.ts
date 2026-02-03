@@ -35,7 +35,7 @@ export class RegisterFormComponent {
   registerForm: FormGroup<RegisterFormModel>;
 
   constructor(private fb: FormBuilder, private asyncValidators: AsyncValidatorsService) {
-    this.registerForm = this.fb.group({
+    this.registerForm = this.fb.nonNullable.group({
       username: ['', {
         validators: [Validators.required, Validators.minLength(2)],
         asyncValidators: [this.asyncValidators.usernameAvailable()],
@@ -57,7 +57,7 @@ export class RegisterFormComponent {
     }
 
     const { username, password, email } = this.registerForm.value;
-    this.submitted.emit({ username, password, email });
+    this.submitted.emit({ username: username || '', password: password || '', email: email || '' });
   }
 
   getErrorMessage(controlName: string): string {

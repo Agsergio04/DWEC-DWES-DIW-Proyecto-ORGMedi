@@ -116,8 +116,8 @@
           >
             <div class="app-header__notification-content">
               <p class="app-header__notification-message">{{ notification.message }}</p>
-              <time class="app-header__notification-time" [dateTime]="notification.createdAt">
-                {{ notification.createdAt | date: 'short' }}
+              <time class="app-header__notification-time" [dateTime]="notification.timestamp">
+                {{ notification.timestamp | date: 'short' }}
               </time>
             </div>
             <div class="app-header__notification-actions" role="toolbar" aria-label="Acciones de notificación">

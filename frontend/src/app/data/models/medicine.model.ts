@@ -52,6 +52,7 @@ export interface CreateMedicineDto {
 export interface UpdateMedicineDto {
   nombre?: string;
   cantidadMg?: number;
+  horaInicio?: string;
   fechaInicio?: string;
   fechaFin?: string;
   color?: string;

@@ -8,7 +8,7 @@ export function passwordStrength(): ValidatorFn {
     // Requisitos: mínimo 8 caracteres (coincide con backend)
     const minLength = value.length >= 8;
 
-    const errors: ValidationErrors = {} as any;
+    const errors: ValidationErrors = {};
     if (!minLength) errors['minLength'] = { requiredLength: 8, actualLength: value.length };
 
     return Object.keys(errors).length ? errors : null;

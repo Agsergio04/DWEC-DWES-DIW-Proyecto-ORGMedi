@@ -84,7 +84,7 @@ export class MedicinesPage implements OnInit, OnDestroy {
         distinctUntilChanged(),
         takeUntil(this.destroy$)
       )
-      .subscribe(term => this.searchLocal(term));
+      .subscribe(term => this.searchLocal(term || ''));
 
     // ✅ Cargar primera página de medicamentos (Tarea 4)
     this.loadPage(1);
@@ -267,10 +267,12 @@ export class MedicinesPage implements OnInit, OnDestroy {
     this.medicineStore.update({ ...current, consumed: newValue });
 
     // Persistir en backend (PATCH parcial)
-    this.medicineService.patch(id as any, { consumed: newValue }).subscribe({
-      next: (updated) => {
+    this.medicineService.patch(String(id), { consumed: newValue }).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (updated: MedicineViewModel) => {
         // Actualizar store con respuesta del servidor
-        this.medicineStore.update(updated as any);
+        this.medicineStore.update(updated);
       },
       error: (err) => {
         console.error('Error al persistir consumo:', err);

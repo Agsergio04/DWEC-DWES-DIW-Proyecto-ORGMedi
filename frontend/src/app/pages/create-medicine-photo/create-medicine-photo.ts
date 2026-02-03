@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { PendingChangesComponent } from '../../core/services/guards';
 import { CrearMedicamentoFotoComponent } from '../../components/shared/crear-medicamento-foto/crear-medicamento-foto';
 import { MedicineFormComponent, MedicineFormData } from '../../components/shared/medicine-form/medicine-form';
-import { OcrDataService } from '../../core/services/ocr/ocr-data.service';
+import { OcrDataService, OcrMedicineData } from '../../core/services/ocr/ocr-data.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -58,14 +58,14 @@ export class CreateMedicinePhotoPage implements PendingChangesComponent, OnInit,
   /**
    * Prepara los datos del OCR para el formulario de medicamento
    */
-  prepareMedicineFormData(ocrData: any): void {
+  prepareMedicineFormData(ocrData: OcrMedicineData): void {
     this.medicineFormData = {
       nombre: ocrData.nombre || '',
-      cantidadMg: ocrData.dosage || ocrData.dosis || 0,
+      cantidadMg: Number(ocrData.cantidad) || 0,
       horaInicio: ocrData.horaInicio || '',
       fechaInicio: ocrData.fechaInicio || '',
       fechaFin: ocrData.fechaFin || '',
-      frecuencia: this.mapFrequencyToOption(ocrData.frecuencia),
+      frecuencia: this.mapFrequencyToOption(ocrData.frecuencia || ''),
       color: 'variante-primera' // Color por defecto
     };
   }

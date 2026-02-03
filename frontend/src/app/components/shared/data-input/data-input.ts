@@ -43,7 +43,7 @@ export class DataInputComponent implements ControlValueAccessor {
   onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
 
-  writeValue(value: any): void {
+  writeValue(value: string | null): void {
     this.value = value || '';
   }
 

@@ -2,6 +2,8 @@
  * EJEMPLO 1: Opciones de frecuencia para medicamentos
  * Valores en horas entre dosis
  */
+import { SelectorOption } from './data-input-selector';
+
 export const FREQUENCY_OPTIONS: SelectorOption[] = [
   { id: 1, label: 'Cada 1 hora' },
   { id: 2, label: 'Cada 2 horas' },

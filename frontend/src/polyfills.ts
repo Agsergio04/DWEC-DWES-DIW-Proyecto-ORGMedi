@@ -6,21 +6,21 @@ import 'zone.js';
 
 // Promise.allSettled polyfill (Safari antiguas)
 if (!Promise.allSettled) {
-  (Promise as any).allSettled = function (promises: any[]) {
+  Promise.allSettled = function (promises: PromiseLike<any>[]) {
     return Promise.all(
       promises.map(p =>
         Promise.resolve(p)
-          .then((value) => ({ status: 'fulfilled', value }))
-          .catch((reason) => ({ status: 'rejected', reason }))
+          .then((value) => ({ status: 'fulfilled' as const, value }))
+          .catch((reason) => ({ status: 'rejected' as const, reason }))
       )
     );
-  } as any;
+  };
 }
 
 // Element.closest polyfill
 if (typeof Element !== 'undefined' && !Element.prototype.closest) {
   Element.prototype.closest = function (selectors: string) {
-    let el: any = this;
+    let el: Element | null = this as Element;
     while (el) {
       if (el.matches && el.matches(selectors)) return el;
       el = el.parentElement;
@@ -31,8 +31,19 @@ if (typeof Element !== 'undefined' && !Element.prototype.closest) {
 
 // matchMedia minimal fallback
 if (typeof window !== 'undefined' && !window.matchMedia) {
-  (window as any).matchMedia = function () {
-    return { matches: false, addListener() {}, removeListener() {} };
+  const fallbackMediaQueryList = {
+    matches: false,
+    media: '',
+    onchange: null,
+    addListener() {},
+    removeListener() {},
+    addEventListener() {},
+    removeEventListener() {},
+    dispatchEvent() { return true; }
+  } as unknown as MediaQueryList;
+  
+  (window as unknown as { matchMedia: (query: string) => MediaQueryList }).matchMedia = function () {
+    return fallbackMediaQueryList;
   };
 }
 

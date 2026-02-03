@@ -14,7 +14,7 @@
     <!-- Componente formulario -->
     <main *ngIf="!loading" class="edit-medicine__form">
       <app-medicine-form
-        [initialData]="medicine"
+        [initialData]="medicineFormData"
         [isSubmitting]="saving"
         submitButtonText="Guardar cambios"
         cancelButtonText="Cancelar"

@@ -12,6 +12,7 @@ import { AlertComponent } from '../../components/shared/alert/alert';
 import { MedicineCardComponent } from '../../components/shared/medicine-card/medicine-card';
 import { ThemeSwitcher } from '../../components/shared/theme-switcher/theme-switcher';
 import { MedicineFormComponent, MedicineFormData } from '../../components/shared/medicine-form/medicine-form';
+import { MedicineViewModel } from '../../data/models/medicine.model';
 import { ButtonComponent } from '../../components/shared/button/button';
 
 @Component({
@@ -59,16 +60,20 @@ export class StyleGuidePage implements OnInit {
   ];
 
   // Medicamento de ejemplo para la card - Paracetamol del admin
-  exampleMedicine = {
+  exampleMedicine: MedicineViewModel = {
     id: 1,
     nombre: 'Paracetamol',
     cantidadMg: 500,
     frecuencia: 6,
     horaInicio: '08:00',
-    fechaInicio: '2026-01-15',
-    fechaFin: '2026-02-15',
+    fechaInicio: new Date('2026-01-15'),
+    fechaFin: new Date('2026-02-15'),
     color: '#FF6B6B',
-    consumed: false
+    consumed: false,
+    isActive: true,
+    isExpired: false,
+    expirationStatus: 'active',
+    displayName: 'Paracetamol 500mg'
   };
 
   // Datos iniciales para el formulario de ejemplo
@@ -118,7 +123,7 @@ export class StyleGuidePage implements OnInit {
     console.log('Clicked', kind);
   }
 
-  onEditMedicine(medicine: any): void {
+  onEditMedicine(medicine: MedicineFormData): void {
     console.log('Editar medicamento:', medicine);
   }
 

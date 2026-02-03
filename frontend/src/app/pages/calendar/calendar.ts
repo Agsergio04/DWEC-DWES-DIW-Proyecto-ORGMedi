@@ -220,7 +220,7 @@ export class CalendarPage implements OnInit, OnDestroy {
    */
   private loadConsumptionStateFromServer(fechaStr: string): void {
     this.medicineService.obtenerConsumosDelDia(fechaStr).subscribe({
-      next: (consumos: any[]) => {
+      next: (consumos: Array<{ id: number; hora: string; medicamentoId: number; consumido: boolean }>) => {
         console.log('[loadConsumptionStateFromServer] Consumos obtenidos del servidor:', consumos);
         
         // Actualizar instanceConsumptionState con los datos del servidor

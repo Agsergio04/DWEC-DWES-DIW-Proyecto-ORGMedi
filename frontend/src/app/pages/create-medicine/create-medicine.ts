@@ -5,7 +5,7 @@ import { MedicineService } from '../../data/medicine.service';
 import { MedicineStoreSignals } from '../../data/stores/medicine-signals.store';
 import { ApiError } from '../../data/models/medicine.model';
 import { MedicineFormComponent, MedicineFormData } from '../../components/shared/medicine-form/medicine-form';
-import { OcrDataService } from '../../core/services/ocr/ocr-data.service';
+import { OcrDataService, OcrMedicineData } from '../../core/services/ocr/ocr-data.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -25,7 +25,7 @@ export class CreateMedicinePage implements OnInit, OnDestroy {
 
   saving = false;
   error: ApiError | null = null;
-  ocrData: any = null;  // Almacena datos del OCR para mostrar en formulario
+  ocrData: OcrMedicineData | null = null;  // Almacena datos del OCR para mostrar en formulario
 
   // Mapeo de variantes a colores hex
   private colorMap: { [key: string]: string } = {
@@ -35,7 +35,21 @@ export class CreateMedicinePage implements OnInit, OnDestroy {
     'variante-cuarta': '#FF9800',    // Naranja
     'variante-quinta': '#9C27B0'     // Magenta
   };
-
+  /**
+   * Convierte OcrMedicineData a MedicineFormData
+   */
+  get medicineFormDataFromOcr(): MedicineFormData | null {
+    if (!this.ocrData) return null;
+    return {
+      nombre: this.ocrData.nombre || '',
+      cantidadMg: Number(this.ocrData.cantidad) || 0,
+      horaInicio: this.ocrData.horaInicio || '',
+      fechaInicio: this.ocrData.fechaInicio || '',
+      fechaFin: this.ocrData.fechaFin || '',
+      frecuencia: 1,
+      color: 'variante-primera'
+    };
+  }
   constructor() {}
 
   /**

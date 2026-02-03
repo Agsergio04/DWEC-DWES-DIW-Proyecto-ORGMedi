@@ -37,8 +37,9 @@ async function loadAppConfig() {
     const resp = await fetch('/assets/app-config.json', { cache: 'no-cache' });
     if (resp.ok) {
       // attach to global so services can read it synchronously after load
-      (window as any).APP_CONFIG = await resp.json();
-      console.info('Loaded runtime config', (window as any).APP_CONFIG);
+      const appConfig = await resp.json() as { baseUrl?: string };
+      (window as { APP_CONFIG?: unknown }).APP_CONFIG = appConfig;
+      console.info('Loaded runtime config', appConfig);
       return;
     }
     console.warn('Runtime config not found, using build-time environment');

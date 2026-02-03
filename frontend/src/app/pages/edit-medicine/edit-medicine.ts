@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MedicineService } from '../../data/medicine.service';
-import { ApiError, MedicineViewModel } from '../../data/models/medicine.model';
+import { ApiError, MedicineViewModel, UpdateMedicineDto } from '../../data/models/medicine.model';
 import { MedicineFormComponent, MedicineFormData } from '../../components/shared/medicine-form/medicine-form';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -28,6 +28,30 @@ export class EditMedicinePage implements OnInit, OnDestroy {
   error: ApiError | null = null;
 
   constructor() {}
+
+  /**
+   * Convierte MedicineViewModel a MedicineFormData para el formulario
+   */
+  get medicineFormData(): MedicineFormData | null {
+    if (!this.medicine) return null;
+    return {
+      nombre: this.medicine.nombre,
+      cantidadMg: this.medicine.cantidadMg,
+      horaInicio: this.medicine.horaInicio,
+      fechaInicio: this.medicine.fechaInicio instanceof Date 
+        ? this.medicine.fechaInicio.toISOString().split('T')[0]
+        : typeof this.medicine.fechaInicio === 'string'
+        ? this.medicine.fechaInicio
+        : '',
+      fechaFin: this.medicine.fechaFin instanceof Date
+        ? this.medicine.fechaFin.toISOString().split('T')[0]
+        : typeof this.medicine.fechaFin === 'string'
+        ? this.medicine.fechaFin
+        : '',
+      frecuencia: this.medicine.frecuencia,
+      color: this.medicine.color
+    };
+  }
 
   ngOnInit(): void {
     // Obtener el ID de la ruta
@@ -109,7 +133,7 @@ export class EditMedicinePage implements OnInit, OnDestroy {
     this.error = null;
 
     // Crear objeto con todos los datos formateados
-    const allMedicineData = {
+    const allMedicineData: UpdateMedicineDto = {
       nombre: formData.nombre,
       cantidadMg: formData.cantidadMg,
       frecuencia: formData.frecuencia,
@@ -135,8 +159,10 @@ export class EditMedicinePage implements OnInit, OnDestroy {
     }
 
     // Usar PATCH para actualizar solo los campos que cambiaron
-    this.medicineService.patch(this.medicineId, changedFields).subscribe({
-      next: (medicine) => {
+    this.medicineService.patch(this.medicineId, changedFields)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (medicine: MedicineViewModel) => {
         console.log('Medicamento actualizado (parcial):', medicine);
         // Marcar que hay cambios pendientes para que el calendario se refresque automáticamente
         sessionStorage.setItem('medicinesUpdated', 'true');
@@ -155,18 +181,18 @@ export class EditMedicinePage implements OnInit, OnDestroy {
   /**
    * Detecta qué campos han cambiado comparando con los datos originales
    */
-  private detectChanges(newData: any): any {
-    const changes: any = {};
+  private detectChanges(newData: UpdateMedicineDto): Partial<UpdateMedicineDto> {
+    const changes: Partial<UpdateMedicineDto> = {};
 
     // Comparar cada campo
     for (const key in newData) {
       if (newData.hasOwnProperty(key)) {
-        const originalValue = this.originalMedicine?.[key];
-        const newValue = newData[key];
+        const originalValue = this.originalMedicine?.[key as keyof MedicineViewModel];
+        const newValue = newData[key as keyof UpdateMedicineDto];
 
         // Comparar valores (teniendo en cuenta null/undefined)
         if (JSON.stringify(originalValue) !== JSON.stringify(newValue)) {
-          changes[key] = newValue;
+          (changes as Record<string, unknown>)[key] = newValue;
           console.log(`[detectChanges] Campo "${key}" cambió: "${originalValue}" → "${newValue}"`);
         }
       }
