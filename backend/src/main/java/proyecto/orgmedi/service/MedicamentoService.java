@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings("null")
-public class MedicamentoService {
+public class MedicamentoService implements IMedicamentoService {
     private final MedicamentoRepository medicamentoRepository;
     private final ConsumoRegistroRepository consumoRegistroRepository;
 
@@ -135,6 +135,25 @@ public class MedicamentoService {
             throw new NotFoundException("Medicamento no encontrado");
         }
         medicamentoRepository.deleteById(id);
+    }
+    
+    @Override
+    public void deleteMedicamento(Long id) {
+        deleteByIdOrThrow(id);
+    }
+    
+    @Override
+    public List<MedicamentoDTO> getMedicamentosPorUsuario(Long usuarioId) {
+        List<Medicamento> medicamentos = medicamentoRepository.findByUsuarioId(usuarioId);
+        return medicamentos.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public MedicamentosPorFechaDTO getMedicamentosPorFecha(Long usuarioId, LocalDate fecha) {
+        List<Medicamento> medicamentos = medicamentoRepository.findByUsuarioId(usuarioId);
+        return getMedicamentosPorFecha(medicamentos, fecha);
     }
 
     // mapper DTO <-> entity
@@ -370,6 +389,21 @@ public class MedicamentoService {
                 .frecuencia(medicamento.getFrecuencia())
                 .consumed(medicamento.getConsumed())
                 .displayTime(hora)
+                .build();
+    }
+
+    @Override
+    public MedicamentosPorHoraDTO getMedicamentosPorHora(Long usuarioId, LocalDate fecha, String hora) {
+        List<MedicamentoConHoraDTO> medicamentos = getMedicamentosPorFecha(usuarioId, fecha)
+                .getGruposPorHora()
+                .stream()
+                .filter(grupo -> grupo.getHora().equals(hora))
+                .flatMap(grupo -> grupo.getMedicamentos().stream())
+                .collect(Collectors.toList());
+
+        return MedicamentosPorHoraDTO.builder()
+                .hora(hora)
+                .medicamentos(medicamentos)
                 .build();
     }
 }

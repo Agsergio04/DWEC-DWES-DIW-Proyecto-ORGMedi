@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * Permite registrar y consultar el consumo de medicamentos por fecha y hora específica
  */
 @Service
-public class ConsumoRegistroService {
+public class ConsumoRegistroService implements IConsumoRegistroService {
     private final ConsumoRegistroRepository consumoRegistroRepository;
     private final MedicamentoService medicamentoService;
     private final UsuarioService usuarioService;
@@ -38,6 +38,22 @@ public class ConsumoRegistroService {
         this.medicamentoService = medicamentoService;
         this.usuarioService = usuarioService;
         this.usuarioRepository = usuarioRepository;
+    }
+    
+    @Override
+    public List<ConsumoRegistro> findAll() {
+        return consumoRegistroRepository.findAll();
+    }
+    
+    @Override
+    public Optional<ConsumoRegistro> findById(Long id) {
+        return consumoRegistroRepository.findById(id);
+    }
+    
+    @Override
+    public ConsumoRegistro getByIdOrThrow(Long id) {
+        return consumoRegistroRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Registro de consumo no encontrado"));
     }
     
     /**
@@ -93,6 +109,23 @@ public class ConsumoRegistroService {
     
     /**
      * Obtiene todos los registros de consumo de un usuario para una fecha específica
+     * @param usuarioId ID del usuario
+     * @param fecha Fecha del consumo
+     * @return Lista de DTOs de consumo
+     */
+    @Override
+    public List<ConsumoRegistroDTO> getConsumosPorDia(Long usuarioId, LocalDate fecha) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+            .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        
+        return consumoRegistroRepository.findByUsuarioAndFecha(usuario, fecha)
+            .stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+    
+    /**
+     * Obtiene todos los registros de consumo de un usuario para una fecha específica
      */
     public List<ConsumoRegistroDTO> obtenerConsumosDelDia(String fecha) {
         Usuario usuario = SecurityUtil.getCurrentUser(usuarioRepository);
@@ -104,6 +137,20 @@ public class ConsumoRegistroService {
             .stream()
             .map(this::toDTO)
             .collect(Collectors.toList());
+    }
+    
+    /**
+     * Obtiene todos los registros de consumo de un usuario para una fecha específica
+     * @param usuarioId ID del usuario
+     * @param fecha Fecha del consumo
+     * @return Lista de registros de consumo
+     */
+    @Override
+    public List<ConsumoRegistro> getConsumosDelDia(Long usuarioId, LocalDate fecha) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+            .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        
+        return consumoRegistroRepository.findByUsuarioAndFecha(usuario, fecha);
     }
     
     /**
@@ -121,6 +168,61 @@ public class ConsumoRegistroService {
         return consumoRegistroRepository
             .findByUsuarioAndMedicamentoAndFechaAndHora(usuario, medicamento, fechaParsed, horaParsed)
             .map(this::toDTO);
+    }
+    
+    /**
+     * Marcar un medicamento como consumido
+     */
+    @Override
+    public void marcarConsumido(Long consumoId) {
+        ConsumoRegistro consumo = consumoRegistroRepository.findById(consumoId)
+            .orElseThrow(() -> new IllegalArgumentException("Registro de consumo no encontrado"));
+        
+        consumo.setConsumido(true);
+        consumoRegistroRepository.save(consumo);
+    }
+    
+    /**
+     * Desmarcar un medicamento como consumido
+     */
+    @Override
+    public void desmarcarConsumido(Long consumoId) {
+        ConsumoRegistro consumo = consumoRegistroRepository.findById(consumoId)
+            .orElseThrow(() -> new IllegalArgumentException("Registro de consumo no encontrado"));
+        
+        consumo.setConsumido(false);
+        consumoRegistroRepository.save(consumo);
+    }
+    
+    /**
+     * Crea un nuevo registro de consumo
+     */
+    @Override
+    public ConsumoRegistro createConsumo(ConsumoRegistro consumo) {
+        return consumoRegistroRepository.save(consumo);
+    }
+    
+    /**
+     * Actualiza un registro de consumo
+     */
+    @Override
+    public ConsumoRegistro updateConsumo(Long id, ConsumoRegistro consumo) {
+        ConsumoRegistro existing = consumoRegistroRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Registro de consumo no encontrado"));
+        
+        consumo.setId(id);
+        return consumoRegistroRepository.save(consumo);
+    }
+    
+    /**
+     * Elimina un registro de consumo
+     */
+    @Override
+    public void deleteConsumo(Long id) {
+        if (consumoRegistroRepository.findById(id).isEmpty()) {
+            throw new IllegalArgumentException("Registro de consumo no encontrado");
+        }
+        consumoRegistroRepository.deleteById(id);
     }
     
     /**

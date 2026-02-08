@@ -54,7 +54,11 @@ public class Medicamento {
     @Column(nullable = false)
     @Builder.Default
     private Boolean consumed = false;
-    // Métodos para cambiar un atributo a la vez
+    
+    // Relación con Usuario
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
     public void cambiarCantidadMg(Integer nuevaCantidad) {
         if (nuevaCantidad != null && nuevaCantidad > 0) {
             this.cantidadMg = nuevaCantidad;

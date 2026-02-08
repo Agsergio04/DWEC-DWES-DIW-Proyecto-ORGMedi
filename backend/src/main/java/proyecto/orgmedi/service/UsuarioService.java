@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @SuppressWarnings("null")
-public class UsuarioService {
+public class UsuarioService implements IUsuarioService {
     private final UsuarioRepository usuarioRepository;
 
     @Autowired
@@ -86,5 +86,15 @@ public class UsuarioService {
 
     public boolean existsByCorreo(String correo) {
         return usuarioRepository.existsByCorreo(correo);
+    }
+
+    @Override
+    public boolean usuarioExistePorCorreo(String correo) {
+        return existsByCorreo(correo);
+    }
+    
+    @Override
+    public void deleteUsuario(Long id) {
+        deleteByIdOrThrow(id);
     }
 }

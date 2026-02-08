@@ -1,9 +1,7 @@
 import { defineConfig } from 'vitest/config';
-import angular from '@angular/build';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [angular()],
   test: {
     globals: true,
     environment: 'jsdom',
@@ -17,10 +15,12 @@ export default defineConfig({
         '**/*.spec.ts',
         '**/index.ts',
       ],
-      lines: 50,
-      functions: 50,
-      branches: 50,
-      statements: 50,
+      thresholds: {
+        lines: 50,
+        functions: 50,
+        branches: 50,
+        statements: 50,
+      },
     },
     include: ['src/**/*.spec.ts'],
   },
