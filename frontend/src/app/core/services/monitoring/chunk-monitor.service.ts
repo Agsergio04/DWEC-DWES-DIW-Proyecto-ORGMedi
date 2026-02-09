@@ -3,15 +3,32 @@ import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
 /**
- * Servicio para monitorear la carga de chunks lazy en tiempo real
+ * SERVICIO: ChunkMonitorService
  * 
- * Útil para debugging, análisis de rendimiento y UX
- * Permite registrar y visualizar cuándo se descargan los chunks
+ * ¿QUÉ HACE?
+ * Monitorea en tiempo real CUÁNDO y CUÁNTO TARDA en descargarse cada chunk (módulo)
+ * de la aplicación. Un chunk es un archivo JavaScript que se descarga bajo demanda
+ * (cuando el usuario navega a esa sección).
+ * 
+ * INFORMACIÓN QUE RECOPILA:
+ * - Cuándo comienza la navegación a una ruta
+ * - Cuánto tiempo tarda en cargar el chunk (en milisegundos)
+ * - Tamaño del archivo descargado (en KB)
+ * - Hora exacta de cada evento
+ * 
+ * UTILIDAD:
+ * - Debugging: Saber qué está sucediendo cuando navegas
+ * - Performance: Identificar chunks lentos que necesitan optimización
+ * - User Experience: Entender experiencia de carga del usuario
  */
 @Injectable({ providedIn: 'root' })
 export class ChunkMonitorService {
   
+  // Map que almacena información de cada chunk cargado
+  // Estructura: { "nombre-chunk": { timestamp: fecha, duration: ms } }
   private loadedChunks = new Map<string, { timestamp: number; duration: number }>();
+  
+  // Marca el momento exacto cuando comienza la navegación
   private navigationStartTime = 0;
   
   constructor(private router: Router) {
@@ -19,29 +36,32 @@ export class ChunkMonitorService {
   }
   
   /**
-   * Inicializa el monitoreo de navegación y chunks
+   * PASO 1: Inicializa el monitoreo de eventos de navegación
+   * Se ejecuta una sola vez cuando el servicio se crea
    */
   private initializeMonitoring(): void {
-    // Registrar inicio de navegación
+    // EVENTO 1: Detecta cuándo COMIENZA la navegación
     this.router.events
       .pipe(filter(event => event instanceof NavigationStart))
       .subscribe((event: NavigationStart) => {
+        // Guarda el tiempo actual para calcular duración después
         this.navigationStartTime = performance.now();
-        console.log(`🔄 [${this.getTimestamp()}] Navegando a: ${event.url}`);
+        console.log(` [${this.getTimestamp()}] Navegando a: ${event.url}`);
       });
     
-    // Registrar fin de navegación (cuando se carga el componente)
+    // EVENTO 2: Detecta cuándo TERMINA la navegación
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
+        // Calcula cuánto tiempo tardó la navegación
         const duration = performance.now() - this.navigationStartTime;
-        console.log(`✅ [${this.getTimestamp()}] Navegación completada en ${duration.toFixed(2)}ms → ${event.url}`);
+        console.log(` [${this.getTimestamp()}] Navegación completada en ${duration.toFixed(2)}ms → ${event.url}`);
         
-        // Registrar el chunk cargado
+        // Registra este chunk en el historial
         this.logChunkLoad(event.url, duration);
       });
     
-    // Monitorear descargas de scripts (Network API)
+    // Activa el monitoreo detallado de descargas de archivos
     this.monitorScriptDownloads();
   }
   
@@ -63,7 +83,7 @@ export class ChunkMonitorService {
               
               if (chunkName && downloadTime > 10) { // Ignorar archivos muy pequeños
                 console.log(
-                  `📥 Descargado: ${chunkName} | ` +
+                  ` Descargado: ${chunkName} | ` +
                   `${(downloadTime).toFixed(0)}ms | ` +
                   `Tamaño: ${(entry_.transferSize / 1024).toFixed(1)}KB`
                 );
@@ -74,26 +94,30 @@ export class ChunkMonitorService {
         
         observer.observe({ entryTypes: ['resource'] });
       } catch (e) {
-        console.warn('⚠️  PerformanceObserver no disponible');
+        console.warn('  PerformanceObserver no disponible');
       }
     }
   }
   
   /**
-   * Extrae el nombre del chunk del nombre del archivo
+   * PASO 3: Extrae nombre legible del chunk de la URL
+   * Transforma: "/static/auth-login.a1b2c3d4.js" → "auth-login"
    */
   private extractChunkName(url: string): string | null {
-    // Buscar patrones como: "auth-login.abc123.js"
+    // Regex: busca patrón "nombre.codigo.js"
     const match = url.match(/\/([a-z\-]+)\.[a-z0-9]+\.js/i);
+    // Retorna solo el nombre o null si no encuentra
     return match ? match[1] : null;
   }
   
   /**
-   * Registra la carga de un chunk
+   * Registra un chunk en el historial de carga
+   * Evita registros duplicados usando un Map
    */
   private logChunkLoad(url: string, duration: number): void {
     const chunkName = this.extractChunkName(url) || url;
     
+    // Si no está en el map, lo agrega
     if (!this.loadedChunks.has(chunkName)) {
       this.loadedChunks.set(chunkName, {
         timestamp: Date.now(),
@@ -103,25 +127,39 @@ export class ChunkMonitorService {
   }
   
   /**
-   * Retorna un timestamp formateado
+   * Retorna la hora actual en formato legible (HH:MM:SS)
    */
   private getTimestamp(): string {
     return new Date().toLocaleTimeString('es-ES');
   }
   
   /**
-   * Obtiene estadísticas de chunks cargados
+   * METODO PÚBLICO: Obtiene estadísticas de chunks cargados
+   * Útil para acceder a los datos desde componentes
    */
   public getLoadedChunksStats(): Map<string, { timestamp: number; duration: number }> {
     return new Map(this.loadedChunks);
   }
   
   /**
-   * Imprime un reporte en consola
+   * METODO PÚBLICO: Imprime reporte visual en consola
+   * Muestra tabla con todos los chunks, duración y hora
+   * 
+   * EJEMPLO DE SALIDA:
+   * ============================================================
+   *  REPORTE DE CHUNKS CARGADOS
+   * ============================================================
+   *   auth-login             → 245ms (12:34:57)
+   *   medicamentos           → 187ms (12:35:10)
+   *   calendar               → 98ms (12:35:25)
+   * ============================================================
+   * Total de chunks: 3
+   * Tiempo acumulado: 530ms
+   * ============================================================
    */
   public printReport(): void {
     console.log('\n' + '='.repeat(60));
-    console.log('📊 REPORTE DE CHUNKS CARGADOS');
+    console.log(' REPORTE DE CHUNKS CARGADOS');
     console.log('='.repeat(60));
     
     if (this.loadedChunks.size === 0) {
@@ -149,37 +187,58 @@ export class ChunkMonitorService {
   }
   
   /**
-   * Resetea las estadísticas
+   * METODO PÚBLICO: Limpia todas las estadísticas registradas
    */
   public reset(): void {
     this.loadedChunks.clear();
-    console.log('🔄 Estadísticas de chunks reseteadas');
+    console.log(' Estadísticas de chunks reseteadas');
   }
 }
 
 /**
- * USO EN COMPONENTES:
+ * CÓMO USAR EN COMPONENTES:
  * 
  * import { ChunkMonitorService } from './core/services/monitoring';
  * 
- * @Component({...})
- * export class MyComponent {
+ * @Component({
+ *   selector: 'app-performance-debug',
+ *   template: '<button (click)="showReport()">Mostrar Reporte</button>'
+ * })
+ * export class PerformanceDebugComponent {
  *   constructor(private chunkMonitor: ChunkMonitorService) {}
  *   
- *   printStats() {
- *     this.chunkMonitor.printReport();
+ *   showReport() {
+ *     this.chunkMonitor.printReport();  // Muestra reporte en consola
+ *   }
+ *   
+ *   getStats() {
+ *     const chunks = this.chunkMonitor.getLoadedChunksStats();
+ *     console.log(chunks);  // Acceder a datos programáticamente
  *   }
  * }
  */
 
 /**
- * SALIDA ESPERADA EN CONSOLA:
+ * EJEMPLO DE SALIDA EN CONSOLA:
  * 
- * 🔄 [12:34:56] Navegando a: /iniciar-sesion
- * 📥 Descargado: auth-login | 145ms | Tamaño: 75.3KB
- * ✅ [12:34:57] Navegación completada en 287ms → /iniciar-sesion
+ *  [12:34:56] Navegando a: /iniciar-sesion
+ *  Descargado: auth-login | 145ms | Tamaño: 75.3KB
+ *  [12:34:57] Navegación completada en 287ms → /iniciar-sesion
  * 
- * 🔄 [12:35:10] Navegando a: /medicamentos
- * ✅ [12:35:10] Navegación completada en 15ms → /medicamentos
- * (Ya estaba precargado con PreloadAllModules)
+ *  [12:35:10] Navegando a: /medicamentos
+ *  Descargado: medicamentos | 212ms | Tamaño: 142.8KB
+ *  [12:35:10] Navegación completada en 225ms → /medicamentos
+ * 
+ * (Luego ejecutas en consola:)
+ * > chunkMonitor.printReport()
+ * 
+ * ============================================================
+ *  REPORTE DE CHUNKS CARGADOS
+ * ============================================================
+ *   auth-login             → 287ms (12:34:57)
+ *   medicamentos           → 225ms (12:35:10)
+ * ============================================================
+ * Total de chunks: 2
+ * Tiempo acumulado: 512ms
+ * ============================================================
  */

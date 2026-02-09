@@ -2,8 +2,12 @@ import { inject } from '@angular/core';
 import { ResolveFn, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 /**
- * Interface para datos iniciales de la página de inicio
- * Simula un wrapper con estado loading para manejo de carga asíncrona
+ * INTERFAZ: HomeData
+ * 
+ * Define la estructura de datos que necesita la página inicial.
+ * Contiene:
+ * - stats: Estadísticas de medicamentos (totales, activos, próximos a expirar, dosis pendientes)
+ * - welcomeMessage: Mensaje de bienvenida para el usuario
  */
 export interface HomeData {
   stats: {
@@ -16,15 +20,40 @@ export interface HomeData {
 }
 
 /**
- * Resolver para precarga de datos iniciales de la página de inicio
- * Simula una carga asíncrona con latencia y posibles errores
- * En producción, esto llamaría a endpoints HTTP reales
+ * RESOLVER: homeResolver
+ * 
+ * ¿QUÉ HACE?
+ * Carga datos ANTES de navegar a la página de inicio.
+ * Asegura que los datos estén listos cuando el usuario vea la página.
+ * 
+ * ¿POR QUÉ ES ÚTIL?
+ * Sin resolver: Usuario navega → página carga → luego se cargan datos → parpadeo/retraso
+ * Con resolver: Datos cargan primero → usuario ve página completa al llegar
+ * 
+ * FLUJO DE EJECUCIÓN:
+ * 1. Usuario intenta navegar a /home
+ * 2. Angular ejecuta homeResolver (antes de mostrar la página)
+ * 3. Resolver carga datos (simula espera de 300ms)
+ * 4. Si funciona → datos listos, se muestra página
+ * 5. Si hay error → datos por defecto (evita que la página falle)
+ * 
+ * DATOS QUE CARGA:
+ * - totalMedicines: Total de medicamentos registrados
+ * - activeMedicines: Medicamentos activos/vigentes
+ * - expiringMedicines: Próximos a vencer
+ * - upcomingDoses: Tomas pendientes hoy
+ * 
+ * NOTA: Actualmente usa datos simulados (mockHomeData).
+ * En producción, llamaría a un API HTTP real.
  */
 export const homeResolver: ResolveFn<HomeData | null> = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
   ) => {
-  // Datos simulados que vendrían de un API en producción
+  /**
+   * DATOS SIMULADOS
+   * En producción sería: this.http.get('/api/home').toPromise()
+   */
   const mockHomeData: HomeData = {
     stats: {
       totalMedicines: 5,
@@ -35,19 +64,29 @@ export const homeResolver: ResolveFn<HomeData | null> = (
     welcomeMessage: '¡Bienvenido a ORGMedi! Gestiona tus medicamentos de forma segura y ordenada.'
   };
 
-  // Simulamos una carga asíncrona de 300ms (como si consultara un API)
+  /**
+   * CARGA ASÍNCRONA
+   * Crea una Promise que resuelve datos después de 300ms
+   * Simula latencia de una petición HTTP real
+   */
   return new Promise<HomeData | null>((resolve, reject) => {
     setTimeout(() => {
-      // Simular error aleatorio 5% de las veces (descomentar para probar)
+      // Opcional: simular error aleatorio (5% de probabilidad)
+      // Descomenta para probar manejo de errores:
       // if (Math.random() < 0.05) {
       //   reject(new Error('Error simulado al cargar datos de inicio'));
       // }
+      
+      // Resuelve con los datos (éxito)
       resolve(mockHomeData);
     }, 300);
   }).catch((error) => {
+    /**
+     * MANEJO DE ERRORES
+     * Si falla la carga, retorna datos por defecto (todos en 0)
+     * Permite que la página se muestre aunque fallen los datos
+     */
     console.error('Error cargando datos de inicio:', error);
-    // En caso de error, aún así retornamos datos por defecto para que
-    // la página pueda mostrar algo en lugar de fallar completamente
     return {
       stats: {
         totalMedicines: 0,

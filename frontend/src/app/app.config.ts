@@ -1,13 +1,10 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, APP_INITIALIZER } from '@angular/core';
 import { provideRouter, withPreloading, PreloadAllModules, withViewTransitions } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
-import { loggingInterceptor } from './core/interceptors/logging.interceptor';
 import { BrowserDetectionService } from './core/services/browser-detection.service';
-
 import { Header } from './components/layout/header/header';
 import { Main } from './components/layout/main/main';
 import { Footer } from './components/layout/footer/footer';
@@ -51,7 +48,7 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions() // Habilita transiciones suaves entre vistas y preservación del scroll
     ),
     provideHttpClient(
-      withInterceptors([authInterceptor, errorInterceptor, loggingInterceptor])
+      withInterceptors([authInterceptor, errorInterceptor])
     )
   ]
 };

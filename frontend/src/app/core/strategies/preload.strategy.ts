@@ -3,14 +3,44 @@ import { PreloadingStrategy, Route } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
 /**
- * Estrategia de Precarga Selectiva para Angular Router
+ * Estrategias de Precarga para Angular Router
+ * ============================================
  * 
- * Permite controlar qué rutas lazy se precargan automáticamente:
- * - Con data.preload = true → Se precarga en segundo plano
- * - Sin data.preload o = false → Se carga bajo demanda
+ * La precarga (preloading) significa descargar módulos lazy-loaded en segundo plano
+ * antes de que el usuario los necesite. Optimiza la experiencia mejorando la velocidad
+ * de carga cuando el usuario navega a esas rutas.
  * 
- * Útil para aplicaciones grandes donde PreloadAllModules 
- * descargaría demasiados chunks innecesarios
+ * Este archivo contiene 4 estrategias diferentes:
+ * 1. SelectivePreloading - Control manual con data.preload
+ * 2. DelayedPreloading - Precarga después de un tiempo
+ * 3. NetworkAwarePreloading - Solo en conexiones rápidas
+ * 4. SmartPreloading - Inteligencia personalizada
+ * 
+ * CÓMO USAR:
+ * En app.config.ts:
+ * - provideRouter(routes, withPreloading(SelectivePreloadingStrategy))
+ * 
+ * En app.routes.ts:
+ * - data: { preload: true } para activar una ruta
+ */
+
+/**
+ * Estrategia 1: Precarga Selectiva (RECOMENDADA PARA LA MAYORÍA)
+ * ===========================================================
+ * 
+ * Control fino: solo precarga rutas explícitamente marcadas con data.preload = true
+ * 
+ * Ventajas:
+ * -  Control total sobre qué se precarga
+ * -  No descarga módulos innecesarios
+ * -  Ideal para apps grandes
+ * 
+ * @example
+ * // Ruta que se PRECARGA
+ * { path: 'home', ..., data: { preload: true } }
+ * 
+ * // Ruta que se carga bajo DEMANDA
+ * { path: 'admin', ... }
  */
 @Injectable({ providedIn: 'root' })
 export class SelectivePreloadingStrategy implements PreloadingStrategy {
@@ -19,56 +49,35 @@ export class SelectivePreloadingStrategy implements PreloadingStrategy {
    * Determina si una ruta debe precargarse
    * 
    * @param route - La ruta a evaluar
-   * @param load - Función que realiza la carga del módulo
-   * @returns Observable que carga el módulo si data.preload es true
+   * @param load - Función que descarga el módulo
+   * @returns Observable que descarga si data.preload = true, o null si no
    */
   preload(route: Route, load: () => Observable<any>): Observable<any> {
-    // Si la ruta tiene data.preload = true, precarga
+    // Si la ruta tiene data.preload = true, precarga ahora
     if (route.data && route.data['preload']) {
       console.log(`✅ Precargando: ${route.path}`);
       return load();
     }
     
-    // Si no, devuelve un observable vacío (carga bajo demanda)
+    // Si no, devuelve observable vacío (carga bajo demanda después)
     return of(null);
   }
 }
 
 /**
- * EJEMPLO DE USO EN app.config.ts:
+ * Estrategia 2: Precarga con Retraso
+ * ==================================
  * 
- * import { SelectivePreloadingStrategy } from './core/strategies/preload.strategy';
+ * Espera X milisegundos antes de precargar (evita congestión de red inicial)
  * 
- * export const appConfig: ApplicationConfig = {
- *   providers: [
- *     provideRouter(
- *       routes,
- *       withPreloading(SelectivePreloadingStrategy)
- *     ),
- *   ]
- * };
- */
-
-/**
- * EJEMPLO DE USO EN app.routes.ts:
+ * Ventajas:
+ * -  No ralentiza carga inicial del HTML
+ * -  Precarga en segundo plano sin afectar UX
+ * -  Ideal para apps con muchos módulos
  * 
- * export const routes: Routes = [
- *   {
- *     path: 'home',
- *     loadComponent: () => import('./home').then(m => m.Home),
- *     data: { preload: true }  // ← Se precarga
- *   },
- *   {
- *     path: 'admin',
- *     loadComponent: () => import('./admin').then(m => m.Admin),
- *     // Sin data.preload = se carga bajo demanda
- *   }
- * ];
- */
-
-/**
- * ESTRATEGIA ALTERNATIVA: Precarga con Retraso
- * Descarga lazy routes después de un tiempo específico
+ * Despliegue típico:
+ * - 0-3s: Usuario ve página + JavaScript crítico
+ * - 3s en adelante: Precarga de otros módulos
  */
 @Injectable({ providedIn: 'root' })
 export class DelayedPreloadingStrategy implements PreloadingStrategy {
@@ -92,19 +101,32 @@ export class DelayedPreloadingStrategy implements PreloadingStrategy {
 }
 
 /**
- * ESTRATEGIA ALTERNATIVA: Precarga Condicionada por Conexión
- * Solo precarga en conexiones rápidas (4G/WiFi)
+ * Estrategia 3: Precarga Consciente de Conexión
+ * ==============================================
+ * 
+ * Solo precarga en conexiones rápidas (4G/WiFi).
+ * No precarga en conexiones lentas (3G) para ahorrar datos.
+ * 
+ * Ventajas:
+ * -  Respeta dispositivos con conexión lenta
+ * -  Ahorra datos a usuarios con planes limitados
+ * -  Ideal para apps mobile
+ * 
+ * Ejemplo:
+ * - Usuario en WiFi: Precarga todos los módulos
+ * - Usuario en 3G: Solo carga lo solicitado
+ * - Usuario en modo datos reducidos: No precarga
  */
 @Injectable({ providedIn: 'root' })
 export class NetworkAwarePreloadingStrategy implements PreloadingStrategy {
   
   preload(route: Route, load: () => Observable<any>): Observable<any> {
-    // Verificar velocidad de conexión (si está disponible)
+    // Verificar velocidad de conexión (si está disponible en el navegador)
     if ('connection' in navigator) {
       const connection = (navigator as any).connection;
       const effectiveType = connection?.effectiveType;
       
-      // Precargar solo en 4g o WiFi
+      // Precargar solo en 4G o WiFi, no en 3G
       if (effectiveType === '4g' || connection?.saveData === false) {
         console.log(`🚀 Precargando en conexión rápida: ${route.path}`);
         return load();
@@ -114,32 +136,50 @@ export class NetworkAwarePreloadingStrategy implements PreloadingStrategy {
       }
     }
     
-    // Fallback: precargar si data.preload = true
+    // Fallback: precargar si data.preload = true (si no podemos detectar conexión)
     return route.data?.['preload'] ? load() : of(null);
   }
 }
 
 /**
- * ESTRATEGIA ALTERNATIVA: Precarga Inteligente
- * Carga de forma inteligente basándose en varios factores
+ * Estrategia 4: Precarga Inteligente
+ * =================================
+ * 
+ * Combina múltiples criterios para decidir qué precargar:
+ * - Rutas explícitamente marcadas
+ * - Rutas críticas (home, medicamentos)
+ * - Evita duplicados
+ * - Respeta preferencia de movimiento reducido
+ * 
+ * Ventajas:
+ * - ✅ Precarga inteligente sin configuración manual excesiva
+ * - ✅ Identifica rutas críticas automáticamente
+ * - ✅ Respeta preferencias de accesibilidad del usuario
+ * 
+ * Caso de uso:
+ * - Apps moderadamente complejas
+ * - Donde ciertos módulos son siempre necesarios
  */
 @Injectable({ providedIn: 'root' })
 export class SmartPreloadingStrategy implements PreloadingStrategy {
   
+  /** Rastrea rutas ya precargadas para evitar duplicados */
   private preloadedRoutes = new Set<string>();
   
   preload(route: Route, load: () => Observable<any>): Observable<any> {
     const routePath = route.path || 'unknown';
     
-    // Evitar duplicados
+    // Evitar precargar la misma ruta dos veces
     if (this.preloadedRoutes.has(routePath)) {
       return of(null);
     }
     
-    // Verificar múltiples criterios
+    // Criterios para decidir si precargar:
+    // 1. Explícitamente marcada: data.preload = true
+    // 2. Rutas críticas: home, medicamentos (siempre necesarias)
     const shouldPreload = 
-      (route.data?.['preload'] === true) ||  // Explícitamente marcado
-      (['home', 'medicamentos'].includes(routePath)); // Rutas críticas
+      (route.data?.['preload'] === true) ||  
+      (['home', 'medicamentos'].includes(routePath));
     
     if (shouldPreload && !this.isReducedMotion()) {
       this.preloadedRoutes.add(routePath);
@@ -151,7 +191,10 @@ export class SmartPreloadingStrategy implements PreloadingStrategy {
   }
   
   /**
-   * Respeta preferencia de movimiento reducido del usuario
+   * Respeta cuando el usuario ha configurado "movimiento reducido"
+   * en la accesibilidad del SO (puede causar mareos/náuseas)
+   * 
+   * @returns true si el usuario prefiere movimiento reducido
    */
   private isReducedMotion(): boolean {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -161,13 +204,17 @@ export class SmartPreloadingStrategy implements PreloadingStrategy {
 /**
  * COMPARATIVA DE ESTRATEGIAS
  * 
- * ┌─────────────────────────────────────────────────────────────┐
- * │ Estrategia              │ Caso de Uso                         │
- * ├─────────────────────────────────────────────────────────────┤
- * │ PreloadAllModules       │ Apps pequeñas/medianas              │
- * │ SelectivePreloading     │ Apps grandes, control fino           │
- * │ DelayedPreloading       │ Evitar congestión de red inicial     │
- * │ NetworkAwarePreloading  │ Apps de bajo ancho de banda          │
- * │ SmartPreloading         │ UX personalizada por usuario         │
- * └─────────────────────────────────────────────────────────────┘
+ * ┌──────────────────┬─────────────────────────┬──────────────────────┐
+ * │ Estrategia       │ Cuándo usar             │ Característica       │
+ * ├──────────────────┼─────────────────────────┼──────────────────────┤
+ * │ Selective        │ Apps grandes/medianas   │ Control manual        │
+ * │ Delayed          │ Evitar congestión red   │ Espera X segundos     │
+ * │ NetworkAware     │ Apps mobile/bajo datos  │ Detecta conexión      │
+ * │ Smart            │ UX personalizada        │ Inteligencia + acceso │
+ * └──────────────────┴─────────────────────────┴──────────────────────┘
+ * 
+ * RECOMENDACIÓN:
+ * ✅ Inicio: SelectivePreloadingStrategy (control fino)
+ * ✅ Mobile: NetworkAwarePreloadingStrategy (ahorra datos)
+ * ✅ Apps grandes: SmartPreloadingStrategy (automatizada)
  */

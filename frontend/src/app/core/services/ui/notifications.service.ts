@@ -6,6 +6,13 @@ import { ToastService } from '../../../shared/toast.service';
 
 /**
  * Modelo de notificación
+ * @property id - ID único
+ * @property type - Tipo de notificación (info, success, warning, error)
+ * @property title - Título
+ * @property message - Mensaje
+ * @property timestamp - Fecha de creación
+ * @property read - Si ha sido leída
+ * @property action - Acción opcional (botón con enlace)
  */
 export interface Notification {
   id: number;
@@ -30,65 +37,81 @@ interface NotificationsResponse {
 }
 
 /**
- * Servicio de notificaciones con polling HTTP
+ * Servicio de Notificaciones
+ * =========================
  * 
- * Características:
- * ✅ Polling automático configurable
- * ✅ Control manual (start/stop)
- * ✅ Contador de no leídas (Signal)
- * ✅ Reintentos automáticos en caso de error
- * ✅ Compartición de resultados (shareReplay)
- * ✅ Manejo de errores sin interrumpir polling
+ * Gestiona notificaciones con dos modos de operación:
  * 
- * Uso ideal:
- * - APIs sin WebSocket
- * - Actualizaciones cada 30-60 segundos
- * - Datos que no cambian muy frecuentemente
- * - Simplicidad sobre eficiencia
+ * 1. **Polling Automático** - Obtiene notificaciones cada X segundos
+ *    - Sin WebSocket: ideal para APIs simples
+ *    - Intervalo configurable (default 30s)
+ *    - Manejo automático de errores
+ * 
+ * 2. **Control Manual** - Inicia/detiene el polling bajo demanda
+ *    - Útil cuando el polling debe activarse solo después de login
+ *    - startPolling(ms) / stopPolling()
+ * 
+ * Características adicionales:
+ *  Contador de no leídas en tiempo real (Signal)
+ *  Reintentos automáticos en errores
+ *  Cache local de notificaciones
+ *  Fallback con datos mock si no hay conexión
+ *  Marcación de leídas/eliminación
  * 
  * @example
- * // Auto-polling cada 30 segundos
+ * // Polling automático cada 30 segundos
  * notifications$ = notificationsService.pollNotifications(30000);
  * 
  * // Control manual
  * notificationsService.startPolling(60000);
  * notificationsService.stopPolling();
  * 
- * // Contador de no leídas (Signal)
+ * // Contador de no leídas
  * unreadCount = notificationsService.unreadCount;
+ * 
+ * // Marcar como leída
+ * notificationsService.markAsRead(123);
  */
 @Injectable({ providedIn: 'root' })
 export class NotificationsService {
   private apiService = inject(ApiService);
   private toastService = inject(ToastService);
 
-  // Control de polling
+  // ============ CONTROL DE POLLING ============
+  
+  /** Observable para controlar el intervalo de polling */
   private pollingSubject = new BehaviorSubject<number>(0);
+  
+  /** Indica si el polling manual está activo */
   private isPolling = false;
 
-  // Signal para contador de no leídas
+  // ============ ESTADO ============
+  
+  /** Signal: Contador de notificaciones no leídas */
   unreadCount = signal(0);
 
-  // Cache de notificaciones
+  /** Signal: Cache de las notificaciones actuales */
   private notificationsCache = signal<Notification[]>([]);
 
   /**
-   * Obtiene las notificaciones actuales del cache
+   * Obtiene las notificaciones actuales del cache (solo lectura)
    */
   get notifications() {
     return this.notificationsCache.asReadonly();
   }
 
   /**
-   * Polling automático de notificaciones
+   * Polling Automático de Notificaciones
+   * ====================================
    * 
-   * Características:
-   * - Emite inmediatamente (timer(0, interval))
-   * - Usa switchMap para cancelar peticiones anteriores
-   * - shareReplay(1) comparte la última respuesta entre suscriptores
-   * - Maneja errores sin interrumpir el polling
+   * Obtiene notificaciones periódicamente:
+   * - Emite inmediatamente (sin esperar al primer intervalo)
+   * - Repite cada X milisegundos (default: 30s)
+   * - Cancela peticiones anteriores si llega un nuevo intervalo
+   * - Comparte resultados entre múltiples suscriptores
+   * - Maneja errores sin detener el polling
    * 
-   * @param intervalMs - Intervalo en milisegundos (default: 30000 = 30 segundos)
+   * @param intervalMs - Intervalo en milisegundos (default: 30000)
    * @returns Observable que emite las notificaciones periódicamente
    * 
    * @example
@@ -108,22 +131,23 @@ export class NotificationsService {
     return timer(0, intervalMs).pipe(
       tap(() => console.log('📡 Obteniendo notificaciones...')),
       switchMap(() => this.fetchNotifications()),
-      shareReplay(1), // Comparte la última respuesta entre múltiples suscriptores
+      shareReplay(1), // Comparte resultados entre suscriptores
       catchError(error => {
         console.error('❌ Error en polling de notificaciones:', error);
-        // No interrumpir el polling, solo registrar el error
+        // No interrumpir el polling, continuar intentando
         return EMPTY;
       })
     );
   }
 
   /**
-   * Inicia polling manual controlable
+   * Inicia Polling Manual
+   * ====================
    * 
-   * Permite iniciar/detener el polling manualmente desde el componente.
+   * Comienza a obtener notificaciones periódicamente.
    * Útil cuando el polling debe activarse solo bajo ciertas condiciones.
    * 
-   * @param intervalMs - Intervalo en milisegundos
+   * @param intervalMs - Intervalo en milisegundos (default: 30000)
    * 
    * @example
    * // Iniciar cuando el usuario hace login
@@ -147,7 +171,9 @@ export class NotificationsService {
   }
 
   /**
-   * Detiene el polling manual
+   * Detiene Polling Manual
+   * 
+   * Cancela las peticiones periódicas de notificaciones
    */
   stopPolling(): void {
     if (!this.isPolling) {
@@ -161,16 +187,18 @@ export class NotificationsService {
   }
 
   /**
-   * Observable de polling controlable manualmente
+   * Observable de Polling Controlable
    * 
    * Se activa cuando startPolling() es llamado
    * Se detiene cuando stopPolling() es llamado
+   * 
+   * @returns Observable que emite cuando hay nuevas notificaciones
    */
   get controlledPolling$(): Observable<Notification[]> {
     return this.pollingSubject.pipe(
       switchMap(interval => {
         if (interval === 0) {
-          return EMPTY;
+          return EMPTY; // Sin polling
         }
         return timer(0, interval).pipe(
           switchMap(() => this.fetchNotifications())
@@ -181,16 +209,24 @@ export class NotificationsService {
   }
 
   /**
-   * Obtiene notificaciones del servidor (llamada única)
-   * Con fallback selectivo según tipo de error
+   * Obtiene Notificaciones del Servidor
+   * =================================
+   * 
+   * Llamada HTTP única (sin polling).
+   * Con fallback inteligente según tipo de error:
+   * - Sin internet → datos mock
+   * - Servidor down (503) → reintentar
+   * - No autorizado (401) → propagar error
+   * - Otros errores → propagar error
    * 
    * @returns Observable con las notificaciones
+   * @private
    */
   private fetchNotifications(): Observable<Notification[]> {
     return this.apiService.get<Notification[] | NotificationsResponse>('notifications').pipe(
       retry(2), // Reintentar 2 veces si falla
       tap(response => {
-        // Manejar ambos formatos: Array directo o Objeto con propiedades
+        // Manejar ambos formatos: Array puro o Objeto con propiedades
         const notifications = Array.isArray(response) ? response : response.notifications || [];
         const unreadCount = Array.isArray(response) ? notifications.filter(n => !n.read).length : response.unreadCount || 0;
         
@@ -204,7 +240,7 @@ export class NotificationsService {
       catchError((error, caught) => {
         console.error('❌ Error al obtener notificaciones:', error);
 
-        // ========== FALLBACK SELECTIVO ==========
+        // ========== FALLBACK SELECTIVO SEGÚN TIPO DE ERROR ==========
         
         // 1️⃣ SIN INTERNET → Usar datos mock
         if (!navigator.onLine) {
@@ -242,14 +278,14 @@ export class NotificationsService {
           return throwError(() => error);
         }
 
-        // 4️⃣ PROHIBIDO (403) → Token inválido/expirado o usuario sin permisos
+        // 5️⃣ PROHIBIDO (403) → Token inválido/expirado o usuario sin permisos
         if (error.status === 403) {
           console.error('🚫 Prohibido (403) → Token inválido o expirado');
           // El interceptor de errores manejará esto y redirigirá al login
           return throwError(() => error);
         }
 
-        // 5️⃣ OTROS ERRORES → Propagar error original
+        // 6️⃣ OTROS ERRORES → Propagar error original
         console.error('⚠️ Error inesperado:', error.status, error.message);
         this.toastService.error('Error al cargar notificaciones');
         return throwError(() => error);
@@ -258,12 +294,16 @@ export class NotificationsService {
   }
 
   /**
-   * Obtiene notificaciones una sola vez (sin polling)
+   * Obtiene Notificaciones Una Sola Vez
+   * ===================================
+   * 
+   * Llamada HTTP única (sin polling).
+   * Útil para refrescar manualmente las notificaciones.
    * 
    * @returns Observable con las notificaciones
    * 
    * @example
-   * // Refrescar manualmente
+   * // Botón para refrescar
    * <button (click)="refresh()">Actualizar</button>
    * 
    * refresh() {
@@ -275,10 +315,17 @@ export class NotificationsService {
   }
 
   /**
-   * Marca una notificación como leída
+   * Marca una Notificación como Leída
+   * ================================
    * 
-   * @param id - ID de la notificación
-   * @returns Observable que completa cuando se marca como leída
+   * Actualiza en el servidor y en el cache local.
+   * Decrementa el contador de no leídas.
+   * 
+   * @param id - ID de la notificación a marcar como leída
+   * @returns Observable que completa cuando se actualiza
+   * 
+   * @example
+   * markAsRead(123);
    */
   markAsRead(id: number): Observable<void> {
     return this.apiService.patch<void>(`notifications/${id}/read`, {}).pipe(
@@ -290,7 +337,7 @@ export class NotificationsService {
           )
         );
 
-        // Decrementar contador
+        // Decrementar contador de no leídas
         this.unreadCount.update(count => Math.max(0, count - 1));
 
         console.log(`✅ Notificación ${id} marcada como leída`);
@@ -304,12 +351,16 @@ export class NotificationsService {
   }
 
   /**
-   * Marca todas las notificaciones como leídas
+   * Marca Todas las Notificaciones como Leídas
+   * ========================================
+   * 
+   * Llamada especial al servidor para marcar todo de una vez.
+   * Actualiza cache local y contador.
    */
   markAllAsRead(): Observable<void> {
     return this.apiService.post<void>('notifications/read-all', {}).pipe(
       tap(() => {
-        // Actualizar cache local
+        // Actualizar cache local: todas como leídas
         this.notificationsCache.update(notifications =>
           notifications.map(n => ({ ...n, read: true }))
         );
@@ -327,18 +378,26 @@ export class NotificationsService {
   }
 
   /**
-   * Elimina una notificación
+   * Elimina una Notificación
+   * ======================
+   * 
+   * Borra del servidor y del cache local.
+   * También decrementa el contador si estaba sin leer.
+   * 
+   * @param id - ID de la notificación a eliminar
    */
   deleteNotification(id: number): Observable<void> {
     return this.apiService.delete<void>(`notifications/${id}`).pipe(
       tap(() => {
-        // Actualizar cache local
+        // Verificar si estaba sin leer antes de eliminar
         const wasUnread = this.notificationsCache().find(n => n.id === id)?.read === false;
         
+        // Eliminar del cache
         this.notificationsCache.update(notifications =>
           notifications.filter(n => n.id !== id)
         );
 
+        // Decrementar contador si estaba sin leer
         if (wasUnread) {
           this.unreadCount.update(count => Math.max(0, count - 1));
         }
@@ -354,9 +413,16 @@ export class NotificationsService {
   }
 
   /**
-   * Simula datos de notificaciones (para desarrollo/demo)
+   * Datos Mock de Notificaciones
+   * ==========================
    * 
-   * Devuelve notificaciones mock cuando el backend no está disponible
+   * Devuelve datos de ejemplo para desarrollo/demostración.
+   * Se usa cuando:
+   * - No hay conexión a internet
+   * - El backend no está disponible
+   * - El endpoint no existe (404)
+   * 
+   * @returns Array de notificaciones ficticias
    */
   getMockNotifications(): Notification[] {
     return [

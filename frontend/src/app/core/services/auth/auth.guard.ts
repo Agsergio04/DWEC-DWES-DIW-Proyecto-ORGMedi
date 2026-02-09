@@ -1,49 +1,111 @@
+/**
+ * IMPORTACIONES
+ * - CanActivateFn: Tipo para guards que protegen rutas (prevé la activación)
+ * - ActivatedRouteSnapshot: Información de la ruta siendo activada
+ * - RouterStateSnapshot: Estado del router (URL actual, etc)
+ * - AuthService: Servicio que gestiona autenticación
+ */
 import { inject } from '@angular/core';
 import { Router, CanActivateFn, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from './auth.service';
 
 /**
- * Guard funcional: Protege rutas que requieren autenticación
+ * GUARD FUNCIONAL: PROTECCIÓN DE RUTAS AUTENTICADAS
+ * ===================================================
+ * Previene el acceso a rutas protegidas si el usuario NO está autenticado.
  * 
- * Flujo CanActivate:
- * 1. Usuario intenta acceder a /medicamentos (ruta protegida)
- * 2. El guard verifica si auth.isLoggedIn === true
- * 3. Si está autenticado → permite acceso (return true)
- * 4. Si NO está autenticado → redirige a /iniciar-sesion
- *    con queryParam returnUrl=/medicamentos
- * 5. Tras login exitoso, el componente LoginPage lee returnUrl
- *    y navega de vuelta a la ruta original
+ * ¿QUÉ HACE?
+ * - Controla si el usuario tiene una sesión activa (token JWT)
+ * - Si está autenticado → Permite acceder a la ruta
+ * - Si NO está autenticado → Redirige a /iniciar-sesión
  * 
- * Esto permite una UX fluida: usuario intenta acceder → login → vuelve a donde iba
+ * FLUJO COMPLETO:
+ * ===============
+ * 1. Usuario intenta acceder a /medicamentos?page=2
+ * 2. El router detecta que hay canActivate: [authGuard]
+ * 3. Ejecuta authGuard pasando los snapshots
+ * 4. authGuard verifica auth.isLoggedIn
  * 
- * @example
- * // En app.routes.ts
+ * CASO A: Usuario AUTÍD CON TOKEN JWT
+ * ├─ isLoggedIn === true
+ * ├─ Retorna true
+ * └─ Router PERMITE navegar a /medicamentos
+ * 
+ * CASO B: Usuario SIN SESIÓN ACTIVA
+ * ├─ isLoggedIn === false
+ * ├─ Crea URL para redirigir: /iniciar-sesión?returnUrl=/medicamentos?page=2
+ * ├─ Guarda la ruta original como queryParam (returnUrl)
+ * └─ Router REDIRIGE a /iniciar-sesión
+ * 
+ * PASO 5: Usuario hace login en LoginPage
+ * ├─ Se autentica correctamente
+ * ├─ Se guarda token en localStorage
+ * ├─ AuthService.isLoggedIn cambia a true
+ * └─ LoginPage redirige a /medicamentos (leyendo returnUrl del queryParam)
+ * 
+ * PASO 6: Usuario intenta acceder a /medicamentos de nuevo
+ * ├─ Guard verifica auth.isLoggedIn === true
+ * └─ Router PERMITE navegar (sin repetir el guard)
+ * 
+ * CASOS DE USO EN app.routes.ts:
+ * ============================
+ * 
+ * // Ruta protegida - requiere autenticación
  * {
  *   path: 'medicamentos',
  *   loadComponent: () => import('./medicines').then(m => m.MedicinesPage),
- *   canActivate: [authGuard]  // ← Protegida
+ *   canActivate: [authGuard]  // ← PROTECCIÓN
  * },
+ * 
+ * // Otra ruta protegida
  * {
  *   path: 'perfil',
  *   loadComponent: () => import('./profile').then(m => m.ProfilePage),
- *   canActivate: [authGuard]  // ← Protegida
+ *   canActivate: [authGuard]
  * }
+ * 
+ * // Ruta pública - SIN guard, accesible para todos
+ * {
+ *   path: 'inicio',
+ *   loadComponent: () => import('./home').then(m => m.HomePage)
+ *   // ☞ Sin canActivate - NO protegida
+ * }
+ * 
+ * BENEFICIOS:
+ * ===========
+ * ✅ Seguridad: Solo usuarios autenticados acceden a datos sensibles
+ * ✅ UX fluida: Si no está loguead -> va a login -> vuelve a donde iba
+ * ✅ TypeSafe: Angular previene acceso a rutas protegidas
+ * ✅ Centralizado: Un guard para todas las rutas protegidas
+ * @example
  */
 export const authGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
+  // Inyectar servicios necesarios
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  // Verificar si el usuario está autenticado
+  // Log para debugging
+  console.log('[AuthGuard] Verificando acceso a:', state.url, '| Autenticado:', auth.isLoggedIn);
+
+  // CASO 1: Usuario ESTÁ AUTENTICADO
   if (auth.isLoggedIn) {
-    return true;  // Permite la navegación
+    console.log('[AuthGuard] ✅ Usuario autenticado - permitiendo acceso');
+    return true;  // Permitir navegación
   }
 
-  // No está autenticado, redirigir a login con returnUrl
-  // state.url contiene la ruta original (ej: /medicamentos?page=2)
-  return router.createUrlTree(['/iniciar-sesion'], {
-    queryParams: { returnUrl: state.url }
-  });
+  // CASO 2: Usuario NO ESTÁ AUTENTICADO
+  // Redirigir a login guardando la ruta original como queryParam
+  console.log('[AuthGuard] ❌ Usuario no autenticado - redirigiendo a login');
+  
+  // state.url es la URL completa que intentó acceder
+  // Ejemplo: /medicamentos?page=2&sort=name
+  const queryParams = { returnUrl: state.url };
+  
+  // Crear URL tree para redirigir a /iniciar-sesión con queryParams
+  // createUrlTree permite configurar la redirección de forma reactiva
+  // sin necesidad de llamar a router.navigate()
+  return router.createUrlTree(['/iniciar-sesion'], { queryParams });
 };

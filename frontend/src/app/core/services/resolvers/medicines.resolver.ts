@@ -6,30 +6,28 @@ import { MedicineViewModel } from '../../../data/models/medicine.model';
 
 /**
  * RESOLVER: medicinesResolver
- * ===========================
  * 
- * Tarea 5: Resolvers - Precargar datos antes de activar la ruta
+ * ¿QUÉ HACE?
+ * Carga la lista COMPLETA de medicamentos ANTES de mostrar la página.
  * 
- * Flujo:
- * 1. Usuario navega a /medicamentos
- * 2. Angular ejecuta medicinesResolver ANTES de renderizar MedicinesPage
- * 3. El resolver carga la lista de medicamentos
- * 4. Solo cuando completa, se activa la ruta y se renderiza el componente
- * 5. MedicinesPage recibe datos en route.data (nunca null)
+ * FLUJO:
+ * Usuario navega a /medicamentos
+ *        ↓
+ * medicinesResolver carga lista (máx 5 segundos)
+ *        ↓
+ * Si éxito → Muestra página con datos
+ * Si error → Redirige a home con mensaje de error
  * 
- * Ventajas:
- * ✅ El componente SIEMPRE tiene datos (si la ruta se activó)
- * ✅ Loading unificado: spinner global, no en cada componente
- * ✅ Manejo de errores: redirige automáticamente si falla
- * ✅ UX mejorada: no hay saltos visuales ni parpadeos
+ * DATOS QUE RETORNA:
+ * Array de medicamentos: [{ id, nombre, dosis, frecuencia, ... }, ...]
  * 
- * Desventajas:
- * ⚠️ Si el resolver es lento, retarda la navegación
- * ⚠️ Si falla, se redirige (no se ve el componente)
+ * VENTAJAS:
+ *  Página siempre tiene datos cuando se muestra
+ *  No hay pantalla vacía esperando carga
+ *  Manejo de errores centralizado
  * 
- * @see docs/RESOLVERS.md para documentación completa
- * @see app.routes.ts para uso en rutas
- * @see medicines.ts para lectura de datos en componente
+ * TIMEOUT:
+ * Si tarda más de 5 segundos → cancela y redirige a home
  */
 export const medicinesResolver: ResolveFn<MedicineViewModel[]> = (
   route: ActivatedRouteSnapshot,
@@ -39,12 +37,16 @@ export const medicinesResolver: ResolveFn<MedicineViewModel[]> = (
   const router = inject(Router);
 
   return service.getAll().pipe(
+    // Cancela si tarda más de 5 segundos
     timeout(5000),
+    // Si hay error
     catchError((err) => {
       console.error('[medicinesResolver] Error cargando medicamentos:', err);
+      // Redirige a home con mensaje de error
       router.navigate(['/'], {
         state: { error: 'No se pudieron cargar los medicamentos. Intenta nuevamente.' }
       });
+      // Retorna array vacío
       return of([]);
     })
   );
@@ -52,33 +54,30 @@ export const medicinesResolver: ResolveFn<MedicineViewModel[]> = (
 
 /**
  * RESOLVER: medicineDetailResolver
- * ================================
  * 
- * Tarea 5: Resolvers - Precargar medicamento por ID
+ * ¿QUÉ HACE?
+ * Carga UN MEDICAMENTO ESPECÍFICO por su ID antes de mostrar página de edición.
  * 
- * Flujo:
- * 1. Usuario navega a /medicamentos/123/editar
- * 2. Angular extrae el ID (123) de los parámetros de ruta
- * 3. El resolver lo busca en el backend
- * 4. Si existe → lo resuelve y renderiza EditMedicineComponent con datos
- * 5. Si NO existe → redirige a /medicamentos con mensaje de error
+ * FLUJO:
+ * Usuario navega a /medicamentos/123/editar
+ *        ↓
+ * Extrae ID 123 de la URL
+ *        ↓
+ * medicineDetailResolver busca medicamento con ID 123
+ *        ↓
+ * Si existe → Muestra página de edición con datos
+ * Si NO existe → Redirige a /medicamentos con error
  * 
- * Ventajas:
- * ✅ El componente no necesita validar si existe el medicamento
- * ✅ Si el ID es inválido, se redirige automáticamente
- * ✅ Carga unificada: no hay carrera entre componente y servicio
+ * VALIDACIONES:
+ * 1. Verifica que haya ID en la URL
+ * 2. Si no → redirige con error "ID inválido"
+ * 3. Si sí → busca medicamento en API
+ * 4. Si falla → redirige con error "No encontrado"
  * 
- * Flujo de Error:
- * /medicamentos/999/editar (no existe)
- *   → medicineDetailResolver busca
- *   → NO encuentra
- *   → router.navigate(['/medicamentos'], { state: { error: '...' } })
- *   → MedicinesPage lee el error de navigation.extras.state
- *   → Usuario ve lista con mensaje de error
- * 
- * @see docs/RESOLVERS.md para documentación completa
- * @see app.routes.ts para uso en rutas
- * @see edit-medicine.ts para lectura de datos en componente
+ * Por ejemplo:
+ *  /medicamentos/5/editar → ID existe, carga el medicamento
+ *  /medicamentos/999/editar → ID no existe, redirige con error
+ *  /medicamentos/abc/editar → ID inválido, redirige con error
  */
 export const medicineDetailResolver: ResolveFn<MedicineViewModel | null> = (
   route: ActivatedRouteSnapshot,
@@ -86,22 +85,34 @@ export const medicineDetailResolver: ResolveFn<MedicineViewModel | null> = (
 ) => {
   const router = inject(Router);
   const service = inject(MedicineService);
+  
+  // Extrae el ID de la URL (ej: en /medicamentos/5/editar → obtiene "5")
   const id = route.paramMap.get('id');
 
-  // ============ VALIDACIÓN DE ID ============
+  /**
+   * PASO 1: Validar que exista ID
+   */
   if (!id) {
     console.warn('[medicineDetailResolver] No ID proporcionado para medicamento');
+    // Redirige a medicamentos con error
     router.navigate(['/medicamentos'], {
       state: { error: 'ID de medicamento inválido' }
     });
     return of(null);
   }
 
-  // ============ USAR SERVICIO REAL ============
+  /**
+   * PASO 2: Buscar medicamento por ID
+   * Espera máximo 5 segundos
+   * Si hay error, redirige
+   */
   return service.getById(id).pipe(
+    // Timeout de 5 segundos
     timeout(5000),
+    // Manejo de errores
     catchError((err) => {
       console.error(`[medicineDetailResolver] Error cargando medicamento ${id}:`, err);
+      // Redirige a medicamentos con error
       router.navigate(['/medicamentos'], {
         state: { error: 'Error al cargar medicamento. Intenta nuevamente.' }
       });

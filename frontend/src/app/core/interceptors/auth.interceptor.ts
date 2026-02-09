@@ -1,42 +1,74 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-
 /**
- * Interceptor de autenticación
- * Añade el token JWT a todas las peticiones HTTP que no sean públicas.
- * El token se obtiene de localStorage y se añade en el header Authorization.
+ * INTERCEPTOR DE AUTENTICACIÓN
+ * =============================
+ * Inyecta el JWT (JSON Web Token) en el header Authorization de TODAS las peticiones HTTP
+ * excepto en rutas públicas (login, registro, público).
  * 
- * Rutas públicas que no requieren token:
+ * FLUJO:
+ * 1. Usuario hace petición HTTP (ej: GET /medicamentos)
+ * 2. Este interceptor intercepta ANTES de enviar
+ * 3. Lee token de localStorage
+ * 4. Si es ruta pública (login, registro), envía sin token
+ * 5. Si hay token, lo añade en header: Authorization: Bearer <token>
+ * 6. Envía la petición al servidor con el token
+ * 7. El backend valida el token y devuelve respuesta
+ * 
+ * RUTAS PÚBLICAS (sin requieren token):
  * - /auth/login
  * - /auth/register
  * - /public/*
+ * 
+ * IMPORTANTE:
+ * - El token viene de login() en auth.service.ts
+ * - Si no hay token, el usuario no está autenticado
+ * - El servidor devuelve 401 si el token es inválido
+ * - El errorInterceptor maneja errores 401 (redirige a login)
+ * 
+ * ESTRUCTURA DEL JWT:
+ * Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+ *                      ^^^^^^^ header   ^^^^^^^^^^ payload ^^^^^^^^ signature
  */
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
+
+import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+
+export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next) => {
+  // 1. Obtener token del localStorage
   const token = localStorage.getItem('authToken');
+  
+  // 2. Detectar si es una ruta pública que no necesita token
   const isAuthUrl = req.url.includes('/auth/login') || 
                     req.url.includes('/auth/register') || 
                     req.url.includes('/public');
   
-  console.log('[AuthInterceptor] Request to:', req.url, '| Token present:', !!token, '| Auth URL:', isAuthUrl);
+  console.log('[AuthInterceptor]', {
+    url: req.url,
+    hasToken: !!token,
+    isPublicUrl: isAuthUrl,
+    tokenPreview: token ? token.substring(0, 20) + '...' : 'NONE'
+  });
   
+  // No hay token - el usuario no está autenticado
   if (!token) {
-    console.log('[AuthInterceptor] ⚠️  No token found in localStorage - User must login again');
-    if (isAuthUrl) {
-      console.log('[AuthInterceptor] Auth URL detected, allowing request without token');
-    }
+    console.log('[AuthInterceptor]  Sin token - Usuario debe iniciar sesión');
     return next(req);
   }
 
+  // Es una ruta pública - no añadir token aunque exista
   if (isAuthUrl) {
-    console.log('[AuthInterceptor] Auth URL, skipping token injection');
+    console.log('[AuthInterceptor] URL pública - saltando inyección de token');
     return next(req);
   }
 
-  console.log('[AuthInterceptor] ✓ Adding Authorization header with token:', token.substring(0, 30) + '...');
+  // 3. Añadir token en el header Authorization: Bearer <token>
+  // clone() crea una copia de la petición sin modificar la original
+  console.log('[AuthInterceptor]  Añadiendo Authorization header');
   const authReq = req.clone({
     setHeaders: {
+      // Formato estándar: "Bearer <token>"
       Authorization: `Bearer ${token}`
     }
   });
 
+  // 4. Enviar la petición modificada al siguiente interceptor o servidor
   return next(authReq);
 };

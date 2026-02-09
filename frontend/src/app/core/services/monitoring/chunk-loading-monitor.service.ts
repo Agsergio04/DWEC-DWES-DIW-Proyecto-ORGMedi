@@ -3,11 +3,43 @@ import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
 /**
- * ChunkLoadingMonitorService - Monitorea la descarga de chunks lazy
- * ================================================================
+ * SERVICIO: ChunkLoadingMonitorService
  * 
- * Rastrea cuándo se descargan módulos/componentes lazy en segundo plano.
- * Útil para entender el comportamiento del lazy loading y debugging.
+ * ¿QUÉ HACE?
+ * Monitorea y registra cuándo se descargan chunks (módulos) lazy de la aplicación.
+ * Un "chunk" es una parte del código que se descarga solo cuando se necesita (lazy loading).
+ * 
+ * PARA QUÉ SIRVE?
+ * - Debugging: Ver qué se descarga y cuándo
+ * - Performance: Conocer el tamaño de cada chunk descargado
+ * - Optimización: Identificar chunks pesados que podrían optimizarse
+ * 
+ * FUNCIONALIDADES:
+ * 
+ * 1. Monitorea navegación:
+ *    - Detecta cuándo el usuario comienza a navegar a una ruta
+ *    - Registra cuándo la ruta se ha cargado completamente
+ * 
+ * 2. Obtiene información de chunks:
+ *    getLoadedChunks() - Lista todos los chunks descargados
+ *    getBundleInfo() - Tamaño y duración de cada chunk
+ * 
+ * 3. Detecta errores de carga:
+ *    Si un chunk falla al descargar, lo registra en consola
+ * 
+ * 4. Precarga chunks en segundo plano:
+ *    onChunkPreloaded() - Registra chunks precargados sin navegación
+ * 
+ * EJEMPLO EN CONSOLA:
+ * [Lazy Loading] Navegando a: /medicamentos
+ * [Lazy Loading] Ruta cargada: /medicamentos
+ * ┌─────────────────────┬────────┬──────────┐
+ * │ filename            │ size   │ duration │
+ * ├─────────────────────┼────────┼──────────┤
+ * │ chunk-1a2b3c.js    │ 45250  │ 152      │
+ * │ chunk-4d5e6f.js    │ 28100  │ 98       │
+ * └─────────────────────┴────────┴──────────┘
+ * [Lazy Loading] Tamaño total descargado: 71.43 KB
  */
 @Injectable({
   providedIn: 'root'
@@ -20,8 +52,11 @@ export class ChunkLoadingMonitorService {
     this.initializeMonitoring();
   }
 
+  /**
+   * Inicializa el monitoreo de eventos de navegación y carga
+   */
   private initializeMonitoring(): void {
-    // Monitorear eventos de navegación
+    // Monitorea cuándo COMIENZA la navegación
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationStart)
@@ -30,6 +65,7 @@ export class ChunkLoadingMonitorService {
         console.log(`[Lazy Loading] Navegando a: ${event.url}`);
       });
 
+    // Monitorea cuándo TERMINA la navegación (chunk cargado)
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd)
@@ -39,7 +75,7 @@ export class ChunkLoadingMonitorService {
         this.logBundleSize();
       });
 
-    // Monitorear errores de carga
+    // Detecta si hay error al cargar un chunk
     window.addEventListener('error', (e) => {
       if (e.message?.includes('chunk')) {
         console.error(`[Lazy Loading Error] Error cargando chunk:`, e);
@@ -48,8 +84,8 @@ export class ChunkLoadingMonitorService {
   }
 
   /**
-   * Obtener información de chunks cargados
-   * Usa Performance API para obtener resources cargados
+   * Obtiene lista de chunks (.js) que se han descargado
+   * Usa Performance API del navegador para obtener los recursos
    */
   getLoadedChunks(): string[] {
     const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
@@ -65,7 +101,7 @@ export class ChunkLoadingMonitorService {
   }
 
   /**
-   * Tamaño aproximado de chunks descargados
+   * Obtiene información detallada de cada chunk: nombre, tamaño, duración
    */
   getBundleInfo(): {
     filename: string;
@@ -83,7 +119,7 @@ export class ChunkLoadingMonitorService {
   }
 
   /**
-   * Log tamaño total de bundle
+   * Registra en consola el tamaño total de todos los chunks
    */
   private logBundleSize(): void {
     const bundleInfo = this.getBundleInfo();
@@ -95,8 +131,8 @@ export class ChunkLoadingMonitorService {
   }
 
   /**
-   * Monitorear cuándo se precarga un chunk en segundo plano
-   * (sin que el usuario navegue a él)
+   * Registra un chunk que se precargó en segundo plano
+   * (sin que el usuario navegara explícitamente a él)
    */
   onChunkPreloaded(chunkName: string): void {
     if (!this.loadedChunks.has(chunkName)) {
@@ -108,7 +144,7 @@ export class ChunkLoadingMonitorService {
   }
 
   /**
-   * Listar todos los chunks descargados
+   * Muestra en consola todos los chunks descargados
    */
   printLoadedChunks(): void {
     const chunks = this.getLoadedChunks();

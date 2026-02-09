@@ -3,26 +3,40 @@ import { MedicineService } from '../medicine.service';
 import { MedicineViewModel } from '../models/medicine.model';
 
 /**
- * Store reactivo para medicamentos usando Angular Signals
+ * Store Reactivo de Medicamentos con Angular Signals
+ * ==================================================
  * 
- * Ventajas sobre BehaviorSubject:
- * - No requiere async pipe en templates
- * - Menos boilerplate, API más simple
- * - Integración nativa con el motor de Angular
+ * Versión moderna del Store usando Angular Signals (no BehaviorSubject).
+ * 
+ * ¿Qué son Signals?
+ * - Forma nativa de Angular para reactividad
+ * - Más simple que Observables
  * - Mejor rendimiento (change detection granular)
- * - No hay riesgo de fugas de memoria (no subscribe)
+ * - Se usan directamente en templates sin async pipe
+ * 
+ * Ventajas vs BehaviorSubject:
+ *  No requiere .subscribe() - uso más simple
+ *  No requiere async pipe en templates
+ *  Mejor rendimiento y menos memory leaks
+ *  API más intuitiva: signal() en lugar de new BehaviorSubject()
+ *  Computed signals: se recalculan automáticamente (como 'watch' en Vue)
  * 
  * Uso en componentes:
  * ```typescript
- * store = inject(MedicineStoreSignals);
+ * constructor(private store: MedicineStoreSignals) {}
  * 
  * medicines = this.store.medicines;  // ReadonlySignal
  * loading = this.store.loading;      // ReadonlySignal
+ * stats = this.store.stats;          // Computed signal
  * 
- * // En template:
- * <div *ngIf="loading()">Cargando...</div>
+ * // En template (sin async pipe!):
+ * @if (loading()) {
+ *   <div>Cargando...</div>
+ * }
  * <ul>
- *   <li *ngFor="let m of medicines()">{{ m.name }}</li>
+ *   @for (m of medicines(); track m.id) {
+ *     <li>{{ m.nombre }} ({{ m.cantidadMg }}mg)</li>
+ *   }
  * </ul>
  * ```
  */
@@ -30,45 +44,89 @@ import { MedicineViewModel } from '../models/medicine.model';
 export class MedicineStoreSignals {
   private medicineService = inject(MedicineService);
 
-  // Signals privados (escritura)
+  // ============ SIGNALS PRIVADOS (Con escritura) ============
+  
+  /** Lista actual de medicamentos */
   private _medicines = signal<MedicineViewModel[]>([]);
+  
+  /** Indica si se está cargando desde API */
   private _loading = signal<boolean>(false);
+  
+  /** Mensaje de error si algo falla */
   private _error = signal<string | null>(null);
 
-  // Signals públicos (solo lectura)
+  // ============ SIGNALS PÚBLICOS (ReadOnly - Solo lectura) ============
+  // Los componentes pueden leer pero no escribir directamente
+  
+  /** Observable reactive: lista de medicamentos actual */
   medicines = this._medicines.asReadonly();
+  
+  /** Observable reactive: estado de carga */
   loading = this._loading.asReadonly();
+  
+  /** Observable reactive: último error */
   error = this._error.asReadonly();
 
-  // Contadores computados (se recalculan automáticamente)
+  // ============ COMPUTED SIGNALS (Se recalculan automáticamente) ============
+  // Similares a getters, pero optimizados para reactividad
+  
+  /**
+   * Total de medicamentos
+   * Se actualiza automáticamente cuando medicines$ cambia
+   */
   totalCount = computed(() => this._medicines().length);
   
+  /**
+   * Total de medicamentos activos
+   */
   activeCount = computed(() => 
     this._medicines().filter(m => m.isActive).length
   );
   
+  /**
+   * Total de medicamentos caducados
+   */
   expiredCount = computed(() => 
     this._medicines().filter(m => m.isExpired).length
   );
   
+  /**
+   * Total de medicamentos por caducar
+   */
   expiringSoonCount = computed(() => 
     this._medicines().filter(m => m.expirationStatus === 'expiring-soon').length
   );
 
-  // Medicamentos filtrados por estado (computed)
+  // ============ FILTROS DERIVADOS (Computed Signals) ============
+  
+  /**
+   * Lista de medicamentos activos
+   */
   activeMedicines = computed(() => 
     this._medicines().filter(m => m.isActive)
   );
   
+  /**
+   * Lista de medicamentos caducados
+   */
   expiredMedicines = computed(() => 
     this._medicines().filter(m => m.isExpired)
   );
   
+  /**
+   * Lista de medicamentos próximos a caducar
+   */
   expiringSoonMedicines = computed(() => 
     this._medicines().filter(m => m.expirationStatus === 'expiring-soon')
   );
 
-  // Estadísticas agregadas (computed)
+  // ============ ESTADÍSTICAS AGREGADAS ============
+  
+  /**
+   * Objeto con todas las estadísticas compiladas
+   * Útil para dashboards que necesitan múltiples valores
+   * Se actualiza automáticamente
+   */
   stats = computed(() => {
     const medicines = this._medicines();
     return {
@@ -80,7 +138,10 @@ export class MedicineStoreSignals {
     };
   });
 
-  // Estado combinado (computed)
+  /**
+   * Estado global combinado
+   * Útil para templates complejos que necesitan múltiples flags
+   */
   state = computed(() => ({
     medicines: this._medicines(),
     loading: this._loading(),
@@ -91,13 +152,21 @@ export class MedicineStoreSignals {
   }));
 
   constructor() {
-    // Carga inicial automática
+    // Carga automática al inyectar el servicio
     this.load();
   }
 
+  // ============ MÉTODOS PÚBLICOS ============
+
   /**
    * Carga todos los medicamentos desde la API
-   * Actualiza los signals automáticamente
+   * 
+   * Qué hace:
+   * 1. Establece loading = true
+   * 2. Petición HTTP GET
+   * 3. Actualiza _medicines con respuesta
+   * 4. Todos los computed signals se actualizan automáticamente
+   * 5. Establece loading = false
    */
   load(): void {
     this._loading.set(true);
@@ -117,8 +186,11 @@ export class MedicineStoreSignals {
   }
 
   /**
-   * Añade un medicamento a la lista local
-   * Usa update() para modificar el signal de forma inmutable
+   * Añade un medicamento a la lista LOCAL (sin petición HTTP)
+   * 
+   * Usa update() para modificación inmutable
+   * (crea un nuevo array en lugar de mutarlo)
+   * 
    * @param medicine Medicamento a añadir
    */
   add(medicine: MedicineViewModel): void {
@@ -126,7 +198,10 @@ export class MedicineStoreSignals {
   }
 
   /**
-   * Actualiza un medicamento en la lista
+   * Actualiza un medicamento en la lista LOCAL
+   * 
+   * Busca por ID y reemplaza el medicamento
+   * 
    * @param medicine Medicamento actualizado
    */
   update(medicine: MedicineViewModel): void {
@@ -136,7 +211,8 @@ export class MedicineStoreSignals {
   }
 
   /**
-   * Elimina un medicamento de la lista
+   * Elimina un medicamento de la lista LOCAL
+   * 
    * @param id ID del medicamento a eliminar
    */
   remove(id: string | number): void {
@@ -146,18 +222,33 @@ export class MedicineStoreSignals {
   }
 
   /**
-   * Reemplaza toda la lista de medicamentos
-   * @param medicines Nueva lista de medicamentos
+   * Reemplaza TODA la lista de medicamentos
+   * Útil después de recibir una respuesta del servidor
+   * 
+   * @param medicines Nueva lista completa
    */
   setMedicines(medicines: MedicineViewModel[]): void {
     this._medicines.set(medicines);
   }
 
   /**
-   * Busca un medicamento por ID
-   * Devuelve un computed signal que se actualiza automáticamente
+   * Obtiene un medicamento por ID
+   * 
+   * Devuelve un COMPUTED SIGNAL que:
+   * - Se actualiza automáticamente cuando la lista cambia
+   * - Se usa directamente en el template sin async pipe
+   * - Es eficiente (se recalcula solo cuando es necesario)
+   * 
    * @param id ID del medicamento
    * @returns Computed signal con el medicamento o undefined
+   * 
+   * @example
+   * medicine$ = this.store.getById(123);
+   * 
+   * // En template
+   * @if (medicine$(); as medicine) {
+   *   {{ medicine.nombre }}
+   * }
    */
   getById(id: string | number) {
     return computed(() => 
@@ -167,9 +258,12 @@ export class MedicineStoreSignals {
 
   /**
    * Busca medicamentos por término
-   * Devuelve un computed signal que se actualiza automáticamente
+   * 
+   * Devuelve un COMPUTED SIGNAL con resultados filtrados
+   * Se actualiza automáticamente cuando la lista cambia
+   * 
    * @param searchTerm Término de búsqueda
-   * @returns Computed signal con los medicamentos filtrados
+   * @returns Computed signal con medicamentos coincidentes
    */
   search(searchTerm: string) {
     return computed(() => {
@@ -187,15 +281,25 @@ export class MedicineStoreSignals {
   }
 
   /**
-   * Limpia el error actual
+   * Limpia el mensaje de error
    */
   clearError(): void {
     this._error.set(null);
   }
 
   /**
-   * Obtiene el valor actual de la lista (síncrono)
-   * No reactivo - usa medicines() si necesitas reactividad
+   * Obtiene el valor ACTUAL de la lista (síncrono)
+   * 
+   * Diferencia:
+   * - medicines() → Reactivo (se actualiza en templates)
+   * - getCurrentMedicines() → Valor puntual ahora
+   * 
+   * Cuándo usar:
+   * - Para operaciones síncronas que necesitan el valor YA
+   * - Debugging/logs
+   * - No para templates (usar medicines() en su lugar)
+   * 
+   * @returns Array de medicamentos actual
    */
   getCurrentMedicines(): MedicineViewModel[] {
     return this._medicines();
@@ -203,7 +307,10 @@ export class MedicineStoreSignals {
 
   /**
    * Verifica si un medicamento existe por ID
+   * Síncrono, devuelve boolean
+   * 
    * @param id ID del medicamento
+   * @returns true si existe, false si no
    */
   exists(id: string | number): boolean {
     return this._medicines().some(m => Number(m.id) === Number(id));
@@ -211,7 +318,10 @@ export class MedicineStoreSignals {
 
   /**
    * Verifica si un medicamento existe por nombre
+   * Búsqueda case-insensitive
+   * 
    * @param name Nombre del medicamento
+   * @returns true si existe, false si no
    */
   existsByName(name: string): boolean {
     const lowerName = name.toLowerCase();
@@ -220,8 +330,23 @@ export class MedicineStoreSignals {
 
   /**
    * Obtiene medicamentos próximos a expirar en X días
-   * @param days Número de días
-   * @returns Computed signal con medicamentos próximos a expirar
+   * 
+   * Devuelve un COMPUTED SIGNAL reactivo
+   * 
+   * @param days Número de días (ej: 7 para próxima semana)
+   * @returns Computed signal con medicamentos por expirar
+   * 
+   * @example
+   * nextWeek$ = this.store.getExpiringInDays(7);
+   * 
+   * // En template
+   * @if (nextWeek$().length > 0) {
+   *   <div class="warning">
+   *     @for (m of nextWeek$(); track m.id) {
+   *       {{ m.nombre }} vence en {{ m.daysUntilExpiration }} días
+   *     }
+   *   </div>
+   * }
    */
   getExpiringInDays(days: number) {
     return computed(() =>
@@ -233,10 +358,18 @@ export class MedicineStoreSignals {
   }
 
   /**
-   * Ordena medicamentos por campo
-   * @param field Campo por el que ordenar
-   * @param order Orden ascendente o descendente
+   * Ordena medicamentos por un campo
+   * 
+   * Devuelve un COMPUTED SIGNAL con los medicamentos ordenados
+   * La ordenación se recalcula cuando la lista cambia
+   * 
+   * @param field Campo por el que ordenar (ej: 'nombre', 'cantidadMg')
+   * @param order Ascendente ('asc') o descendente ('desc')
    * @returns Computed signal con medicamentos ordenados
+   * 
+   * @example
+   * sortedByName$ = this.store.sortBy('nombre', 'asc');
+   * sortedByExpiration$ = this.store.sortBy('daysUntilExpiration', 'asc');
    */
   sortBy(field: keyof MedicineViewModel, order: 'asc' | 'desc' = 'asc') {
     return computed(() => {
@@ -255,22 +388,40 @@ export class MedicineStoreSignals {
   }
 
   /**
-   * Filtra medicamentos basado en un término de búsqueda
-   * Crea un computed signal que se actualiza automáticamente cuando cambia _medicines
+   * Búsqueda Reactiva Conectada
+   * ==========================
    * 
-   * @param searchTerm Signal que contiene el término de búsqueda
+   * Conecta un SIGNAL DE BÚSQUEDA para filtrado en tiempo real
+   * Ideal para inputs donde el usuario está escribiendo
+   * 
+   * El patrón recomendado:
+   * 1. User escribe → searchTerm signal se actualiza
+   * 2. filterBySearch detecta cambio en searchTerm
+   * 3. Computed signal se recalcula automáticamente
+   * 4. Template se actualiza con nuevos resultados
+   * 
+   * Diferencia vs search():
+   * - search(string) → búsqueda de un valor fijo
+   * - filterBySearch(signal) → búsqueda reactiva que cambia
+   * 
+   * @param searchTerm Signal<string> que contiene el término
    * @returns Computed signal con medicamentos filtrados
    * 
-   * Ejemplo de uso con Signal:
-   * ```typescript
+   * @example
+   * // En el componente
    * searchTerm = signal('');
    * filtered = this.store.filterBySearch(this.searchTerm);
    * 
    * // En el template
-   * @for (medicine of filtered(); track medicine.id) {
-   *   <div>{{ medicine.name }}</div>
+   * <input [(ngModel)]="searchTerm" placeholder="Buscar...">
+   * 
+   * @if (filtered().length > 0) {
+   *   @for (medicine of filtered(); track medicine.id) {
+   *     <div>{{ medicine.nombre }}</div>
+   *   }
+   * } @else {
+   *   <p>No hay resultados</p>
    * }
-   * ```
    */
   filterBySearch(searchTerm: Signal<string>) {
     return computed(() => {
@@ -290,11 +441,32 @@ export class MedicineStoreSignals {
   }
 
   /**
-   * Variante que acepta un término de búsqueda directo (string)
-   * Útil para búsquedas puntuales sin necesidad de un signal reactivo
+   * Búsqueda Directa (No Reactiva)
+   * =============================
    * 
-   * @param searchTerm Término de búsqueda
+   * Alternativa Simple: Devuelve un array normal
+   * Útil para búsquedas puntuales sin reactividad
+   * 
+   * Diferencia vs filterBySearch():
+   * - filterBySearch() → Computed signal (reactivo)
+   * - searchDirect() → Array simple (no reactivo)
+   * 
+   * Cuándo usar searchDirect():
+   * - Búsquedas que se disparan por un botón
+   * - No necesitas actualización en tiempo real
+   * - Código más simple cuando no hay reactividad
+   * 
+   * @param searchTerm Término de búsqueda como string
    * @returns Array filtrado de medicamentos
+   * 
+   * @example
+   * // Búsqueda por botón
+   * <button (click)="buscar()">Buscar</button>
+   * 
+   * buscar(): void {
+   *   const results = this.store.searchDirect('aspirina');
+   *   console.log(results);
+   * }
    */
   searchDirect(searchTerm: string): MedicineViewModel[] {
     const term = searchTerm.toLowerCase().trim();

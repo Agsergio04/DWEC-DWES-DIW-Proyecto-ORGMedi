@@ -25,29 +25,97 @@ import {
 } from './models/medicine.model';
 
 /**
- * Servicio de medicamentos
- * Gestiona operaciones CRUD de medicamentos delegando en ApiService
+ * SERVICIO DE MEDICAMENTOS
+ * 
+ * QUE HACE:
+ * Gestiona todas las operaciones con medicamentos en la aplicacion.
+ * Realiza llamadas a la API para obtener, crear, actualizar y eliminar medicamentos.
+ * Transforma datos de la API a formato ViewModel para usar en templates.
+ * Maneja errores inteligentemente con fallbacks y reintentos.
+ * Proporciona busqueda, paginacion y agrupacion de medicamentos.
+ * Registra consumos de medicamentos (tomas diarias).
+ * 
+ * ESTRUCTURA:
+ * - Metodos publicos: Para usar desde componentes
+ * - Metodos privados: Utilidades internas (transformacion, formatting, etc)
+ * 
+ * CARACTERISTICAS:
+ * 1. REINTENTOS AUTOMATICOS: Si falla peticion 5xx, reintenta 2 veces
+ * 2. FALLBACK INTELIGENTE: Si sin internet o timeout, devuelve datos mock
+ * 3. TRANSFORMACION DE DATOS: Convierte Medicine a MedicineViewModel
+ * 4. NOTIFICACIONES: Emite cambios via medicineUpdated$ Subject
+ * 5. MANEJO DE ERRORES: Centralizado con mensajes personalizados
+ * 6. PAGINACION: Simula paginacion en cliente obteniendo todos los datos
+ * 
+ * COMO USAR:
+ * ```
+ * export class MiComponente {
+ *   medicineService = inject(MedicineService);
+ *   
+ *   ngOnInit() {
+ *     // Obtener todos
+ *     this.medicineService.getAll().subscribe(medicines => {
+ *       console.log(medicines);
+ *     });
+ *     
+ *     // Buscar
+ *     this.medicineService.search('paracetamol').subscribe(results => {
+ *       this.results = results;
+ *     });
+ *     
+ *     // Escuchar cambios
+ *     this.medicineService.medicineUpdated$.subscribe(change => {
+ *       console.log('Medicamento actualizado:', change.id);
+ *     });
+ *   }
+ * }
+ * ```
  */
 @Injectable({ providedIn: 'root' })
 export class MedicineService {
+  // Inyectar ApiService para hacer peticiones HTTP
   private api = inject(ApiService);
   
   /**
-   * Subject para notificar cambios en medicamentos
-   * Se emite cuando se actualiza un medicamento (frecuencia, horaInicio, fechaInicio, fechaFin)
-   * Los suscriptores pueden recargar el calendario u otras vistas
+   * medicineUpdated$ - Subject para notificar cambios de medicamentos
+   * 
+   * QUE EMITE:
+   * Cuando se actualiza un medicamento (PATCH) con campos que afecten el calendario.
+   * Solo se emite si cambaron: frecuencia, horaInicio, fechaInicio, o fechaFin.
+   * 
+   * EMISOR: El metodo patch() lo emite
+   * RECEPTORES: Componentes que necesitan recargar calendario u horarios
+   * 
+   * ESTRUCTURA: { id: medicineId, changedFields: ['frecuencia', 'horaInicio'] }
    */
   medicineUpdated$ = new Subject<{ id: string | number; changedFields: any }>();
 
   /**
-   * Obtiene la lista completa de medicamentos
-   * GET /medicamentos
-   * Con fallback selectivo según tipo de error
-   * @returns Observable<MedicineViewModel[]>
+   * getAll() - Obtiene todos los medicamentos
+   * 
+   * QUE HACE:
+   * - Peticion GET a API en ruta /medicamentos
+   * - Reintenta 2 veces si error 5xx
+   * - Transforma datos a MedicineViewModel (formato UI)
+   * - Fallback inteligente si falla: sin internet -> mock, timeout -> mock, etc
+   * 
+   * REINTENTOS:
+   * - Si error 5xx (500, 502, 503, etc): 2 reintentos con delay 500ms
+   * - Si error 4xx (400, 401, etc): no reintenta, propaga error
+   * 
+   * FALLBACKS:
+   * 1. Sin internet (offline): devuelve datos mock
+   * 2. Servidor no disponible (503): espera 3s y reintenta TODO
+   * 3. Timeout: devuelve datos mock
+   * 4. No autorizado (401): no devuelve nada, propaga error
+   * 5. Otros errores: devuelve array vacio para no romper UI
+   * 
+   * RETORNA: Observable con array de medicamentos transformados
    */
   getAll(): Observable<MedicineViewModel[]> {
     return this.api.get<Medicine[]>('medicamentos').pipe(
-      // Reintentar 2 veces con delay de 500ms en fallos 5xx
+      // REINTENTOS: Automáticos para errores de servidor (5xx)
+      // No reintenta errores de cliente (4xx)
       retryWhen(errors =>
         errors.pipe(
           scan((acc, error: any) => {
@@ -59,48 +127,57 @@ export class MedicineService {
           delay(500)
         )
       ),
-      // Transformar respuesta a ViewModel
+      // TRANSFORMACION: Convierte Medicine a MedicineViewModel
+      // Agrega campos calculados como isActive, daysUntilExpiration, etc
       map(items => this.transformMedicinesToViewModel(items || [])),
-      // ========== FALLBACK SELECTIVO ==========
+      // FALLBACK INTELIGENTE: Segun tipo de error decide qué devolver
       catchError((error, caught) => {
-        console.error('❌ Error al cargar medicamentos:', error);
+        console.error('Error al cargar medicamentos:', error);
 
-        // 1️⃣ SIN INTERNET → Usar datos mock/caché
+        // FALLBACK 1: Sin internet -> devolver datos mock para que funcione offline
         if (!navigator.onLine) {
-          console.warn('📵 Sin conexión → Usando datos en caché');
+          console.warn('Sin conexion -> Usando datos en cache');
           return of(this.getMockMedicines());
         }
 
-        // 2️⃣ SERVIDOR NO DISPONIBLE (503) → Reintentar
+        // FALLBACK 2: Servidor no disponible (503) -> espera 3 segundos y reintenta TODO
         if (error.status === 503) {
-          console.warn('🔄 Servidor no disponible → Reintentando en 3 segundos');
+          console.warn('Servidor no disponible -> Reintentando en 3 segundos');
           return timer(3000).pipe(switchMap(() => caught));
         }
 
-        // 3️⃣ TIMEOUT → Usar datos mock
+        // FALLBACK 3: Timeout (peticion muy lenta) -> devolver mock
         if (error.name === 'TimeoutError') {
-          console.warn('⏱️ Timeout → Usando datos de demostración');
+          console.warn('Timeout -> Usando datos de demostracion');
           return of(this.getMockMedicines());
         }
 
-        // 4️⃣ NO AUTORIZADO (401) → Propagar error
+        // FALLBACK 4: No autorizado (401) -> no devolver nada, propagar error
+        // El componente debe manejar este error (ej: redirigir a login)
         if (error.status === 401) {
-          console.error('🔐 No autorizado');
+          console.error('No autorizado');
           return throwError(() => error);
         }
 
-        // 5️⃣ OTROS ERRORES → Devolver lista vacía para no romper UI
-        console.error('⚠️ Error inesperado:', error.status);
+        // FALLBACK 5: Otros errores 4xx, 5xx -> devolver array vacio
+        // Mejor vacio que quebrar UI con excepcion
+        console.error(' Error inesperado:', error.status);
         return of([]);
       })
     );
   }
 
   /**
-   * Obtiene un medicamento específico por ID
-   * GET /medicamentos/:id
-   * @param id ID del medicamento
-   * @returns Observable<MedicineViewModel>
+   * getById(id) - Obtiene un medicamento especifico por ID
+   * 
+   * QUE HACE:
+   * - Peticion GET a /medicamentos/:id
+   * - Timeout de 10 segundos (si tarda mas, falla)
+   * - Transforma resultado a MedicineViewModel
+   * - Manejo de errores centralizado
+   * 
+   * PARAMETROS: id - el ID del medicamento (string o numero)
+   * RETORNA: Observable con el medicamento transformado
    */
   getById(id: string): Observable<MedicineViewModel> {
     return this.api.get<Medicine>(`medicamentos/${id}`).pipe(
@@ -114,9 +191,16 @@ export class MedicineService {
   }
 
   /**
-   * Obtiene medicamentos activos (no vencidos)
-   * GET /medicamentos?status=active
-   * @returns Observable<MedicineViewModel[]>
+   * getActive() - Obtiene medicamentos activos (no vencidos)
+   * 
+   * QUE HACE:
+   * - Peticion GET a /medicamentos?status=active
+   * - Reintenta 2 veces si error 5xx
+   * - Transforma resultados
+   * - Filtra solo los que no han vencido (isActive = true)
+   * - Si error, devuelve array vacio (no rompe el flujo)
+   * 
+   * RETORNA: Observable con lista de medicamentos activos
    */
   getActive(): Observable<MedicineViewModel[]> {
     return this.api.get<Medicine[]>('medicamentos?status=active').pipe(
@@ -145,11 +229,17 @@ export class MedicineService {
   }
 
   /**
-   * Obtiene medicamentos agrupados por hora para una fecha específica
-   * GET /medicamentos/por-fecha?fecha=yyyy-MM-dd
+   * getMedicinesByDate(fecha) - Obtiene medicamentos agrupados por hora en una fecha
    * 
-   * @param fecha Fecha en formato yyyy-MM-dd (ejemplo: 2024-12-25)
-   * @returns Observable<MedicinesGroupedByDateDTO>
+   * QUE HACE:
+   * - Peticion GET a /medicamentos/por-fecha?fecha=yyyy-MM-dd
+   * - Retorna medicamentos organizados por horarios para ese dia
+   * - Timeout de 10 segundos
+   * - Perfecto para el calendario/horario del dia
+   * 
+   * PARAMETROS: fecha - formato yyyy-MM-dd (ej: 2024-12-25)
+   * RETORNA: Observable con objeto MedicinesGroupedByDateDTO
+   *          que contiene horarios con medicamentos para ese dia
    */
   getMedicinesByDate(fecha: string): Observable<MedicinesGroupedByDateDTO> {
     return this.api.get<MedicinesGroupedByDateDTO>(
@@ -165,10 +255,16 @@ export class MedicineService {
   }
 
   /**
-   * Crea un nuevo medicamento
-   * POST /medicamentos
-   * @param medicine Datos del medicamento a crear
-   * @returns Observable<MedicineViewModel>
+   * create(medicine) - Crea un nuovo medicamento
+   * 
+   * QUE HACE:
+   * - Peticion POST a /medicamentos con los datos
+   * - Transforma respuesta a MedicineViewModel
+   * - Log de exito
+   * - Manejo de errores
+   * 
+   * PARAMETROS: medicine - CreateMedicineDto (datos para crear)
+   * RETORNA: Observable con el medicamento creado transformado
    */
   create(medicine: CreateMedicineDto): Observable<MedicineViewModel> {
     return this.api.post<Medicine>('medicamentos', medicine).pipe(
@@ -182,11 +278,23 @@ export class MedicineService {
   }
 
   /**
-   * Actualiza un medicamento completamente (PUT)
-   * PUT /medicamentos/:id
-   * @param id ID del medicamento
-   * @param medicine Datos completos actualizados
-   * @returns Observable<MedicineViewModel>
+   * update(id, medicine) - Actualiza un medicamento completamente (PUT)
+   * 
+   * QUE HACE:
+   * - Peticion PUT a /medicamentos/:id
+   * - PUT = reemplaza TODO el registro (no parcialmente)
+   * - Si necesitas actualizar solo algunos campos, usa patch() en su lugar
+   * - Transforma respuesta a MedicineViewModel
+   * - Log y manejo de errores
+   * 
+   * PARAMETROS:
+   * - id: ID del medicamento a actualizar
+   * - medicine: Datos completos (todos los campos)
+   * RETORNA: Observable con medicamento actualizado
+   * 
+   * DIFERENCIA PUT vs PATCH:
+   * - PUT: Reemplaza TODO. Envias todos los campos.
+   * - PATCH: Actualiza parcialmente. Solo envias campos que cambian.
    */
   update(id: string | number, medicine: Omit<Medicine, 'id'>): Observable<MedicineViewModel> {
     return this.api.put<Medicine>(`medicamentos/${id}`, medicine).pipe(
@@ -200,11 +308,31 @@ export class MedicineService {
   }
 
   /**
-   * Actualiza parcialmente un medicamento (PATCH)
-   * PATCH /medicamentos/:id
-   * @param id ID del medicamento
-   * @param partial Datos parciales a actualizar
-   * @returns Observable<MedicineViewModel>
+   * patch(id, partial) - Actualiza parcialmente un medicamento (PATCH)
+   * 
+   * QUE HACE:
+   * - Peticion PATCH a /medicamentos/:id
+   * - PATCH = actualiza SOLO los campos que envias
+   * - Por ejemplo, si envias {nombre: 'nuevo'}, solo cambia nombre
+   * - Transforma respuesta a MedicineViewModel
+   * - EMITE NOTIFICACION si cambian campos que afectan horarios
+   * - Log y manejo de errores
+   * 
+   * CAMPOS QUE DISPARAN NOTIFICACION (medicineUpdated$):
+   * - frecuencia: cada cuantas horas tomar
+   * - horaInicio: a que hora comienza el tratamiento
+   * - fechaInicio: cuando comienza
+   * - fechaFin: cuando termina
+   * Si cambias otros campos {nombre, cantidadMg, etc}, no emite notificacion.
+   * 
+   * USO COMUN:
+   * - Cambiar solo frecuencia: patch(id, {frecuencia: 8})
+   * - Cambiar solo nombre: patch(id, {nombre: 'Nuevo nombre'})
+   * 
+   * PARAMETROS:
+   * - id: ID del medicamento
+   * - partial: Objeto con solo los campos a cambiar
+   * RETORNA: Observable con medicamento actualizado
    */
   patch(id: string, partial: Partial<UpdateMedicineDto>): Observable<MedicineViewModel> {
     return this.api.patch<Medicine>(`medicamentos/${id}`, partial).pipe(
@@ -234,10 +362,16 @@ export class MedicineService {
   }
 
   /**
-   * Elimina un medicamento
-   * DELETE /medicamentos/:id
-   * @param id ID del medicamento a eliminar
-   * @returns Observable<void>
+   * delete(id) - Elimina un medicamento
+   * 
+   * QUE HACE:
+   * - Peticion DELETE a /medicamentos/:id
+   * - Log de exito
+   * - Manejo de errores
+   * - No devuelve datos, solo confirmacion
+   * 
+   * PARAMETROS: id - el ID del medicamento a eliminar
+   * RETORNA: Observable<void> (sin datos de retorno)
    */
   delete(id: string | number): Observable<void> {
     return this.api.delete<void>(`medicamentos/${id}`).pipe(
@@ -249,9 +383,23 @@ export class MedicineService {
   }
 
   /**
-   * Obtiene medicamentos agrupados por categoría
-   * Combina datos transformados en un solo Observable
-   * @returns Observable<MedicineGrouped[]>
+   * getGroupedMedicines() - Obtiene medicamentos agrupados por estado de expiracion
+   * 
+   * QUE HACE:
+   * - Obtiene TODOS los medicamentos (llamando getAll())
+   * - Los agrupa por estado: activos | proximos a vencer | vencidos
+   * - Devuelve array de grupos solo con grupos que tienen medicamentos
+   * - Perfecto para mostrar listas separadas en UI
+   * 
+   * ESTRUCTURA DE RETORNO:
+   * [
+   *   { category: 'active', medicines: [...], count: 5 },
+   *   { category: 'expiring-soon', medicines: [...], count: 2 },
+   *   { category: 'expired', medicines: [...], count: 1 }
+   * ]
+   * (solo incluye grupos con count > 0)
+   * 
+   * RETORNA: Observable con array de grupos de medicamentos
    */
   getGroupedMedicines(): Observable<MedicineGrouped[]> {
     return this.getAll().pipe(
@@ -260,42 +408,59 @@ export class MedicineService {
   }
 
   /**
-   * Obtiene una página de medicamentos con paginación
-   * GET /medicines?page={page}&pageSize={pageSize}
+   * getPage(page, pageSize) - Obtiene una pagina de medicamentos
    * 
-   * @param page Número de página (base 1)
-   * @param pageSize Tamaño de la página
-   * @returns Observable<PaginatedResponse<MedicineViewModel>>
+   * QUE HACE:
+   * - Obtiene TODOS los medicamentos de la API
+   * - Los divide en paginas en el cliente (no en el servidor)
+   * - Devuelve una pagina especifica con metadatos
+   * - Perfecto para listas con scroll o paginador
    * 
-   * Ejemplo de uso:
-   * ```typescript
+   * NOTA IMPORTANTE:
+   * SIMULACION EN CLIENTE - La API no soporta paginacion todavia.
+   * Se obtienen todos y se dividen en el navegador.
+   * Si hay 1000+ medicamentos, considera implementar paginacion real en API.
+   * 
+   * EJEMPLO DE USO:
    * this.medicineService.getPage(1, 10).subscribe(response => {
-   *   console.log(response.items); // MedicineViewModel[]
-   *   console.log(response.total); // Total de registros
-   *   console.log(response.hasMore); // ¿Hay más páginas?
+   *   console.log(response.items);       // Array de 10 medicamentos
+   *   console.log(response.total);       // Total de medicamentos
+   *   console.log(response.hasMore);     // true si hay mas paginas
+   *   console.log(response.totalPages);  // Numero total de paginas
    * });
-   * ```
+   * 
+   * PARAMETROS:
+   * - page: Numero de pagina (base 1, no base 0. Primera pagina es 1)
+   * - pageSize: Cuantos items por pagina
+   * 
+   * RETORNA: Observable<PaginatedResponse<MedicineViewModel>>
+   *   - items: Array de medicamentos de esa pagina
+   *   - total: Total de medicamentos en toda la aplicacion
+   *   - page: El numero de pagina solicitada
+   *   - pageSize: Tamano de pagina
+   *   - totalPages: Numero total de paginas
+   *   - hasMore: Boolean, true si hay mas paginas despues de esta
    */
   getPage(page: number, pageSize: number): Observable<PaginatedResponse<MedicineViewModel>> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
 
-    // SIMULACIÓN: En producción, la API devolvería datos paginados reales
-    // Por ahora, simulamos paginación en el cliente obteniendo todos los datos
+    // SIMULACION: En producccion, la API devolveria datos paginados reales
+    // Por ahora se obtienen TODOS los medicamentos y se dividen en cliente
     return this.getAll().pipe(
       map(allMedicines => {
-        // Calcular índices de paginación
-        const startIndex = (page - 1) * pageSize;
-        const endIndex = startIndex + pageSize;
+        // Calcular indices para seccionar la lista
+        const startIndex = (page - 1) * pageSize;  // Donde empieza (ej: pagina 2, size 10 -> indice 10)
+        const endIndex = startIndex + pageSize;     // Donde termina (ej: indice 10 + 10 = 20)
         
-        // Obtener items de la página actual
+        // Seccionar: tomar solo medicamentos de esa pagina
         const items = allMedicines.slice(startIndex, endIndex);
         
-        // Calcular metadatos de paginación
-        const total = allMedicines.length;
-        const totalPages = Math.ceil(total / pageSize);
-        const hasMore = page < totalPages;
+        // Calcular metadatos necesarios
+        const total = allMedicines.length;                  // Total de medicamentos
+        const totalPages = Math.ceil(total / pageSize);      // Cuantas paginas hay
+        const hasMore = page < totalPages;                   // Hay paginas despues
 
         return {
           items,
@@ -311,62 +476,117 @@ export class MedicineService {
   }
 
   /**
-   * Busca medicamentos por término
-   * Busca en nombre, dosis y descripción del medicamento
+   * search(term, pageSize) - Busca medicamentos por termino
    * 
-   * @param term Término de búsqueda
-   * @param pageSize Límite de resultados (default: 20)
-   * @returns Observable<MedicineViewModel[]>
+   * QUE HACE:
+   * - Busca en nombre, dosis (cantidadMg) y displayName del medicamento
+   * - Case-insensitive (ignora mayusculas/minusculas)
+   * - Si termino vacio, devuelve array vacio
+   * - Si error en busqueda, devuelve array vacio (no rompe)
+   * - Timeout de 5 segundos
+   * - Limita resultados a pageSize (default 20 items)
+   * 
+   * BUSQUEDA EN:
+   * - nombre: 'Paracetamol', 'Aspirin', etc
+   * - cantidadMg: '500', '1000' (buscar por dosis)
+   * - displayName: 'Paracetamol - 500mg' (busqueda combinada)
+   * 
+   * EJEMPLO:
+   * // Buscar 'paracetamol'
+   * this.medicineService.search('paracetamol').subscribe(results => {
+   *   console.log(results);  // Array de medicamentos con 'paracetamol'
+   * });
+   * 
+   * // Buscar y limitar a 50 resultados
+   * this.medicineService.search('500', 50).subscribe(results => {
+   *   console.log(results);  // Medicamentos con '500' en su informacion
+   * });
+   * 
+   * PARAMETROS:
+   * - term: String a buscar (se trimea y minuscula)
+   * - pageSize: Maximo de resultados a devolver (default 20)
+   * 
+   * RETORNA: Observable<MedicineViewModel[]> - Lista de resultados
    */
   search(term: string, pageSize: number = 20): Observable<MedicineViewModel[]> {
     if (!term || term.trim().length === 0) {
-      return of([]);
+      return of([]);  // Si termino vacio, devolver array vacio
     }
 
     return this.getAll().pipe(
+      // Buscar localmente en los medicamentos obtenidos
       map(allMedicines => {
         const searchTerm = term.toLowerCase().trim();
         
+        // Filtrar medicamentos que coincidan con el termino
         const results = allMedicines.filter(medicine =>
           medicine.nombre.toLowerCase().includes(searchTerm) ||
           medicine.cantidadMg.toString().includes(searchTerm) ||
           (medicine.displayName && medicine.displayName.toLowerCase().includes(searchTerm))
         );
 
+        // Limitar a pageSize resultados (evita devolver miles de resultados)
         return results.slice(0, pageSize);
       }),
-      timeout(5000),
+      timeout(5000),  // Si tarda mas de 5s, devuelve error
       catchError(err => {
-        console.error('Error en búsqueda:', err);
-        return of([]);
+        console.error('Error en busqueda:', err);
+        return of([]);  // Si error, devolver array vacio
       })
     );
   }
 
   /**
-   * ============ MÉTODOS PRIVADOS ============
+   * ============ METODOS PRIVADOS (UTILIDADES INTERNAS) ============
+   * Los componentes NO deben llamarlos. Se usan internamente para:
+   * - Transformar datos de API a formato ViewModel para templates
+   * - Utilidades: formatting, agrupacion, manejo de errores
+   * - Datos mock para fallback
    */
 
   /**
-   * Transforma un medicamento a ViewModel
-   * Agrega campos calculados para la UI
-   * Compatible con campos del backend: nombre, cantidadMg, fechaInicio, fechaFin, etc.
+   * transformMedicineToViewModel(medicine) - Transforma UN medicamento
+   * 
+   * QUE HACE:
+   * - Recibe Medicine (objeto de API)
+   * - Agrega campos calculados para la UI (isActive, daysUntilExpiration, etc)
+   * - Calcula edad del medicamento y formatea fechas
+   * - Determina estado de expiracion: active | expiring-soon | expired
+   * - Crea displayName para mostrar en listas (ej: 'Paracetamol - 500mg')
+   * - RETORNA MedicineViewModel (listo para UI)
+   * 
+   * CAMPOS AGREGADOS:
+   * - formattedStartDate: Fecha inicio en texto legible
+   * - formattedEndDate: Fecha fin en texto legible
+   * - isActive: Boolean, true si no ha vencido
+   * - isExpired: Boolean, true si ya paso la fecha fin
+   * - daysUntilExpiration: Numero de dias hasta vencimiento
+   * - expirationStatus: 'active' | 'expiring-soon' (<=7 dias) | 'expired'
+   * - displayName: Texto para mostrar (nombre + dosis)
+   * 
+   * NOTA: Los campos del medicamento original (nombre, cantidadMg, etc)
+   * Se mantienen pero se validan para evitar undefined.
    */
   private transformMedicineToViewModel(medicine: Medicine): MedicineViewModel {
     // Soportar tanto fechaInicio como startDate
     const startDateStr = (typeof medicine.fechaInicio === 'string' ? medicine.fechaInicio : medicine.fechaInicio?.toString()) || '';
     const endDateStr = (typeof medicine.fechaFin === 'string' ? medicine.fechaFin : medicine.fechaFin?.toString()) || '';
     
+    // Crear objetos Date para calculos
     const startDate = new Date(startDateStr);
     const endDate = endDateStr ? new Date(endDateStr) : null;
     const today = new Date();
 
-    // Calcular días hasta vencimiento
+    // CALCULO: Dias hasta vencimiento
+    // Si hay fecha fin, resta fecha fin - hoy, si no hay, null
     const daysUntilExpiration = endDate
       ? Math.floor((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
       : null;
 
-    // Determinar estado
+    // CALCULO: Estado de expiracion
+    // activo = no tiene fecha fin O fecha fin es futura
+    // expiring-soon = faltan 7 dias o menos
+    // expired = ya paso la fecha fin
     let expirationStatus: 'active' | 'expiring-soon' | 'expired';
     if (!endDate || endDate > today) {
       expirationStatus = daysUntilExpiration && daysUntilExpiration <= 7 ? 'expiring-soon' : 'active';
@@ -374,7 +594,7 @@ export class MedicineService {
       expirationStatus = 'expired';
     }
 
-    // Nombre para mostrar
+    // NOMBRES: Validar que no sean undefined
     const nombre = medicine.nombre || 'Medicamento sin nombre';
     const cantidad = medicine.cantidadMg || 0;
     
@@ -395,14 +615,34 @@ export class MedicineService {
   }
 
   /**
-   * Transforma un array de medicamentos a ViewModel
+   * transformMedicinesToViewModel(medicines) - Transforma VARIOS medicamentos
+   * 
+   * QUE HACE:
+   * - Recibe array de Medicine (objetos de API)
+   * - Llama transformMedicineToViewModel() para cada uno
+   * - RETORNA array de MedicineViewModel
+   * 
+   * Es basicamente un map (mapeo) del metodo singular.
    */
   private transformMedicinesToViewModel(medicines: Medicine[]): MedicineViewModel[] {
     return medicines.map(m => this.transformMedicineToViewModel(m));
   }
 
   /**
-   * Agrupa medicamentos por estado de expiración
+   * groupMedicinesByStatus(medicines) - Agrupa medicamentos por estado
+   * 
+   * QUE HACE:
+   * - Recibe lista de medicamentos transformados
+   * - Los divide en 3 grupos: activos | proximos a vencer | vencidos
+   * - Devuelve array de grupos solo con grupos que tienen medicamentos
+   * - Perfecto para mostrar en UI separado por estado
+   * 
+   * ESTRUCTURA DE SALIDA:
+   * [
+   *   { category: 'active', medicines: [...], count: 5 },
+   *   { category: 'expiring-soon', medicines: [...], count: 2 }
+   * ]
+   * (nota: solo incluye grupos con count > 0, los vacios se filtran)
    */
   private groupMedicinesByStatus(medicines: MedicineViewModel[]): MedicineGrouped[] {
     const groups: Record<string, MedicineViewModel[]> = {
@@ -423,7 +663,13 @@ export class MedicineService {
   }
 
   /**
-   * Formatea una fecha a string legible
+   * formatDate(date) - Formatea una fecha a string legible
+   * 
+   * QUE HACE:
+   * - Recibe un objeto Date
+   * - Convierte a string en formato largo localizado en espanol
+   * - RESULTADO: '25 de diciembre de 2024'
+   * - Se usa internamente para mostrar fechas en templates
    */
   private formatDate(date: Date): string {
     return date.toLocaleDateString('es-ES', {
@@ -434,9 +680,26 @@ export class MedicineService {
   }
 
   /**
-   * Manejo centralizado de errores HTTP
-   * @param error Objeto de error HTTP
-   * @param context Contexto de la operación (para mensaje de error)
+   * handleError(error, context) - Manejo centralizado de errores HTTP
+   * 
+   * QUE HACE:
+   * - Recibe un error (HttpErrorResponse u otro tipo)
+   * - Extrae informacion del error y la estructura
+   * - Crea objeto ApiError con codigo, mensaje, detalles, timestamp
+   * - Log del error en consola
+   * - RETORNA observable que lanza el error (para que componentes lo capturen)
+   * 
+   * MANEJA:
+   * - HttpErrorResponse: Extrae codigo HTTP y respuesta
+   * - TimeoutError: Crea error personalizado de timeout
+   * - Otros errores: Crea error generico
+   * 
+   * PARAMETROS:
+   * - error: El objeto de error capturado
+   * - context: Texto describiendo que operacion fallaba (ej: 'al crear medicamento')
+   *           para mensajes mas informativos
+   * 
+   * RETORNA: Observable<never> que lanza el error ApiError
    */
   private handleError(error: any, context: string): Observable<never> {
     let apiError: ApiError = {
@@ -482,7 +745,24 @@ export class MedicineService {
   }
 
   /**
-   * Obtiene mensaje de error según el código HTTP
+   * getErrorMessage(status, context) - Obtiene mensaje de error segun codigo HTTP
+   * 
+   * QUE HACE:
+   * - Recibe codigo HTTP de error (400, 401, 404, 500, etc)
+   * - Retorna mensaje legible en espanol
+   * - Si codigo no tiene mensaje personalizado, usa mensaje generico
+   * - Incluye el contexto en el mensaje para mas informacion
+   * 
+   * CASOS CUBIERTOS:
+   * - 400: Solicitud invalida
+   * - 401: No autorizado (login requerido)
+   * - 403: Acceso denegado (permisos)
+   * - 404: Recurso no encontrado
+   * - 409: Conflicto
+   * - 500: Error del servidor
+   * - 502: Bad Gateway
+   * - 503: Servicio no disponible
+   * - 504: Timeout
    */
   private getErrorMessage(status: number, context: string): string {
     const messages: Record<number, string> = {
@@ -501,8 +781,20 @@ export class MedicineService {
   }
 
   /**
-   * Medicamentos de demostración para fallback
-   * Se usan cuando el servidor no está disponible
+   * getMockMedicines() - Medicamentos de demostracion (datos fake)
+   * 
+   * QUE HACE:
+   * - Retorna un array de medicamentos de ejemplo
+   * - Se usan cuando el servidor no esta disponible (fallback)
+   * - Permite que la app siga funcionando offline
+   * - Datos realistas pero ficticios (Paracetamol, Ibuprofeno, etc)
+   * 
+   * USO:
+   * - Sin internet -> devolver mock
+   * - Timeout -> devolver mock
+   * - Error servidor -> devolver mock (en algunos casos)
+   * 
+   * NOTA: No es para testing. Para testing hay que mocear HttpClient.
    */
   private getMockMedicines(): MedicineViewModel[] {
     return [
@@ -570,16 +862,34 @@ export class MedicineService {
   }
 
   /**
-   * Registra el consumo de un medicamento en una fecha y hora específica
-   * POST /medicamentos/{id}/consumo?fecha=yyyy-MM-dd&hora=HH:mm&consumido=true
-   * @param id ID del medicamento
-   * @param fecha Fecha en formato yyyy-MM-dd
-   * @param hora Hora en formato HH:mm
-   * @param consumido Estado del consumo
-   * @returns Observable de la respuesta del consumo registrado
+   * registrarConsumo(id, fecha, hora, consumido) - Registra que se tomo un medicamento
+   * 
+   * QUE HACE:
+   * - Marca un medicamento como consumido en una fecha/hora especifica
+   * - Peticion POST a /medicamentos/{id}/consumo?fecha=...&hora=...&consumido=...
+   * - Envia parametros en query string (no en body)
+   * - Log de exito/error
+   * - Util para registrar tomas diarias en el calendario
+   * 
+   * PARAMETROS:
+   * - id: ID del medicamento a registrar
+   * - fecha: Formato yyyy-MM-dd (ej: 2024-12-25)
+   * - hora: Formato HH:mm (ej: 08:30)
+   * - consumido: Boolean, true=consumido, false=no consumido
+   * 
+   * EJEMPLO:
+   * // Registrar que tome Paracetamol el 25/12/2024 a las 08:00
+   * this.medicineService.registrarConsumo(1, '2024-12-25', '08:00', true)
+   *   .subscribe(
+   *     response => console.log('Registrado!'),
+   *     error => console.error('Error:', error)
+   *   );
+   * 
+   * RETORNA: Observable con respuesta del servidor
    */
   registrarConsumo(id: number, fecha: string, hora: string, consumido: boolean): Observable<any> {
-    // Construir parámetros de query explícitamente
+    // Construir parametros de query explicitamente
+    // Los parametros se envan en URL, no en body
     let params = new HttpParams();
     params = params.set('fecha', fecha);
     params = params.set('hora', hora);
@@ -604,10 +914,17 @@ export class MedicineService {
   }
 
   /**
-   * Obtiene los consumos registrados para una fecha específica
-   * GET /medicamentos/consumos?fecha=yyyy-MM-dd
-   * @param fecha Fecha en formato yyyy-MM-dd
-   * @returns Observable con lista de consumos registrados
+   * obtenerConsumosDelDia(fecha) - Obtiene todos los consumos registrados en un dia
+   * 
+   * QUE HACE:
+   * - Peticion GET a /medicamentos/consumos?fecha=yyyy-MM-dd
+   * - Retorna lista de todos los consumos registrados ese dia
+   * - Util para mostrar el historial de tomas del dia
+   * - Si error, devuelve array vacio (no rompe el flujo)
+   * 
+   * PARAMETROS: fecha - Formato yyyy-MM-dd (ej: 2024-12-25)
+   * 
+   * RETORNA: Observable<any[]> - Lista de consumos del dia
    */
   obtenerConsumosDelDia(fecha: string): Observable<any[]> {
     return this.api.getWithParams<any[]>(
@@ -625,12 +942,28 @@ export class MedicineService {
   }
 
   /**
-   * Obtiene el estado de consumo para una instancia específica
-   * GET /medicamentos/{id}/consumo?fecha=yyyy-MM-dd&hora=HH:mm
-   * @param id ID del medicamento
-   * @param fecha Fecha en formato yyyy-MM-dd
-   * @param hora Hora en formato HH:mm
-   * @returns Observable con el estado del consumo
+   * obtenerConsumo(id, fecha, hora) - Obtiene el estado de consumo de UNA instancia
+   * 
+   * QUE HACE:
+   * - Peticion GET a /medicamentos/{id}/consumo?fecha=...&hora=...
+   * - Retorna si ese medicamento fue consumido en esa fecha/hora
+   * - Util para verificar estado de una toma especifica
+   * - Si no hay registro, devuelve null (no error)
+   * 
+   * PARAMETROS:
+   * - id: ID del medicamento
+   * - fecha: Formato yyyy-MM-dd
+   * - hora: Formato HH:mm
+   * 
+   * EJEMPLO:
+   * // Verificar si tome Paracetamol el 25/12 a las 08:00
+   * this.medicineService.obtenerConsumo(1, '2024-12-25', '08:00')
+   *   .subscribe(consumo => {
+   *     if (consumo) console.log('Ya consumido');  // { consumido: true, fecha, hora }
+   *     else console.log('Sin registro');          // null
+   *   });
+   * 
+   * RETORNA: Observable<any> - Objeto con estado o null
    */
   obtenerConsumo(id: number, fecha: string, hora: string): Observable<any> {
     return this.api.getWithParams<any>(

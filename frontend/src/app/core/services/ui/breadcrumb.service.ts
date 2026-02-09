@@ -4,6 +4,8 @@ import { BehaviorSubject, filter } from 'rxjs';
 
 /**
  * Interface para las migas de pan (breadcrumbs)
+ * @property label - Texto visible del breadcrumb
+ * @property url - Ruta a la que navega al hacer clic
  */
 export interface Breadcrumb {
   label: string;
@@ -11,16 +13,31 @@ export interface Breadcrumb {
 }
 
 /**
- * Servicio para generar breadcrumbs dinámicos basados en la ruta actual
- * Se suscribe a NavigationEnd eventos y construye el árbol de rutas activas
- * Soporta parámetros dinámicos en las labels (ej: "Editar {{medicina}}")
+ * Servicio de Breadcrumbs Dinámicos
+ * 
+ * Genera automáticamente migas de pan basadas en la ruta actual de la aplicación.
+ * 
+ * Funcionalidades:
+ * - Escucha cambios de navegación y actualiza los breadcrumbs en tiempo real
+ * - Construye el árbol de rutas de forma jerárquica
+ * - Soporta labels dinámicas con parámetros: "Editar {{medicineName}}"
+ * - Siempre comienza con "Inicio" como primer breadcrumb
+ * 
+ * Uso:
+ * - Inyectar el servicio en un componente
+ * - Suscribirse a breadcrumbs$ para obtener la lista de breadcrumbs actuales
+ * - Configurar data.breadcrumb en las rutas de Angular para las labels
  */
 @Injectable({ providedIn: 'root' })
 export class BreadcrumbService {
+  /**
+   * Observable que emite la lista de breadcrumbs cada vez que la ruta cambia
+   */
   private readonly _breadcrumbs$ = new BehaviorSubject<Breadcrumb[]>([]);
   readonly breadcrumbs$ = this._breadcrumbs$.asObservable();
 
   constructor(private router: Router, private route: ActivatedRoute) {
+    // Escuchar cambios de navegación
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
@@ -37,10 +54,18 @@ export class BreadcrumbService {
   }
 
   /**
-   * Construye recursivamente el árbol de breadcrumbs desde las rutas activas
-   * @param route Ruta actual
-   * @param url URL acumulada
-   * @param crumbs Array de breadcrumbs a llenar
+   * Construye recursivamente los breadcrumbs recorriendo el árbol de rutas
+   * 
+   * Qué hace:
+   * 1. Recorre cada ruta hija y extrae su segmento de URL
+   * 2. Obtiene la label del breadcrumb desde data.breadcrumb configurado en las rutas
+   * 3. Interpola parámetros dinámicos si la label los contiene
+   * 4. Agrega el breadcrumb a la lista si tiene label
+   * 5. Continúa recursivamente con las rutas hijas
+   * 
+   * @param route - Ruta actual siendo procesada
+   * @param url - URL acumulada hasta el momento
+   * @param crumbs - Array de breadcrumbs a llenar
    */
   private buildCrumbs(
     route: ActivatedRoute,
@@ -62,9 +87,10 @@ export class BreadcrumbService {
         url += `/${routeURL}`;
 
         // Obtener la etiqueta del breadcrumb de los datos de la ruta
+        // Configurada en Angular router data: { breadcrumb: '...' }
         let label = child.snapshot.data['breadcrumb'] as string | undefined;
 
-        // Si la label contiene parámetros dinámicos, reemplazarlos
+        // Si la label contiene parámetros dinámicos {{param}}, reemplazarlos
         if (label) {
           label = this.interpolateLabel(label, child.snapshot.params, child.snapshot.data);
           crumbs.push({ label, url });
@@ -77,17 +103,23 @@ export class BreadcrumbService {
   }
 
   /**
-   * Interpola placeholders en la label con valores de parámetros o data
-   * Ej: "Editar {{medicineName}}" → "Editar Amoxicilina"
-   * @param label La label con posibles placeholders
-   * @param params Los parámetros de ruta
-   * @param data Los datos de la ruta
-   * @returns La label con los placeholders reemplazados
+   * Reemplaza placeholders dinámicos en las labels
+   * 
+   * Ejemplo: "Editar {{medicineName}}" → "Editar Amoxicilina"
+   * 
+   * Busca patrones {{nombreVariable}} y los reemplaza con:
+   * - Parámetros de ruta (params): {{id}}
+   * - Datos de ruta (data): {{medicineName}}
+   * 
+   * @param label - Label con posibles placeholders {{variable}}
+   * @param params - Parámetros de la ruta activa (ej: {id: '123'})
+   * @param data - Datos configurados en la ruta (ej: {medicineName: 'Amoxicilina'})
+   * @returns Label con los placeholders reemplazados por los valores reales
    */
   private interpolateLabel(label: string, params: any, data: any): string {
     let result = label;
 
-    // Reemplazar {{param}} con el valor del parámetro
+    // Reemplazar {{param}} con el valor del parámetro de ruta
     if (params) {
       Object.keys(params).forEach(key => {
         const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
