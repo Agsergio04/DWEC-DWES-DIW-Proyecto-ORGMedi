@@ -3,7 +3,6 @@ package proyecto.orgmedi.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyecto.orgmedi.dominio.Medicamento;
-import proyecto.orgmedi.dominio.Usuario;
 import proyecto.orgmedi.dominio.ConsumoRegistro;
 import proyecto.orgmedi.dominio.Notification;
 import proyecto.orgmedi.dto.medicamento.MedicamentoDTO;

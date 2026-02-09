@@ -24,9 +24,10 @@ class UsuarioControllerTest {
         when(usuarioService.getByIdOrThrow(1L)).thenReturn(usuario);
         ResponseEntity<Usuario> response = usuarioController.getUsuarioById(1L);
         assertThat(response.getStatusCode().value()).isEqualTo(200);
-        assertThat(response.getBody()).isNotNull();
-        if (response.getBody() != null) {
-            assertThat(response.getBody().getCorreo()).isEqualTo("test@mail.com");
+        Usuario responseBody = response.getBody();
+        assertThat(responseBody).isNotNull();
+        if (responseBody != null) {
+            assertThat(responseBody.getCorreo()).isEqualTo("test@mail.com");
         }
     }
 }

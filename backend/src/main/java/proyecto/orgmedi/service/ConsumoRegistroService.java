@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,22 +20,23 @@ import java.util.stream.Collectors;
  * Permite registrar y consultar el consumo de medicamentos por fecha y hora específica
  */
 @Service
+@SuppressWarnings("null")
 public class ConsumoRegistroService implements IConsumoRegistroService {
     private final ConsumoRegistroRepository consumoRegistroRepository;
     private final MedicamentoService medicamentoService;
-    private final UsuarioService usuarioService;
+    // private final UsuarioService usuarioService; // No se usa actualmente
     private final UsuarioRepository usuarioRepository;
     
     @Autowired
     public ConsumoRegistroService(
         ConsumoRegistroRepository consumoRegistroRepository,
         MedicamentoService medicamentoService,
-        UsuarioService usuarioService,
+        UsuarioService usuarioService, // No se usa actualmente
         UsuarioRepository usuarioRepository
     ) {
         this.consumoRegistroRepository = consumoRegistroRepository;
         this.medicamentoService = medicamentoService;
-        this.usuarioService = usuarioService;
+        // this.usuarioService = usuarioService;
         this.usuarioRepository = usuarioRepository;
     }
     
@@ -207,8 +207,10 @@ public class ConsumoRegistroService implements IConsumoRegistroService {
      */
     @Override
     public ConsumoRegistro updateConsumo(Long id, ConsumoRegistro consumo) {
-        ConsumoRegistro existing = consumoRegistroRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Registro de consumo no encontrado"));
+        // Validar que exista
+        if (consumoRegistroRepository.findById(id).isEmpty()) {
+            throw new IllegalArgumentException("Registro de consumo no encontrado");
+        }
         
         consumo.setId(id);
         return consumoRegistroRepository.save(consumo);

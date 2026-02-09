@@ -77,9 +77,17 @@ public class OcrService {
         tesseract.setLanguage("spa+eng");
 
         // Mejorar la calidad de OCR
-        tesseract.setTessVariable("user_defined_dpi", "300");
+        setupTessVariable(tesseract);
 
         return tesseract.doOCR(bufferedImage);
+    }
+
+    /**
+     * Configura variables de Tesseract (usando método deprecated)
+     */
+    @SuppressWarnings("deprecation")
+    private void setupTessVariable(Tesseract tesseract) {
+        tesseract.setTessVariable("user_defined_dpi", "300");
     }
 
     /**

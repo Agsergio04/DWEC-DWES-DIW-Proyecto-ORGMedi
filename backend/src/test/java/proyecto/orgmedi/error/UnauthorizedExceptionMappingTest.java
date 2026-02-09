@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = AuthController.class)
 @AutoConfigureMockMvc(addFilters = false)
+@SuppressWarnings("null")
 public class UnauthorizedExceptionMappingTest {
 
     @TestConfiguration

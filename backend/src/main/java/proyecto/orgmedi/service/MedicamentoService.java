@@ -20,10 +20,45 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Servicio MedicamentoService - Gestión de medicamentos del sistema
+ * 
+ * PROPÓSITO: Centralizar toda la lógica de negocio para medicamentos.
+ * Maneja CRUD, conversiones de DTOs, y la lógica compleja de calcular
+ * horarios de toma según la frecuencia y fechas de inicio/fin.
+ * 
+ * RESPONSABILIDADES PRINCIPALES:
+ * 1. CRUD: crear, leer, actualizar, eliminar medicamentos
+ * 2. AGRUPACIÓN: agrupar medicamentos por fecha y hora
+ * 3. CÁLCULO: calcular todos los horarios de toma según frecuencia
+ * 4. DTO: convertir entre Medicamento y MedicamentoDTO
+ * 5. REGENERACIÓN: cuando cambia la planificación, regenerar ConsumoRegistros
+ * 
+ * CONCEPTO CLAVE: PLANIFICACIÓN vs REGISTRO
+ * - Medicamento = PLANIFICACIÓN (qué tomar, cuándo, con qué frecuencia)
+ * - ConsumoRegistro = REGISTRO (cada vez que debe tomarse, anotado específicamente)
+ * 
+ * EJEMPLO:
+ * Un medicamento Amoxicilina (08:00, cada 8h, del 1-8 febrero) genera:
+ * - 08:00 → 1,2,3,4,5,6,7,8 febrero (8 registros)
+ * - 16:00 → 1,2,3,4,5,6,7,8 febrero (8 registros)
+ * - 00:00 → 2,3,4,5,6,7,8,9 febrero (8 registros)
+ * TOTAL: 24 ConsumoRegistros
+ */
 @Service
 @SuppressWarnings("null")
 public class MedicamentoService implements IMedicamentoService {
+    
+    // ============ ATRIBUTOS =============
+    
+    /**
+     * Repositorio para acceder a medicamentos en BD
+     */
     private final MedicamentoRepository medicamentoRepository;
+    
+    /**
+     * Repositorio para acceder a registros de consumo en BD
+     */
     private final ConsumoRegistroRepository consumoRegistroRepository;
 
     @Autowired
@@ -33,19 +68,40 @@ public class MedicamentoService implements IMedicamentoService {
         this.consumoRegistroRepository = consumoRegistroRepository;
     }
 
+    // ============ MÉTODOS CRUD BÁSICOS =============
+    
+    /**
+     * Obtiene TODOS los medicamentos del sistema (no recomendado en producción)
+     */
     public List<Medicamento> findAll() {
         return medicamentoRepository.findAll();
     }
 
+    /**
+     * Busca un medicamento por ID (de forma opcional)
+     */
     public Optional<Medicamento> findById(Long id) {
         return medicamentoRepository.findById(id);
     }
 
+    /**
+     * Busca un medicamento por ID o lanza excepción si no existe
+     */
     public Medicamento getByIdOrThrow(Long id) {
         return medicamentoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Medicamento no encontrado"));
     }
 
+    /**
+     * Crea un nuevo medicamento
+     * 
+     * VALIDACIONES:
+     * - Nombre no puede estar vacío
+     * 
+     * PARÁMETRO: medicamento - El objeto Medicamento a crear
+     * RETORNO: Medicamento creado (con ID generado)
+     * EXCEPCIÓN: BadRequestException si los datos son inválidos
+     */
     public Medicamento createMedicamento(Medicamento medicamento) {
         if (medicamento.getNombre() == null || medicamento.getNombre().isBlank()) {
             throw new BadRequestException("Nombre inválido");
@@ -53,15 +109,24 @@ public class MedicamentoService implements IMedicamentoService {
         return medicamentoRepository.save(medicamento);
     }
 
-    // create from DTO
+    /**
+     * Crea un nuevo medicamento a partir de un DTO
+     * 
+     * PARÁMETRO: dto - Data Transfer Object con información del medicamento
+     * RETORNO: Medicamento creado
+     * PROCESO: DTO → Medicamento → guardar en BD
+     */
     public Medicamento createMedicamento(MedicamentoDTO dto) {
         if (dto.getNombre() == null || dto.getNombre().isBlank()) {
             throw new BadRequestException("Nombre inválido");
         }
-        Medicamento m = fromDto(dto);
+        Medicamento m = fromDto(dto); // Convertir DTO a Medicamento
         return medicamentoRepository.save(m);
     }
 
+    /**
+     * Actualiza un medicamento existente
+     */
     public Medicamento updateMedicamento(Long id, Medicamento medicamento) {
         if (medicamentoRepository.findById(id).isEmpty()) {
             throw new NotFoundException("Medicamento no encontrado");
@@ -70,7 +135,22 @@ public class MedicamentoService implements IMedicamentoService {
         return medicamentoRepository.save(medicamento);
     }
 
-    // update from DTO
+    /**
+     * Actualiza un medicamento a partir de un DTO
+     * 
+     * LÓGICA ESPECIAL: Detecta si cambió la PLANIFICACIÓN (frecuencia, horas, fechas)
+     * Si cambió, elimina todos los ConsumoRegistros antiguos para que se regeneren
+     * con los nuevos horarios. Esto es crítico porque si cambias "cada 8 horas" a
+     * "cada 12 horas", los antiguos registros cacheados ya no son válidos.
+     * 
+     * PARÁMETRO: 
+     *   - id: ID del medicamento a actualizar
+     *   - dto: DTO con nuevos datos
+     * 
+     * RETORNO: Medicamento actualizado
+     * 
+     * EFECTO SECUNDARIO: Elimina ConsumoRegistros si cambio la planificación
+     */
     public Medicamento updateMedicamento(Long id, MedicamentoDTO dto) {
         Optional<Medicamento> medicamentoOpt = medicamentoRepository.findById(id);
         if (medicamentoOpt.isEmpty()) {
@@ -80,6 +160,7 @@ public class MedicamentoService implements IMedicamentoService {
         Medicamento medicamentoExistente = medicamentoOpt.get();
         
         // Detectar si hubo cambios en los campos de planificación
+        // (estos campos determinan CUÁNDO se toma el medicamento)
         boolean planificacionCambio = hasScheduleChanged(medicamentoExistente, dto);
         
         Medicamento m = fromDto(dto);
@@ -101,6 +182,15 @@ public class MedicamentoService implements IMedicamentoService {
     
     /**
      * Detecta si hubo cambios en los campos de planificación del medicamento
+     * 
+     * CAMPOS CRÍTICOS (si alguno cambia, se regeneran los registros):
+     * - frecuencia: cada cuántas horas
+     * - horaInicio: a qué hora del día comienza
+     * - fechaInicio: qué día comienza
+     * - fechaFin: qué día termina
+     * 
+     * CAMPOS NO CRÍTICOS (si cambia, NO se regenera):
+     * - nombre, cantidadMg, color, etc.
      */
     private boolean hasScheduleChanged(Medicamento medicamentoExistente, MedicamentoDTO nuevoDto) {
         // Comparar frecuencia
@@ -130,6 +220,9 @@ public class MedicamentoService implements IMedicamentoService {
         return false;
     }
 
+    /**
+     * Elimina un medicamento por ID o lanza excepción si no existe
+     */
     public void deleteByIdOrThrow(Long id) {
         if (medicamentoRepository.findById(id).isEmpty()) {
             throw new NotFoundException("Medicamento no encontrado");
@@ -142,18 +235,32 @@ public class MedicamentoService implements IMedicamentoService {
         deleteByIdOrThrow(id);
     }
     
+    /**
+     * Obtiene todos los medicamentos de un usuario para una fecha específica.
+     * Lee desde la BD y agrupa por hora.
+     * 
+     * @param usuarioId ID del usuario
+     * @param fecha Fecha para la que se agrupan los medicamentos
+     * @return MedicamentosPorFechaDTO con medicamentos agrupados por hora
+     */
+    @Override
+    public MedicamentosPorFechaDTO getMedicamentosPorFecha(Long usuarioId, LocalDate fecha) {
+        List<Medicamento> medicamentos = medicamentoRepository.findByUsuarioId(usuarioId);
+        return getMedicamentosPorFecha(medicamentos, fecha);
+    }
+
+    /**
+     * Obtiene todos los medicamentos de un usuario convertidos a DTO
+     * 
+     * @param usuarioId ID del usuario
+     * @return Lista de MedicamentoDTO para el usuario
+     */
     @Override
     public List<MedicamentoDTO> getMedicamentosPorUsuario(Long usuarioId) {
         List<Medicamento> medicamentos = medicamentoRepository.findByUsuarioId(usuarioId);
         return medicamentos.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
-    }
-    
-    @Override
-    public MedicamentosPorFechaDTO getMedicamentosPorFecha(Long usuarioId, LocalDate fecha) {
-        List<Medicamento> medicamentos = medicamentoRepository.findByUsuarioId(usuarioId);
-        return getMedicamentosPorFecha(medicamentos, fecha);
     }
 
     // mapper DTO <-> entity

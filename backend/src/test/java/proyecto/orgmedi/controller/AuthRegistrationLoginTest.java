@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.hamcrest.Matchers.*;
 
 import proyecto.orgmedi.dto.auth.RegisterRequest;
 import proyecto.orgmedi.dto.auth.AuthRequest;
@@ -27,6 +26,7 @@ import proyecto.orgmedi.repo.UsuarioRepository;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@SuppressWarnings("null")
 public class AuthRegistrationLoginTest {
     
     @Autowired
