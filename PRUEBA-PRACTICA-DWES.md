@@ -10,3 +10,5 @@
 En este apartado voy a agregar las paginas de referencia utilizadas para la realizacion de la practrica: 
 
  - **[Documentacion de Angular](https://angular.dev/overview)**
+
+ - **[Documentacion de Java](https://docs.oracle.com/en/java/javase/21/)**

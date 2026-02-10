@@ -56,4 +56,14 @@ public interface GestorMedicamentosRepository extends JpaRepository<GestorMedica
      * @return Optional con el gestor si existe
      */
     Optional<GestorMedicamentos> findByUsuarioId(Long usuarioId);
+
+
+    /**
+     * Buscan en el GestorMedicamentos asociado al usuario si este
+     * posee medicamentso creados 
+     * @param usuarioId
+     * @return Optional en caso de que el usuario tenga medicamentos creados
+     */
+
+    GestorMedicamentos cantidadMedicamentosConsumidos(Long usuarioId);
 }

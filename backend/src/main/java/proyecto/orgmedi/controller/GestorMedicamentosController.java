@@ -13,7 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/gestores")
 public class GestorMedicamentosController {
+    private final GestorMedicamentos gestorMedicamentos;
     private final GestorMedicamentosService gestorMedicamentosService;
+    
 
     @Autowired
     public GestorMedicamentosController(GestorMedicamentosService gestorMedicamentosService) {
@@ -47,5 +49,15 @@ public class GestorMedicamentosController {
     public ResponseEntity<Void> deleteGestor(@PathVariable Long id) {
         gestorMedicamentosService.deleteByIdOrThrow(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Implementado por mi 
+     */
+
+    @GetMapping("/{id}")
+    public GestorMedicamentos MedicamentosConsumidos(Long id){
+    
+        return gestorMedicamentos.cantidadMedicamentosConsumidos(id);
     }
 }

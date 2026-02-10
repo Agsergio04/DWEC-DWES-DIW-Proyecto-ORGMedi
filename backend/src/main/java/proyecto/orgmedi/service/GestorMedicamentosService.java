@@ -59,4 +59,13 @@ public class GestorMedicamentosService {
     public void deleteById(Long id) {
         gestorMedicamentosRepository.deleteById(id);
     }
+
+    /**
+     * 
+     * Lo que he creado 
+     */
+
+    public GestorMedicamentos MedicamentosConsumidos(Long id){
+        return gestorMedicamentosRepository.cantidadMedicamentosConsumidos(id);
+    }
 }
