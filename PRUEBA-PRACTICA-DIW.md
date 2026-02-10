@@ -1,6 +1,12 @@
 # Cosas a tener en cuenta
 Cada vez que vaya a agregar un nuevo estilo para la practica deberia comentar que es para el examen 
 
+## Arquitectura: ¿Por qué has colocado tus variables en la capa Settings y tus estilos en Components? ¿Qué pasaría si importaras Components antes que Settings en el manifiesto?
+
+Lo he hecho asi para una mayor separacion por capas .Lo que ocurriria es que 
+
+## Metodología: Explica una ventaja real que te haya aportado usar BEM en este examen frente a usar selectores de etiqueta anidados (ej: div > button).
+
 # Enlaces de referencia
 
 En este apartado voy a agregar las paginas de referencia utilizadas para la realizacion de la practrica: 
