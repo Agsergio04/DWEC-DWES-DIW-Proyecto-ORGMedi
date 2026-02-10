@@ -240,7 +240,12 @@ export const LEGAL_ROUTES: Routes = [
   {
     path: 'pagina-practica',
     loadComponent: () =>
-      import('./pages/pagina-pracitca').then(m =>)
+      import('./pages/pagina-practica/pagina-practica').then(m => m.PaginaPracticaComponent),
+    data: {
+      chunkName: 'pagina-practica',
+      breadcrumb: 'Pagina de la pracitca',
+      description: 'Pagina de la practica realizada el 10 de Febrero de 2025'
+    }
   }
 ];
 
