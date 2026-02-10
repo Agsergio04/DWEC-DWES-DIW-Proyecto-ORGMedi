@@ -46,6 +46,7 @@ public class AuthRequest {
     @NotBlank(message = "El usuario es obligatorio")
     private String usuario;
 
+    
     /**
      * CONTRASEÑA - Clave de acceso
      * 
