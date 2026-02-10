@@ -10,6 +10,8 @@
     
  - **c)Capturas o comandos para probarlo.**
 
+   Capturas no he podido realizarlas pero voy denjando los siguientes enlaces permanentes al codigo correspondientes 
+
 
 # Enlaces de referencia
 
@@ -28,3 +30,7 @@ En este apartado voy a agregar las paginas de referencia utilizadas para la real
  - **[Lugar donde tengo alojada la base de datos de PosgreSQL (Neon)](https://neon.com/)**
 
  - **[Pagina para los estilos](https://lenguajecss.com/)**
+
+# Alumnado 
+
+El alumnado que ha realizado la practica es Sergio Aragón García 

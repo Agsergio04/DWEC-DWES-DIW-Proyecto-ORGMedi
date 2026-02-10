@@ -18,3 +18,7 @@ En este apartado voy a agregar las paginas de referencia utilizadas para la real
  - **[Lugar donde tengo alojada la base de datos de PosgreSQL (Neon)](https://neon.com/)**
 
  - **[Pagina para los estilos](https://lenguajecss.com/)**
+
+# Alumnado 
+
+El alumnado que ha realizado la practica es Sergio Aragón García 

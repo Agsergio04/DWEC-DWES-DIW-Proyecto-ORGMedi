@@ -1,4 +1,4 @@
-import { Component,Input, Output } from '@angular/core';
+import { Component,OnInit, OnDestroy, inject, ChangeDetectionStrategy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -7,6 +7,6 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './componente-hijo.html',
   styleUrls: ['./componente-hijo.scss']
-}) export class ComponenteHijo implements Input,Output {
+}) export class ComponenteHijo {
  
 }

@@ -1,1 +1,13 @@
-<p>segundo-componente-hijo works!</p>
+
+<main>
+  <input
+        class="data-input__input"
+        [type]="type"
+        [placeholder]="label || placeholder"
+        [disabled]="disabled"
+        [value]="value"
+        [attr.aria-label]="label || placeholder"
+        (input)="onInputChange($event)"
+        (blur)="onBlur()"
+      />Introduce lo que quieras
+</main>

@@ -2,9 +2,9 @@
 
 A la hora de la creacion del los componentes en la pagina `pagina-practica`,por la cual esta se encuentra tanto en el header como boton seleccionable del menu de hamburguesa como en el footer debajo de la guia tecnica los cuales se llaman:
 
- - **componente-hijo** : 
+ - **componente-hijo** : controla tanto el flujo de vista como como es el responsable de que se vea e inyecta el servicio
 
- - **segundo-componente-hijo** : 
+ - **segundo-componente-hijo** : es un componente standalone ele cual es un input por el cual tiene interfaces de cifrado de informacion,siendo que este data input solo reconoce 
 
 # Enlaces de referencia
 
@@ -23,3 +23,7 @@ En este apartado voy a agregar las paginas de referencia utilizadas para la real
  - **[Lugar donde tengo alojada la base de datos de PosgreSQL (Neon)](https://neon.com/)**
 
  - **[Pagina para los estilos](https://lenguajecss.com/)**
+
+# Alumnado 
+
+El alumnado que ha realizado la practica es Sergio Aragón García 
