@@ -165,4 +165,9 @@
   /* Tipografía (idéntica al tema claro, pero se mantiene aquí por si necesita sobreescritura) */
   --font-primary: #{vars.$font-primary};
   --font-secondary: #{vars.$font-secondary};
+
+  /*Tipografia añadida por mi*/
+
+  --font-color-primero-implementado: #{vars.$color-aniadido-primero};
+  --font-color-segundo-implementado: #{vars.$color-aniadido-segundo};
 }

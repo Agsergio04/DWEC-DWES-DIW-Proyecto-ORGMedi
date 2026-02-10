@@ -1,13 +1,15 @@
 import { Component,ViewChild,Input, Output, EventEmitter, inject} from '@angular/core';
 import { ComponenteHijo } from '../componente-hijo/componente-hijo';
-import { HttpClient } from '@angular/common/http';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
+import { HttpClient,HttpClientModule } from '@angular/common/http';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-segundo-componente-hijo',
-  imports: [],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './segundo-componente-hijo.html',
-  styleUrl: './segundo-componente-hijo.css',
+  styleUrl: './segundo-componente-hijo.scss',
 })
 export class SegundoComponenteHijo {
   @ViewChild('container', { static: false }) container!: ComponenteHijo;
