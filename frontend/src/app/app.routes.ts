@@ -236,6 +236,11 @@ export const LEGAL_ROUTES: Routes = [
       breadcrumb: 'Términos de Servicio',
       description: 'Términos y condiciones de uso del servicio'
     }
+  },
+  {
+    path: 'pagina-practica',
+    loadComponent: () =>
+      import('./pages/pagina-pracitca').then(m =>)
   }
 ];
 

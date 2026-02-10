@@ -26,3 +26,5 @@ En este apartado voy a agregar las paginas de referencia utilizadas para la real
  - **[Para realanzar el despliegue de mi pagina web](https://render.com/)**
 
  - **[Lugar donde tengo alojada la base de datos de PosgreSQL (Neon)](https://neon.com/)**
+
+ - **[Pagina para los estilos](https://lenguajecss.com/)**
