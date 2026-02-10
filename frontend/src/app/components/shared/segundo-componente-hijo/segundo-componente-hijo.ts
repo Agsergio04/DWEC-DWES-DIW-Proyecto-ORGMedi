@@ -1,4 +1,5 @@
-import { Component,ViewChild, ElementRef, AfterViewInit, OnDestroy} from '@angular/core';
+import { Component,ViewChild,Input} from '@angular/core';
+import { ComponenteHijo } from '../componente-hijo/componente-hijo';
 
 @Component({
   selector: 'app-segundo-componente-hijo',
@@ -7,6 +8,6 @@ import { Component,ViewChild, ElementRef, AfterViewInit, OnDestroy} from '@angul
   styleUrl: './segundo-componente-hijo.css',
 })
 export class SegundoComponenteHijo {
-  @ViewChild('container', { static: false }) container!: ElementRef<HTMLElement>;
+  @ViewChild('container', { static: false }) container!: ComponenteHijo;
 
   }

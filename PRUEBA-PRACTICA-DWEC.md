@@ -1,3 +1,11 @@
+# Explicacion 
+
+A la hora de la creacion del los componentes en la pagina `pagina-practica`,por la cual esta se encuentra tanto en el header como boton seleccionable del menu de hamburguesa como en el footer debajo de la guia tecnica los cuales se llaman:
+
+ - **componente-hijo** : 
+
+ - **segundo-componente-hijo** : 
+
 # Enlaces de referencia
 
 En este apartado voy a agregar las paginas de referencia utilizadas para la realizacion de la practrica: 
