@@ -18,8 +18,10 @@ public class GestorMedicamentosController {
     
 
     @Autowired
-    public GestorMedicamentosController(GestorMedicamentosService gestorMedicamentosService) {
+    public GestorMedicamentosController(GestorMedicamentosService gestorMedicamentosService,
+        GestorMedicamentos gestorMedicamentos) {
         this.gestorMedicamentosService = gestorMedicamentosService;
+        this.gestorMedicamentos = gestorMedicamentos;
     }
 
     @GetMapping
@@ -55,9 +57,8 @@ public class GestorMedicamentosController {
      * Implementado por mi 
      */
 
-    @GetMapping("/{id}")
-    public GestorMedicamentos MedicamentosConsumidos(Long id){
-    
+    @GetMapping("/cantidad")
+    public Integer MedicamentosConsumidos(Long id){
         return gestorMedicamentos.cantidadMedicamentosConsumidos(id);
     }
 }

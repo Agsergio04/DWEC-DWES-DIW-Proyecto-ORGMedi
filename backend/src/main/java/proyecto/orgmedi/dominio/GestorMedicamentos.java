@@ -186,15 +186,14 @@ public class GestorMedicamentos {
      * gestor de Medicamentos. 
      */
 
-    @GetMapping("/{id}")
     public Integer cantidadMedicamentosConsumidos(
         Long id
     ){
-        var cantidad  = 0;
+        int cantidad = 0;
         for (Medicamento medicamento : this.medicamentos) {
 
             if(medicamento != null){
-                cantidad = cantidad + 1 ;
+                cantidad++;
             }
         }
         return cantidad;
