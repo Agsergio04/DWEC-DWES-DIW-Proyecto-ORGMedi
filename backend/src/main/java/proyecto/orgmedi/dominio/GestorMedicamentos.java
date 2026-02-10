@@ -1,5 +1,10 @@
 package proyecto.orgmedi.dominio;
 
+import java.sql.Array;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import jakarta.persistence.*;
 import lombok.*;
 import proyecto.orgmedi.error.BadRequestException;
@@ -172,5 +177,26 @@ public class GestorMedicamentos {
      */
     public java.util.List<Medicamento> listarMedicamentos() {
         return new java.util.ArrayList<>(medicamentos);
+    }
+
+    
+
+    /**
+     * Devuelve la cantidad de medicamentos que tenga dicho 
+     * gestor de Medicamentos. 
+     */
+
+    @GetMapping("/{id}")
+    public Integer cantidadMedicamentosConsumidos(
+        Array medicamentos
+    ){
+        var cantidad  = 0;
+        for (Medicamento medicamento : this.medicamentos) {
+
+            if(medicamento != null){
+                cantidad++;
+            }
+        }
+        return cantidad;
     }
 }

@@ -31,5 +31,6 @@ public interface IMedicamentoService {
     
     MedicamentosPorFechaDTO getMedicamentosPorFecha(Long usuarioId, LocalDate fecha);
     
-    MedicamentosPorHoraDTO getMedicamentosPorHora(Long usuarioId, LocalDate fecha, String hora);
+    MedicamentosPorHoraDTO getMedicamentosPorHora(Long usuarioId, LocalDate fecha, String hora); 
+
 }
