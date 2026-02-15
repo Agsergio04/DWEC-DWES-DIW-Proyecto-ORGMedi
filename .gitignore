@@ -54,3 +54,10 @@ data/
 # OS
 Thumbs.db
 .DS_Store
+
+# Large Media Files
+Video realizativo/
+*.mp4
+*.avi
+*.mov
+*.mkv

@@ -13,15 +13,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/gestores")
 public class GestorMedicamentosController {
-    private final GestorMedicamentos gestorMedicamentos;
     private final GestorMedicamentosService gestorMedicamentosService;
     
 
     @Autowired
-    public GestorMedicamentosController(GestorMedicamentosService gestorMedicamentosService,
-        GestorMedicamentos gestorMedicamentos) {
+    public GestorMedicamentosController(GestorMedicamentosService gestorMedicamentosService) {
         this.gestorMedicamentosService = gestorMedicamentosService;
-        this.gestorMedicamentos = gestorMedicamentos;
     }
 
     @GetMapping
@@ -54,11 +51,17 @@ public class GestorMedicamentosController {
     }
 
     /**
-     * Implementado por mi 
+     * Obtener la cantidad de medicamentos consumidos de un usuario
+     * 
+     * @param usuarioId ID del usuario
+     * @return Número de medicamentos del usuario
      */
-
-    @GetMapping("/cantidad")
-    public Integer MedicamentosConsumidos(Long id){
-        return gestorMedicamentos.cantidadMedicamentosConsumidos(id);
+    @GetMapping("/cantidad/{usuarioId}")
+    public Integer MedicamentosConsumidos(@PathVariable Long usuarioId){
+        GestorMedicamentos gestor = gestorMedicamentosService.MedicamentosConsumidos(usuarioId);
+        if (gestor == null) {
+            return 0;
+        }
+        return gestor.cantidadMedicamentosConsumidos(usuarioId);
     }
 }

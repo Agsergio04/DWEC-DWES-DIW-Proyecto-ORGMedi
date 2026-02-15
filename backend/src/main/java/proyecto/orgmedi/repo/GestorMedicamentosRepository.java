@@ -1,6 +1,8 @@
 package proyecto.orgmedi.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import proyecto.orgmedi.dominio.GestorMedicamentos;
 import java.util.Optional;
 
@@ -59,11 +61,10 @@ public interface GestorMedicamentosRepository extends JpaRepository<GestorMedica
 
 
     /**
-     * Buscan en el GestorMedicamentos asociado al usuario si este
-     * posee medicamentso creados 
-     * @param usuarioId
-     * @return Optional en caso de que el usuario tenga medicamentos creados
+     * Obtiene el GestorMedicamentos de un usuario pora trabajar con sus medicamentos
+     * @param usuarioId ID del usuario
+     * @return GestorMedicamentos del usuario
      */
-
-    GestorMedicamentos cantidadMedicamentosConsumidos(Long usuarioId);
+    @Query("SELECT g FROM GestorMedicamentos g WHERE g.usuario.id = :usuarioId")
+    GestorMedicamentos cantidadMedicamentosConsumidos(@Param("usuarioId") Long usuarioId);
 }
