@@ -151,3 +151,4 @@ Endpoints de monitoreo y salud de la aplicación.
 - [Documentación del Cliente](docs/cliente/Documentacion_cliente.md)
 - [Guía de Despliegue en Render](DESPLIEGUE_RENDER_PASO_A_PASO.md)
 
+

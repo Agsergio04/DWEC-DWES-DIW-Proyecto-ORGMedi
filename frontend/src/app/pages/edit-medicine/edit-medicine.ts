@@ -145,14 +145,8 @@ export class EditMedicinePage implements OnInit, OnDestroy {
 
     // Detectar qué campos han cambiado
     const changedFields = this.detectChanges(allMedicineData);
-
-    console.log('[EditMedicinePage] Campos originales:', this.originalMedicine);
-    console.log('[EditMedicinePage] Campos nuevos:', allMedicineData);
-    console.log('[EditMedicinePage] Campos que cambiaron:', changedFields);
-
     // Si no hay cambios, simplemente navegar sin guardar
     if (Object.keys(changedFields).length === 0) {
-      console.log('[EditMedicinePage] Sin cambios, navegando...');
       this.router.navigate(['/calendario']);
       this.saving = false;
       return;
@@ -163,7 +157,6 @@ export class EditMedicinePage implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (medicine: MedicineViewModel) => {
-        console.log('Medicamento actualizado (parcial):', medicine);
         // Marcar que hay cambios pendientes para que el calendario se refresque automáticamente
         sessionStorage.setItem('medicinesUpdated', 'true');
         // Navegar al calendario en lugar de a medicamentos para ver los cambios inmediatamente
@@ -193,7 +186,6 @@ export class EditMedicinePage implements OnInit, OnDestroy {
         // Comparar valores (teniendo en cuenta null/undefined)
         if (JSON.stringify(originalValue) !== JSON.stringify(newValue)) {
           (changes as Record<string, unknown>)[key] = newValue;
-          console.log(`[detectChanges] Campo "${key}" cambió: "${originalValue}" → "${newValue}"`);
         }
       }
     }
@@ -233,7 +225,6 @@ export class EditMedicinePage implements OnInit, OnDestroy {
     const day = String(dateObj.getDate()).padStart(2, '0');
     
     const formatted = `${year}-${month}-${day}`;
-    console.log(`[formatDateForApi] Entrada: ${date} → Salida: ${formatted}`);
     return formatted;
   }
 

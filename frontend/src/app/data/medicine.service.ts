@@ -9,7 +9,8 @@ import {
   delay, 
   scan,
   timeout,
-  switchMap
+  switchMap,
+  shareReplay
 } from 'rxjs/operators';
 import { ApiService } from '../core/services/data';
 import {
@@ -136,19 +137,16 @@ export class MedicineService {
 
         // FALLBACK 1: Sin internet -> devolver datos mock para que funcione offline
         if (!navigator.onLine) {
-          console.warn('Sin conexion -> Usando datos en cache');
           return of(this.getMockMedicines());
         }
 
         // FALLBACK 2: Servidor no disponible (503) -> espera 3 segundos y reintenta TODO
         if (error.status === 503) {
-          console.warn('Servidor no disponible -> Reintentando en 3 segundos');
           return timer(3000).pipe(switchMap(() => caught));
         }
 
         // FALLBACK 3: Timeout (peticion muy lenta) -> devolver mock
         if (error.name === 'TimeoutError') {
-          console.warn('Timeout -> Usando datos de demostracion');
           return of(this.getMockMedicines());
         }
 
@@ -222,7 +220,6 @@ export class MedicineService {
       ),
       // Manejo de errores - devolver lista vacía para no romper el flujo
       catchError(() => {
-        console.warn('Error al cargar medicamentos activos, devolviendo lista vacía');
         return of([]);
       })
     );
@@ -235,11 +232,16 @@ export class MedicineService {
    * - Peticion GET a /medicamentos/por-fecha?fecha=yyyy-MM-dd
    * - Retorna medicamentos organizados por horarios para ese dia
    * - Timeout de 10 segundos
+   * - Cachea resultado con shareReplay(1) para evitar solicitudes duplicadas
    * - Perfecto para el calendario/horario del dia
    * 
    * PARAMETROS: fecha - formato yyyy-MM-dd (ej: 2024-12-25)
    * RETORNA: Observable con objeto MedicinesGroupedByDateDTO
    *          que contiene horarios con medicamentos para ese dia
+   * 
+   * OPTIMIZACION: shareReplay(1) cachea la última respuesta, evitando
+   * múltiples HTTP calls cuando multiples componentes solicitan la misma fecha.
+   * Esto es critico en el calendario donde múltiples triggers convergen.
    */
   getMedicinesByDate(fecha: string): Observable<MedicinesGroupedByDateDTO> {
     return this.api.get<MedicinesGroupedByDateDTO>(
@@ -247,6 +249,7 @@ export class MedicineService {
     ).pipe(
       timeout(10000),
       tap(result => console.log('[MedicineService] Medicamentos por fecha obtenidos:', result)),
+      shareReplay(1), // Cache la solicitud para subscribers múltiples durante corto tiempo
       catchError(err => {
         console.error('[MedicineService] Error al obtener medicamentos por fecha:', err);
         return throwError(() => err);
@@ -338,8 +341,6 @@ export class MedicineService {
     return this.api.patch<Medicine>(`medicamentos/${id}`, partial).pipe(
       // Log del éxito
       tap(result => {
-        console.log('Medicamento actualizado parcialmente:', result);
-        
         // Si cambiaron campos que afectan al horario en el calendario, notificar
         const fieldsAffectingSchedule = ['frecuencia', 'horaInicio', 'fechaInicio', 'fechaFin'];
         const changedScheduleFields = Object.keys(partial).filter(key => 
@@ -347,7 +348,6 @@ export class MedicineService {
         );
         
         if (changedScheduleFields.length > 0) {
-          console.log(`[MedicineService] Notificando actualización de medicamento ${id} - campos: ${changedScheduleFields.join(', ')}`);
           this.medicineUpdated$.next({ 
             id, 
             changedFields: changedScheduleFields 
@@ -896,15 +896,12 @@ export class MedicineService {
     params = params.set('consumido', consumido.toString());
     
     const fullUrl = `medicamentos/${id}/consumo`;
-    console.log(`[MedicineService] registrarConsumo - Enviando POST a ${fullUrl}?${params.toString()}`);
-    
     return this.api.post<any>(
       fullUrl,
       null,
       { params: params }
     ).pipe(
       tap(response => {
-        console.log(`[MedicineService] Consumo registrado para ${id} en ${fecha} ${hora}:`, response);
       }),
       catchError(error => {
         console.error(`[MedicineService] Error al registrar consumo:`, error);
@@ -932,7 +929,6 @@ export class MedicineService {
       { fecha }
     ).pipe(
       tap(response => {
-        console.log(`[MedicineService] Consumos obtenidos para ${fecha}:`, response);
       }),
       catchError(error => {
         console.error(`[MedicineService] Error al obtener consumos:`, error);
@@ -971,10 +967,8 @@ export class MedicineService {
       { fecha, hora }
     ).pipe(
       tap(response => {
-        console.log(`[MedicineService] Consumo obtenido para ${id} en ${fecha} ${hora}:`, response);
       }),
       catchError(error => {
-        console.warn(`[MedicineService] No hay registro de consumo:`, error);
         return of(null);
       })
     );

@@ -1,0 +1,103 @@
+<div class="carousel" role="region" tabindex="0">
+  <!-- Área principal del carrusel -->
+  <div class="carousel__viewer" role="main">
+    <!-- Anuncio de cambio de slide para lectores de pantalla -->
+    <div 
+      role="status" 
+      aria-live="polite" 
+      aria-atomic="true"
+      class="carousel__sr-only"
+    >
+      {{ getSlideAriaLive() }}
+    </div>
+
+    <!-- Contenedor de slides -->
+    <div class="carousel__slides-container">
+      <ng-container *ngFor="let item of items; let i = index">
+        <!-- Slide individual -->
+        <figure 
+          class="carousel__slide"
+          [class.carousel__slide--active]="isActive(i)"
+          [attr.aria-hidden]="!isActive(i)"
+          role="group"
+        >
+          <img 
+            [src]="item.imageUrl"
+            [alt]="item.imageAlt"
+            width="800"
+            height="400"
+            class="carousel__slide-image"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption class="carousel__slide-caption">
+            <h2 class="carousel__slide-title">{{ item.title }}</h2>
+            <p class="carousel__slide-description">{{ item.description }}</p>
+          </figcaption>
+        </figure>
+      </ng-container>
+    </div>
+
+    <!-- Indicador de posición actual -->
+    <div class="carousel__counter" aria-label="Posición actual">
+      <span class="carousel__counter-text">
+        {{ currentIndex + 1 }} / {{ items.length }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Controles de navegación -->
+  <div class="carousel__controls" role="group" aria-label="Controles del carrusel">
+    <!-- Botón anterior -->
+    <button
+      type="button"
+      class="carousel__button carousel__button--prev"
+      (click)="previousSlide()"
+      [disabled]="items.length <= 1"
+      aria-label="Slide anterior"
+      aria-describedby="carousel-keyboard-help"
+    >
+      <svg class="carousel__button-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="sr-only">Anterior</span>
+    </button>
+
+    <!-- Indicadores de navegación -->
+    <div class="carousel__indicators" role="tablist" aria-label="Seleccionar slide">
+      <ng-container *ngFor="let item of items; let i = index">
+        <button
+          type="button"
+          class="carousel__indicator"
+          [class.carousel__indicator--active]="isActive(i)"
+          (click)="goToSlide(i)"
+          [attr.aria-selected]="isActive(i)"
+          [attr.aria-label]="'Ir al slide ' + (i + 1) + ': ' + item.title"
+          role="tab"
+        >
+          <span class="carousel__indicator-inner"></span>
+        </button>
+      </ng-container>
+    </div>
+
+    <!-- Botón siguiente -->
+    <button
+      type="button"
+      class="carousel__button carousel__button--next"
+      (click)="nextSlide()"
+      [disabled]="items.length <= 1"
+      aria-label="Siguiente slide"
+      aria-describedby="carousel-keyboard-help"
+    >
+      <svg class="carousel__button-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M9 19l7-7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="sr-only">Siguiente</span>
+    </button>
+  </div>
+
+  <!-- Ayuda de teclado (screenreader only) -->
+  <div id="carousel-keyboard-help" class="sr-only">
+    Usa las flechas izquierda y derecha del teclado para navegar entre slides. También puedes usar Tab para navegar entre botones.
+  </div>
+</div>

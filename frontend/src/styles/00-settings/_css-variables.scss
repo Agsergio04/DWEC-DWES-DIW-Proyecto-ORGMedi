@@ -29,6 +29,10 @@
   --color-borde-primario: var(--color-bordes_marco_botones);
   --color-borde-texto-caja: var(--color-texto_borde_cajas);
 
+  /* Colores para Calendario - Contraste optimizado */
+  --color-calendario-texto: #{vars.$color-calendario-texto-light};
+  --color-calendario-texto-rgb: #{color.channel(vars.$color-calendario-texto-light, "red", $space: rgb)}, #{color.channel(vars.$color-calendario-texto-light, "green", $space: rgb)}, #{color.channel(vars.$color-calendario-texto-light, "blue", $space: rgb)};
+
   /* Variante de color para la card de medicamentos */
   --color-marco-medicina: #{vars.$color-rosa-claro};
 
@@ -156,6 +160,9 @@
   /* RGB helpers dark */
   --color-bordes_marco_botones-rgb: #{color.channel(vars.$color-bordes_marco_botones_dark, "red", $space: rgb)}, #{color.channel(vars.$color-bordes_marco_botones_dark, "green", $space: rgb)}, #{color.channel(vars.$color-bordes_marco_botones_dark, "blue", $space: rgb)};
   --color-texto_borde_cajas-rgb: #{color.channel(vars.$color-texto_borde_cajas_dark, "red", $space: rgb)}, #{color.channel(vars.$color-texto_borde_cajas_dark, "green", $space: rgb)}, #{color.channel(vars.$color-texto_borde_cajas_dark, "blue", $space: rgb)};
+  /* Colores para Calendario modo oscuro - Contraste optimizado */
+  --color-calendario-texto: #{vars.$color-calendario-texto-dark};
+  --color-calendario-texto-rgb: #{color.channel(vars.$color-calendario-texto-dark, "red", $space: rgb)}, #{color.channel(vars.$color-calendario-texto-dark, "green", $space: rgb)}, #{color.channel(vars.$color-calendario-texto-dark, "blue", $space: rgb)};
   --color-variante-primera: #{vars.$color-variante-primera};
   --color-variante-segunda: #{vars.$color-variante-segunda};
   --color-variante-tercera: #{vars.$color-variante-tercera};

@@ -1,10 +1,9 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/services/auth';
 import { pendingChangesGuard } from './core/services/guards';
-import { medicinesResolver, medicineDetailResolver } from './core/services/resolvers';
+import { medicineDetailResolver } from './core/services/resolvers';
 import { profileResolver } from './core/services/resolvers';
-import { homeResolver } from './core/services/resolvers';
-import { NotFoundPage } from './pages/not-found/not-found';
+// NotFoundPage se carga lazy via loadComponent en la ruta wildcard
 
 /**
  * CONFIGURACIÓN DE RUTAS - ORGMedi
@@ -88,11 +87,10 @@ export const MAIN_ROUTES: Routes = [
     data: { 
       chunkName: 'main-home',
       breadcrumb: 'Inicio',
-      description: 'Página de inicio de ORGMedi'
-    },
-    resolve: {
-      homeData: homeResolver
+      description: 'Página de inicio de ORGMedi',
+      preload: true
     }
+    // Resolver eliminado: homeResolver añadía 300ms artificial de retraso
   },
 ];
 
@@ -109,10 +107,8 @@ export const MEDICINES_ROUTES: Routes = [
       breadcrumb: 'Medicamentos',
       description: 'Listado de medicamentos'
     },
-    canActivate: [authGuard],
-    resolve: {
-      medicines: medicinesResolver
-    }
+    canActivate: [authGuard]
+    // Resolver eliminado: MedicinesPage llama loadPage(1) en ngOnInit, ignoraba datos resueltos
   },
   {
     path: 'medicamentos/crear-medicamento',
@@ -165,12 +161,12 @@ export const UTILITY_ROUTES: Routes = [
     data: { 
       chunkName: 'utils-calendar',
       breadcrumb: 'Calendario',
-      description: 'Calendario de medicamentos'
+      description: 'Calendario de medicamentos',
+      preload: true
     },
-    canActivate: [authGuard],
-    resolve: {
-      medicines: medicinesResolver
-    }
+    canActivate: [authGuard]
+    // Resolver eliminado: el componente carga datos via getMedicinesByDate()
+    // Eliminar el resolver evita bloquear el renderizado 3-6s esperando la API
   },
   {
     path: 'guia-estilos',

@@ -35,11 +35,9 @@ export class DataInputSelectorDemoPage {
 
   onFrequencySelected(option: SelectorOption): void {
     this.selectedFrequency = option;
-    console.log('Frecuencia seleccionada:', option);
   }
 
   onColorSelected(option: SelectorOption): void {
     this.selectedColor = option;
-    console.log('Color seleccionado:', option);
   }
 }

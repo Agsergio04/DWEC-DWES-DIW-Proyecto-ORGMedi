@@ -39,29 +39,18 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next) 
   const isAuthUrl = req.url.includes('/auth/login') || 
                     req.url.includes('/auth/register') || 
                     req.url.includes('/public');
-  
-  console.log('[AuthInterceptor]', {
-    url: req.url,
-    hasToken: !!token,
-    isPublicUrl: isAuthUrl,
-    tokenPreview: token ? token.substring(0, 20) + '...' : 'NONE'
-  });
-  
   // No hay token - el usuario no está autenticado
   if (!token) {
-    console.log('[AuthInterceptor]  Sin token - Usuario debe iniciar sesión');
     return next(req);
   }
 
   // Es una ruta pública - no añadir token aunque exista
   if (isAuthUrl) {
-    console.log('[AuthInterceptor] URL pública - saltando inyección de token');
     return next(req);
   }
 
   // 3. Añadir token en el header Authorization: Bearer <token>
   // clone() crea una copia de la petición sin modificar la original
-  console.log('[AuthInterceptor]  Añadiendo Authorization header');
   const authReq = req.clone({
     setHeaders: {
       // Formato estándar: "Bearer <token>"

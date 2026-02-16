@@ -1,0 +1,390 @@
+@use '../../../../styles/00-settings/variables' as *;
+@use '../../../../styles/01-tools/responsive' as *;
+
+// Colores primarios del carrusel
+$carousel-spacing: $espaciado-16;
+$carousel-border-radius: $radius-md;
+$carousel-transition-duration: 0.3s;
+
+// Estilos principales del carrusel
+.carousel {
+  &__viewer {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    overflow: hidden;
+    border-radius: $carousel-border-radius;
+    background-color: var(--color-secundario-secondary);
+    min-height: 300px;
+  }
+
+  &__slides-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+  }
+
+  // Styling de slides individuales
+  &__slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity $carousel-transition-duration ease-in-out,
+                visibility $carousel-transition-duration ease-in-out;
+
+    &--active {
+      opacity: 1;
+      visibility: visible;
+      z-index: 1;
+    }
+  }
+
+  &__slide-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  &__slide-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+    color: white;
+    padding: 2rem 1.5rem 1.5rem;
+    margin: 0;
+    text-align: left;
+  }
+
+  &__slide-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: $font-weight-bold;
+    color: white;
+  }
+
+  &__slide-description {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  // Indicador de posición
+  &__counter {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: rgba($color-primario-primary, 0.9);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: $radius-sm;
+    font-size: 0.875rem;
+    font-weight: $font-weight-bold;
+    z-index: 2;
+  }
+
+  &__counter-text {
+    letter-spacing: 0.05em;
+  }
+
+  // Controles de navegación
+  &__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $carousel-spacing;
+    padding: $carousel-spacing;
+    background-color: var(--color-fondo);
+    border-top: 1px solid var(--color-bordes_marco_botones);
+  }
+
+  // Botones de navegación
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 2px solid var(--color-bordes_marco_botones);
+    border-radius: 50%;
+    background-color: var(--color-fondo);
+    color: var(--color-bordes_marco_botones);
+    cursor: pointer;
+    transition: all $carousel-transition-duration ease-in-out;
+    font-size: 0;
+    line-height: 0;
+    
+    // Accesibilidad: indicador visual claro del foco
+    &:focus-visible {
+      outline: 3px solid var(--color-primario-primary);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 1px var(--color-fondo), 0 0 0 4px var(--color-primario-primary);
+    }
+
+    // Estado hover
+    &:hover:not(:disabled) {
+      border-color: var(--color-primario-primary);
+      color: var(--color-primario-primary);
+      background-color: var(--color-primario-disabled);
+    }
+
+    // Estado activo
+    &:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    // Estado deshabilitado
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      border-color: var(--color-bordes_marco_botones);
+      color: var(--color-bordes_marco_botones);
+    }
+  }
+
+  &__button-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  // Contenedor de indicadores
+  &__indicators {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  // Indicadores individuales
+  &__indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all $carousel-transition-duration ease-in-out;
+
+    // Accesibilidad: indicador visual del foco
+    &:focus-visible {
+      outline: 3px solid var(--color-primario-primary);
+      outline-offset: 4px;
+      border-radius: 50%;
+    }
+  }
+
+  &__indicator-inner {
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #999999;
+    transition: all $carousel-transition-duration ease-in-out;
+  }
+
+  &__indicator--active &__indicator-inner {
+    background-color: var(--color-primario-primary);
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Clases de utilidad para screen readers
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+  border: 0;
+}
+
+// Área oculta de anuncios para screen readers
+.carousel__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// Media query: Respetar preferencias de movimiento reducido
+@media (prefers-reduced-motion: reduce) {
+  .carousel {
+    &__slide {
+      transition: none;
+    }
+
+    &__button,
+    &__indicator-inner {
+      transition: none;
+    }
+  }
+}
+
+// Media query: Responsive design para tablets
+@media (max-width: 768px) {
+  .carousel {
+    &__viewer {
+      min-height: 250px;
+    }
+
+    &__slide-caption {
+      padding: 1.5rem 1rem 1rem;
+    }
+
+    &__slide-title {
+      font-size: 1.25rem;
+    }
+
+    &__slide-description {
+      font-size: 0.875rem;
+    }
+
+    &__counter {
+      font-size: 0.75rem;
+      padding: 0.375rem 0.75rem;
+    }
+
+    &__controls {
+      gap: 0.75rem;
+      padding: 0.75rem;
+    }
+
+    &__button {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+// Media query: Responsive design para móviles
+@media (max-width: 480px) {
+  .carousel {
+    &__viewer {
+      min-height: 200px;
+    }
+
+    &__slide-caption {
+      padding: 1rem 0.75rem 0.75rem;
+    }
+
+    &__slide-title {
+      font-size: 1rem;
+    }
+
+    &__slide-description {
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    &__counter {
+      font-size: 0.65rem;
+      padding: 0.25rem 0.5rem;
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+
+    &__controls {
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.5rem;
+    }
+
+    &__indicators {
+      order: 2;
+      width: 100%;
+    }
+
+    &__button {
+      width: 36px;
+      height: 36px;
+      font-size: 0.5rem;
+      
+      &--prev {
+        order: 1;
+      }
+
+      &--next {
+        order: 3;
+      }
+    }
+
+    &__indicator-inner {
+      width: 10px;
+      height: 10px;
+    }
+
+    &__indicator--active &__indicator-inner {
+      width: 12px;
+      height: 12px;
+    }
+  }
+}
+
+// Tema claro (por defecto)
+@media (prefers-color-scheme: light) {
+  .carousel {
+    &__slide-title,
+    &__slide-description {
+      color: white;
+    }
+  }
+}
+
+// Tema oscuro
+@media (prefers-color-scheme: dark) {
+  .carousel {
+    &__viewer {
+      background-color: $color-fondo-dark;
+    }
+
+    &__controls {
+      background-color: $color-fondo-dark;
+      border-top-color: $color-bordes_marco_botones-dark;
+    }
+
+    &__button {
+      background-color: $color-fondo-dark;
+      color: $color-texto_borde_cajas-dark;
+      border-color: $color-primario-dark_hover;
+
+      &:hover:not(:disabled) {
+        background-color: $color-primario-dark_hover;
+        border-color: $color-primario-dark;
+      }
+    }
+
+    &__indicator-inner {
+      background-color: $color-secundario-dark_hover;
+    }
+
+    &__indicator--active &__indicator-inner {
+      background-color: $color-primario-dark;
+    }
+  }
+}
+

@@ -1,8 +1,8 @@
 <header class="app-header">
   <!-- IZQUIERDA: Logo + Título -->
   <div class="app-header__brand">
-    <a class="app-header__logo" routerLink="/" aria-label="Inicio - ORGMedi">
-      <img src="/Icono App.svg" alt="ORGMedi" class="app-header__svg-logo" aria-hidden="true" />
+    <a class="app-header__logo" routerLink="/" aria-label="Ir a inicio - ORGMedi">
+      <img src="/Icono App.svg" alt="" width="48" height="48" class="app-header__svg-logo" aria-hidden="true" />
       <span class="app-header__title">ORGMedi</span>
     </a>
   </div>
@@ -14,15 +14,15 @@
   <div class="app-header__controls">
     <!-- Botón hamburguesa (solo visible si está logueado) -->
     <button
-      *ngIf="isLoggedIn"
+      *ngIf="isLoggedIn()"
       #menuButton
       class="app-header__hamburger"
-      [class.is-open]="isOpen"
+      [class.is-open]="isOpen()"
       (click)="toggleMenu()"
       aria-label="Menú principal"
-      [attr.aria-expanded]="isOpen"
+      [attr.aria-expanded]="isOpen()"
       aria-controls="main-nav-menu"
-      [attr.aria-pressed]="isOpen"
+      [attr.aria-pressed]="isOpen()"
     >
       <svg
         width="26"
@@ -49,7 +49,7 @@
       (click)="toggleNotificationsPanel()"
       aria-label="Ver notificaciones"
       [attr.aria-pressed]="showNotificationsPanel()"
-      *ngIf="isLoggedIn"
+      *ngIf="isLoggedIn()"
     >
       <span class="app-header__notifications-icon" aria-hidden="true">
         <svg
@@ -90,7 +90,7 @@
     <dialog
       class="app-header__notifications-panel"
       [class.is-open]="showNotificationsPanel()"
-      *ngIf="isLoggedIn"
+      *ngIf="isLoggedIn()"
       aria-label="Panel de notificaciones"
     >
       <header class="app-header__notifications-header">
@@ -189,9 +189,9 @@
       class="app-header__theme-toggle"
       (click)="toggleTheme()"
       aria-label="Cambiar tema"
-      [attr.aria-pressed]="isDarkMode"
+      [attr.aria-pressed]="isDarkMode()"
     >
-      <ng-container *ngIf="isDarkMode; else lightIcon">
+      <ng-container *ngIf="isDarkMode(); else lightIcon">
         <!-- SVG modo oscuro -->
         <svg
           width="24"
@@ -240,7 +240,7 @@
   <div
     class="app-header__overlay"
     (click)="closeMenu()"
-    [class.is-visible]="isOpen"
+    [class.is-visible]="isOpen()"
     aria-hidden="true"
   ></div>
 
@@ -249,8 +249,8 @@
     #navMenu
     id="main-nav-menu"
     class="app-header__nav"
-    [class.is-open]="isOpen"
-    [attr.aria-hidden]="!isOpen"
+    [class.is-open]="isOpen()"
+    [attr.aria-hidden]="!isOpen()"
     role="navigation"
     aria-label="Navegación principal"
   >
@@ -352,5 +352,7 @@
   </nav>
 
   <!-- Toast global -->
-  <app-toast></app-toast>
+  @defer (on idle) {
+    <app-toast></app-toast>
+  }
 </header>

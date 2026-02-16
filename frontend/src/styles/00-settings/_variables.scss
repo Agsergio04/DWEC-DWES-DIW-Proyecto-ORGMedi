@@ -16,7 +16,7 @@ $color-secundario-disabled: #E8F6D5;
 
 //Fondos de página
 $color-fondo-light: #D3B5C6;
-$color-fondo-dark: #6F4A5D;
+$color-fondo-dark: #CEB6C0;
 
 
 // Color Afirmacion
@@ -33,7 +33,7 @@ $color-negacion-disabled: #FF0202;
 $color-bordes_marco_botones: #311927;
 
 //Texto y Borde de las caja
-$color-texto_borde_cajas: #3A4730;
+$color-texto_borde_cajas: #311927;
 
 //Variante de color - Bordes y Marco (modo claro y oscuro)
 $color-bordes-marco-variante-light: #311927;
@@ -77,6 +77,17 @@ $color-afirmacion-dark: #168C04;
 // Color Negacion
 $color-negacion-dark_hover: #840000;
 $color-negacion-dark: #9C1010;
+
+/* Colores específicos para Calendario - Modo Claro y Oscuro */
+// Texto de calendario en modo claro (sobre fondos de botones)
+$color-calendario-texto-light: #311927;
+// Texto de calendario en modo oscuro (sobre fondos más oscuros)
+$color-calendario-texto-dark: #E8F6D5;
+
+// Colores para Formularios y Elementos en Modo Oscuro
+// Texto sobre fondos oscuros debe ser muy claro
+$color-form-texto-dark: #E8F6D5;
+$color-form-error-dark: #FF6B6B;  // Rojo más claro para modo oscuro
 
 //Bordes y Marco de los botones
 $color-bordes_marco_botones-dark: #F6D5E8;

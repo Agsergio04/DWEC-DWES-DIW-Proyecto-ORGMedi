@@ -6,6 +6,8 @@
   background-color: var(--bg-light, #f5f5f5);
   border-bottom: 1px solid var(--border-color, #e0e0e0);
   font-size: 0.875rem;
+  min-height: 40px;
+  contain: layout style;
 }
 
 .breadcrumb-empty {

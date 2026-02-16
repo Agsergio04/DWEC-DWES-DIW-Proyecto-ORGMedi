@@ -17,8 +17,7 @@ export * from './data';
 // UI
 export * from './ui';
 
-// Monitoring
-export * from './monitoring';
+// Monitoring (servicios de debug, no se re-exportan en producción)
 
 // Utils
 export * from './service.template';

@@ -148,7 +148,6 @@ export class UserService {
       retry(1), // Un solo reintento
       map(users => users.map(user => this.transformUserToViewModel(user))),
       catchError(() => {
-        console.warn('Error al cargar usuarios, devolviendo lista vacía');
         return of([]);
       })
     );

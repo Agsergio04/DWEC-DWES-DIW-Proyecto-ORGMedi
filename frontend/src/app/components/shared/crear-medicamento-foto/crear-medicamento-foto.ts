@@ -142,7 +142,6 @@ export class CrearMedicamentoFotoComponent {
       
       this.apiService.extractOcr(formData).subscribe({
         next: (response: any) => {
-          console.log('[CrearMedicamentoFotoComponent] OCR Data:', response);
           // Guardar datos del OCR en el servicio
           this.ocrDataService.setOcrData(response);
           // Redirigir a la página de crear medicamento

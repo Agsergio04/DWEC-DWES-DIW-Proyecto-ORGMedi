@@ -113,7 +113,6 @@ export class MedicineFormComponent implements OnInit {
    * Maneja la selección de frecuencia
    */
   onFrequencySelected(option: SelectorOption): void {
-    console.log('[MedicineForm] onFrequencySelected:', option);
     this.selectedFrequency = option;
     // Actualizar el FormControl con el valor del option SIN usar setValue para evitar conflictos con ControlValueAccessor
     const control = this.form.get('frecuencia');
@@ -121,7 +120,6 @@ export class MedicineFormComponent implements OnInit {
       // Usar patchValue o directamente cambiar el internal value
       control.patchValue(option.id, { emitEvent: false });
       control.markAsTouched();
-      console.log('[MedicineForm] Form frecuencia value:', control.value);
     }
   }
 
@@ -129,7 +127,6 @@ export class MedicineFormComponent implements OnInit {
    * Maneja la selección de color
    */
   onColorSelected(option: SelectorOption): void {
-    console.log('[MedicineForm] onColorSelected:', option);
     this.selectedColor = option;
     // Actualizar el FormControl con el valor del option SIN usar setValue para evitar conflictos con ControlValueAccessor
     const control = this.form.get('color');
@@ -137,7 +134,6 @@ export class MedicineFormComponent implements OnInit {
       // Usar patchValue o directamente cambiar el internal value
       control.patchValue(option.id, { emitEvent: false });
       control.markAsTouched();
-      console.log('[MedicineForm] Form color value:', control.value);
     }
   }
 
@@ -163,7 +159,6 @@ export class MedicineFormComponent implements OnInit {
       frecuencia: this.selectedFrequency.id as number,
       color: this.colorMap[this.selectedColor.id as string]
     };
-    console.log('[MedicineForm] Enviando datos:', formData);
     this.formSubmit.emit(formData);
   }
 

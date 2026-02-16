@@ -67,7 +67,6 @@ export class OcrDataService {
    * Notifica a todos los componentes suscritos que hay datos nuevos
    */
   setOcrData(data: OcrMedicineData): void {
-    console.log('[OcrDataService] Datos OCR establecidos:', data);
     // Emite el nuevo valor a todos los suscriptores
     this.ocrDataSubject.next(data);
   }
@@ -86,7 +85,6 @@ export class OcrDataService {
    * Útil después de guardar los datos en base de datos
    */
   clearOcrData(): void {
-    console.log('[OcrDataService] Datos OCR limpiados');
     // Emite null para indicar que no hay datos
     this.ocrDataSubject.next(null);
   }

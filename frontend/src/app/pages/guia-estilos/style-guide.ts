@@ -120,22 +120,18 @@ export class StyleGuidePage implements OnInit {
   }
 
   onButtonClick(kind: string) {
-    console.log('Clicked', kind);
   }
 
   onEditMedicine(medicine: MedicineFormData): void {
-    console.log('Editar medicamento:', medicine);
   }
 
   onDeleteMedicine(medicineId: number): void {
-    console.log('Eliminar medicamento:', medicineId);
   }
 
   /**
    * Maneja el envío del formulario de medicina
    */
   onMedicineFormSubmit(formData: MedicineFormData): void {
-    console.log('Formulario de medicina enviado:', formData);
     alert(`Medicamento: ${formData.nombre}\nCantidad: ${formData.cantidadMg}mg\nFecha de inicio: ${formData.fechaInicio}`);
   }
 
@@ -143,6 +139,5 @@ export class StyleGuidePage implements OnInit {
    * Maneja la cancelación del formulario de medicina
    */
   onMedicineFormCancel(): void {
-    console.log('Formulario de medicina cancelado');
   }
 }

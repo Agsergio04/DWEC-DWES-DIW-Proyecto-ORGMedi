@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild, inject, ChangeDetectionStrategy, signal, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { ThemeService } from '../../../core/services/ui';
 import { AuthService } from '../../../core/services/auth';
 import { NotificationsService } from '../../../core/services/ui/notifications.service';
@@ -16,10 +17,10 @@ import { ToastComponent } from '../../../shared/toast.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Header implements OnInit, OnDestroy {
-  isDarkMode = false;
-  isAuthRoute = false;
-  isOpen = false; // Menú hamburguesa
-  isLoggedIn = false; // Estado de autenticación
+  isDarkMode = signal(false);
+  isAuthRoute = signal(false);
+  isOpen = signal(false); // Menú hamburguesa
+  isLoggedIn = signal(false); // Estado de autenticación
   showNotificationsPanel = signal(false); // Panel de notificaciones
 
   @ViewChild('menuButton') menuButton?: ElementRef<HTMLButtonElement>;
@@ -32,7 +33,6 @@ export class Header implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private authService = inject(AuthService);
   private notificationsService = inject(NotificationsService);
-  private cdr = inject(ChangeDetectorRef);
 
   constructor(public router: Router, private elementRef: ElementRef) {}
 
@@ -40,17 +40,18 @@ export class Header implements OnInit, OnDestroy {
     // Delegar lógica de tema al ThemeService
     // Suscribirse al observable para reflejar el estado actual
     this.themeSub = this.themeService.theme$.subscribe(theme => {
-      this.isDarkMode = theme === 'dark';
+      this.isDarkMode.set(theme === 'dark');
     });
 
-    // Suscribirse al estado de autenticación
-    this.authSub = this.authService.isLoggedIn$.subscribe(isLoggedIn => {
-      this.isLoggedIn = isLoggedIn;
-      this.cdr.markForCheck();
+    // Suscribirse al estado de autenticación (optimizado con debounceTime)
+    this.authSub = this.authService.isLoggedIn$.pipe(
+      debounceTime(50) // Evitar cambios de detección frecuentes
+    ).subscribe(isLoggedIn => {
+      this.isLoggedIn.set(isLoggedIn);
       // Auto-start polling cuando el usuario inicia sesión
       if (isLoggedIn) {
         this.notificationsService.startPolling();
-        this.notificationsSub = this.notificationsService.pollNotifications(30000).subscribe();
+        this.notificationsSub = this.notificationsService.pollNotifications(45000).subscribe(); // 45s en lugar de 30s
       } else {
         // Auto-stop polling cuando el usuario cierra sesión
         this.notificationsService.stopPolling();
@@ -80,17 +81,11 @@ export class Header implements OnInit, OnDestroy {
   }
 
   toggleMenu() {
-    this.isOpen = !this.isOpen;
-    if (this.isOpen && this.navMenu) {
-      setTimeout(() => {
-        const firstNavItem = this.navMenu?.nativeElement.querySelector('.app-header__pill');
-        (firstNavItem as HTMLElement)?.focus();
-      }, 100);
-    }
+    this.isOpen.set(!this.isOpen());
   }
 
   closeMenu() {
-    this.isOpen = false;
+    this.isOpen.set(false);
     if (this.menuButton) {
       this.menuButton.nativeElement.focus();
     }
@@ -118,7 +113,7 @@ export class Header implements OnInit, OnDestroy {
   onDocumentClick(event: Event) {
     const target = event.target as HTMLElement;
     const clickedInside = this.elementRef.nativeElement.contains(target);
-    if (!clickedInside && this.isOpen) {
+    if (!clickedInside && this.isOpen()) {
       this.closeMenu();
     }
   }
@@ -126,7 +121,7 @@ export class Header implements OnInit, OnDestroy {
   @HostListener('document:keydown.escape', ['$event'])
   onEscapeKey(event: Event) {
     const ke = event as KeyboardEvent;
-    if (this.isOpen) {
+    if (this.isOpen()) {
       ke.preventDefault();
       this.closeMenu();
     }
@@ -137,10 +132,10 @@ export class Header implements OnInit, OnDestroy {
       const tree = this.router.parseUrl(url || '');
       const primary = tree.root.children['primary'];
       const first = primary?.segments.length ? primary.segments[0].path : '';
-      this.isAuthRoute = first === 'iniciar-sesion' || first === 'registrarse';
+      this.isAuthRoute.set(first === 'iniciar-sesion' || first === 'registrarse');
     } catch (e) {
       const path = (url || '').split('?')[0].split('#')[0].split('/')[1] || '';
-      this.isAuthRoute = path.startsWith('iniciar-sesion') || path.startsWith('registrarse');
+      this.isAuthRoute.set(path.startsWith('iniciar-sesion') || path.startsWith('registrarse'));
     }
   }
 

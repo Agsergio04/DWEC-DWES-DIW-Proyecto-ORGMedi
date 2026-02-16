@@ -36,7 +36,6 @@ export class CreateMedicinePhotoPage implements PendingChangesComponent, OnInit,
       .pipe(takeUntil(this.destroy$))
       .subscribe(ocrData => {
         if (ocrData) {
-          console.log('[CreateMedicinePhotoPage] Datos OCR recibidos:', ocrData);
           this.prepareMedicineFormData(ocrData);
           this.photoStep = false;  // Mostrar formulario
         }
@@ -100,8 +99,6 @@ export class CreateMedicinePhotoPage implements PendingChangesComponent, OnInit,
    */
   onMedicineFormSubmit(formData: MedicineFormData): void {
     this.isSubmitting = true;
-    console.log('[CreateMedicinePhotoPage] Medicamento guardado desde foto:', formData);
-    
     // TODO: Aquí iría la lógica real para guardar el medicamento en la API
     // Por ahora solo navegamos de vuelta
     

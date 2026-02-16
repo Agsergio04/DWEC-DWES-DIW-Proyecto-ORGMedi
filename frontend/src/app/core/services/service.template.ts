@@ -331,7 +331,6 @@ onFileSelected(event: Event) {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          console.log('Imagen subida:', response.imageUrl);
         }
       });
   }

@@ -18,7 +18,6 @@ export class DomDemoComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     // Comprobación simple
     if (!this.contenedor) {
-      console.warn('Contenedor no disponible en ngAfterViewInit');
     }
   }
 

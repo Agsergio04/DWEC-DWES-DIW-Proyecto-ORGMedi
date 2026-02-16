@@ -66,7 +66,6 @@ export class CreateMedicinePage implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(ocrData => {
         if (ocrData) {
-          console.log('[CreateMedicinePage] Datos OCR recibidos:', ocrData);
           this.ocrData = ocrData;
         }
       });
@@ -81,7 +80,6 @@ export class CreateMedicinePage implements OnInit, OnDestroy {
    * Maneja el envío del formulario
    */
   onFormSubmit(formData: MedicineFormData): void {
-    console.log('[CreateMedicinePage] onFormSubmit called with:', formData);
     this.saving = true;
     this.error = null;
 
@@ -98,23 +96,17 @@ export class CreateMedicinePage implements OnInit, OnDestroy {
 
     // Validación básica: asegurar que fechaInicio <= fechaFin si ambas existen
     if (medicineData.fechaInicio && medicineData.fechaFin && medicineData.fechaFin < medicineData.fechaInicio) {
-      console.warn('[CreateMedicinePage] fechaFin anterior a fechaInicio — intercambiando valores');
       // Intercambiar para evitar crear registros inválidos
       const tmp = medicineData.fechaInicio;
       medicineData.fechaInicio = medicineData.fechaFin;
       medicineData.fechaFin = tmp;
     }
-
-    console.log('[CreateMedicinePage] Mapped medicine data:', medicineData);
     this.medicineService.create(medicineData).subscribe({
       next: (medicine) => {
-        console.log('[CreateMedicinePage] Medicamento creado:', medicine);
-      
         // Asegurar que el gestor refleje el estado persistido en el servidor
         try {
           this.medicineStore.load();
         } catch (e) {
-          console.warn('[CreateMedicinePage] Error al recargar los medicamentos tras crear:', e);
         }
 
         // Limpiar datos del OCR después de guardar
@@ -179,7 +171,6 @@ export class CreateMedicinePage implements OnInit, OnDestroy {
     const day = String(dateObj.getDate()).padStart(2, '0');
     
     const formatted = `${year}-${month}-${day}`;
-    console.log(`[formatDateForApi] Entrada: ${date} → Salida: ${formatted}`);
     return formatted;
   }
 

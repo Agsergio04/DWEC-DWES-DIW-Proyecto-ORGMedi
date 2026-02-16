@@ -136,9 +136,6 @@ export class BrowserDetectionService {
   private logBrowserInfo(): void {
     const info = this.browserInfo$.value;
     console.group('🌐 Browser Detection');
-    console.log(`Browser: ${info.name} v${info.version}`);
-    console.log(`Chromium-based: ${info.isChromium}`);
-    console.log(`Avast Secure Browser: ${info.isAvast}`);
     console.groupEnd();
   }
 

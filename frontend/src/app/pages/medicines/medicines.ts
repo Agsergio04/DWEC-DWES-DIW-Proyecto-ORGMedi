@@ -72,7 +72,6 @@ export class MedicinesPage implements OnInit, OnDestroy {
     // Verificar si hay token de autenticación
     const token = localStorage.getItem('authToken');
     if (!token) {
-      console.warn('[MedicinesPage] No token found, redirecting to login');
       this.router.navigate(['/iniciar-sesion']);
       return;
     }
@@ -88,6 +87,9 @@ export class MedicinesPage implements OnInit, OnDestroy {
 
     // ✅ Cargar primera página de medicamentos (Tarea 4)
     this.loadPage(1);
+
+    // Cargar store solo si se necesita (para signals de stats, filtros, etc.)
+    this.medicineStore.loadIfNeeded();
   }
 
   /**
@@ -258,7 +260,6 @@ export class MedicinesPage implements OnInit, OnDestroy {
    * Toggle consumo del medicamento
    */
   toggleConsumption(id: number): void {
-    console.log('Toggle consumo para medicamento:', id);
     const current = this.medicineStore.getById(id)();
     if (!current) return;
 
@@ -332,9 +333,6 @@ export class MedicinesPage implements OnInit, OnDestroy {
           const hasMore = this.currentPage() < totalPages;
           return { ...s, items, total, totalPages, hasMore };
         });
-
-        console.log('Medicamento eliminado:', medicine.nombre);
-
         // Si la página quedó vacía y existen páginas anteriores, retroceder una
         const nowItems = this.paginationState().items;
         if (nowItems.length === 0 && this.currentPage() > 1) {

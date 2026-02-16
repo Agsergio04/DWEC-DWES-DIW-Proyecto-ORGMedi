@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CalendarComponent } from '../../components/shared/calendar/calendar';
+import { CarouselComponent } from '../../components/shared/carousel/carousel';
 import { MedicineCardCalendarComponent } from '../../components/shared/medicine-card-calendar/medicine-card-calendar';
 import { MedicineStoreSignals } from '../../data/stores/medicine-signals.store';
 import { MedicineViewModel, MedicineTimeGroupDTO } from '../../data/models/medicine.model';
@@ -22,7 +23,7 @@ export interface MedicineTimeGroup {
 @Component({
   selector: 'app-calendar-page',
   standalone: true,
-  imports: [CommonModule, CalendarComponent, MedicineCardCalendarComponent],
+  imports: [CommonModule, CalendarComponent, CarouselComponent, MedicineCardCalendarComponent],
   templateUrl: './calendar.html',
   styleUrls: ['./calendar.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -35,13 +36,14 @@ export class CalendarPage implements OnInit, OnDestroy {
 
   // Signals del store (readonly)
   loading = this.medicineStore.loading;
-  error = this.medicineStore.error;
-  stats = this.medicineStore.stats;
 
   currentDate = new Date();
   selectedDay: number | null = null;
-  medicinesToShow: MedicineWithTime[] = []; // Medicamentos expandidos con horas
-  medicineGroups: MedicineTimeGroup[] = []; // Grupos de medicamentos por hora
+  medicinesToShow: MedicineWithTime[] = [];
+  medicineGroups: MedicineTimeGroup[] = [];
+  
+  // Para debounce de actualizaciones
+  private updateTrigger$ = new Subject<string>();
   
   // Estado de carga del nuevo endpoint
   isLoadingByDate = false;
@@ -51,21 +53,22 @@ export class CalendarPage implements OnInit, OnDestroy {
   instanceConsumptionState = new Map<string, boolean>();
 
   constructor() {
-    // Effect: Reaccionar a cambios en el store de medicamentos
-    // IMPORTANTE: El effect debe crearse en el constructor para estar en el contexto de inyección correcto
-    effect(() => {
-      const medicines = this.medicineStore.medicines();
-      console.log('[CalendarPage Effect] Medicamentos actualizados en el store:', medicines.length);
-      // Actualizar vista cuando cambia el store
-      this.updateMedicinesToShow();
-    });
+    // Aplicar debounce y distinctUntilChanged para evitar llamadas redundantes
+    this.updateTrigger$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.updateMedicinesToShow();
+      });
   }
 
   ngOnInit(): void {
     // Verificar si hay token de autenticación
     const token = localStorage.getItem('authToken');
     if (!token) {
-      console.warn('[CalendarPage] No token found, redirecting to login');
       this.router.navigate(['/iniciar-sesion']);
       return;
     }
@@ -73,7 +76,6 @@ export class CalendarPage implements OnInit, OnDestroy {
     // Verificar si hay cambios pendientes desde la edición de una medicina
     const medicinesUpdated = sessionStorage.getItem('medicinesUpdated');
     if (medicinesUpdated === 'true') {
-      console.log('[CalendarPage] Cambios pendientes detectados, refrescando medicamentos');
       sessionStorage.removeItem('medicinesUpdated');
       // Recargar los medicamentos para la fecha seleccionada
       if (this.selectedDay) {
@@ -85,13 +87,9 @@ export class CalendarPage implements OnInit, OnDestroy {
     this.medicineService.medicineUpdated$
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ id, changedFields }) => {
-        console.log(`[CalendarPage] Medicamento ${id} actualizado con campos: ${changedFields.join(', ')}`);
-        console.log('[CalendarPage] Recargando medicamentos del calendario debido a cambios en horario');
-        
-        // Recargar la lista de medicamentos para la fecha actual
-        // Esto forzará a recalcular las horas basadas en la nueva frecuencia/horaInicio
+        // Usar updateTrigger con debounce en lugar de llamar directamente
         if (this.selectedDay) {
-          this.updateMedicinesToShow();
+          this.updateTrigger$.next('medicine-updated');
         }
       });
 
@@ -136,8 +134,6 @@ export class CalendarPage implements OnInit, OnDestroy {
       ? new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), this.selectedDay)
       : new Date();
 
-    console.log('[updateMedicinesToShow] Display date:', displayDate);
-
     // Convertir fecha a formato yyyy-MM-dd para el endpoint
     const year = displayDate.getFullYear();
     const month = String(displayDate.getMonth() + 1).padStart(2, '0');
@@ -150,8 +146,6 @@ export class CalendarPage implements OnInit, OnDestroy {
     // Llamar al nuevo endpoint del backend
     this.medicineService.getMedicinesByDate(fechaStr).subscribe({
       next: (response) => {
-        console.log('[updateMedicinesToShow] Response from backend:', response);
-
         // Limpiar estado de consumo anterior
         this.instanceConsumptionState.clear();
 
@@ -194,10 +188,6 @@ export class CalendarPage implements OnInit, OnDestroy {
           }))
         }));
 
-        console.log('[updateMedicinesToShow] Final medicines to show:', this.medicinesToShow.length);
-        console.log('[updateMedicinesToShow] Medicine groups:', this.medicineGroups.length);
-        console.log('[updateMedicinesToShow] Instance consumption state before loading consumos:', this.instanceConsumptionState);
-        
         // Ahora cargar el estado de consumo persistido en el servidor
         this.loadConsumptionStateFromServer(fechaStr);
       },
@@ -221,8 +211,6 @@ export class CalendarPage implements OnInit, OnDestroy {
   private loadConsumptionStateFromServer(fechaStr: string): void {
     this.medicineService.obtenerConsumosDelDia(fechaStr).subscribe({
       next: (consumos: Array<{ id: number; hora: string; medicamentoId: number; consumido: boolean }>) => {
-        console.log('[loadConsumptionStateFromServer] Consumos obtenidos del servidor:', consumos);
-        
         // Actualizar instanceConsumptionState con los datos del servidor
         // Cada consumo tiene: {id, fecha, hora, medicamentoId, medicamentoNombre, consumido}
         // donde hora viene en formato "HH:mm" del servidor (gracias a @JsonFormat)
@@ -237,7 +225,6 @@ export class CalendarPage implements OnInit, OnDestroy {
             
             const instanceId = `${consumo.medicamentoId}_${horaStr}`;
             this.instanceConsumptionState.set(instanceId, consumo.consumido || false);
-            console.log(`[loadConsumptionStateFromServer] Instancia ${instanceId}: consumido=${consumo.consumido}, hora original=${consumo.hora}, hora normalizada=${horaStr}`);
           });
         }
 
@@ -262,13 +249,6 @@ export class CalendarPage implements OnInit, OnDestroy {
           })
         }));
 
-        console.log('[loadConsumptionStateFromServer] Estado de consumo cargado desde servidor');
-        console.log('[loadConsumptionStateFromServer] medicinesToShow después de cargar consumos:');
-        this.medicinesToShow.forEach(med => {
-          console.log(`  - ${med.id} (${med.displayTime}): consumed=${med.consumed}`);
-        });
-        console.log('[loadConsumptionStateFromServer] Instance consumption state final:', this.instanceConsumptionState);
-        
         this.isLoadingByDate = false;
       },
       error: (err) => {
@@ -310,7 +290,6 @@ export class CalendarPage implements OnInit, OnDestroy {
    */
   onMedicineSelected(id: number, instanceId?: string): void {
     if (!this.selectedDay) {
-      console.warn('[CalendarPage] No hay día seleccionado');
       return;
     }
 
@@ -320,12 +299,9 @@ export class CalendarPage implements OnInit, OnDestroy {
       ?.instanceId 
       || `${id}_unknown`;
 
-    console.log('[CalendarPage] Toggle consumo para instancia:', actualInstanceId);
-
     // Obtener la hora de esta instancia específica
     const medicineInstance = this.medicinesToShow.find(m => m.instanceId === actualInstanceId);
     if (!medicineInstance) {
-      console.warn('[CalendarPage] Instancia no encontrada:', actualInstanceId);
       return;
     }
 
@@ -333,8 +309,6 @@ export class CalendarPage implements OnInit, OnDestroy {
     const currentConsumed = medicineInstance.consumed || false;
     const newValue = !currentConsumed;
 
-    console.log(`[CalendarPage] Cambiando consumo de instancia ${actualInstanceId}: ${currentConsumed} → ${newValue}`);
-    
     // Actualizar SOLO esta instancia en la UI
     this.medicinesToShow = this.medicinesToShow.map(med =>
       med.instanceId === actualInstanceId ? { ...med, consumed: newValue } : med
@@ -348,8 +322,6 @@ export class CalendarPage implements OnInit, OnDestroy {
       )
     }));
 
-    console.log(`[CalendarPage] Instancia ${actualInstanceId} marcada como consumida: ${newValue}`);
-
     // Construir fecha en formato yyyy-MM-dd
     const displayDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), this.selectedDay);
     const year = displayDate.getFullYear();
@@ -357,13 +329,9 @@ export class CalendarPage implements OnInit, OnDestroy {
     const day = String(displayDate.getDate()).padStart(2, '0');
     const fechaStr = `${year}-${month}-${day}`;
 
-    console.log(`[CalendarPage] medicineInstance.displayTime = "${medicineInstance.displayTime}" (tipo: ${typeof medicineInstance.displayTime})`);
-    console.log(`[CalendarPage] Enviando: id=${id}, fecha=${fechaStr}, hora="${medicineInstance.displayTime}", consumido=${newValue}`);
-
     // Persistir en backend con fecha y hora específica
     this.medicineService.registrarConsumo(id, fechaStr, medicineInstance.displayTime, newValue).subscribe({
-      next: (response) => {
-        console.log('[CalendarPage] Consumo registrado en servidor para instancia:', actualInstanceId, response);
+      next: () => {
         // El servidor ha guardado el consumo de forma independiente por fecha/hora
       },
       error: (err) => {
@@ -395,7 +363,7 @@ export class CalendarPage implements OnInit, OnDestroy {
   deleteMedicine(id: number): void {
     if (confirm('¿Estás seguro de que deseas eliminar este medicamento?')) {
       this.medicineStore.remove(id);
-      this.updateMedicinesToShow();
+      this.updateTrigger$.next('medicine-deleted');
     }
   }
 
@@ -425,12 +393,12 @@ export class CalendarPage implements OnInit, OnDestroy {
 
   previousMonth(): void {
     this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1);
-    this.updateMedicinesToShow();
+    this.updateTrigger$.next('month-changed');
   }
 
   nextMonth(): void {
     this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1);
-    this.updateMedicinesToShow();
+    this.updateTrigger$.next('month-changed');
   }
 
   isToday(day: number): boolean {
@@ -441,23 +409,30 @@ export class CalendarPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Manejador para cuando se selecciona un día desde el calendario
+   * Manejador para cuando se selecciona un dia desde el calendario
    * Verifica medicamentos que cumplan con la fecha seleccionada
    */
   onCalendarDaySelected(selectedDate: Date): void {
-    console.log('[onCalendarDaySelected] Date selected:', selectedDate.toLocaleDateString('es-ES'));
+    // Evitar actualizar si es la misma fecha
+    if (this.currentDate.toDateString() === selectedDate.toDateString()) {
+      return;
+    }
     
-    // Actualizar la fecha actual y el día seleccionado
+    // Actualizar la fecha actual y el dia seleccionado
     this.currentDate = new Date(selectedDate);
     this.selectedDay = selectedDate.getDate();
     
-    // Actualizar medicamentos a mostrar basándose en la nueva fecha
-    this.updateMedicinesToShow();
+    // Usar debounce para evitar llamadas multiples
+    this.updateTrigger$.next('calendar-day-selected');
   }
 
   onDaySelected(day: number): void {
+    // Evitar actualizar si es el mismo dia
+    if (this.selectedDay === day) {
+      return;
+    }
     this.selectedDay = day;
-    this.updateMedicinesToShow(); // Actualizar lista al cambiar día
+    this.updateTrigger$.next('day-selected');
   }
 
   getWeekDays(): number[] {

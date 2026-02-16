@@ -5,20 +5,47 @@
   min-height: 100vh;
 }
 
-/* Header: siempre arriba, no se encoge */
+/* Header: siempre arriba, no se encoge, altura fija para evitar CLS */
 app-header {
   flex-shrink: 0;
+  height: 64px;
+  contain: layout style;
+}
+
+/* Breadcrumb: altura mínima reservada para evitar CLS */
+app-breadcrumb {
+  display: block;
+  min-height: 40px;
+  contain: layout style;
 }
 
 /* Main: crece para llenar el espacio disponible */
+/* min-height empuja el footer debajo del viewport inicial → CLS 0 en footer */
 .app__main {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: calc(100vh - 64px - 40px);
+}
+
+@media (min-width: 768px) {
+  .app__main {
+    min-height: calc(100vh - 72px - 40px);
+  }
 }
 
 /* Footer: siempre abajo, no se encoge */
+/* min-height reserva espacio para evitar CLS */
 app-footer, .app-footer {
   flex-shrink: 0;
   margin-top: auto;
+  min-height: 280px;
+  contain: layout style;
+}
+
+/* Responsive: header más alto en tablet+ */
+@media (min-width: 768px) {
+  app-header {
+    height: 72px;
+  }
 }

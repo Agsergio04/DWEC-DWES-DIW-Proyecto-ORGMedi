@@ -28,7 +28,7 @@
   display: inline-block;
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
-  color: var(--color-texto_borde_cajas);
+  color: var(--color-calendario-texto);
   background: transparent;
   padding: 0;
   border-radius: 0;
@@ -64,8 +64,8 @@
   justify-content: center;
 
   background: transparent;
-  color: var(--color-texto_borde_cajas);
-  border: 2px solid var(--color-texto_borde_cajas);
+  color: var(--color-calendario-texto);
+  border: 2px solid var(--color-calendario-texto);
   border-radius: $radius-full;
 
   font-size: $font-size-2xl;
@@ -78,9 +78,9 @@
   box-shadow $transition-normal;
 
   &:hover {
-    background: rgba(var(--color-texto_borde_cajas-rgb), 0.1);
+    background: var(--color-calendario-texto);
     transform: scale(1.08);
-    box-shadow: 0 4px 12px rgba(var(--color-texto_borde_cajas-rgb), 0.2);
+    box-shadow: 0 4px 12px rgba(var(--color-calendario-texto-rgb), 0.2);
   }
 
   &:active {
@@ -140,7 +140,7 @@
 .calendar__day-name {
   font-size: $font-size-xs;
   font-weight: $font-weight-semibold;
-  color: $color-texto_borde_cajas;
+  color: var(--color-calendario-texto);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   text-align: center;
@@ -164,8 +164,8 @@
   justify-content: center;
 
   background: var(--color-primario-primary);
-  color: var(--color-texto_borde_cajas);
-  border: $border-medium solid var(--color-bordes_marco_botones);
+  color: var(--color-calendario-texto);
+  border: $border-medium solid var(--color-primario-primary);
   border-radius: $radius-full;
 
   font-size: $font-size-md;
@@ -210,8 +210,8 @@
 
 .calendar__day--today {
   background: var(--color-primario-primary);
-  color: var(--color-texto_borde_cajas);
-  border-color: var(--color-texto_borde_cajas);
+  color: var(--color-calendario-texto);
+  border-color: var(--color-primario-primary);
   font-weight: $font-weight-bold;
   box-shadow: 0 4px 8px rgba($color-primario-primary, 0.3);
 
@@ -224,7 +224,7 @@
 
 .calendar__day--selected {
   background: var(--color-primario-primary);
-  color: white;
+  color: var(--color-calendario-texto);
   border-color: var(--color-primario-primary);
 
   &:hover {
@@ -330,46 +330,27 @@
     background: transparent;
   }
 
-  .calendar__current-date {
-    color: $color-texto_borde_cajas;
-  }
-
   .calendar__week-container {
     background: rgba($color-primario-dark, 0.6);
-    border-color: $color-bordes_marco_botones;
-  }
-
-  .calendar__nav-btn {
-    background: $color-secundario-dark;
-
-    &:hover {
-      background: $color-secundario-dark_hover;
-    }
-  }
-
-  .calendar__day-name {
-    color: $color-texto_borde_cajas;
   }
 
   .calendar__day {
     background: $color-secundario-dark;
-    color: $color-texto_borde_cajas;
-    border-color: $color-bordes_marco_botones;
+    border-color: $color-secundario-dark;
 
     &:hover:not(:disabled) {
       background: $color-secundario-dark_hover;
+      border-color: $color-secundario-dark_hover;
     }
   }
 
   .calendar__day--today {
     background: $color-primario-dark;
     border-color: $color-primario-dark;
-    box-shadow: 0 4px 8px rgba($color-primario-dark, 0.3);
 
     &:hover {
       background: $color-primario-dark_hover;
       border-color: $color-primario-dark_hover;
-      box-shadow: 0 6px 16px rgba($color-primario-dark, 0.4);
     }
   }
 
@@ -380,7 +361,6 @@
     &:hover {
       background: $color-secundario-dark_hover;
       border-color: $color-secundario-dark_hover;
-      box-shadow: 0 6px 16px rgba($color-secundario-dark, 0.4);
     }
   }
 }

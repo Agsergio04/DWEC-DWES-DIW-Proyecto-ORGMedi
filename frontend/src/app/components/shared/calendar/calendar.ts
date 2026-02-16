@@ -190,7 +190,6 @@ export class CalendarComponent implements OnInit {
   selectDay(day: CalendarDay) {
     this.selectedDate = day.date;
     this.currentDate = day.date;
-    console.log('Día seleccionado:', day.date.toLocaleDateString('es-ES'));
     // Emitir el evento para notificar a la página padre
     this.daySelected.emit(day.date);
   }

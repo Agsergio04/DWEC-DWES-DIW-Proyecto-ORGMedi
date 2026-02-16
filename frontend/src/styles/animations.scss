@@ -252,23 +252,22 @@ $animation-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 /* ============================================
-   8. ANIMACIÓN: GRADIENT SHIFT (Cambio de gradiente)
+   8. ANIMACIÓN: GRADIENT SHIFT (Cambio de gradiente - OPTIMIZADO)
    ============================================ */
 
 @keyframes gradientShift {
   0% {
-    background-position: 0% 50%;
+    opacity: 1;
   }
   50% {
-    background-position: 100% 50%;
+    opacity: 0.8;
   }
   100% {
-    background-position: 0% 50%;
+    opacity: 1;
   }
 }
 
 .animate-gradient-shift {
-  background-size: 200% 200%;
   animation: gradientShift $animation-duration-slow ease-in-out infinite;
 }
 
@@ -333,12 +332,10 @@ button {
   transition: 
     background-color $animation-duration-fast $animation-easing-ease-in-out,
     color $animation-duration-fast $animation-easing-ease-in-out,
-    transform $animation-duration-fast $animation-easing-ease-out,
-    box-shadow $animation-duration-fast $animation-easing-ease-out;
+    transform $animation-duration-fast $animation-easing-ease-out;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px) scale(1.02);
   }
 
   &:focus {
@@ -347,8 +344,7 @@ button {
   }
 
   &:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(0) scale(0.98);
   }
 }
 
@@ -374,12 +370,12 @@ textarea,
 select {
   transition: 
     border-color $animation-duration-fast $animation-easing-ease-in-out,
-    box-shadow $animation-duration-fast $animation-easing-ease-in-out,
-    background-color $animation-duration-fast $animation-easing-ease-in-out;
+    background-color $animation-duration-fast $animation-easing-ease-in-out,
+    transform $animation-duration-fast $animation-easing-ease-in-out;
 
   &:focus {
     border-color: $color-primario-primary;
-    box-shadow: 0 0 0 3px rgba(225, 119, 181, 0.1);
+    transform: scale(1.02);
   }
 
   &:disabled {
@@ -392,12 +388,10 @@ select {
 .app-card,
 .card {
   transition: 
-    transform $animation-duration-normal $animation-easing-ease-out,
-    box-shadow $animation-duration-normal $animation-easing-ease-out;
+    transform $animation-duration-normal $animation-easing-ease-out;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px) scale(1.02);
   }
 }
 
@@ -405,10 +399,11 @@ select {
 .badge {
   transition: 
     background-color $animation-duration-fast $animation-easing-ease-in-out,
-    color $animation-duration-fast $animation-easing-ease-in-out;
+    color $animation-duration-fast $animation-easing-ease-in-out,
+    transform $animation-duration-fast $animation-easing-ease-in-out;
 
   &:hover {
-    filter: brightness(1.1);
+    transform: scale(1.05);
   }
 }
 
@@ -600,7 +595,7 @@ select {
 /* Will-change hints para animaciones comunes */
 .button:hover,
 button:hover {
-  will-change: transform, box-shadow;
+  will-change: transform;
 }
 
 .spinner {

@@ -42,75 +42,42 @@ const __THEME_STORAGE_KEY = 'orgmedi-theme';
 
 /**
  * IMPORTACIONES PRINCIPALES
- * Angular core: bootstrapApplication, routing, HTTP client
+ * Angular core: bootstrapApplication
  * Componente raíz: App
- * Rutas: configuración de todas las rutas de la aplicación
- * Interceptors: auth, error handling, logging para todas las peticiones HTTP
+ * Configuración: appConfig con routing, HTTP, interceptors
  */
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { App } from './app/app';
-import { routes } from './app/app.routes';
-import { authInterceptor } from './app/core/interceptors/auth.interceptor';
-import { errorInterceptor } from './app/core/interceptors/error.interceptor';
+import { appConfig } from './app/app.config';
 
 /**
- * CARGA DE CONFIGURACIÓN EN TIEMPO DE EJECUCIÓN
- * ================================================
- * Intenta cargar app-config.json que contiene la URL base de la API
- * Si no encuentra el archivo, Angular usará el environment.ts del build
- * 
- * @async
- * @returns {Promise<void>}
+ * CARGA DE CONFIGURACIÓN EN TIEMPO DE EJECUCIÓN (NO BLOQUEANTE)
+ * ================================================================
+ * Carga app-config.json en segundo plano DESPUÉS del bootstrap.
+ * No bloquea FCP/LCP. Los servicios acceden a window.APP_CONFIG cuando esté disponible.
  */
-async function loadAppConfig() {
-  try {
-    // Fetch sincrónico del archivo de configuración sin caché
-    const resp = await fetch('/assets/app-config.json', { cache: 'no-cache' });
-    if (resp.ok) {
-      // Parsear como JSON y guardar en window como variable global
-      // Los servicios pueden acceder a window.APP_CONFIG sincronamente después de cargar
-      const appConfig = await resp.json() as { baseUrl?: string };
-      (window as { APP_CONFIG?: unknown }).APP_CONFIG = appConfig;
-      console.info(' Configuración de runtime cargada:', appConfig);
-      return;
-    }
-    console.warn(' Archivo de configuración no encontrado, usando environment del build');
-  } catch (e) {
-    // Si falla el fetch, continuar usando la configuración del build (environment.ts)
-    console.warn(' No se pudo cargar configuración de runtime, usando environment del build', e);
-  }
+function loadAppConfigAsync(): void {
+  fetch('/assets/app-config.json', { cache: 'no-cache' })
+    .then(resp => {
+      if (resp.ok) return resp.json();
+      return null;
+    })
+    .then(config => {
+      if (config) {
+        (window as { APP_CONFIG?: unknown }).APP_CONFIG = config;
+      }
+    })
+    .catch(() => {
+      // Si falla, se usa environment.ts del build
+    });
 }
 
 /**
  * BOOTSTRAP DE LA APLICACIÓN
  * ===========================
- * IIFE asíncrona para:
- * 1. Cargar configuración en tiempo de ejecución
- * 2. Iniciar Angular con configuración de providers
+ * 1. Iniciar Angular con appConfig (SelectivePreloading, interceptors, etc.)
+ * 2. Cargar configuración runtime en segundo plano (no bloquea render)
  */
-(async () => {
-  // 1. Cargar configuración en tiempo de ejecución (baseUrl, etc)
-  await loadAppConfig();
-
-  // 2. Arrancar Angular con configuración de DI providers
-  bootstrapApplication(App, {
-    providers: [
-      // Router: Configurar sistema de rutas con preload de módulos lazy
-      provideRouter(
-        routes,
-        // Precargar todos los componentes lazy en segundo plano después de la naveg inicial
-        // Esto mejora la experiencia si el usuario navega a otras rutas después
-        withPreloading(PreloadAllModules)
-      ),
-      // HTTP Client: Configurar cliente HTTP con interceptors en orden
-      // ORDEN IMPORTANTE:
-      // 1. authInterceptor - Agregar token JWT al header
-      // 2. errorInterceptor - Capturar y manejar errores HTTP
-      provideHttpClient(
-        withInterceptors([authInterceptor, errorInterceptor])
-      ),
-    ],
-  }).catch((err) => console.error(' Error crítico en bootstrap:', err));
-})();
+loadAppConfigAsync();
+bootstrapApplication(App, appConfig)
+  .catch((err) => console.error('Error crítico en bootstrap:', err));

@@ -62,7 +62,6 @@ export class ChunkLoadingMonitorService {
         filter(event => event instanceof NavigationStart)
       )
       .subscribe((event: any) => {
-        console.log(`[Lazy Loading] Navegando a: ${event.url}`);
       });
 
     // Monitorea cuándo TERMINA la navegación (chunk cargado)
@@ -71,7 +70,6 @@ export class ChunkLoadingMonitorService {
         filter(event => event instanceof NavigationEnd)
       )
       .subscribe((event: any) => {
-        console.log(`[Lazy Loading] Ruta cargada: ${event.urlAfterRedirects}`);
         this.logBundleSize();
       });
 
@@ -125,9 +123,6 @@ export class ChunkLoadingMonitorService {
     const bundleInfo = this.getBundleInfo();
     const totalSize = bundleInfo.reduce((sum, chunk) => sum + chunk.size, 0);
     console.table(bundleInfo);
-    console.log(
-      `[Lazy Loading] Tamaño total descargado: ${(totalSize / 1024).toFixed(2)} KB`
-    );
   }
 
   /**
@@ -137,9 +132,6 @@ export class ChunkLoadingMonitorService {
   onChunkPreloaded(chunkName: string): void {
     if (!this.loadedChunks.has(chunkName)) {
       this.loadedChunks.add(chunkName);
-      console.log(
-        `[Lazy Loading] Chunk precargado en segundo plano: ${chunkName}`
-      );
     }
   }
 
@@ -148,7 +140,6 @@ export class ChunkLoadingMonitorService {
    */
   printLoadedChunks(): void {
     const chunks = this.getLoadedChunks();
-    console.log('[Lazy Loading] Chunks descargados:');
     chunks.forEach(chunk => console.log(`  - ${chunk}`));
   }
 }

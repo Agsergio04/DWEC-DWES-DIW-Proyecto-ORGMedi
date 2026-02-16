@@ -40,17 +40,14 @@ export class DataInputSelectorComponent implements ControlValueAccessor, OnInit,
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    console.log('[DataInputSelector] ngOnInit - options:', this.options);
     this.cdr.markForCheck();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['options'] && !changes['options'].firstChange) {
-      console.log('[DataInputSelector] options changed:', this.options);
       this.cdr.markForCheck();
     }
     if (changes['selectedOption'] && !changes['selectedOption'].firstChange) {
-      console.log('[DataInputSelector] selectedOption changed:', this.selectedOption);
       this.cdr.markForCheck();
     }
   }
@@ -63,18 +60,13 @@ export class DataInputSelectorComponent implements ControlValueAccessor, OnInit,
   }
 
   selectOption(option: SelectorOption): void {
-    console.log('[DataInputSelector] selectOption called with:', option);
     this.selectedOption = option;
     this.currentValue = option.id;
-    console.log('[DataInputSelector] selectedOption set to:', this.selectedOption);
     this.optionSelected.emit(option);
-    console.log('[DataInputSelector] optionSelected emitted');
     this.onChangeFn(option.id);
-    console.log('[DataInputSelector] onChangeFn called with:', option.id);
     this.onTouchedFn();
     this.isOpen = false;
     this.cdr.markForCheck();
-    console.log('[DataInputSelector] Option selection complete');
   }
 
   closeDropdown(): void {
@@ -95,17 +87,14 @@ export class DataInputSelectorComponent implements ControlValueAccessor, OnInit,
 
   // ControlValueAccessor implementation
   writeValue(value: any): void {
-    console.log('[DataInputSelector] writeValue called with:', value);
     this.currentValue = value;
     if (value) {
       const found = this.options.find(opt => opt.id === value);
-      console.log('[DataInputSelector] Finding option with id:', value, 'Found:', found);
       this.selectedOption = found || null;
     } else {
       this.selectedOption = null;
     }
     this.cdr.markForCheck();
-    console.log('[DataInputSelector] writeValue complete. selectedOption:', this.selectedOption);
   }
 
   registerOnChange(fn: (value: any) => void): void {

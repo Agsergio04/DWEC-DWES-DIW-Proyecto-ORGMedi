@@ -138,6 +138,9 @@ export class MedicineStoreSignals {
     };
   });
 
+  /** Flag para evitar cargas duplicadas */
+  private _loaded = false;
+
   /**
    * Estado global combinado
    * Útil para templates complejos que necesitan múltiples flags
@@ -152,25 +155,18 @@ export class MedicineStoreSignals {
   }));
 
   constructor() {
-    // Carga automática al inyectar el servicio
-    this.load();
+    // Ya no se auto-carga. Cada página llama load() o loadIfNeeded() explícitamente.
   }
 
   // ============ MÉTODOS PÚBLICOS ============
 
   /**
    * Carga todos los medicamentos desde la API
-   * 
-   * Qué hace:
-   * 1. Establece loading = true
-   * 2. Petición HTTP GET
-   * 3. Actualiza _medicines con respuesta
-   * 4. Todos los computed signals se actualizan automáticamente
-   * 5. Establece loading = false
    */
   load(): void {
     this._loading.set(true);
     this._error.set(null);
+    this._loaded = true;
 
     this.medicineService.getAll().subscribe({
       next: (medicines) => {
@@ -181,8 +177,18 @@ export class MedicineStoreSignals {
         console.error('Error al cargar medicamentos:', err);
         this._error.set('Error al cargar medicamentos. Intenta de nuevo.');
         this._loading.set(false);
+        this._loaded = false;
       }
     });
+  }
+
+  /**
+   * Carga solo si no se ha cargado antes (lazy loading)
+   */
+  loadIfNeeded(): void {
+    if (!this._loaded) {
+      this.load();
+    }
   }
 
   /**

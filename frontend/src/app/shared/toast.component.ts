@@ -18,7 +18,7 @@ import { ToastService, ToastWithId } from './toast.service';
     .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display:flex; flex-direction:column; gap:10px; }
     .toast { display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:6px; color:#fff; box-shadow:0 6px 18px rgba(0,0,0,0.15); cursor:pointer; opacity:0; transform:translateY(-6px); transition:opacity 0.25s ease, transform 0.25s ease; }
     .toast.success { background:#4caf50; }
-    .toast.error { background:#f44336; }
+    .toast.error { background:#FF0202; color:#000000; }
     .toast.info { background:#2196f3; }
     .toast.warning { background:#ff9800; }
     .toast.show { opacity:1; transform:translateY(0); }

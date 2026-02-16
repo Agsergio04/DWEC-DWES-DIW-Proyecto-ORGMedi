@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, timer, BehaviorSubject, EMPTY, of, throwError } from 'rxjs';
-import { switchMap, shareReplay, catchError, tap, startWith, retry } from 'rxjs/operators';
+import { switchMap, shareReplay, catchError, tap, retry } from 'rxjs/operators';
 import { ApiService } from '../data/api.service';
 import { ToastService } from '../../../shared/toast.service';
 
@@ -126,10 +126,7 @@ export class NotificationsService {
    * }
    */
   pollNotifications(intervalMs = 30000): Observable<Notification[]> {
-    console.log(`🔄 Iniciando polling de notificaciones cada ${intervalMs}ms`);
-
     return timer(0, intervalMs).pipe(
-      tap(() => console.log('📡 Obteniendo notificaciones...')),
       switchMap(() => this.fetchNotifications()),
       shareReplay(1), // Comparte resultados entre suscriptores
       catchError(error => {
@@ -161,13 +158,11 @@ export class NotificationsService {
    */
   startPolling(intervalMs = 30000): void {
     if (this.isPolling) {
-      console.warn('⚠️ El polling ya está activo');
       return;
     }
 
     this.isPolling = true;
     this.pollingSubject.next(intervalMs);
-    console.log(`▶️ Polling iniciado (cada ${intervalMs}ms)`);
   }
 
   /**
@@ -183,7 +178,6 @@ export class NotificationsService {
 
     this.isPolling = false;
     this.pollingSubject.next(0);
-    console.log('⏸️ Polling detenido');
   }
 
   /**
@@ -233,8 +227,6 @@ export class NotificationsService {
         // Actualizar cache y contador
         this.notificationsCache.set(notifications);
         this.unreadCount.set(unreadCount);
-        
-        console.log(`✅ ${notifications.length} notificaciones obtenidas (${unreadCount} no leídas)`);
       }),
       switchMap(response => [Array.isArray(response) ? response : response.notifications || []]),
       catchError((error, caught) => {
@@ -244,7 +236,6 @@ export class NotificationsService {
         
         // 1️⃣ SIN INTERNET → Usar datos mock
         if (!navigator.onLine) {
-          console.warn('📵 Sin conexión a internet → Usando datos mock');
           const mockNotifications = this.getMockNotifications();
           this.notificationsCache.set(mockNotifications);
           this.unreadCount.set(mockNotifications.filter(n => !n.read).length);
@@ -254,7 +245,6 @@ export class NotificationsService {
 
         // 2️⃣ SERVIDOR NO DISPONIBLE (503) → Reintentar después de 2 segundos
         if (error.status === 503) {
-          console.warn('🔄 Servidor no disponible → Reintentando en 2 segundos');
           this.toastService.warning('Servidor temporalmente no disponible, reintentando...');
           return timer(2000).pipe(
             switchMap(() => caught) // Reintentar toda la cadena
@@ -263,7 +253,6 @@ export class NotificationsService {
 
         // 3️⃣ ENDPOINT NO ENCONTRADO (404) → Usar datos mock
         if (error.status === 404) {
-          console.warn('🚫 Endpoint no existe → Usando datos mock');
           const mockNotifications = this.getMockNotifications();
           this.notificationsCache.set(mockNotifications);
           this.unreadCount.set(mockNotifications.filter(n => !n.read).length);
@@ -339,8 +328,6 @@ export class NotificationsService {
 
         // Decrementar contador de no leídas
         this.unreadCount.update(count => Math.max(0, count - 1));
-
-        console.log(`✅ Notificación ${id} marcada como leída`);
       }),
       catchError(error => {
         console.error('❌ Error al marcar notificación como leída:', error);
@@ -366,7 +353,6 @@ export class NotificationsService {
         );
 
         this.unreadCount.set(0);
-        console.log('✅ Todas las notificaciones marcadas como leídas');
         this.toastService.success('Todas las notificaciones marcadas como leídas');
       }),
       catchError(error => {
@@ -401,8 +387,6 @@ export class NotificationsService {
         if (wasUnread) {
           this.unreadCount.update(count => Math.max(0, count - 1));
         }
-
-        console.log(`🗑️ Notificación ${id} eliminada`);
       }),
       catchError(error => {
         console.error('❌ Error al eliminar notificación:', error);

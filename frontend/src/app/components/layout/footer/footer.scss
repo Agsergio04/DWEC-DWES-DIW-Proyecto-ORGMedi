@@ -2,6 +2,7 @@
 @use '../../../../styles/01-tools/responsive' as *;
 
 // Estilos BEM para footer
+// min-height reserva espacio para evitar CLS (Cumulative Layout Shift)
 .app-footer {
   width: 100%;
   padding: $espaciado-24 $espaciado-16;
@@ -9,13 +10,17 @@
   color: var(--color-texto_borde_cajas);
   font-family: $font-primary;
   margin-top: auto;
+  min-height: 280px;
+  contain: layout style;
 
   @include md {
     padding: $espaciado-32 $espaciado-24;
+    min-height: 200px;
   }
 
   @include lg {
     padding: $espaciado-48 $espaciado-24;
+    min-height: 160px;
   }
 }
 
@@ -98,13 +103,13 @@
   font-family: $font-secondary;
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
-  color: var(--color-texto_borde_cajas);
+  color: var(--color-bordes_marco_botones);
   margin: 0;
 }
 
 .app-footer__subtitle {
   font-size: $font-size-sm;
-  color: var(--color-texto_borde_cajas);
+  color: var(--color-bordes_marco_botones);
   margin: 0;
   opacity: 0.8;
 }
@@ -112,7 +117,7 @@
 .app-footer__column-title {
   font-size: $font-size-md;
   font-weight: $font-weight-bold;
-  color: var(--color-texto_borde_cajas);
+  color: var(--color-bordes_marco_botones);
   margin: 0;
 }
 
@@ -126,7 +131,7 @@
 }
 
 .app-footer__link {
-  color: var(--color-texto_borde_cajas);
+  color: var(--color-bordes_marco_botones);
   text-decoration: none;
   font-size: $font-size-sm;
   opacity: 0.9;
@@ -137,7 +142,4 @@
   opacity: 1;
   text-decoration: underline;
 }
-
-
-// ...existing code...
 

@@ -93,7 +93,6 @@ export const medicineDetailResolver: ResolveFn<MedicineViewModel | null> = (
    * PASO 1: Validar que exista ID
    */
   if (!id) {
-    console.warn('[medicineDetailResolver] No ID proporcionado para medicamento');
     // Redirige a medicamentos con error
     router.navigate(['/medicamentos'], {
       state: { error: 'ID de medicamento inválido' }

@@ -165,8 +165,6 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    console.log('[ProfilePage] Usuario cerrando sesión...');
-    
     // Cerrar sesión en el AuthService (borra el JWT)
     this.authService.logout();
     

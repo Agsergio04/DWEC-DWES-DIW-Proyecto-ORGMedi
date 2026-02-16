@@ -36,7 +36,6 @@ export class ContactComponent {
     }
 
     // Aquí iría la lógica para enviar el formulario
-    console.log('Formulario enviado:', this.contactForm.value);
     this.successMessage = true;
     this.contactForm.reset();
     this.submitted = false;

@@ -10,7 +10,7 @@ html {
 body {
   font-family: $font-primary;
   background: var(--color-fondo);
-  color: var(--color-texto_borde_cajas);
+  color: var(--color-bordes_marco_botones);
   min-height: 100vh;
   line-height: $line-height-normal;
   -webkit-font-smoothing: antialiased;
@@ -18,7 +18,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: $font-secondary;
-  color: var(--color-texto_borde_cajas);
+  color: var(--color-bordes_marco_botones);
   font-weight: var(--font-secondary-weight-bold);
   margin-bottom: $espaciado-12;
   line-height: $line-height-tight;
@@ -34,7 +34,7 @@ h6 { font-size: $font-size-md; }
 p {
   font-size: $font-size-md;
   margin-bottom: $espaciado-16;
-  color: var(--color-texto_borde_cajas);
+  color: var(--color-bordes_marco_botones);
 }
 
 a {
@@ -103,6 +103,7 @@ button {
 [data-theme="dark"] {
   body {
     background: $color-fondo-dark;
+    color: $color-texto_borde_cajas-dark;
   }
 }
 

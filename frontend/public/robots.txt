@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /*.json
+Disallow: /*?*
+
+# Directives for specific crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap location
+Sitemap: https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/sitemap.xml
+
+# Crawl delay for all robots (in seconds)
+Crawl-delay: 1

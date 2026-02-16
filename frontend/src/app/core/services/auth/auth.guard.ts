@@ -88,18 +88,13 @@ export const authGuard: CanActivateFn = (
   const router = inject(Router);
 
   // Log para debugging
-  console.log('[AuthGuard] Verificando acceso a:', state.url, '| Autenticado:', auth.isLoggedIn);
-
   // CASO 1: Usuario ESTÁ AUTENTICADO
   if (auth.isLoggedIn) {
-    console.log('[AuthGuard] ✅ Usuario autenticado - permitiendo acceso');
     return true;  // Permitir navegación
   }
 
   // CASO 2: Usuario NO ESTÁ AUTENTICADO
   // Redirigir a login guardando la ruta original como queryParam
-  console.log('[AuthGuard] ❌ Usuario no autenticado - redirigiendo a login');
-  
   // state.url es la URL completa que intentó acceder
   // Ejemplo: /medicamentos?page=2&sort=name
   const queryParams = { returnUrl: state.url };

@@ -46,7 +46,6 @@ export class ChunkMonitorService {
       .subscribe((event: NavigationStart) => {
         // Guarda el tiempo actual para calcular duración después
         this.navigationStartTime = performance.now();
-        console.log(` [${this.getTimestamp()}] Navegando a: ${event.url}`);
       });
     
     // EVENTO 2: Detecta cuándo TERMINA la navegación
@@ -55,8 +54,6 @@ export class ChunkMonitorService {
       .subscribe((event: NavigationEnd) => {
         // Calcula cuánto tiempo tardó la navegación
         const duration = performance.now() - this.navigationStartTime;
-        console.log(` [${this.getTimestamp()}] Navegación completada en ${duration.toFixed(2)}ms → ${event.url}`);
-        
         // Registra este chunk en el historial
         this.logChunkLoad(event.url, duration);
       });
@@ -82,11 +79,6 @@ export class ChunkMonitorService {
               const chunkName = this.extractChunkName(entry.name);
               
               if (chunkName && downloadTime > 10) { // Ignorar archivos muy pequeños
-                console.log(
-                  ` Descargado: ${chunkName} | ` +
-                  `${(downloadTime).toFixed(0)}ms | ` +
-                  `Tamaño: ${(entry_.transferSize / 1024).toFixed(1)}KB`
-                );
               }
             }
           }
@@ -94,7 +86,6 @@ export class ChunkMonitorService {
         
         observer.observe({ entryTypes: ['resource'] });
       } catch (e) {
-        console.warn('  PerformanceObserver no disponible');
       }
     }
   }
@@ -158,12 +149,7 @@ export class ChunkMonitorService {
    * ============================================================
    */
   public printReport(): void {
-    console.log('\n' + '='.repeat(60));
-    console.log(' REPORTE DE CHUNKS CARGADOS');
-    console.log('='.repeat(60));
-    
     if (this.loadedChunks.size === 0) {
-      console.log('No hay chunks cargados aún');
       return;
     }
     
@@ -174,16 +160,7 @@ export class ChunkMonitorService {
     sortedChunks.forEach(([chunk, data]) => {
       totalTime += data.duration;
       const time = new Date(data.timestamp);
-      console.log(
-        `  ${chunk.padEnd(25)} → ${data.duration.toFixed(0).padStart(5)}ms ` +
-        `(${time.toLocaleTimeString('es-ES')})`
-      );
     });
-    
-    console.log('='.repeat(60));
-    console.log(`Total de chunks: ${this.loadedChunks.size}`);
-    console.log(`Tiempo acumulado: ${totalTime.toFixed(0)}ms`);
-    console.log('='.repeat(60) + '\n');
   }
   
   /**
@@ -191,7 +168,6 @@ export class ChunkMonitorService {
    */
   public reset(): void {
     this.loadedChunks.clear();
-    console.log(' Estadísticas de chunks reseteadas');
   }
 }
 

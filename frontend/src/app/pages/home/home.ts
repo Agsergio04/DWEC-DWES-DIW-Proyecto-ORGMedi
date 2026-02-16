@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HomeData } from '../../core/services/resolvers';
 import { ButtonComponent } from '../../components/shared/button/button';
+import { SeoService } from '../../core/services/ui/seo.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -11,16 +12,24 @@ import { takeUntil } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   templateUrl: './home.html',
-  styleUrls: ['./home.scss']
+  styleUrls: ['./home.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomePage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private seoService = inject(SeoService);
   private destroy$ = new Subject<void>();
 
   homeData: HomeData | null = null;
 
   ngOnInit(): void {
+    // Actualizar metadatos de SEO para la página de inicio
+    this.seoService.updateMeta({
+      title: 'ORGMedi - Gestor de Medicamentos Online',
+      description: 'Gestiona tus medicamentos de forma fácil, segura y personalizada. Sincroniza horarios, recibe recordatorios y organiza tu salud.'
+    });
+
     // Leer los datos precargados por el resolver
     this.route.data
       .pipe(takeUntil(this.destroy$))

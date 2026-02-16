@@ -47,8 +47,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       // 2. NO AUTENTICADO O TOKEN EXPIRADO (401)
       else if (error.status === 401) {
         message = '🔐 Tu sesión ha expirado. Por favor, inicia sesión nuevamente.';
-        console.warn('[ErrorInterceptor] 401 No autenticado - cerrando sesión');
-        
         // Limpiar sesiones del usuario (logout completo)
         // Esto elimina el token, currentUser, isLoggedIn, etc.
         authService.logout();
@@ -60,18 +58,15 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       // 3. SIN PERMISOS (403)
       else if (error.status === 403) {
         message = '🚫 No tienes permisos para realizar esta acción.';
-        console.warn('[ErrorInterceptor] 403 Acceso prohibido');
       }
       // 4. RECURSO NO ENCONTRADO (404)
       else if (error.status === 404) {
         message = '🔍 El recurso solicitado no existe.';
-        console.warn('[ErrorInterceptor] 404 Recurso no encontrado');
       }
       // 5. CONFLICTO / DUPLICADO (409)
       else if (error.status === 409) {
         // Usar mensaje personalizado del backend si existe
         message = error.error?.message || '⚠️ El recurso ya existe o hay un conflicto.';
-        console.warn('[ErrorInterceptor] 409 Conflicto:', error.error);
       }
       // 6. ERROR DEL SERVIDOR (5xx)
       else if (error.status >= 500) {

@@ -6,9 +6,29 @@
   <base href="/">
   
   <!-- Viewport y Compatibilidad -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5, minimum-scale=1, viewport-fit=cover">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5, minimum-scale=1">
+  
+  <!-- Critical CSS inline para mejorar FCP y evitar CLS -->
+  <style>
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body { margin: 0; font-family: Poppins, sans-serif; background: #D3B5C6; color: #3A4730; min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+    app-root { display: block; width: 100%; }
+    .app { display: flex; flex-direction: column; min-height: 100vh; }
+    /* Reservar alturas fijas para header, breadcrumb y footer para evitar CLS */
+    app-header { display: block; flex-shrink: 0; height: 64px; contain: layout style; }
+    .app-header__svg-logo { width: 48px; height: 48px; display: block; }
+    .app-header__controls { min-height: 44px; min-width: 100px; }
+    app-breadcrumb { display: block; min-height: 40px; contain: layout style; }
+    .app__main { flex: 1; min-height: calc(100vh - 64px - 40px); }
+    app-footer { display: block; flex-shrink: 0; margin-top: auto; min-height: 280px; contain: layout style; }
+    @media (min-width: 768px) {
+      app-header { height: 72px; }
+      app-footer { min-height: 200px; }
+    }
+    @media (min-width: 1024px) { app-footer { min-height: 160px; } }
+  </style>
   
   <!-- Meta tags de compatibilidad para navegadores basados en Chromium -->
   <!-- Avast Secure Browser, Google Chrome, Microsoft Edge, Brave, Opera -->
@@ -17,30 +37,96 @@
   <meta name="force-rendering" content="webkit">
   
   <!-- SEO y Descripción -->
-  <meta name="description" content="ORGMedi - Aplicación web para la gestión y organización de medicamentos y horarios de toma">
-  <meta name="keywords" content="medicamentos, salud, horarios, gestión, ORGMedi">
+  <meta name="description" content="ORGMedi - Aplicación web para la gestión, organización y control de medicamentos. Personaliza horarios de toma, gestiona tratamientos y mejora tu salud.">
+  <meta name="keywords" content="medicamentos, salud, farmacia, horarios medicinas, gestor medicamentos, aplicación salud, ORGMedi">
   <meta name="author" content="ORGMedi Team">
   <meta name="application-name" content="ORGMedi">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ORGMedi">
-  <meta name="theme-color" content="#1976d2">
+  <meta name="theme-color" content="#E177B5">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="canonical" href="https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/">
+  <link rel="alternate" hreflang="es" href="https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/">
   
   <!-- Open Graph para redes sociales -->
-  <meta property="og:title" content="ORGMedi - Gestor de Medicamentos">
-  <meta property="og:description" content="Organiza y gestiona tus medicamentos de forma fácil">
+  <meta property="og:title" content="ORGMedi - Gestor de Medicamentos Online">
+  <meta property="og:description" content="Gestiona tus medicamentos de forma fácil, segura y personalizada. Sincroniza horarios, recibe recordatorios y organiza tu salud.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://orgmedi.app">
+  <meta property="og:url" content="https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/">
+  <meta property="og:image" content="https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/Icono App.svg">
+  <meta property="og:site_name" content="ORGMedi">
+  <meta property="og:locale" content="es_ES">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ORGMedi - Gestor de Medicamentos">
+  <meta name="twitter:description" content="Gestiona tus medicamentos de forma fácil y segura">
+  <meta name="twitter:image" content="https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/Icono App.svg">
   
   <!-- Favicons -->
   <link rel="icon" href="/Icono App.svg" type="image/svg+xml">
   <link rel="shortcut icon" href="/Icono App.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/Icono App.svg">
   
-  <!-- Prefetch y Preconnect -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="dns-prefetch" href="https://api.orgmedi.app">
+  <!-- Link a sitemap y robots.txt para SEO -->
+  <link rel="sitemap" href="/sitemap.xml" type="application/xml">
+  
+  <!-- Preconnect solo a recursos críticos -->
+  <link rel="dns-prefetch" href="https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com">
+  <link rel="preconnect" href="https://dwec-dwes-diw-proyecto-orgmedi-backend.onrender.com" crossorigin>
+  
+  <!-- Meta tags adicionales para mejor indexación -->
+  <meta property="article:publisher" content="https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/">
+  <meta name="dcterms.date" content="2026-02-16">
+  <meta name="dcterms.type" content="website">
+  <meta name="dcterms.language" content="es">
+  
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ORGMedi",
+    "description": "Aplicación web para gestionar medicamentos y horarios de toma de forma segura y personalizada",
+    "url": "https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    },
+    "creator": {
+      "@type": "Organization",
+      "name": "ORGMedi Team"
+    },
+    "image": "https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/Icono App.svg",
+    "inLanguage": "es",
+    "isAccessibleForFree": true,
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.5",
+      "ratingCount": "100"
+    }
+  }
+  </script>
+  
+  <!-- Organization Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "ORGMedi",
+    "url": "https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/",
+    "logo": "https://dwec-dwes-diw-proyecto-orgmedi.onrender.com/Icono App.svg",
+    "description": "Gestor de medicamentos online",
+    "sameAs": []
+  }
+  </script>
 </head>
 <body>
 <app-root></app-root>

@@ -7,6 +7,17 @@
 
     <app-calendar (daySelected)="onCalendarDaySelected($event)" aria-label="Calendario de medicamentos"></app-calendar>
 
+    <!-- Carrusel de medicamentos destacados - Componente multimedia accesible (lazy loaded) -->
+    <section class="carousel-section" aria-labelledby="carousel-title">
+      <h2 id="carousel-title" class="carousel-section__title">Medicamentos Destacados</h2>
+      <p class="carousel-section__subtitle">Explora algunos de los medicamentos más populares gestionados en ORGMedi</p>
+      @defer (on viewport) {
+        <app-carousel [autoplay]="true" [autoplayDelay]="5000"></app-carousel>
+      } @placeholder {
+        <div class="carousel-placeholder" style="min-height: 400px;" aria-hidden="true"></div>
+      }
+    </section>
+
     <main class="calendar__medicines-list" aria-label="Medicamentos del día seleccionado">
       <!-- Lista de medicamentos o mensaje vacío -->
       <div *ngIf="!loading() && medicineGroups.length > 0; else noMedicines" class="medicines__list" role="region">

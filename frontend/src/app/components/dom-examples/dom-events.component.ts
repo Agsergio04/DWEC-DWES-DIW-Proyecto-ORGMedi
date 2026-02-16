@@ -48,13 +48,11 @@ export class DomEventsComponent {
 
   onClick(event: MouseEvent) {
     this.log = 'Botón clickeado';
-    console.log('onClick', event);
   }
 
   onClickStop(event: MouseEvent) {
     event.stopPropagation();
     this.log = 'Click manejado sin burbuja';
-    console.log('onClickStop', event);
   }
 
   onKeyUp(event: KeyboardEvent) {

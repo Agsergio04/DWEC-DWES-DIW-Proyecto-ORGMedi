@@ -4,7 +4,7 @@
  * Servicios: Router para navegación, ThemeService para dark/light mode
  * Angular: signal (reactividad), RouterOutlet para renderizar componentes de ruta
  */
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { Header } from './components/layout/header/header';
 import { Footer } from './components/layout/footer/footer';
@@ -37,7 +37,8 @@ import { ThemeService } from './core/services/ui';
     BreadcrumbComponent // Navegación breadcrumb
   ],
   templateUrl: './app.html',
-  styleUrls: ['./app.css']
+  styleUrls: ['./app.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class App {
   /** Título de la aplicación - reactivo con signal */

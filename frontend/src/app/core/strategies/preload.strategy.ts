@@ -55,7 +55,6 @@ export class SelectivePreloadingStrategy implements PreloadingStrategy {
   preload(route: Route, load: () => Observable<any>): Observable<any> {
     // Si la ruta tiene data.preload = true, precarga ahora
     if (route.data && route.data['preload']) {
-      console.log(`✅ Precargando: ${route.path}`);
       return load();
     }
     
@@ -88,11 +87,7 @@ export class DelayedPreloadingStrategy implements PreloadingStrategy {
     
     if (route.data && route.data['preload'] !== false) {
       setTimeout(() => {
-        console.log(`⏱️  Precargando con retraso: ${route.path}`);
-        load().subscribe(
-          () => console.log(`✅ Precarga completada: ${route.path}`),
-          (error) => console.error(`❌ Error precargando ${route.path}:`, error)
-        );
+        load().subscribe();
       }, DELAY_MS);
     }
     
@@ -128,10 +123,8 @@ export class NetworkAwarePreloadingStrategy implements PreloadingStrategy {
       
       // Precargar solo en 4G o WiFi, no en 3G
       if (effectiveType === '4g' || connection?.saveData === false) {
-        console.log(`🚀 Precargando en conexión rápida: ${route.path}`);
         return load();
       } else {
-        console.log(`📵 Saltando precarga (conexión lenta): ${route.path}`);
         return of(null);
       }
     }
@@ -183,7 +176,6 @@ export class SmartPreloadingStrategy implements PreloadingStrategy {
     
     if (shouldPreload && !this.isReducedMotion()) {
       this.preloadedRoutes.add(routePath);
-      console.log(`🧠 Precargando (inteligente): ${routePath}`);
       return load();
     }
     

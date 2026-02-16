@@ -89,9 +89,6 @@ export class AuthService {
       responseType: 'json' as const
     }).pipe(
       tap((response) => {
-        console.log('[AuthService] Login response CRUDO:', response);
-        console.log('[AuthService] Type de response:', typeof response);
-        
         // Manejar respuesta vacía o sin token
         if (!response || (typeof response === 'object' && Object.keys(response).length === 0)) {
           console.error('[AuthService] ⚠️  Response vacía en login:', response);
@@ -102,7 +99,6 @@ export class AuthService {
         if (!token) {
           throw new Error('Invalid login response: missing token. Response: ' + JSON.stringify(response));
         }
-        console.log('[AuthService] ✓ Login exitoso, token:', token.substring(0, 20) + '...');
         this.setToken(token);
         const user: AuthUser = {
           id: 1,
@@ -141,10 +137,6 @@ export class AuthService {
       responseType: 'json' as const
     }).pipe(
       tap((response) => {
-        console.log('[AuthService] Register response CRUDO:', response);
-        console.log('[AuthService] Type de response:', typeof response);
-        console.log('[AuthService] Response stringified:', JSON.stringify(response));
-        
         // La respuesta puede llegar como null, string vacío, o un objeto
         // Si es null, el servidor está enviando una respuesta sin cuerpo
         if (!response || (typeof response === 'object' && Object.keys(response).length === 0)) {
@@ -163,8 +155,6 @@ export class AuthService {
           console.error('[AuthService] ❌ No se encontró token en la respuesta:', response);
           throw new Error('La respuesta del servidor no contiene token. Response: ' + JSON.stringify(response));
         }
-        
-        console.log('[AuthService] ✓ Token extraído exitosamente:', token.substring(0, 20) + '...');
         this.setToken(token);
         
         const user: AuthUser = {
@@ -176,7 +166,6 @@ export class AuthService {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.isLoggedInSubject.next(true);
         this.currentUserSubject.next(user);
-        console.log('[AuthService] ✓ Registro exitoso y token guardado');
       }),
       map(() => true),
       catchError(err => {
@@ -191,8 +180,6 @@ export class AuthService {
    * Borra el token JWT y todos los datos de sesión del localStorage
    */
   logout(): void {
-    console.log('[AuthService] Cerrando sesión...');
-    
     // Limpiar todos los datos de autenticación del localStorage
     if (typeof window !== 'undefined') {
       localStorage.removeItem('authToken');
@@ -214,8 +201,6 @@ export class AuthService {
     // Actualizar los estados observables
     this.isLoggedInSubject.next(false);
     this.currentUserSubject.next(null);
-    
-    console.log('[AuthService] ✓ Sesión cerrada correctamente. Token borrado del localStorage.');
   }
 
   /**
@@ -244,12 +229,10 @@ export class AuthService {
       tap((user) => {
         // Manejar respuestas vacías del servidor
         if (!user || !user.id) {
-          console.warn('[AuthService] Empty or invalid user response from /api/auth/me');
           // Usar datos del localStorage si existen
           const storedUser = this.getStoredUser();
           if (storedUser) {
             this.currentUserSubject.next(storedUser);
-            console.log('[AuthService] Using stored user data:', storedUser);
           }
           return;
         }
@@ -262,7 +245,6 @@ export class AuthService {
         };
         localStorage.setItem('currentUser', JSON.stringify(authUser));
         this.currentUserSubject.next(authUser);
-        console.log('[AuthService] Current user fetched from server:', authUser);
       }),
       catchError(err => {
         console.error('Error fetching current user:', err);
@@ -301,7 +283,6 @@ export class AuthService {
         };
         localStorage.setItem('currentUser', JSON.stringify(updatedUser));
         this.currentUserSubject.next(updatedUser);
-        console.log('[AuthService] Username updated successfully');
       }),
       map(() => true),
       catchError(err => {
@@ -329,7 +310,6 @@ export class AuthService {
 
     return this.api.post<any>(`${this.baseUrl}/change-password`, request).pipe(
       tap((response) => {
-        console.log('[AuthService] Password changed successfully');
       }),
       map(() => true),
       catchError(err => {
