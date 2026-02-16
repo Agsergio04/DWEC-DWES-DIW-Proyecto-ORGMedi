@@ -71,6 +71,11 @@
 		outline: none;
 		box-shadow: 0 0 0 2px var(--color-secundario-hover);
 	}
+
+	&:focus-visible {
+		outline: 3px solid var(--color-primario-primary);
+		outline-offset: 2px;
+	}
 }
 
 .form-input__help {

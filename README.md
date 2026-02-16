@@ -150,5 +150,10 @@ Endpoints de monitoreo y salud de la aplicación.
 - [Documentación del Diseño UI/UX](docs/design/DOCUMENTACION_DISEÑO.md)
 - [Documentación del Cliente](docs/cliente/Documentacion_cliente.md)
 - [Guía de Despliegue en Render](DESPLIEGUE_RENDER_PASO_A_PASO.md)
+- [Ver análisis completo de accesibilidad](./docs/accesibilidad/README.md)
+
+---
+
+
 
 

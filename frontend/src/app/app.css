@@ -1,3 +1,25 @@
+/* Skip-link: visible solo al recibir foco con teclado (WCAG 2.4.1) */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 10000;
+  padding: 12px 24px;
+  background: var(--color-primario-primary, #e91e8c);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 0 0 8px 8px;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid var(--color-primario-primary, #e91e8c);
+  outline-offset: 2px;
+}
+
 /* Layout principal de la aplicación */
 .app {
   display: flex;
