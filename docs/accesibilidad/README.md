@@ -1,12 +1,5 @@
 # Auditoría de Accesibilidad Web — Proyecto ORGMedi
 
-**Proyecto:** ORGMedi — Gestor de Medicamentos  
-**Fecha de Auditoría:** febrero 2026  
-**Responsable:** Sergio — 2.º DAW  
-**Nivel de Conformidad Objetivo:** WCAG 2.1 AA
-
----
-
 ## Contenido
 
 1. [Fundamentos de Accesibilidad](#sección-1-fundamentos-de-accesibilidad)
